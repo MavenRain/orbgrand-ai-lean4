@@ -30,7 +30,8 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | `sinc_zero` (sinc(0) = 1) | `Section02.DelayTap` | proved |
 | RFView 6-tap channel matrix | `Section02.RFView` | def |
 | `rfView_causal` (entries `i < j` vanish) | `Section02.RFView` | proved |
-| RFView bandwidth at most `6` | `Section02.RFView` | placeholder |
+| `RFViewTaps.tap?_of_ge_seven` helper | `Section02.RFView` | proved |
+| `rfView_bandwidth` (entries `j + 6 < i` vanish) | `Section02.RFView` | proved |
 | First-order Gauss-Markov `cov1_lag` and AR(1) recurrence | `Section03.GaussMarkov` | def |
 | Second-order Gauss-Markov `cov2_lag` and Yule-Walker coeffs | `Section03.GaussMarkov` | def |
 | Yule-Walker variance bound -> `rho_1^2 < (rho_2 + 1) / 2` | `Section03.GaussMarkov` | placeholder |

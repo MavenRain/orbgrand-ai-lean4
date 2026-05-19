@@ -76,6 +76,25 @@ def RFViewTaps.tap? (t : RFViewTaps) (j : Nat) : Option Complex :=
   | 6 => some t.tap6
   | _ => none
 
+/-- For `7 ≤ n`, `RFViewTaps.tap? t n = none`.
+
+    The `match` is defined by case analysis on `n` against the
+    numerals `1, ..., 6` with `_ ↦ none` as the catch-all.  For
+    `n = k + 7` the catch-all branch fires by structural reduction,
+    so the equation is `rfl`.  For `n ∈ {0, 1, ..., 6}` the
+    hypothesis `7 ≤ n` is inhabited only by an impossible chain of
+    `Nat.le.step`s; `nomatch h` discharges each case. -/
+theorem RFViewTaps.tap?_of_ge_seven (t : RFViewTaps) :
+    forall (n : Nat), 7 <= n -> t.tap? n = none
+  | 0,     h => nomatch h
+  | 1,     h => nomatch h
+  | 2,     h => nomatch h
+  | 3,     h => nomatch h
+  | 4,     h => nomatch h
+  | 5,     h => nomatch h
+  | 6,     h => nomatch h
+  | _ + 7, _ => rfl
+
 /-! ## The RFView channel matrix -/
 
 /-- The RFView channel matrix of block length `n_s`, with per-row
@@ -128,20 +147,51 @@ theorem rfView_causal
 /-- *RFView bandwidth bound.*
 
     For an entry `(i, j)` with `j + 6 < i`, the running delay
-    `d = i - j + 1 > 7` falls outside `RFViewTaps.tap?`'s explicit
-    `1..6` patterns and hits the `_ => none` branch, so the outer
-    `match` returns `0`.
+    `d = i - j + 1 ≥ 8 > 6` falls outside `RFViewTaps.tap?`'s
+    explicit `1..6` patterns and hits the `_ ↦ none` branch, so the
+    outer `match` returns `0`.
 
-    *Placeholder shape.*  The proof requires either a case-split
-    helper for `RFViewTaps.tap? n = none when 7 ≤ n` or rewriting
-    the match by direct unfolding; both are mechanical but bulky.
-    Scheduled for a follow-up that also introduces a generic
-    `Option.match_none` rewriting lemma. -/
-theorem rfView_bandwidth_statement
-    (n_s : Nat) (rowTaps : Fin n_s -> RFViewTaps) (sigma : NoisePower) :
-    (rfView n_s rowTaps sigma).bandwidth 6 -> True := by
-  kan_intro _h
-  kan_constructor
+    Proof chain:
+    * `j + 6 < i`  defeq  `j + 7 ≤ i`  (definition of `<` on `ℕ`).
+    * `j + 7 ≤ i`  ⇒  `7 + j ≤ i`  (`Nat.add_comm`).
+    * `7 + j ≤ i`  ⇒  `7 ≤ i - j`  (`Nat.le_sub_of_add_le`).
+    * `7 ≤ i - j`  ⇒  `7 ≤ i - j + 1`  (`Nat.le_succ_of_le`).
+    * `(rowTaps i).tap? (i - j + 1) = none`  (`tap?_of_ge_seven`).
+    * Match collapses, outer `if` collapses via `if_pos`. -/
+theorem rfView_bandwidth
+    {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (sigma : NoisePower) :
+    (rfView n_s rowTaps sigma).bandwidth 6 := fun i j hij =>
+  let hle : j.val <= i.val :=
+    Nat.le_trans (Nat.le_add_right j.val 6) (Nat.le_of_lt hij)
+  let h7add : 7 + j.val <= i.val :=
+    Nat.add_comm j.val 7 ▸ (hij : j.val + 7 <= i.val)
+  let hsub : 7 <= i.val - j.val := Nat.le_sub_of_add_le h7add
+  let h8 : 7 <= i.val - j.val + 1 := Nat.le_succ_of_le hsub
+  let htap : (rowTaps i).tap? (i.val - j.val + 1) = none :=
+    RFViewTaps.tap?_of_ge_seven (rowTaps i) (i.val - j.val + 1) h8
+  -- After if_pos, the goal reduces (via zeta on the `let`) to:
+  --   match (rowTaps i).tap? (i.val - j.val + 1) with ... = 0
+  -- The let-binding is eliminated by spelling out the matched
+  -- subject explicitly in `step1.trans`, which keeps `htap`'s
+  -- LHS `(rowTaps i).tap? (i.val - j.val + 1)` syntactically
+  -- present in the goal so that `htap ▸ rfl` can synthesize
+  -- the motive `fun x => (match x with ...) = 0`.
+  let step1 : (if j.val <= i.val then
+                let d : Nat := i.val - j.val + 1
+                match (rowTaps i).tap? d with
+                | some c => c
+                | none   => (0 : Complex)
+              else (0 : Complex))
+            = (match (rowTaps i).tap? (i.val - j.val + 1) with
+               | some c => c
+               | none   => (0 : Complex)) :=
+    if_pos hle
+  let step2 : (match (rowTaps i).tap? (i.val - j.val + 1) with
+               | some c => c
+               | none   => (0 : Complex))
+            = (0 : Complex) :=
+    htap ▸ rfl
+  step1.trans step2
 
 end Section02
 end OrbgrandAi
