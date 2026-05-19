@@ -1,0 +1,82 @@
+name: Build & Deploy Documentation
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        # Run all steps from inside the orbgrand-ai-lean4 checkout, so
+        # that `lake` resolves `require kan-tactics from ".." / "kan-tactics"`
+        # against the sibling checkout placed by the second
+        # `actions/checkout` below.
+        working-directory: orbgrand-ai-lean4
+    steps:
+      - name: Check out orbgrand-ai-lean4
+        uses: actions/checkout@v4
+        with:
+          path: orbgrand-ai-lean4
+
+      - name: Check out sibling kan-tactics
+        uses: actions/checkout@v4
+        with:
+          repository: MavenRain/kan-tactics
+          path: kan-tactics
+
+      - name: Install elan
+        run: |
+          curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch toolchain
+        run: elan install "$(cat lean-toolchain)"
+
+      - name: Cache Lake packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            orbgrand-ai-lean4/.lake/packages
+            orbgrand-ai-lean4/.lake/build
+          key: lake-${{ runner.os }}-${{ hashFiles('orbgrand-ai-lean4/lean-toolchain', 'orbgrand-ai-lean4/lakefile.lean', 'orbgrand-ai-lean4/lake-manifest.json') }}
+          restore-keys: lake-${{ runner.os }}-
+
+      - name: Fetch dependencies (including doc-gen4)
+        run: lake -Kenv=dev update
+
+      - name: Build library
+        run: lake -Kenv=dev build
+
+      - name: Build documentation
+        run: lake -Kenv=dev build OrbgrandAi:docs
+
+      - name: Upload pages artifact
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: orbgrand-ai-lean4/.lake/build/doc
+
+  deploy:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
