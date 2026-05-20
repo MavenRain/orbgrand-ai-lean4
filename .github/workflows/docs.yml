@@ -55,13 +55,13 @@ jobs:
           restore-keys: lake-${{ runner.os }}-
 
       - name: Fetch dependencies (including doc-gen4)
-        run: lake -Kenv=dev update
+        run: lake update
 
       - name: Build library
-        run: lake -Kenv=dev build
+        run: lake build
 
       - name: Build documentation
-        run: lake -Kenv=dev build OrbgrandAi:docs
+        run: lake build OrbgrandAi:docs
 
       - name: Upload pages artifact
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
