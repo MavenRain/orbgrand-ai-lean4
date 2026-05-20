@@ -45,9 +45,10 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | Hadamard bound on `log |C_N|` | `Section03.Capacity` | placeholder |
 | Channel capacity upper bound | `Section03.Capacity` | placeholder |
 | GRAND syndrome and search loop | `Section04.Grand` | def |
+| `Codeword.xor_xor_self` (XOR involution helper) | `Section04.Grand` | proved |
 | `grandFind_zero_syndrome` (decoder output has zero syndrome) | `Section04.Grand` | proved |
 | `grandFind_syndromeZero` (alias on syndromeZero) | `Section04.Grand` | proved |
-| GRAND ML-optimality under decreasing-likelihood order | `Section04.Grand` | placeholder |
+| `grand_ml_optimal` (ML-optimality under decreasing-likelihood order) | `Section04.Grand` | proved |
 | ORBGRAND landslide enumeration | `Section04.Orbgrand` | def (opaque enum) |
 | ORBGRAND-AI Algorithm 1 (`orbgrandAi`, `orbgrandAiLoop`) | `Section04.OrbgrandAi` | def |
 | `orbgrandAiLoop_accept_sound`, `orbgrandAi_accept_sound` | `Section04.OrbgrandAi` | proved |
