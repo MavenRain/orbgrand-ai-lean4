@@ -101,6 +101,12 @@ GitHub Pages on pushes to `main`.  The workflow checks out
 `kan-tactics` as a sibling directory before invoking `lake`, so the
 sibling-path `require` in `lakefile.lean` resolves correctly on CI.
 
+A second workflow, `.github/workflows/ci.yml`, runs a plain
+`lake build` via `leanprover/lean-action@v1` on every push and pull
+request.  It catches type-check regressions without invoking
+`doc-gen4`, so a failing PR's signal arrives in a couple of minutes
+rather than waiting for the full docs build.
+
 ## Using as a dependency
 
 Other Lean 4 projects can depend on this library by adding to their

@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out orbgrand-ai-lean4
+        uses: actions/checkout@v4
+        with:
+          path: orbgrand-ai-lean4
+
+      - name: Check out sibling kan-tactics
+        uses: actions/checkout@v4
+        with:
+          repository: MavenRain/kan-tactics
+          path: kan-tactics
+
+      - name: Lake build
+        uses: leanprover/lean-action@v1
+        with:
+          lake-package-directory: orbgrand-ai-lean4
