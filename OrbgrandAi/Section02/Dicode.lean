@@ -1,5 +1,6 @@
 import Mathlib.Data.Complex.Basic
 import Mathlib.Data.Matrix.Basic
+import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 import OrbgrandAi.Section02.Basic
 import OrbgrandAi.Section02.LinearIsi
 import KanTactics
@@ -172,6 +173,117 @@ theorem dicode_zf_equalisation
     (gaussMarkovCov n_s sigma rho) i j =
       let d : Nat := if i.val <= j.val then j.val - i.val else i.val - j.val
       (sigma.val : Complex) * ((rho.val : Complex) ^ d) := rfl
+
+/-! ## Closed-form determinant for `n_s = 2` -/
+
+/-- *Diagonal entry `(0, 0)` of the 2x2 Gauss-Markov auto-covariance.*
+
+    Concrete index: the `if 0 ≤ 0` reduces, `0 - 0 = 0`, and the
+    entry collapses to `sigma * rho^0 = sigma * 1 = sigma`. -/
+theorem gaussMarkovCov_two_00
+    (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    (gaussMarkovCov 2 sigma rho) 0 0 = (sigma.val : Complex) :=
+  have h0 : (gaussMarkovCov 2 sigma rho) 0 0
+      = (sigma.val : Complex) * ((rho.val : Complex) ^ 0) := rfl
+  let h1 : (sigma.val : Complex) * ((rho.val : Complex) ^ 0)
+        = (sigma.val : Complex) * 1 :=
+    congrArg ((sigma.val : Complex) * ·) (pow_zero (rho.val : Complex))
+  let h2 : (sigma.val : Complex) * 1 = (sigma.val : Complex) :=
+    mul_one (sigma.val : Complex)
+  h0.trans (h1.trans h2)
+
+/-- *Diagonal entry `(1, 1)` of the 2x2 Gauss-Markov auto-covariance.* -/
+theorem gaussMarkovCov_two_11
+    (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    (gaussMarkovCov 2 sigma rho) 1 1 = (sigma.val : Complex) :=
+  have h0 : (gaussMarkovCov 2 sigma rho) 1 1
+      = (sigma.val : Complex) * ((rho.val : Complex) ^ 0) := rfl
+  let h1 : (sigma.val : Complex) * ((rho.val : Complex) ^ 0)
+        = (sigma.val : Complex) * 1 :=
+    congrArg ((sigma.val : Complex) * ·) (pow_zero (rho.val : Complex))
+  let h2 : (sigma.val : Complex) * 1 = (sigma.val : Complex) :=
+    mul_one (sigma.val : Complex)
+  h0.trans (h1.trans h2)
+
+/-- *Off-diagonal entry `(0, 1)` of the 2x2 Gauss-Markov auto-covariance.* -/
+theorem gaussMarkovCov_two_01
+    (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    (gaussMarkovCov 2 sigma rho) 0 1
+      = (sigma.val : Complex) * (rho.val : Complex) :=
+  have h0 : (gaussMarkovCov 2 sigma rho) 0 1
+      = (sigma.val : Complex) * ((rho.val : Complex) ^ 1) := rfl
+  let h1 : (sigma.val : Complex) * ((rho.val : Complex) ^ 1)
+        = (sigma.val : Complex) * (rho.val : Complex) :=
+    congrArg ((sigma.val : Complex) * ·) (pow_one (rho.val : Complex))
+  h0.trans h1
+
+/-- *Off-diagonal entry `(1, 0)` of the 2x2 Gauss-Markov auto-covariance.* -/
+theorem gaussMarkovCov_two_10
+    (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    (gaussMarkovCov 2 sigma rho) 1 0
+      = (sigma.val : Complex) * (rho.val : Complex) :=
+  have h0 : (gaussMarkovCov 2 sigma rho) 1 0
+      = (sigma.val : Complex) * ((rho.val : Complex) ^ 1) := rfl
+  let h1 : (sigma.val : Complex) * ((rho.val : Complex) ^ 1)
+        = (sigma.val : Complex) * (rho.val : Complex) :=
+    congrArg ((sigma.val : Complex) * ·) (pow_one (rho.val : Complex))
+  h0.trans h1
+
+/-- *Determinant of the 2x2 first-order Gauss-Markov auto-covariance,
+    in unfolded form.*
+
+    `det = sigma * sigma - (sigma * rho) * (sigma * rho)`.  Direct
+    consequence of `Matrix.det_fin_two` plus the four entry lemmas.
+    The fully factored form `sigma^2 * (1 - rho^2)` is recorded
+    below as `cov1_det_fin_two_factored_statement`; the algebra to
+    bridge the two requires `mul_sub`, `mul_mul_mul_comm`,
+    `mul_one`, and `sq` chained without `ring` / `linarith`, which
+    is left as a placeholder. -/
+theorem cov1_det_fin_two
+    (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    (gaussMarkovCov 2 sigma rho).det
+      = (sigma.val : Complex) * (sigma.val : Complex)
+        - ((sigma.val : Complex) * (rho.val : Complex))
+          * ((sigma.val : Complex) * (rho.val : Complex)) :=
+  let det_eq : (gaussMarkovCov 2 sigma rho).det
+      = (gaussMarkovCov 2 sigma rho) 0 0 * (gaussMarkovCov 2 sigma rho) 1 1
+        - (gaussMarkovCov 2 sigma rho) 0 1 * (gaussMarkovCov 2 sigma rho) 1 0 :=
+    Matrix.det_fin_two _
+  let M00 := gaussMarkovCov_two_00 sigma rho
+  let M11 := gaussMarkovCov_two_11 sigma rho
+  let M01 := gaussMarkovCov_two_01 sigma rho
+  let M10 := gaussMarkovCov_two_10 sigma rho
+  -- Substitute the four entries by congruence on `(·) * (·) - (·) * (·)`.
+  let prod1 : (gaussMarkovCov 2 sigma rho) 0 0 * (gaussMarkovCov 2 sigma rho) 1 1
+      = (sigma.val : Complex) * (sigma.val : Complex) :=
+    M00 ▸ M11 ▸ rfl
+  let prod2 : (gaussMarkovCov 2 sigma rho) 0 1 * (gaussMarkovCov 2 sigma rho) 1 0
+      = ((sigma.val : Complex) * (rho.val : Complex))
+        * ((sigma.val : Complex) * (rho.val : Complex)) :=
+    M01 ▸ M10 ▸ rfl
+  let entries_eq : (gaussMarkovCov 2 sigma rho) 0 0 * (gaussMarkovCov 2 sigma rho) 1 1
+        - (gaussMarkovCov 2 sigma rho) 0 1 * (gaussMarkovCov 2 sigma rho) 1 0
+      = (sigma.val : Complex) * (sigma.val : Complex)
+        - ((sigma.val : Complex) * (rho.val : Complex))
+          * ((sigma.val : Complex) * (rho.val : Complex)) :=
+    prod1 ▸ prod2 ▸ rfl
+  det_eq.trans entries_eq
+
+/-- *Determinant of the 2x2 first-order Gauss-Markov auto-covariance,
+    in factored form.*
+
+    `det = sigma^2 * (1 - rho^2)`.  The algebra to bridge from the
+    unfolded form (`cov1_det_fin_two`) to the factored form requires
+    chained applications of `mul_sub`, `mul_mul_mul_comm`, `sq`, and
+    `mul_one` without `ring` or `linarith`.
+
+    *Placeholder shape.* -/
+theorem cov1_det_fin_two_factored_statement
+    (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    ((gaussMarkovCov 2 sigma rho).det
+      = (sigma.val : Complex) ^ 2 * (1 - (rho.val : Complex) ^ 2)) -> True := by
+  kan_intro _h
+  kan_constructor
 
 end Section02
 end OrbgrandAi

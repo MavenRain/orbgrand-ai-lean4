@@ -154,7 +154,38 @@ theorem grandFind_syndromeZero
 
 /-! ## ML-optimality of GRAND -/
 
-/-- XOR involution on `Codeword`: `Y xor (Y xor Ng) = Ng` in `ZMod 2`. -/
+/-! ### `Codeword.xor` algebra (pointwise lifts of ZMod 2 arithmetic) -/
+
+/-- `0 xor a = a`.  Pointwise `zero_add`. -/
+theorem Codeword.zero_xor {n : Nat} (a : Codeword n) :
+    Codeword.xor 0 a = a :=
+  funext fun i => zero_add (a i)
+
+/-- `a xor 0 = a`.  Pointwise `add_zero`. -/
+theorem Codeword.xor_zero {n : Nat} (a : Codeword n) :
+    Codeword.xor a 0 = a :=
+  funext fun i => add_zero (a i)
+
+/-- `a xor a = 0`.  Pointwise `CharTwo.add_self_eq_zero`. -/
+theorem Codeword.xor_self {n : Nat} (a : Codeword n) :
+    Codeword.xor a a = 0 :=
+  funext fun i => CharTwo.add_self_eq_zero (a i)
+
+/-- `a xor b = b xor a`.  Pointwise `add_comm`. -/
+theorem Codeword.xor_comm {n : Nat} (a b : Codeword n) :
+    Codeword.xor a b = Codeword.xor b a :=
+  funext fun i => add_comm (a i) (b i)
+
+/-- `(a xor b) xor c = a xor (b xor c)`.  Pointwise `add_assoc`. -/
+theorem Codeword.xor_assoc {n : Nat} (a b c : Codeword n) :
+    Codeword.xor (Codeword.xor a b) c = Codeword.xor a (Codeword.xor b c) :=
+  funext fun i => add_assoc (a i) (b i) (c i)
+
+/-- XOR involution: `Y xor (Y xor Ng) = Ng` in `ZMod 2`.
+
+    Derivable from the algebra above (`xor_assoc.symm.trans (congrArg ... xor_self).trans zero_xor`),
+    but kept inline because the `grand_ml_optimal` proof predates the
+    algebra batch. -/
 private theorem Codeword.xor_xor_self {n : Nat} (Y Ng : Codeword n) :
     Codeword.xor Y (Codeword.xor Y Ng) = Ng :=
   funext fun i =>

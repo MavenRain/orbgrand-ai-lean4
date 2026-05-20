@@ -25,6 +25,8 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | `dicode_bandwidth` (entries `j + 1 < i` vanish) | `Section02.Dicode` | proved |
 | `dicode_causal` (entries `i < j` vanish) | `Section02.Dicode` | proved |
 | `dicode_zf_equalisation` (post-equalisation covariance = Gauss-Markov template) | `Section02.Dicode` | proved |
+| `gaussMarkovCov_two_00`, `_01`, `_10`, `_11` (2x2 entry lemmas) | `Section02.Dicode` | proved (4) |
+| `cov1_det_fin_two` (2x2 first-order Gauss-Markov det, unfolded form) | `Section02.Dicode` | proved |
 | Delay-tap impulse response `h_{k', j} = sum_d a sinc(...)` | `Section02.DelayTap` | def |
 | `delayTap_causal` (entries `i < j` vanish) | `Section02.DelayTap` | proved |
 | `sinc_zero` (sinc(0) = 1) | `Section02.DelayTap` | proved |
@@ -45,6 +47,7 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | Hadamard bound on `log |C_N|` | `Section03.Capacity` | placeholder |
 | Channel capacity upper bound | `Section03.Capacity` | placeholder |
 | GRAND syndrome and search loop | `Section04.Grand` | def |
+| `Codeword.zero_xor`, `xor_zero`, `xor_self`, `xor_comm`, `xor_assoc` | `Section04.Grand` | proved (5) |
 | `Codeword.xor_xor_self` (XOR involution helper) | `Section04.Grand` | proved |
 | `grandFind_zero_syndrome` (decoder output has zero syndrome) | `Section04.Grand` | proved |
 | `grandFind_syndromeZero` (alias on syndromeZero) | `Section04.Grand` | proved |
