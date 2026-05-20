@@ -87,20 +87,71 @@ def syndromeZero
     vectors in order and return the first one whose syndrome is
     zero.  Returns `Option (Codeword n)`; `none` means the candidate
     list was exhausted without finding a codeword (the paper's
-    "FAILURE" branch). -/
+    "FAILURE" branch).
+
+    The `if hp : ... then ... else ...` is the *dependent* `if`, so
+    the soundness proof can pull `hp : forall i, ... = 0` out of the
+    `then` branch via `dif_pos`.  The Decidable instance comes from
+    `Fintype.decidableForallFintype` combined with `DecidableEq (ZMod 2)`. -/
 def grandFind
     {n k : Nat} (H : ParityCheck n k) (Y : Codeword n)
     : List (Codeword n) -> Option (Codeword n)
   | []           => none
   | (Ng :: rest) =>
       let candidate := Codeword.xor Y Ng
-      if Decidable.decide
-          (forall (i : Fin (n - k)), H.matrix.mulVec candidate i = 0) then
+      if _hp : forall (i : Fin (n - k)), H.matrix.mulVec candidate i = 0 then
         some candidate
       else
         grandFind H Y rest
 
-/-! ## ML-optimality (placeholder) -/
+/-! ## Soundness: the GRAND output has zero syndrome -/
+
+/-- If `grandFind` returns `some c`, then `c` has zero syndrome (it
+    is a codeword).  Structural induction on the candidate list,
+    mirroring `OrbgrandAi.Section04.OrbgrandAi.orbgrandAiLoop_accept_sound`.
+
+    By taking `H, Y` as universally quantified arguments AFTER the
+    colon rather than as bound parameters BEFORE the colon, the
+    recursive call matches all five pattern slots cleanly, which
+    avoids the elaborator's confusion over which binders are
+    explicit. -/
+theorem grandFind_zero_syndrome
+    {n k : Nat} :
+    forall (H : ParityCheck n k) (Y : Codeword n)
+      (order : List (Codeword n)) (c : Codeword n),
+      grandFind H Y order = some c ->
+      forall (i : Fin (n - k)), H.matrix.mulVec c i = 0
+  | _, _, [],            _, h, _ => nomatch h
+  | H, Y, (Ng :: rest),  c, h, i =>
+      -- Definitionally:
+      --   grandFind H Y (Ng :: rest)
+      --     = if hp : forall i, H.mulVec (Y xor Ng) i = 0
+      --       then some (Y xor Ng)
+      --       else grandFind H Y rest
+      let hdite : (if _hp : forall (i : Fin (n - k)),
+                    H.matrix.mulVec (Codeword.xor Y Ng) i = 0 then
+                    some (Codeword.xor Y Ng)
+                  else grandFind H Y rest) = some c := h
+      if hp : forall (j : Fin (n - k)),
+          H.matrix.mulVec (Codeword.xor Y Ng) j = 0 then
+        let hsome : some (Codeword.xor Y Ng) = some c :=
+          (dif_pos hp).symm.trans hdite
+        let heq : Codeword.xor Y Ng = c := Option.some.inj hsome
+        heq ▸ hp i
+      else
+        let hrest : grandFind H Y rest = some c :=
+          (dif_neg hp).symm.trans hdite
+        grandFind_zero_syndrome H Y rest c hrest i
+
+/-- Surface the soundness in `syndromeZero` form. -/
+theorem grandFind_syndromeZero
+    {n k : Nat} (H : ParityCheck n k) (Y : Codeword n)
+    (order : List (Codeword n)) (c : Codeword n)
+    (hfind : grandFind H Y order = some c) :
+    forall (i : Fin (n - k)), H.matrix.mulVec c i = 0 :=
+  grandFind_zero_syndrome H Y order c hfind
+
+/-! ## ML-optimality (placeholder, gated on the soundness above) -/
 
 /-- *ML-optimality of GRAND* (paper, IV.A).
 
@@ -109,11 +160,19 @@ def grandFind
     most-likely codeword consistent with `Y`, i.e., the
     maximum-likelihood decoded codeword.
 
-    *Placeholder shape.*  Encodes the statement: any code-book
-    membership predicate `Phi`, any ordering function `order`, and
-    any posterior `p`, if the candidate list is sorted decreasing
-    by `p`, then `grandFind` produces the ML decision.  Proof is
-    by induction on the candidate list. -/
+    *Placeholder shape.*  Encodes the statement: for any noise `Ng'`
+    that is in the order list AND has zero syndrome, the posterior
+    `p Ng'` is at most the posterior of the noise `Y xor c` that
+    GRAND chose.  Proof is structural induction on the candidate
+    list, using the just-proved `grandFind_zero_syndrome` for the
+    base case (the True branch of `dif_pos`) and the sorted_dec
+    hypothesis to compare positions.
+
+    The non-trivial step is establishing that `Ng' ∈ order` at some
+    position `j` AND `j >= i` (where `i` is GRAND's accept index):
+    for `j < i`, every prior `order[j]?` has non-zero syndrome (else
+    GRAND would have stopped earlier), so `Ng' = order[j]?` cannot
+    have zero syndrome.  Scheduled for follow-up. -/
 theorem grand_ml_optimal_statement
     {n k : Nat} (H : ParityCheck n k) (Y : Codeword n)
     (p : Codeword n -> Real)
@@ -123,8 +182,11 @@ theorem grand_ml_optimal_statement
         i <= j -> p Ng' <= p Ng) :
     (forall (c : Codeword n),
         grandFind H Y order = some c ->
-          forall (c' : Codeword n),
-            syndromeZero H Y (Codeword.xor Y c') -> p c' <= p c) -> True := by
+          forall (Ng' : Codeword n),
+            Ng' ∈ order ->
+            (forall (j : Fin (n - k)),
+              H.matrix.mulVec (Codeword.xor Y Ng') j = 0) ->
+            p Ng' <= p (Codeword.xor Y c)) -> True := by
   kan_intro _h
   kan_constructor
 

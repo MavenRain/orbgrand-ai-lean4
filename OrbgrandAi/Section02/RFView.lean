@@ -76,6 +76,29 @@ def RFViewTaps.tap? (t : RFViewTaps) (j : Nat) : Option Complex :=
   | 6 => some t.tap6
   | _ => none
 
+/-! ### Base-case lemmas for `RFViewTaps.tap?` -/
+
+/-- `tap?` at index `0` is `none` (matches the `_` catch-all). -/
+theorem RFViewTaps.tap?_zero (t : RFViewTaps) : t.tap? 0 = none := rfl
+
+/-- `tap?` at index `1` returns `tap1`. -/
+theorem RFViewTaps.tap?_one (t : RFViewTaps) : t.tap? 1 = some t.tap1 := rfl
+
+/-- `tap?` at index `2` returns `tap2`. -/
+theorem RFViewTaps.tap?_two (t : RFViewTaps) : t.tap? 2 = some t.tap2 := rfl
+
+/-- `tap?` at index `3` returns `tap3`. -/
+theorem RFViewTaps.tap?_three (t : RFViewTaps) : t.tap? 3 = some t.tap3 := rfl
+
+/-- `tap?` at index `4` returns `tap4`. -/
+theorem RFViewTaps.tap?_four (t : RFViewTaps) : t.tap? 4 = some t.tap4 := rfl
+
+/-- `tap?` at index `5` returns `tap5`. -/
+theorem RFViewTaps.tap?_five (t : RFViewTaps) : t.tap? 5 = some t.tap5 := rfl
+
+/-- `tap?` at index `6` returns `tap6`. -/
+theorem RFViewTaps.tap?_six (t : RFViewTaps) : t.tap? 6 = some t.tap6 := rfl
+
 /-- For `7 ≤ n`, `RFViewTaps.tap? t n = none`.
 
     The `match` is defined by case analysis on `n` against the

@@ -81,6 +81,23 @@ def ar2
   | (n + 2) =>
       phi1 * ar2 phi1 phi2 z1 z2 (n + 1) + phi2 * ar2 phi1 phi2 z1 z2 n
 
+/-! ### Base-case lemmas for `ar2` -/
+
+/-- `ar2` at index 0 returns the first initial condition. -/
+theorem ar2_zero (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 0 = z1 := rfl
+
+/-- `ar2` at index 1 returns the second initial condition. -/
+theorem ar2_one (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 1 = z2 := rfl
+
+/-- The AR(2) recurrence step: index `n + 2` is `phi_1` times the
+    `(n + 1)`-th value plus `phi_2` times the `n`-th. -/
+theorem ar2_succ_succ (phi1 phi2 z1 z2 : Complex) (n : Nat) :
+    ar2 phi1 phi2 z1 z2 (n + 2)
+      = phi1 * ar2 phi1 phi2 z1 z2 (n + 1)
+        + phi2 * ar2 phi1 phi2 z1 z2 n := rfl
+
 /-! ## Regressor matrix and target -/
 
 /-- The `4 x 2` regressor matrix used in the least-squares fit.

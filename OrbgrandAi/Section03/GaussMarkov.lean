@@ -215,5 +215,33 @@ noncomputable def cov2_lag
       beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 (n + 2)
         + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 (n + 1)
 
+/-! ### Base-case lemmas for `cov2_lag` -/
+
+/-- `cov2_lag` at lag `0` is the stationary variance `sigma^2`. -/
+theorem cov2_lag_zero
+    (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta1 beta2 : Real) :
+    cov2_lag sigma rho1 rho2 beta1 beta2 0 = sigma.val := rfl
+
+/-- `cov2_lag` at lag `1` is `sigma^2 * rho_1`. -/
+theorem cov2_lag_one
+    (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta1 beta2 : Real) :
+    cov2_lag sigma rho1 rho2 beta1 beta2 1 = sigma.val * rho1.val := rfl
+
+/-- `cov2_lag` at lag `2` is `sigma^2 * rho_2`. -/
+theorem cov2_lag_two
+    (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta1 beta2 : Real) :
+    cov2_lag sigma rho1 rho2 beta1 beta2 2 = sigma.val * rho2.val := rfl
+
+/-- The AR(2)-style recurrence for `cov2_lag` at lag `n + 3`. -/
+theorem cov2_lag_succ_succ_succ
+    (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta1 beta2 : Real) (n : Nat) :
+    cov2_lag sigma rho1 rho2 beta1 beta2 (n + 3)
+      = beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 (n + 2)
+        + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 (n + 1) := rfl
+
 end Section03
 end OrbgrandAi

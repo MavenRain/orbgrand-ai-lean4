@@ -30,10 +30,12 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | `sinc_zero` (sinc(0) = 1) | `Section02.DelayTap` | proved |
 | RFView 6-tap channel matrix | `Section02.RFView` | def |
 | `rfView_causal` (entries `i < j` vanish) | `Section02.RFView` | proved |
+| `RFViewTaps.tap?_zero` through `tap?_six` | `Section02.RFView` | proved (7 rfl) |
 | `RFViewTaps.tap?_of_ge_seven` helper | `Section02.RFView` | proved |
 | `rfView_bandwidth` (entries `j + 6 < i` vanish) | `Section02.RFView` | proved |
 | First-order Gauss-Markov `cov1_lag` and AR(1) recurrence | `Section03.GaussMarkov` | def |
 | Second-order Gauss-Markov `cov2_lag` and Yule-Walker coeffs | `Section03.GaussMarkov` | def |
+| `cov2_lag_zero`, `_one`, `_two`, `_succ_succ_succ` base cases | `Section03.GaussMarkov` | proved (4 rfl) |
 | Yule-Walker variance bound -> `rho_1^2 < (rho_2 + 1) / 2` | `Section03.GaussMarkov` | placeholder |
 | Auto-covariance determinant closed form for `n_s >= 4` | `Section03.Determinant` | placeholder |
 | Determinant positivity under Yule-Walker | `Section03.Determinant` | placeholder |
@@ -43,12 +45,15 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | Hadamard bound on `log |C_N|` | `Section03.Capacity` | placeholder |
 | Channel capacity upper bound | `Section03.Capacity` | placeholder |
 | GRAND syndrome and search loop | `Section04.Grand` | def |
+| `grandFind_zero_syndrome` (decoder output has zero syndrome) | `Section04.Grand` | proved |
+| `grandFind_syndromeZero` (alias on syndromeZero) | `Section04.Grand` | proved |
 | GRAND ML-optimality under decreasing-likelihood order | `Section04.Grand` | placeholder |
 | ORBGRAND landslide enumeration | `Section04.Orbgrand` | def (opaque enum) |
 | ORBGRAND-AI Algorithm 1 (`orbgrandAi`, `orbgrandAiLoop`) | `Section04.OrbgrandAi` | def |
 | `orbgrandAiLoop_accept_sound`, `orbgrandAi_accept_sound` | `Section04.OrbgrandAi` | proved |
 | Approximate-independence block factorisation | `Section04.OrbgrandAi` | def |
 | AR(2) least-squares coefficient fit | `Section06.Ar2Approximation` | def (opaque fit) |
+| `ar2_zero`, `ar2_one`, `ar2_succ_succ` base cases | `Section06.Ar2Approximation` | proved (3 rfl) |
 | Query-order stability under `|delta_rho| <= eps` | `Section06.QueryOrderStability` | placeholder |
 
 ### Status legend
