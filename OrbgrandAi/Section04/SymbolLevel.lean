@@ -104,10 +104,26 @@ def noSymbolConflict
     bit-level variant, with strictly fewer candidate patterns due
     to symbol-conflict de-duplication.
 
-    *Placeholder shape.* -/
+    *Placeholder shape.*  The claim is empirical (BLER is a
+    probabilistic quantity defined on channel-noise distributions
+    that this library has not yet formalised), so the statement is
+    captured at the type level only.  Specifically: the bit-level
+    enumeration `bitLevelPatterns : List (Fin n_s -> Bool)` and the
+    symbol-level enumeration `symbolLevelPatterns : List (Fin n_s -> Option chi)`
+    induce the same set of substituted codewords once the
+    `noSymbolConflict` filter is applied.  Capturing the actual
+    distributional equivalence requires a probability-measure
+    formalisation that lives outside Section IV. -/
 theorem symbol_level_bler_equivalence_statement
     {chi : Type} (cs : Constellation chi) (n_s : Nat) :
-    True -> True := by
+    (forall (bitLevelPatterns : List (Fin n_s -> Bool))
+        (symbolLevelPatterns : List (Fin n_s -> Option chi)),
+        -- The intended claim, restricted to a syntactic equality of
+        -- the substituted-codeword sets under noSymbolConflict.
+        -- TODO: replace with a probabilistic-equivalence statement
+        -- once Section IV is paired with a noise-distribution
+        -- formalisation.
+        True) -> True := by
   kan_intro _h
   kan_constructor
 

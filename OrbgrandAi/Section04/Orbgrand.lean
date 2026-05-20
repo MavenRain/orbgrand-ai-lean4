@@ -122,13 +122,26 @@ def orbgrandEnumeration (n : Nat) : Nat -> List (Fin n -> Bool) :=
 /-- *Logistic-weight ordering is consistent with the rank ordering.*
 
     If patterns `e1, e2` satisfy `logisticWeight pi e1 < logisticWeight pi e2`,
-    then `e1` precedes `e2` in the ORBGRAND enumeration produced by
-    `orbgrandEnumeration` composed with `pi`.
+    then `e1` lives in a strictly earlier `landslide` bucket than `e2`,
+    so the concatenated enumeration
 
-    *Placeholder shape.* -/
+      `landslide n 0 ++ landslide n 1 ++ ... ++ landslide n maxW`
+
+    visits `e1` before `e2`.  Formally: there exist indices `i < j`
+    such that `e1 in landslide n i` and `e2 in landslide n j`.
+
+    *Placeholder shape.*  The proof is gated on the `opaque` definition
+    of `landslide`; until `landslide` is given a structural body the
+    membership claims cannot be discharged.  Captured here as
+    `(P -> Q) -> True` to record the intended implication rather than
+    the vacuous `(weight bound) -> True` form. -/
 theorem orbgrand_ordering_sound_statement
     {n : Nat} (pi : ReliabilityRank n) (e1 e2 : Fin n -> Bool) :
-    (logisticWeight pi e1 < logisticWeight pi e2) -> True := by
+    (logisticWeight pi e1 < logisticWeight pi e2 ->
+      exists (i j : Nat),
+        i < j /\
+        e1 ∈ landslide n i /\
+        e2 ∈ landslide n j) -> True := by
   kan_intro _h
   kan_constructor
 

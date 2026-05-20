@@ -85,13 +85,26 @@ def perturbChannel
     constant `floor(nmse) > 0`, i.e., the curve fails to decay to
     zero in the limit of high SNR.
 
-    *Placeholder shape.* -/
+    *Placeholder shape.*  The actual claim quantifies over an
+    abstract `bler : SignalToNoiseRatio -> Real` function that this
+    library does not yet provide, because the BLER definition
+    requires a noise-distribution formalisation that lives outside
+    Section VI.  The placeholder records the intended quantification
+    structure: positive NMSE produces a positive lower bound on the
+    BLER that holds for all sufficiently large SNR. -/
 theorem imperfect_csi_error_floor_statement
     (nmse : NMSE) (sigma : NoisePower)
     (rho : CorrelationCoefficient) :
     (0 < nmse.val ->
       exists (floor : Real),
-        0 < floor /\ forall (snr : Real), True) -> True := by
+        0 < floor /\
+        -- The intended claim, abstracted: any model of BLER
+        -- assigned to the imperfect-CSI receiver should be bounded
+        -- below by `floor` at all SNRs.  The concrete `bler` model
+        -- lives in a downstream probability-theory layer.
+        forall (bler : Real -> Real)
+          (_ : forall snr, snr >= 0 -> 0 <= bler snr /\ bler snr <= 1),
+          forall snr : Real, snr >= 0 -> floor <= bler snr) -> True := by
   kan_intro _h
   kan_constructor
 

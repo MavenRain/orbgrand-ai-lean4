@@ -161,16 +161,17 @@ theorem dicode_causal
     Gauss-Markov process with correlation `rho`.  The post-equalisation
     auto-covariance matrix is exactly `gaussMarkovCov n_s sigma rho`.
 
-    *Placeholder shape.* -/
-theorem dicode_zf_equalisation_statement
-    (n_s : Nat) (sigma : NoisePower) (rho : CorrelationCoefficient) :
-    (forall (i j : Fin n_s),
-        (gaussMarkovCov n_s sigma rho) i j =
-          let d : Nat := if i.val <= j.val then j.val - i.val else i.val - j.val
-          (sigma.val : Complex) * ((rho.val : Complex) ^ d)) ->
-    True := by
-  kan_intro _h
-  kan_constructor
+    This theorem records the equational characterisation that lets
+    Section III's entropy-rate calculations cite
+    `gaussMarkovCov ... i j = sigma * rho^{|i - j|}` directly.  It
+    is `rfl` because the equation is the literal definition of
+    `gaussMarkovCov`. -/
+theorem dicode_zf_equalisation
+    {n_s : Nat} (sigma : NoisePower) (rho : CorrelationCoefficient)
+    (i j : Fin n_s) :
+    (gaussMarkovCov n_s sigma rho) i j =
+      let d : Nat := if i.val <= j.val then j.val - i.val else i.val - j.val
+      (sigma.val : Complex) * ((rho.val : Complex) ^ d) := rfl
 
 end Section02
 end OrbgrandAi

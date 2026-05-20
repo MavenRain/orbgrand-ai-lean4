@@ -128,11 +128,31 @@ opaque ar2LeastSquaresFit (z : Fin 6 -> Complex) : Complex × Complex
     `b = 4` ORBGRAND-AI decoder's BLER is within fractions of a dB
     of perfect-CSI ORBGRAND-AI (paper, Fig. 12).
 
-    *Placeholder shape.* -/
+    *Placeholder shape.*  The claim quantifies over the per-pulse
+    impulse response `z : Fin 6 -> Complex`: for each pulse, the
+    fitted AR(2) coefficients reproduce the matched-filter output
+    to within `delta` per coefficient.  `delta` is small in the
+    sense that the per-coefficient error norm is bounded by a
+    finite constant strictly less than the diagonal entry magnitude
+    of `h_RFV`.  Captured here as `(P -> Q) -> True` to keep the
+    structure of the implication explicit; the concrete bound
+    requires bound propagation through `ar2LeastSquaresFit`, which
+    is currently `opaque`. -/
 theorem ar2_approximation_error_statement
     (n_s : Nat) (rowTaps : Fin n_s -> RFViewTaps) :
-    (exists (delta : Real),
-        0 <= delta /\ delta < 1) -> True := by
+    (forall (z : Fin 6 -> Complex),
+        exists (delta : Real),
+          0 <= delta /\ delta < 1 /\
+          forall (j' : Fin 6),
+            -- The intended bound: AR(2) reconstruction squared
+            -- error per pulse position is bounded by `delta^2`.
+            -- Using `normSq` rather than `‖·‖` to stay in
+            -- `Mathlib.Data.Complex.Basic` (no `Analysis.Normed`
+            -- import needed).
+            let (phi1, phi2) := ar2LeastSquaresFit z
+            Complex.normSq (z j' -
+              ar2 phi1 phi2 (z (0 : Fin 6)) (z (1 : Fin 6)) j'.val)
+              <= delta * delta) -> True := by
   kan_intro _h
   kan_constructor
 

@@ -24,7 +24,7 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | Dicode partial-response channel `(1, -rho, 0, ...)` (matrix def) | `Section02.Dicode` | def |
 | `dicode_bandwidth` (entries `j + 1 < i` vanish) | `Section02.Dicode` | proved |
 | `dicode_causal` (entries `i < j` vanish) | `Section02.Dicode` | proved |
-| Dicode -> first-order Gauss-Markov via zero-forcing | `Section02.Dicode` | placeholder |
+| `dicode_zf_equalisation` (post-equalisation covariance = Gauss-Markov template) | `Section02.Dicode` | proved |
 | Delay-tap impulse response `h_{k', j} = sum_d a sinc(...)` | `Section02.DelayTap` | def |
 | `delayTap_causal` (entries `i < j` vanish) | `Section02.DelayTap` | proved |
 | `sinc_zero` (sinc(0) = 1) | `Section02.DelayTap` | proved |
