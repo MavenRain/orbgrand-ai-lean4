@@ -76,6 +76,43 @@ def perturbChannel
     (epsilon : Matrix (Fin n_s) (Fin n_s) Complex) : ChannelMatrix n_s :=
   fun i j => h i j * (1 + epsilon i j)
 
+/-! ### Structural properties of `perturbChannel` -/
+
+/-- *Zero perturbation is the identity.*  Setting the error matrix to
+    zero leaves the channel unchanged.  `add_zero` collapses `1 + 0`
+    to `1`, then `mul_one` finishes. -/
+theorem perturbChannel_zero
+    {n_s : Nat} (h : ChannelMatrix n_s) :
+    perturbChannel h 0 = h :=
+  funext fun i => funext fun j =>
+    (congrArg (h i j * ·) (add_zero (1 : Complex))).trans (mul_one (h i j))
+
+/-- *Causality preservation.*  Multiplicative-additive perturbation
+    preserves the causality predicate: if `h i j = 0` for `i < j`, then
+    `(perturbChannel h epsilon) i j = 0` for the same indices.  The
+    causality predicate is closed under perturbation. -/
+theorem perturbChannel_causal_of_causal
+    {n_s : Nat} {h : ChannelMatrix n_s}
+    {epsilon : Matrix (Fin n_s) (Fin n_s) Complex}
+    (hcausal : forall (i j : Fin n_s), i.val < j.val -> h i j = 0) :
+    forall (i j : Fin n_s),
+      i.val < j.val -> perturbChannel h epsilon i j = 0 :=
+  fun i j hij =>
+    (congrArg (· * (1 + epsilon i j)) (hcausal i j hij)).trans (zero_mul _)
+
+/-- *Bandwidth preservation.*  Multiplicative-additive perturbation
+    preserves the bandwidth predicate as well: if `h i j = 0`
+    whenever `j + b < i`, then so does the perturbed channel. -/
+theorem perturbChannel_bandwidth_of_bandwidth
+    {n_s : Nat} {h : ChannelMatrix n_s}
+    {epsilon : Matrix (Fin n_s) (Fin n_s) Complex}
+    {b : Nat}
+    (hb : forall (i j : Fin n_s), j.val + b < i.val -> h i j = 0) :
+    forall (i j : Fin n_s),
+      j.val + b < i.val -> perturbChannel h epsilon i j = 0 :=
+  fun i j hij =>
+    (congrArg (· * (1 + epsilon i j)) (hb i j hij)).trans (zero_mul _)
+
 /-! ## Imperfect-CSI claim (placeholder) -/
 
 /-- *Error-floor under imperfect equalisation.*
