@@ -101,5 +101,31 @@ def LinearIsi.bandwidth
     {n_s : Nat} (ch : LinearIsi n_s) (b : Nat) : Prop :=
   forall (i j : Fin n_s), j.val + b < i.val -> ch.channel i j = 0
 
+/-! ## Structural properties of the receiver -/
+
+/-- *Identity-channel receive law.*  When the channel matrix is the
+    identity, the receiver model degenerates to `Y = X + N`. -/
+theorem LinearIsi.receive_one
+    {n_s : Nat} (X N : SymbolVector n_s) (noiseCov : CovMatrix n_s) :
+    LinearIsi.receive { channel := 1, noiseCov := noiseCov } X N
+      = fun k => X k + N k :=
+  funext fun k => congrArg (· + N k) (congrFun (Matrix.one_mulVec X) k)
+
+/-- *The zero channel is causal.*  Every entry is zero, so the
+    causality clause holds vacuously. -/
+theorem LinearIsi.zero_causal
+    {n_s : Nat} (noiseCov : CovMatrix n_s) :
+    ({ channel := 0, noiseCov := noiseCov } : LinearIsi n_s).causal :=
+  fun _ _ _ => rfl
+
+/-- *The identity channel is causal.*  Off-diagonal entries of the
+    identity matrix are zero, and a strict `Fin`-index inequality
+    `i.val < j.val` forces `i ≠ j`. -/
+theorem LinearIsi.one_causal
+    {n_s : Nat} (noiseCov : CovMatrix n_s) :
+    ({ channel := 1, noiseCov := noiseCov } : LinearIsi n_s).causal :=
+  fun _ _ h_lt =>
+    Matrix.one_apply_ne (fun heq => Nat.ne_of_lt h_lt (congrArg Fin.val heq))
+
 end Section02
 end OrbgrandAi

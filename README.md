@@ -21,6 +21,8 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | Item | Module | Status |
 |------|--------|--------|
 | Linear ISI channel `Y = h * X + N`, causality, bandwidth predicates | `Section02.LinearIsi` | defs |
+| `LinearIsi.receive_one` (identity channel: `receive X N = X + N`) | `Section02.LinearIsi` | proved |
+| `LinearIsi.zero_causal`, `LinearIsi.one_causal` (boundary causality) | `Section02.LinearIsi` | proved (2) |
 | Dicode partial-response channel `(1, -rho, 0, ...)` (matrix def) | `Section02.Dicode` | def |
 | `dicode_bandwidth` (entries `j + 1 < i` vanish) | `Section02.Dicode` | proved |
 | `dicode_causal` (entries `i < j` vanish) | `Section02.Dicode` | proved |
