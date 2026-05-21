@@ -306,5 +306,43 @@ theorem orbgrandAi_zero_budget
       Y Phi ⟨0⟩ patterns = none :=
   orbgrandAiLoop_zero_steps Y Phi patterns
 
+/-- *Vacuous codebook.*  If the membership oracle rejects every
+    codeword (`Phi = fun _ => false`), then the loop never accepts and
+    always returns `none`.  Structural recursion on (steps, patterns)
+    with a case split on `noSubstitutionConflict e` and the
+    definitional reduction `(fun _ => false) c = false` on the inner
+    branch. -/
+theorem orbgrandAiLoop_empty_codebook
+    {n_s b numCandidates : Nat} :
+    forall (Y : Codeword n_s) (steps : Nat)
+      (patterns : List (Fin (n_s / b) -> Fin numCandidates)),
+      orbgrandAiLoop Y (fun _ => false) steps patterns = none
+  | _, 0,     []        => rfl
+  | _, _ + 1, []        => rfl
+  | _, 0,     _ :: _    => rfl
+  | Y, m + 1, e :: rest =>
+      let ih : orbgrandAiLoop Y (fun _ => false) m rest = none :=
+        orbgrandAiLoop_empty_codebook Y m rest
+      if hnc : noSubstitutionConflict e then
+        let then_branch_eq_none :
+            (if (fun _ : Codeword n_s => false) (substitute Y e)
+              then some (substitute Y e)
+              else orbgrandAiLoop Y (fun _ => false) m rest)
+            = none := ih
+        (dif_pos hnc).trans then_branch_eq_none
+      else
+        (dif_neg hnc).trans ih
+
+/-- *Vacuous codebook at the top level.*  Wrapper of
+    `orbgrandAiLoop_empty_codebook` for the public `orbgrandAi` entry
+    point. -/
+theorem orbgrandAi_empty_codebook
+    {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (budget : AbandonmentBudget)
+    (patterns : List (Fin (n_s / b) -> Fin numCandidates)) :
+    orbgrandAi (b := b) (numCandidates := numCandidates)
+      Y (fun _ => false) budget patterns = none :=
+  orbgrandAiLoop_empty_codebook Y budget.toNat patterns
+
 end Section04
 end OrbgrandAi
