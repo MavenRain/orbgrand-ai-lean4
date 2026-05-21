@@ -191,6 +191,22 @@ theorem grandFind_syndromeZero
     forall (i : Fin (n - k)), H.matrix.mulVec c i = 0 :=
   grandFind_zero_syndrome H Y order c hfind
 
+/-- *Full soundness specification of `grandFind`.*  If `grandFind`
+    returns `some c`, then `c` simultaneously
+    (1) has zero syndrome (it is a codeword), and
+    (2) is `Y xor Ng` for some candidate `Ng` from the input list.
+    The conjunction captures the no-hallucination property: GRAND's
+    output is always one of the proposed candidates, and that
+    candidate is always a valid codeword. -/
+theorem grandFind_sound
+    {n k : Nat} (H : ParityCheck n k) (Y : Codeword n)
+    (order : List (Codeword n)) (c : Codeword n)
+    (hfind : grandFind H Y order = some c) :
+    (forall (i : Fin (n - k)), H.matrix.mulVec c i = 0)
+    /\ (exists Ng, Ng ∈ order /\ c = Codeword.xor Y Ng) :=
+  ⟨grandFind_zero_syndrome H Y order c hfind,
+   grandFind_returns_xor H Y order c hfind⟩
+
 /-! ## ML-optimality of GRAND -/
 
 /-! ### `Codeword.xor` algebra (pointwise lifts of ZMod 2 arithmetic) -/

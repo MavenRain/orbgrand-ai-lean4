@@ -188,4 +188,26 @@ example (rho1 rho2 : CorrelationCoefficient)
     rho1.val < 1 :=
   yuleWalker_rho1_lt_one rho1 rho2 h
 
+/-- Full soundness specification of GRAND: zero syndrome AND a candidate
+    from the input list. -/
+example {n k : Nat} (H : ParityCheck n k) (Y : Codeword n)
+    (order : List (Codeword n)) (c : Codeword n)
+    (hfind : grandFind H Y order = some c) :
+    (forall (i : Fin (n - k)), H.matrix.mulVec c i = 0)
+    /\ (exists Ng, Ng ∈ order /\ c = Codeword.xor Y Ng) :=
+  grandFind_sound H Y order c hfind
+
+/-- Full soundness specification of ORBGRAND-AI: codebook acceptance AND
+    a substitution of the input. -/
+example {n_s b numCandidates : Nat}
+    (Y : Codeword n_s)
+    (Phi : CodebookMembership n_s)
+    (budget : AbandonmentBudget)
+    (patterns : List (Fin (n_s / b) -> Fin numCandidates))
+    (c : Codeword n_s)
+    (h : orbgrandAi (b := b) (numCandidates := numCandidates)
+        Y Phi budget patterns = some c) :
+    Phi c = true /\ (exists e, e ∈ patterns /\ c = substitute Y e) :=
+  orbgrandAi_sound Y Phi budget patterns c h
+
 end OrbgrandAi.Examples.SmokeTest

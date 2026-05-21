@@ -66,6 +66,7 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | `grandFind_zero_syndrome` (decoder output has zero syndrome) | `Section04.Grand` | proved |
 | `grandFind_returns_xor` (output = `Codeword.xor Y Ng` for some `Ng ∈ order`) | `Section04.Grand` | proved |
 | `grandFind_zero_first` (Y a codeword + 0 first in order => GRAND returns Y) | `Section04.Grand` | proved |
+| `grandFind_sound` (zero syndrome AND candidate-from-input, full GRAND spec) | `Section04.Grand` | proved |
 | `grandFind_syndromeZero` (alias on syndromeZero) | `Section04.Grand` | proved |
 | `grand_ml_optimal` (ML-optimality under decreasing-likelihood order) | `Section04.Grand` | proved |
 | ORBGRAND landslide enumeration | `Section04.Orbgrand` | def (opaque enum) |
@@ -79,6 +80,7 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | `orbgrandAi_empty_codebook` (top-level vacuous-codebook wrapper) | `Section04.OrbgrandAi` | proved |
 | `orbgrandAiLoop_returns_substituted` (output = substitute Y e for some pattern e) | `Section04.OrbgrandAi` | proved |
 | `orbgrandAi_returns_substituted` (top-level substitution-provenance) | `Section04.OrbgrandAi` | proved |
+| `orbgrandAi_sound` (codebook acceptance AND substitution-provenance, full spec) | `Section04.OrbgrandAi` | proved |
 | Approximate-independence block factorisation | `Section04.OrbgrandAi` | def |
 | AR(2) least-squares coefficient fit | `Section06.Ar2Approximation` | def (opaque fit) |
 | `ar2_zero`, `ar2_one`, `ar2_succ_succ` base cases | `Section06.Ar2Approximation` | proved (3 rfl) |

@@ -405,5 +405,25 @@ theorem orbgrandAi_returns_substituted
     exists e, e ∈ patterns /\ c = substitute Y e :=
   orbgrandAiLoop_returns_substituted Y Phi c budget.toNat patterns h
 
+/-- *Full soundness specification of `orbgrandAi`.*  If `orbgrandAi`
+    returns `some c`, then `c` simultaneously
+    (1) is accepted by the membership oracle `Phi`, and
+    (2) is `substitute Y e` for some pattern `e` from the input list.
+    The conjunction captures the no-hallucination property: every
+    accepted output traces back to a specific candidate substitution
+    of the received vector, and the codebook signs off on it. -/
+theorem orbgrandAi_sound
+    {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s)
+    (budget : AbandonmentBudget)
+    (patterns : List (Fin (n_s / b) -> Fin numCandidates))
+    (c : Codeword n_s)
+    (h : orbgrandAi (b := b) (numCandidates := numCandidates)
+        Y Phi budget patterns = some c) :
+    Phi c = true
+    /\ (exists e, e ∈ patterns /\ c = substitute Y e) :=
+  ⟨orbgrandAi_accept_sound Y Phi budget patterns c h,
+   orbgrandAi_returns_substituted Y Phi budget patterns c h⟩
+
 end Section04
 end OrbgrandAi
