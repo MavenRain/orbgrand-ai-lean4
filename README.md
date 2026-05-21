@@ -25,6 +25,8 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | `dicode_bandwidth` (entries `j + 1 < i` vanish) | `Section02.Dicode` | proved |
 | `dicode_causal` (entries `i < j` vanish) | `Section02.Dicode` | proved |
 | `dicode_zf_equalisation` (post-equalisation covariance = Gauss-Markov template) | `Section02.Dicode` | proved |
+| `gaussMarkovCov_diag` (general `n_s`: `M i i = sigma`) | `Section02.Dicode` | proved |
+| `gaussMarkovCov_entry_of_le`, `_of_ge` (general off-diagonal) | `Section02.Dicode` | proved (2) |
 | `gaussMarkovCov_two_00`, `_01`, `_10`, `_11` (2x2 entry lemmas) | `Section02.Dicode` | proved (4) |
 | `cov1_det_fin_two` (2x2 first-order Gauss-Markov det, unfolded form) | `Section02.Dicode` | proved |
 | `cov1_det_fin_two_factored` (`= sigma^2 * (1 - rho^2)`) | `Section02.Dicode` | proved |
@@ -88,6 +90,21 @@ Subsequent builds are incremental.
 
 A successful `lake build` with no errors and no `sorry` warnings
 confirms that all proofs type-check.
+
+### Smoke test
+
+The `OrbgrandAi.Examples.SmokeTest` module exercises every major
+public theorem via short `example` declarations.  It is *not* part
+of the default `lake build` target so that downstream projects
+depending on `OrbgrandAi` do not pay the compile cost.  Run it
+explicitly with:
+
+```sh
+lake build OrbgrandAiExamples
+```
+
+If any `example` fails to type-check, the corresponding theorem's
+public API has changed and downstream uses will break.
 
 ### Documentation
 

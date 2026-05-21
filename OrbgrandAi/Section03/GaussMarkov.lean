@@ -132,60 +132,74 @@ def yuleWalker_rho1_sq_bound
     (rho1 rho2 : CorrelationCoefficient) : Prop :=
   rho1.val ^ 2 < (rho2.val + 1) / 2
 
+/-- *Strict positivity of the variance-bound denominator.*
+
+    From `yuleWalker_variance_bound rho1 rho2` (i.e., the fraction
+    `numerator / (1 - rho1^2)` is in `(0, 1)`), the denominator
+    `1 - rho1^2` is strictly positive.
+
+    Proof: from the type, `rho1.val^2 ≤ 1`, hence `0 ≤ 1 - rho1^2`.
+    If `1 - rho1^2 = 0`, then `lhs = numerator / 0 = 0` via
+    `div_zero`, contradicting `0 < lhs`.  Conclude
+    `0 < 1 - rho1^2` via `lt_of_le_of_ne`.  This is the first
+    sub-lemma of `yuleWalker_implies_rho1_sq_bound`. -/
+theorem yuleWalker_denom_pos
+    (rho1 rho2 : CorrelationCoefficient)
+    (h : yuleWalker_variance_bound rho1 rho2) :
+    0 < 1 - rho1.val ^ 2 :=
+  let h_pos : 0 < (rho1.val ^ 2 + rho2.val ^ 2 - 2 * rho1.val ^ 2 * rho2.val)
+        / (1 - rho1.val ^ 2) := h.1
+  let h_rho1_sq_le_one : rho1.val ^ 2 ≤ 1 :=
+    pow_le_one₀ rho1.nonneg rho1.le_one
+  let h_nn : (0 : Real) ≤ 1 - rho1.val ^ 2 := sub_nonneg.mpr h_rho1_sq_le_one
+  let h_ne : (1 - rho1.val ^ 2) ≠ 0 := fun h_eq =>
+    let h_lhs_eq_zero :
+        (rho1.val ^ 2 + rho2.val ^ 2 - 2 * rho1.val ^ 2 * rho2.val)
+          / (1 - rho1.val ^ 2) = 0 :=
+      h_eq.symm ▸ div_zero
+        (rho1.val ^ 2 + rho2.val ^ 2 - 2 * rho1.val ^ 2 * rho2.val)
+    absurd (h_lhs_eq_zero ▸ h_pos) (lt_irrefl 0)
+  lt_of_le_of_ne h_nn (Ne.symm h_ne)
+
+/-- *Clearing the denominator of the variance bound.*
+
+    From `yuleWalker_variance_bound rho1 rho2` (with denominator
+    positive via `yuleWalker_denom_pos`), the upper bound
+    `lhs < 1` becomes `numerator < (1 - rho1^2)`.  Direct application
+    of `div_lt_one (denom_pos)` to `h.2`. -/
+theorem yuleWalker_num_lt_denom
+    (rho1 rho2 : CorrelationCoefficient)
+    (h : yuleWalker_variance_bound rho1 rho2) :
+    rho1.val ^ 2 + rho2.val ^ 2 - 2 * rho1.val ^ 2 * rho2.val
+      < 1 - rho1.val ^ 2 :=
+  (div_lt_one (yuleWalker_denom_pos rho1 rho2 h)).mp h.2
+
 /-- The Yule-Walker bound implies the `rho_1^2 < (rho_2 + 1) / 2`
     consequence.
 
-    *Placeholder shape.*  The intended theorem is the implication
+    Proof structure (~100 lines, all term-mode `.trans` chains
+    threading through Mathlib's algebra lemmas because kan-tactics'
+    `kan_rw` cannot elaborate polymorphic theorems without explicit
+    type arguments):
 
-      `yuleWalker_variance_bound rho1 rho2`
-        `-> yuleWalker_rho1_sq_bound rho1 rho2`,
+    1. *Strictness of the denominator.*  Take `D := 1 - rho1^2`.
+       From the type, `0 ≤ rho1.val ≤ 1`, hence `rho1^2 ≤ 1`, hence
+       `0 ≤ D`.  From `0 < lhs = N/D` (h_pos): if `D = 0` then
+       `lhs = N/0 = 0` (Real convention), contradicting `0 < 0`.
+       Combine via `lt_of_le_of_ne` to get `0 < D`.
+    2. *Clear denominator.*  `lhs < 1` and `0 < D` give `N < D`
+       (`div_lt_one`).
+    3. *Factor.*  `N - D = (1 - rho2) * (2*rho1^2 - rho2 - 1)`.
+       Verify by expansion.  So `(1 - rho2) * (2*rho1^2 - rho2 - 1) < 0`.
+    4. *Case split on rho2 = 1.*  If `rho2.val = 1`, `N = 1 - rho1^2 = D`
+       so `lhs = 1`, contradicting `h_lt`.  If `rho2.val < 1`,
+       `1 - rho2 > 0` so `2*rho1^2 - rho2 - 1 < 0`, i.e.,
+       `rho1^2 < (rho2 + 1) / 2`.
 
-    captured here as `(P -> Q) -> True` (rather than `P -> Q -> True`
-    which would be trivial) so the placeholder records the *shape*
-    we want, not just `True` for any antecedents.
-
-    Proof outline (scheduled follow-up, ~80-100 lines of pure
-    kan-tactics + Mathlib-lemma term mode):
-
-    1. *Strictness of the denominator.*  From `0 < lhs` (h_pos)
-       and `lhs = numerator / (1 - rho1.val^2)`, deduce
-       `1 - rho1.val^2 > 0`.  Steps:
-         a. `0 <= rho1.val^2 <= 1` (from `CorrelationCoefficient`
-            bounds via `pow_le_one`).
-         b. `1 - rho1.val^2 >= 0`.
-         c. If `1 - rho1.val^2 = 0` then `lhs = numerator / 0 = 0`
-            via `Real.div_zero`, contradicting `0 < lhs`.
-         d. Conclude `1 - rho1.val^2 > 0` via `lt_of_le_of_ne`.
-
-    2. *Clear denominator.*  From `h_lt : lhs < 1` and step 1,
-       `(div_lt_one h_denom_pos).mp h_lt` gives
-         `rho1.val^2 + rho2.val^2 - 2 * rho1.val^2 * rho2.val
-            < 1 - rho1.val^2`.
-
-    3. *Algebraic rearrangement.*  Add `rho1.val^2`, subtract `1`:
-         `2 * rho1.val^2 + rho2.val^2 - 2 * rho1.val^2 * rho2.val
-            - 1 < 0`.
-       Factor LHS as
-         `(1 - rho2.val) * (2 * rho1.val^2 - rho2.val - 1)`.
-       The algebraic identity
-         `(1 - x) * (2 * y - x - 1)
-            = 2 * y - 2 * y * x + x^2 - 1`
-       holds for any `x, y` (verify by `ring`), so
-         `(1 - rho2.val) * (2 * rho1.val^2 - rho2.val - 1)
-            = 2 * rho1.val^2 - 2 * rho1.val^2 * rho2.val + rho2.val^2 - 1`,
-       which matches step 3's LHS.
-
-    4. *Case split on `rho2.val = 1`.*
-         a. If `rho2.val = 1`: the numerator collapses to
-            `rho1.val^2 + 1 - 2 * rho1.val^2 = 1 - rho1.val^2`,
-            so `lhs = (1 - rho1.val^2) / (1 - rho1.val^2) = 1`,
-            contradicting `h_lt : lhs < 1`.
-         b. If `rho2.val < 1`: `1 - rho2.val > 0`, so the product
-            `(1 - rho2.val) * (2 * rho1.val^2 - rho2.val - 1) < 0`
-            forces `2 * rho1.val^2 - rho2.val - 1 < 0` (via
-            `pos_of_mul_neg_div_lt` or `lt_of_mul_pos_neg`), i.e.,
-            `2 * rho1.val^2 < rho2.val + 1`, i.e.,
-            `rho1.val^2 < (rho2.val + 1) / 2`. -/
+    Currently captured as a placeholder pending the algebraic
+    chain; the proof sketch above is faithful and self-contained.
+    Full proof scheduled for the same iteration that tackles
+    `cov2_det_pos_under_yule_walker_statement` (which depends on it). -/
 theorem yuleWalker_implies_rho1_sq_bound_statement
     (rho1 rho2 : CorrelationCoefficient) :
     (yuleWalker_variance_bound rho1 rho2 ->

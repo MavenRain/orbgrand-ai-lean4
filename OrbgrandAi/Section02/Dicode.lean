@@ -174,6 +174,74 @@ theorem dicode_zf_equalisation
       let d : Nat := if i.val <= j.val then j.val - i.val else i.val - j.val
       (sigma.val : Complex) * ((rho.val : Complex) ^ d) := rfl
 
+/-! ## General entry lemmas for `gaussMarkovCov` -/
+
+/-- *Diagonal entry of the `n_s x n_s` Gauss-Markov auto-covariance.*
+
+    At `(i, i)` both branches of the `if i.val ≤ j.val` condition
+    evaluate to `i.val - i.val = 0`, so the entry is
+    `sigma * rho^0 = sigma * 1 = sigma`.  Proof uses `ite_self` to
+    collapse the `if` and then `Nat.sub_self`, `pow_zero`, `mul_one`. -/
+theorem gaussMarkovCov_diag
+    {n_s : Nat} (sigma : NoisePower) (rho : CorrelationCoefficient)
+    (i : Fin n_s) :
+    (gaussMarkovCov n_s sigma rho) i i = (sigma.val : Complex) :=
+  let h_unfold : (gaussMarkovCov n_s sigma rho) i i
+      = (sigma.val : Complex)
+        * ((rho.val : Complex)
+          ^ (if i.val <= i.val then i.val - i.val else i.val - i.val)) :=
+    rfl
+  let h_ite_self : (if i.val <= i.val then i.val - i.val else i.val - i.val)
+      = i.val - i.val := ite_self _
+  let h_sub_self : i.val - i.val = 0 := Nat.sub_self i.val
+  let h_d_eq_zero : (if i.val <= i.val then i.val - i.val else i.val - i.val) = 0 :=
+    h_ite_self.trans h_sub_self
+  let h_pow_eq_one : (rho.val : Complex)
+      ^ (if i.val <= i.val then i.val - i.val else i.val - i.val) = 1 :=
+    h_d_eq_zero ▸ pow_zero (rho.val : Complex)
+  let h_final : (sigma.val : Complex)
+      * ((rho.val : Complex)
+        ^ (if i.val <= i.val then i.val - i.val else i.val - i.val))
+      = (sigma.val : Complex) :=
+    h_pow_eq_one ▸ mul_one (sigma.val : Complex)
+  h_unfold.trans h_final
+
+/-- *Off-diagonal entry of the `n_s x n_s` Gauss-Markov auto-covariance
+    when `i.val ≤ j.val`.*  The `if` takes the `then` branch and the
+    entry simplifies to `sigma * rho^(j.val - i.val)`. -/
+theorem gaussMarkovCov_entry_of_le
+    {n_s : Nat} (sigma : NoisePower) (rho : CorrelationCoefficient)
+    (i j : Fin n_s) (h : i.val <= j.val) :
+    (gaussMarkovCov n_s sigma rho) i j
+      = (sigma.val : Complex) * (rho.val : Complex) ^ (j.val - i.val) :=
+  let h_unfold : (gaussMarkovCov n_s sigma rho) i j
+      = (sigma.val : Complex)
+        * ((rho.val : Complex)
+          ^ (if i.val <= j.val then j.val - i.val else i.val - j.val)) :=
+    rfl
+  let h_ite : (if i.val <= j.val then j.val - i.val else i.val - j.val)
+      = j.val - i.val := if_pos h
+  h_unfold.trans
+    (congrArg (fun d => (sigma.val : Complex) * (rho.val : Complex) ^ d) h_ite)
+
+/-- *Off-diagonal entry of the `n_s x n_s` Gauss-Markov auto-covariance
+    when `j.val ≤ i.val`.*  The `if` takes the `else` branch and the
+    entry simplifies to `sigma * rho^(i.val - j.val)`. -/
+theorem gaussMarkovCov_entry_of_ge
+    {n_s : Nat} (sigma : NoisePower) (rho : CorrelationCoefficient)
+    (i j : Fin n_s) (h : j.val < i.val) :
+    (gaussMarkovCov n_s sigma rho) i j
+      = (sigma.val : Complex) * (rho.val : Complex) ^ (i.val - j.val) :=
+  let h_unfold : (gaussMarkovCov n_s sigma rho) i j
+      = (sigma.val : Complex)
+        * ((rho.val : Complex)
+          ^ (if i.val <= j.val then j.val - i.val else i.val - j.val)) :=
+    rfl
+  let h_ite : (if i.val <= j.val then j.val - i.val else i.val - j.val)
+      = i.val - j.val := if_neg (Nat.not_le_of_lt h)
+  h_unfold.trans
+    (congrArg (fun d => (sigma.val : Complex) * (rho.val : Complex) ^ d) h_ite)
+
 /-! ## Closed-form determinant for `n_s = 2` -/
 
 /-- *Diagonal entry `(0, 0)` of the 2x2 Gauss-Markov auto-covariance.*

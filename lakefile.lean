@@ -21,6 +21,14 @@ package OrbgrandAi where
 @[default_target]
 lean_lib OrbgrandAi where
   srcDir := "."
+  roots := #[`OrbgrandAi]
+
+/-- Examples / smoke-test sub-library, separated so that consumers of
+    `OrbgrandAi` do not pay the compile cost of the demonstration
+    code.  Build with `lake build OrbgrandAiExamples`. -/
+lean_lib OrbgrandAiExamples where
+  srcDir := "."
+  roots := #[`OrbgrandAi.Examples.SmokeTest]
 
 require «kan-tactics» from ".." / "kan-tactics"
 
