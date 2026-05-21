@@ -310,6 +310,22 @@ theorem Codeword.xor_eq_zero_of_eq {n : Nat} {a b : Codeword n}
     (h : a = b) : Codeword.xor a b = 0 :=
   (Codeword.eq_iff_xor_eq_zero a b).mp h
 
+/-- *Zero-noise short-circuit.*  If `Y` is already a codeword (zero
+    syndrome) and the zero-noise candidate is the head of the
+    candidate list, `grandFind` returns `Y` immediately.  Composes the
+    if-pos branch with `Codeword.xor_zero` to identify `Y xor 0` with
+    `Y`. -/
+theorem grandFind_zero_first
+    {n k : Nat} (H : ParityCheck n k) (Y : Codeword n)
+    (rest : List (Codeword n))
+    (h_cw : forall (i : Fin (n - k)), H.matrix.mulVec Y i = 0) :
+    grandFind H Y (0 :: rest) = some Y :=
+  let xz : Codeword.xor Y 0 = Y := Codeword.xor_zero Y
+  let hp : forall (i : Fin (n - k)),
+      H.matrix.mulVec (Codeword.xor Y 0) i = 0 :=
+    fun i => xz.symm ▸ h_cw i
+  (dif_pos hp).trans (congrArg some xz)
+
 /-- *ML-optimality of GRAND* (paper, IV.A).
 
     When the noise-guess list `order` is sorted in non-increasing

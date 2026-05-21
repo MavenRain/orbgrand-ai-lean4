@@ -133,4 +133,59 @@ example {n_s b numCandidates : Nat}
     Phi c = true :=
   orbgrandAi_accept_sound Y Phi budget patterns c h
 
+/-- ORBGRAND-AI output is a substitution of the received vector. -/
+example {n_s b numCandidates : Nat}
+    (Y : Codeword n_s)
+    (Phi : CodebookMembership n_s)
+    (budget : AbandonmentBudget)
+    (patterns : List (Fin (n_s / b) -> Fin numCandidates))
+    (c : Codeword n_s)
+    (h : orbgrandAi (b := b) (numCandidates := numCandidates)
+        Y Phi budget patterns = some c) :
+    exists e, e ∈ patterns /\ c = substitute Y e :=
+  orbgrandAi_returns_substituted Y Phi budget patterns c h
+
+/-- ORBGRAND-AI with a vacuous codebook never accepts. -/
+example {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (budget : AbandonmentBudget)
+    (patterns : List (Fin (n_s / b) -> Fin numCandidates)) :
+    orbgrandAi (b := b) (numCandidates := numCandidates)
+      Y (fun _ => false) budget patterns = none :=
+  orbgrandAi_empty_codebook Y budget patterns
+
+/-- GRAND output equals `Y xor Ng` for some `Ng` from the candidate list. -/
+example {n k : Nat} (H : ParityCheck n k) (Y : Codeword n)
+    (order : List (Codeword n)) (c : Codeword n)
+    (hfind : grandFind H Y order = some c) :
+    exists Ng, Ng ∈ order /\ c = Codeword.xor Y Ng :=
+  grandFind_returns_xor H Y order c hfind
+
+/-- GRAND short-circuits on the zero-noise candidate when `Y` is a codeword. -/
+example {n k : Nat} (H : ParityCheck n k) (Y : Codeword n)
+    (rest : List (Codeword n))
+    (h_cw : forall (i : Fin (n - k)), H.matrix.mulVec Y i = 0) :
+    grandFind H Y (0 :: rest) = some Y :=
+  grandFind_zero_first H Y rest h_cw
+
+/-- Identity channel receive law: `receive X N = X + N`. -/
+example {n_s : Nat} (X N : SymbolVector n_s) (noiseCov : CovMatrix n_s) :
+    LinearIsi.receive { channel := 1, noiseCov := noiseCov } X N
+      = fun k => X k + N k :=
+  LinearIsi.receive_one X N noiseCov
+
+/-- ORBGRAND ordering soundness: lower logistic weight => earlier bucket. -/
+example {n : Nat} (pi : ReliabilityRank n) (e1 e2 : Fin n -> Bool)
+    (h : logisticWeight pi e1 < logisticWeight pi e2) :
+    exists (i j : Nat),
+      i < j /\
+      landslideBucket pi i e1 /\
+      landslideBucket pi j e2 :=
+  orbgrand_ordering_sound pi e1 e2 h
+
+/-- Yule-Walker variance bound forces `rho_1 < 1`. -/
+example (rho1 rho2 : CorrelationCoefficient)
+    (h : yuleWalker_variance_bound rho1 rho2) :
+    rho1.val < 1 :=
+  yuleWalker_rho1_lt_one rho1 rho2 h
+
 end OrbgrandAi.Examples.SmokeTest

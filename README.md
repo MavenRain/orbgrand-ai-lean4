@@ -65,6 +65,7 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | `grandFind_nil` (empty list returns none) | `Section04.Grand` | proved |
 | `grandFind_zero_syndrome` (decoder output has zero syndrome) | `Section04.Grand` | proved |
 | `grandFind_returns_xor` (output = `Codeword.xor Y Ng` for some `Ng ∈ order`) | `Section04.Grand` | proved |
+| `grandFind_zero_first` (Y a codeword + 0 first in order => GRAND returns Y) | `Section04.Grand` | proved |
 | `grandFind_syndromeZero` (alias on syndromeZero) | `Section04.Grand` | proved |
 | `grand_ml_optimal` (ML-optimality under decreasing-likelihood order) | `Section04.Grand` | proved |
 | ORBGRAND landslide enumeration | `Section04.Orbgrand` | def (opaque enum) |
