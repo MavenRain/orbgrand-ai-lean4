@@ -183,19 +183,61 @@ theorem Codeword.xor_assoc {n : Nat} (a b c : Codeword n) :
 
 /-- XOR involution: `Y xor (Y xor Ng) = Ng` in `ZMod 2`.
 
-    Derivable from the algebra above (`xor_assoc.symm.trans (congrArg ... xor_self).trans zero_xor`),
-    but kept inline because the `grand_ml_optimal` proof predates the
-    algebra batch. -/
-private theorem Codeword.xor_xor_self {n : Nat} (Y Ng : Codeword n) :
+    Derived from the algebra: `Y xor (Y xor Ng) = (Y xor Y) xor Ng
+    = 0 xor Ng = Ng`. -/
+theorem Codeword.xor_xor_self {n : Nat} (Y Ng : Codeword n) :
     Codeword.xor Y (Codeword.xor Y Ng) = Ng :=
-  funext fun i =>
-    -- Pointwise: `Y i + (Y i + Ng i) = (Y i + Y i) + Ng i = 0 + Ng i = Ng i`.
-    let h1 : Y i + (Y i + Ng i) = (Y i + Y i) + Ng i :=
-      (add_assoc (Y i) (Y i) (Ng i)).symm
-    let h2 : (Y i + Y i) + Ng i = (0 : ZMod 2) + Ng i :=
-      congrArg (· + Ng i) (CharTwo.add_self_eq_zero (Y i))
-    let h3 : (0 : ZMod 2) + Ng i = Ng i := zero_add (Ng i)
-    h1.trans (h2.trans h3)
+  let h1 : Codeword.xor Y (Codeword.xor Y Ng)
+      = Codeword.xor (Codeword.xor Y Y) Ng :=
+    (Codeword.xor_assoc Y Y Ng).symm
+  let h2 : Codeword.xor (Codeword.xor Y Y) Ng
+      = Codeword.xor 0 Ng :=
+    congrArg (fun z => Codeword.xor z Ng) (Codeword.xor_self Y)
+  let h3 : Codeword.xor 0 Ng = Ng := Codeword.zero_xor Ng
+  h1.trans (h2.trans h3)
+
+/-- `Codeword.xor` is left-cancellable: `a xor b = a xor c → b = c`.
+
+    Apply `Codeword.xor a` to both sides of `a xor b = a xor c`,
+    then collapse via `xor_xor_self`.
+
+    Proof: from `h : a xor b = a xor c`, get
+    `a xor (a xor b) = a xor (a xor c)` by `congrArg`, then both
+    sides simplify to `b` and `c` respectively via the involution. -/
+theorem Codeword.xor_left_cancel {n : Nat} {a b c : Codeword n}
+    (h : Codeword.xor a b = Codeword.xor a c) : b = c :=
+  let h1 : Codeword.xor a (Codeword.xor a b)
+      = Codeword.xor a (Codeword.xor a c) :=
+    congrArg (Codeword.xor a) h
+  let h2 : b = Codeword.xor a (Codeword.xor a b) :=
+    (Codeword.xor_xor_self a b).symm
+  let h3 : Codeword.xor a (Codeword.xor a c) = c :=
+    Codeword.xor_xor_self a c
+  h2.trans (h1.trans h3)
+
+/-- `Codeword.xor` is right-cancellable: `a xor c = b xor c → a = b`.
+
+    Proof: from `h : a xor c = b xor c`, get `a xor (c xor c) = b xor (c xor c)`
+    by `congrArg` and `xor_assoc`, then `c xor c = 0` and `_ xor 0 = _`. -/
+theorem Codeword.xor_right_cancel {n : Nat} {a b c : Codeword n}
+    (h : Codeword.xor a c = Codeword.xor b c) : a = b :=
+  let h1 : Codeword.xor (Codeword.xor a c) c = Codeword.xor (Codeword.xor b c) c :=
+    congrArg (fun z => Codeword.xor z c) h
+  let lhs_eq : Codeword.xor (Codeword.xor a c) c = a :=
+    let step1 : Codeword.xor (Codeword.xor a c) c = Codeword.xor a (Codeword.xor c c) :=
+      Codeword.xor_assoc a c c
+    let step2 : Codeword.xor a (Codeword.xor c c) = Codeword.xor a 0 :=
+      congrArg (Codeword.xor a) (Codeword.xor_self c)
+    let step3 : Codeword.xor a 0 = a := Codeword.xor_zero a
+    step1.trans (step2.trans step3)
+  let rhs_eq : Codeword.xor (Codeword.xor b c) c = b :=
+    let step1 : Codeword.xor (Codeword.xor b c) c = Codeword.xor b (Codeword.xor c c) :=
+      Codeword.xor_assoc b c c
+    let step2 : Codeword.xor b (Codeword.xor c c) = Codeword.xor b 0 :=
+      congrArg (Codeword.xor b) (Codeword.xor_self c)
+    let step3 : Codeword.xor b 0 = b := Codeword.xor_zero b
+    step1.trans (step2.trans step3)
+  lhs_eq.symm.trans (h1.trans rhs_eq)
 
 /-- *ML-optimality of GRAND* (paper, IV.A).
 

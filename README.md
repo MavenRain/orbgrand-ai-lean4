@@ -51,7 +51,8 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | Channel capacity upper bound | `Section03.Capacity` | placeholder |
 | GRAND syndrome and search loop | `Section04.Grand` | def |
 | `Codeword.zero_xor`, `xor_zero`, `xor_self`, `xor_comm`, `xor_assoc` | `Section04.Grand` | proved (5) |
-| `Codeword.xor_xor_self` (XOR involution helper) | `Section04.Grand` | proved |
+| `Codeword.xor_xor_self` (XOR involution; now derived from the algebra) | `Section04.Grand` | proved |
+| `Codeword.xor_left_cancel`, `xor_right_cancel` | `Section04.Grand` | proved (2) |
 | `grandFind_zero_syndrome` (decoder output has zero syndrome) | `Section04.Grand` | proved |
 | `grandFind_syndromeZero` (alias on syndromeZero) | `Section04.Grand` | proved |
 | `grand_ml_optimal` (ML-optimality under decreasing-likelihood order) | `Section04.Grand` | proved |
