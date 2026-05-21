@@ -27,6 +27,7 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | `dicode_zf_equalisation` (post-equalisation covariance = Gauss-Markov template) | `Section02.Dicode` | proved |
 | `gaussMarkovCov_diag` (general `n_s`: `M i i = sigma`) | `Section02.Dicode` | proved |
 | `gaussMarkovCov_entry_of_le`, `_of_ge` (general off-diagonal) | `Section02.Dicode` | proved (2) |
+| `gaussMarkovCov_sym` (matrix is symmetric: `M i j = M j i`) | `Section02.Dicode` | proved |
 | `gaussMarkovCov_two_00`, `_01`, `_10`, `_11` (2x2 entry lemmas) | `Section02.Dicode` | proved (4) |
 | `cov1_det_fin_two` (2x2 first-order Gauss-Markov det, unfolded form) | `Section02.Dicode` | proved |
 | `cov1_det_fin_two_factored` (`= sigma^2 * (1 - rho^2)`) | `Section02.Dicode` | proved |

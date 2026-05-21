@@ -242,6 +242,35 @@ theorem gaussMarkovCov_entry_of_ge
   h_unfold.trans
     (congrArg (fun d => (sigma.val : Complex) * (rho.val : Complex) ^ d) h_ite)
 
+/-- *Symmetry of the Gauss-Markov auto-covariance: `M i j = M j i`.*
+
+    The exponent `|i.val - j.val|` is the same regardless of which
+    index is larger.  Proof by trichotomy on `i.val` vs `j.val`:
+    when `i.val < j.val` the LHS uses `entry_of_le` and the RHS
+    uses `entry_of_ge` (mirror); when `j.val < i.val` the situation
+    flips; when `i.val = j.val` both reduce to `sigma` via `diag`. -/
+theorem gaussMarkovCov_sym
+    {n_s : Nat} (sigma : NoisePower) (rho : CorrelationCoefficient)
+    (i j : Fin n_s) :
+    (gaussMarkovCov n_s sigma rho) i j = (gaussMarkovCov n_s sigma rho) j i :=
+  if h_lt : i.val < j.val then
+    -- i.val < j.val: M i j via _of_le with j - i, M j i via _of_ge with j - i.
+    let lhs := gaussMarkovCov_entry_of_le sigma rho i j (Nat.le_of_lt h_lt)
+    let rhs := gaussMarkovCov_entry_of_ge sigma rho j i h_lt
+    lhs.trans rhs.symm
+  else if h_gt : j.val < i.val then
+    -- j.val < i.val: mirror of above.
+    let lhs := gaussMarkovCov_entry_of_ge sigma rho i j h_gt
+    let rhs := gaussMarkovCov_entry_of_le sigma rho j i (Nat.le_of_lt h_gt)
+    lhs.trans rhs.symm
+  else
+    -- Neither <: trichotomy forces i.val = j.val, hence Fin-eq.
+    let h_le_ij : i.val ≤ j.val := Nat.le_of_not_lt h_gt
+    let h_le_ji : j.val ≤ i.val := Nat.le_of_not_lt h_lt
+    let h_val_eq : i.val = j.val := Nat.le_antisymm h_le_ij h_le_ji
+    let h_fin_eq : i = j := Fin.ext h_val_eq
+    h_fin_eq ▸ rfl
+
 /-! ## Closed-form determinant for `n_s = 2` -/
 
 /-- *Diagonal entry `(0, 0)` of the 2x2 Gauss-Markov auto-covariance.*
