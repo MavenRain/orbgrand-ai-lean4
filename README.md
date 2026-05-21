@@ -97,6 +97,7 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | `orbgrandAiLoop_returns_substituted` (output = substitute Y e for some pattern e) | `Section04.OrbgrandAi` | proved |
 | `orbgrandAi_returns_substituted` (top-level substitution-provenance) | `Section04.OrbgrandAi` | proved |
 | `orbgrandAi_sound` (codebook acceptance AND substitution-provenance, full spec) | `Section04.OrbgrandAi` | proved |
+| `orbgrandAiLoop_returns_strong`, `orbgrandAi_returns_strong` (witness pattern carries noSubsConflict + Phi) | `Section04.OrbgrandAi` | proved (2) |
 | `orbgrandAiLoop_append_left`, `orbgrandAi_append_left` (extension stability) | `Section04.OrbgrandAi` | proved (2) |
 | Approximate-independence block factorisation | `Section04.OrbgrandAi` | def |
 | `perturbChannel_zero` (zero perturbation is identity) | `Section06.Csi` | proved |

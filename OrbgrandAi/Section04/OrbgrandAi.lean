@@ -448,6 +448,69 @@ theorem orbgrandAi_returns_substituted
     exists e, e ∈ patterns /\ c = substitute Y e :=
   orbgrandAiLoop_returns_substituted Y Phi c budget.toNat patterns h
 
+/-- *Strong soundness.*  If the loop returns `some c`, there exists a
+    witness pattern `e` that passes both the conflict check AND the
+    membership oracle, and that substitutes to `c`.  Strengthens
+    `orbgrandAiLoop_returns_substituted` by carrying `noSubstitutionConflict e`
+    and `Phi (substitute Y e)` through the existential. -/
+theorem orbgrandAiLoop_returns_strong
+    {n_s b numCandidates : Nat} :
+    forall (Y : Codeword n_s) (Phi : CodebookMembership n_s)
+      (c : Codeword n_s) (steps : Nat)
+      (patterns : List (Fin (n_s / b) -> Fin numCandidates)),
+      orbgrandAiLoop Y Phi steps patterns = some c ->
+        exists e, e ∈ patterns
+                  /\ noSubstitutionConflict e
+                  /\ Phi (substitute Y e)
+                  /\ c = substitute Y e
+  | _, _,   _, 0,     [],         h => nomatch h
+  | _, _,   _, _ + 1, [],         h => nomatch h
+  | _, _,   _, 0,     _ :: _,     h => nomatch h
+  | Y, Phi, c, m + 1, e :: rest,  h =>
+      let hdite : (if hnc : noSubstitutionConflict e then
+                    (if Phi (substitute Y e) then some (substitute Y e)
+                      else orbgrandAiLoop Y Phi m rest)
+                    else orbgrandAiLoop Y Phi m rest)
+                  = some c := h
+      if hnc : noSubstitutionConflict e then
+        let hif : (if Phi (substitute Y e) then some (substitute Y e)
+                    else orbgrandAiLoop Y Phi m rest)
+                  = some c :=
+            (dif_pos hnc).symm.trans hdite
+        if hp : Phi (substitute Y e) then
+          let hsome : some (substitute Y e) = some c :=
+              (if_pos hp).symm.trans hif
+          let heq : substitute Y e = c := Option.some.inj hsome
+          ⟨e, List.mem_cons_self, hnc, hp, heq.symm⟩
+        else
+          let hloop : orbgrandAiLoop Y Phi m rest = some c :=
+              (if_neg hp).symm.trans hif
+          let ⟨e', hmem, hnc', hp', hceq⟩ :=
+              orbgrandAiLoop_returns_strong Y Phi c m rest hloop
+          ⟨e', List.mem_cons_of_mem e hmem, hnc', hp', hceq⟩
+      else
+        let hloop : orbgrandAiLoop Y Phi m rest = some c :=
+            (dif_neg hnc).symm.trans hdite
+        let ⟨e', hmem, hnc', hp', hceq⟩ :=
+            orbgrandAiLoop_returns_strong Y Phi c m rest hloop
+        ⟨e', List.mem_cons_of_mem e hmem, hnc', hp', hceq⟩
+
+/-- *Strong soundness at the top level.*  Wrapper of
+    `orbgrandAiLoop_returns_strong`. -/
+theorem orbgrandAi_returns_strong
+    {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s)
+    (budget : AbandonmentBudget)
+    (patterns : List (Fin (n_s / b) -> Fin numCandidates))
+    (c : Codeword n_s)
+    (h : orbgrandAi (b := b) (numCandidates := numCandidates)
+        Y Phi budget patterns = some c) :
+    exists e, e ∈ patterns
+              /\ noSubstitutionConflict e
+              /\ Phi (substitute Y e)
+              /\ c = substitute Y e :=
+  orbgrandAiLoop_returns_strong Y Phi c budget.toNat patterns h
+
 /-- *Full soundness specification of `orbgrandAi`.*  If `orbgrandAi`
     returns `some c`, then `c` simultaneously
     (1) is accepted by the membership oracle `Phi`, and
