@@ -210,4 +210,33 @@ example {n_s b numCandidates : Nat}
     Phi c = true /\ (exists e, e ∈ patterns /\ c = substitute Y e) :=
   orbgrandAi_sound Y Phi budget patterns c h
 
+/-- GRAND on a singleton candidate list reduces to a single syndrome check. -/
+example {n k : Nat} (H : ParityCheck n k) (Y Ng : Codeword n) :
+    grandFind H Y [Ng]
+      = if _hp : forall (i : Fin (n - k)),
+            H.matrix.mulVec (Codeword.xor Y Ng) i = 0 then
+          some (Codeword.xor Y Ng)
+        else
+          none :=
+  grandFind_singleton H Y Ng
+
+/-- GRAND extension stability: appending more candidates preserves acceptance. -/
+example {n k : Nat} (H : ParityCheck n k) (Y : Codeword n)
+    (order1 order2 : List (Codeword n)) (c : Codeword n)
+    (h : grandFind H Y order1 = some c) :
+    grandFind H Y (order1 ++ order2) = some c :=
+  grandFind_append_left H Y order1 c h order2
+
+/-- ORBGRAND-AI extension stability: appending more patterns preserves acceptance. -/
+example {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s)
+    (budget : AbandonmentBudget)
+    (p1 p2 : List (Fin (n_s / b) -> Fin numCandidates))
+    (c : Codeword n_s)
+    (h : orbgrandAi (b := b) (numCandidates := numCandidates)
+        Y Phi budget p1 = some c) :
+    orbgrandAi (b := b) (numCandidates := numCandidates)
+      Y Phi budget (p1 ++ p2) = some c :=
+  orbgrandAi_append_left Y Phi budget p1 p2 c h
+
 end OrbgrandAi.Examples.SmokeTest

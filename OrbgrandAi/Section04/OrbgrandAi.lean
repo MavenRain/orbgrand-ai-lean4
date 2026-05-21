@@ -425,5 +425,73 @@ theorem orbgrandAi_sound
   ⟨orbgrandAi_accept_sound Y Phi budget patterns c h,
    orbgrandAi_returns_substituted Y Phi budget patterns c h⟩
 
+/-- *List-extension stability.*  Appending more patterns to the end of
+    the input list cannot undo an acceptance: if the original list
+    accepts within `steps`, so does the extended list with the same
+    `steps`.  Structural recursion on `p1`; the extra patterns sit at
+    positions the loop never reaches once `p1` has accepted. -/
+theorem orbgrandAiLoop_append_left
+    {n_s b numCandidates : Nat} :
+    forall (Y : Codeword n_s) (Phi : CodebookMembership n_s)
+      (c : Codeword n_s) (steps : Nat)
+      (p1 : List (Fin (n_s / b) -> Fin numCandidates)),
+      orbgrandAiLoop Y Phi steps p1 = some c ->
+      forall (p2 : List (Fin (n_s / b) -> Fin numCandidates)),
+        orbgrandAiLoop Y Phi steps (p1 ++ p2) = some c
+  | _, _,   _, 0,     [],         h, _ => nomatch h
+  | _, _,   _, _ + 1, [],         h, _ => nomatch h
+  | _, _,   _, 0,     _ :: _,     h, _ => nomatch h
+  | Y, Phi, c, m + 1, e :: rest1, h, p2 =>
+      let hdite : (if hnc : noSubstitutionConflict e then
+                    (if Phi (substitute Y e) then some (substitute Y e)
+                      else orbgrandAiLoop Y Phi m rest1)
+                    else orbgrandAiLoop Y Phi m rest1)
+                  = some c := h
+      if hnc : noSubstitutionConflict e then
+        let hif : (if Phi (substitute Y e) then some (substitute Y e)
+                    else orbgrandAiLoop Y Phi m rest1)
+                  = some c :=
+            (dif_pos hnc).symm.trans hdite
+        if hp : Phi (substitute Y e) then
+          let hsome : some (substitute Y e) = some c :=
+              (if_pos hp).symm.trans hif
+          let pos_step :
+              (if Phi (substitute Y e) then some (substitute Y e)
+                else orbgrandAiLoop Y Phi m (rest1 ++ p2))
+              = some c :=
+              (if_pos hp).trans hsome
+          (dif_pos hnc).trans pos_step
+        else
+          let hloop : orbgrandAiLoop Y Phi m rest1 = some c :=
+              (if_neg hp).symm.trans hif
+          let hloop_app : orbgrandAiLoop Y Phi m (rest1 ++ p2) = some c :=
+              orbgrandAiLoop_append_left Y Phi c m rest1 hloop p2
+          let neg_step :
+              (if Phi (substitute Y e) then some (substitute Y e)
+                else orbgrandAiLoop Y Phi m (rest1 ++ p2))
+              = some c :=
+              (if_neg hp).trans hloop_app
+          (dif_pos hnc).trans neg_step
+      else
+        let hloop : orbgrandAiLoop Y Phi m rest1 = some c :=
+            (dif_neg hnc).symm.trans hdite
+        let hloop_app : orbgrandAiLoop Y Phi m (rest1 ++ p2) = some c :=
+            orbgrandAiLoop_append_left Y Phi c m rest1 hloop p2
+        (dif_neg hnc).trans hloop_app
+
+/-- *List-extension stability at the top level.*  Wrapper of
+    `orbgrandAiLoop_append_left`. -/
+theorem orbgrandAi_append_left
+    {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s)
+    (budget : AbandonmentBudget)
+    (p1 p2 : List (Fin (n_s / b) -> Fin numCandidates))
+    (c : Codeword n_s)
+    (h : orbgrandAi (b := b) (numCandidates := numCandidates)
+        Y Phi budget p1 = some c) :
+    orbgrandAi (b := b) (numCandidates := numCandidates)
+      Y Phi budget (p1 ++ p2) = some c :=
+  orbgrandAiLoop_append_left Y Phi c budget.toNat p1 h p2
+
 end Section04
 end OrbgrandAi

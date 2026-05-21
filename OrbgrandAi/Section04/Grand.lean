@@ -114,6 +114,51 @@ theorem grandFind_nil
     grandFind H Y [] = none :=
   rfl
 
+/-- *Singleton candidate list.*  With exactly one noise candidate,
+    `grandFind` reduces to a single syndrome check: return
+    `some (Y xor Ng)` if the syndrome is zero, else `none`.  This is
+    pure definitional unfolding: the cons arm fires, the else branch
+    is `grandFind H Y []` which reduces to `none` by `grandFind_nil`. -/
+theorem grandFind_singleton
+    {n k : Nat} (H : ParityCheck n k) (Y Ng : Codeword n) :
+    grandFind H Y [Ng]
+      = if _hp : forall (i : Fin (n - k)),
+            H.matrix.mulVec (Codeword.xor Y Ng) i = 0 then
+          some (Codeword.xor Y Ng)
+        else
+          none :=
+  rfl
+
+/-- *List-extension stability.*  Appending more candidates to the end
+    of the order list cannot undo an acceptance: if the original order
+    finds `some c`, so does any extension.  Structural recursion on
+    `order1` with `List.cons_append` (which is definitional) carrying
+    the equality through. -/
+theorem grandFind_append_left
+    {n k : Nat} :
+    forall (H : ParityCheck n k) (Y : Codeword n)
+      (order1 : List (Codeword n)) (c : Codeword n),
+      grandFind H Y order1 = some c ->
+      forall (order2 : List (Codeword n)),
+        grandFind H Y (order1 ++ order2) = some c
+  | _, _, [],            _, h, _      => nomatch h
+  | H, Y, (Ng :: rest1), c, h, order2 =>
+      let hdite : (if _hp : forall (i : Fin (n - k)),
+                    H.matrix.mulVec (Codeword.xor Y Ng) i = 0 then
+                    some (Codeword.xor Y Ng)
+                  else grandFind H Y rest1) = some c := h
+      if hp : forall (j : Fin (n - k)),
+          H.matrix.mulVec (Codeword.xor Y Ng) j = 0 then
+        let hsome : some (Codeword.xor Y Ng) = some c :=
+          (dif_pos hp).symm.trans hdite
+        (dif_pos hp).trans hsome
+      else
+        let hrest1 : grandFind H Y rest1 = some c :=
+          (dif_neg hp).symm.trans hdite
+        let hrest1_app : grandFind H Y (rest1 ++ order2) = some c :=
+          grandFind_append_left H Y rest1 c hrest1 order2
+        (dif_neg hp).trans hrest1_app
+
 /-! ## Soundness: the GRAND output has zero syndrome -/
 
 /-- If `grandFind` returns `some c`, then `c` has zero syndrome (it
