@@ -30,7 +30,14 @@ lean_lib OrbgrandAiExamples where
   srcDir := "."
   roots := #[`OrbgrandAi.Examples.SmokeTest]
 
-require «kan-tactics» from ".." / "kan-tactics"
+-- `kan-tactics` is pulled directly from GitHub rather than from the
+-- local sibling directory `../kan-tactics`.  This decouples the build
+-- from a local checkout (so CI and downstream consumers do not need
+-- to clone two repos in parallel) and pins exactly the commit that
+-- carries the `kabstract`-on-`Lean 4.30.0-rc1` fix.
+require «kan-tactics» from git
+  "https://github.com/MavenRain/kan-tactics"
+  @ "5499989261e83abfcc6d2a7975a420e4825bfd07"
 
 -- `doc-gen4` is pinned to `v4.30.0-rc1` rather than `main`:
 -- `doc-gen4@main` bumps the Lean toolchain to `v4.30.0-rc2`, which is

@@ -77,8 +77,10 @@ are stated as Lean theorems; the table tracks which are fully proved.
 ### Prerequisites
 
 * [elan](https://github.com/leanprover/elan) (Lean version manager).
-* The [kan-tactics](https://github.com/MavenRain/kan-tactics) library
-  checked out as a sibling directory at `../kan-tactics/`.
+
+`kan-tactics` is pulled in automatically from
+<https://github.com/MavenRain/kan-tactics> by `lake update`; no
+sibling checkout is required.
 
 ### Build
 
