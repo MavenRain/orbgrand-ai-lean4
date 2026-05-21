@@ -74,6 +74,8 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | `orbgrandAi_empty_patterns`, `_zero_budget` (top-level boundary cases) | `Section04.OrbgrandAi` | proved (2) |
 | `orbgrandAiLoop_empty_codebook` (`Phi = fun _ => false` => loop returns none) | `Section04.OrbgrandAi` | proved |
 | `orbgrandAi_empty_codebook` (top-level vacuous-codebook wrapper) | `Section04.OrbgrandAi` | proved |
+| `orbgrandAiLoop_returns_substituted` (output = substitute Y e for some pattern e) | `Section04.OrbgrandAi` | proved |
+| `orbgrandAi_returns_substituted` (top-level substitution-provenance) | `Section04.OrbgrandAi` | proved |
 | Approximate-independence block factorisation | `Section04.OrbgrandAi` | def |
 | AR(2) least-squares coefficient fit | `Section06.Ar2Approximation` | def (opaque fit) |
 | `ar2_zero`, `ar2_one`, `ar2_succ_succ` base cases | `Section06.Ar2Approximation` | proved (3 rfl) |
