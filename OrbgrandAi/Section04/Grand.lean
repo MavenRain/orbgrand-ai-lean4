@@ -548,6 +548,66 @@ theorem grand_ml_optimal
         | List.Mem.tail _ hrest_mem =>
             grand_ml_optimal p H Y rest sorted_dec_rest c hrest Ng' hrest_mem hsyn
 
+/-! ## Characterisation of `grandFind = none` -/
+
+/-- *Forward direction.*  If `grandFind` returns `none`, every
+    noise candidate in the input order has nonzero syndrome.
+    Structural induction on the order list. -/
+theorem grandFind_none_imp
+    {n k : Nat} (H : ParityCheck n k) (Y : Codeword n) :
+    forall (order : List (Codeword n)),
+      grandFind H Y order = none ->
+      forall Ng, Ng ∈ order ->
+        ¬ (forall (i : Fin (n - k)),
+            H.matrix.mulVec (Codeword.xor Y Ng) i = 0)
+  | [],              _,     _,  hmem => (List.not_mem_nil hmem).elim
+  | Ng_head :: rest, hnone, Ng, hmem =>
+      let hdite : (if _hp : forall (i : Fin (n - k)),
+                    H.matrix.mulVec (Codeword.xor Y Ng_head) i = 0 then
+                    some (Codeword.xor Y Ng_head)
+                  else grandFind H Y rest) = none := hnone
+      if hp : forall (j : Fin (n - k)),
+          H.matrix.mulVec (Codeword.xor Y Ng_head) j = 0 then
+        nomatch (dif_pos hp).symm.trans hdite
+      else
+        let hrest : grandFind H Y rest = none :=
+          (dif_neg hp).symm.trans hdite
+        match hmem with
+        | List.Mem.head _      => hp
+        | List.Mem.tail _ hrm  => grandFind_none_imp H Y rest hrest Ng hrm
+
+/-- *Backward direction.*  If every noise candidate in the order list
+    has nonzero syndrome, `grandFind` returns `none`.  Structural
+    induction on the order list. -/
+theorem grandFind_none_mpr
+    {n k : Nat} (H : ParityCheck n k) (Y : Codeword n) :
+    forall (order : List (Codeword n)),
+      (forall Ng, Ng ∈ order ->
+        ¬ (forall (i : Fin (n - k)),
+            H.matrix.mulVec (Codeword.xor Y Ng) i = 0)) ->
+      grandFind H Y order = none
+  | [],              _     => rfl
+  | Ng_head :: rest, hnone =>
+      let hno : ¬ (forall (i : Fin (n - k)),
+                    H.matrix.mulVec (Codeword.xor Y Ng_head) i = 0) :=
+        hnone Ng_head List.mem_cons_self
+      let h_rest_none : grandFind H Y rest = none :=
+        grandFind_none_mpr H Y rest
+          (fun Ng hmem => hnone Ng (List.mem_cons_of_mem _ hmem))
+      (dif_neg hno).trans h_rest_none
+
+/-- *Characterisation of GRAND failure.*  `grandFind H Y order = none`
+    iff every candidate noise vector in `order` has nonzero syndrome.
+    Combines the two directions. -/
+theorem grandFind_none_iff
+    {n k : Nat} (H : ParityCheck n k) (Y : Codeword n)
+    (order : List (Codeword n)) :
+    grandFind H Y order = none <->
+      forall Ng, Ng ∈ order ->
+        ¬ (forall (i : Fin (n - k)),
+            H.matrix.mulVec (Codeword.xor Y Ng) i = 0) :=
+  ⟨grandFind_none_imp H Y order, grandFind_none_mpr H Y order⟩
+
 /-! ## Syndrome boundary algebra -/
 
 /-- *Syndrome with zero noise.*  The syndrome of a zero-noise
