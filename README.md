@@ -64,6 +64,7 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | Hadamard bound on `log |C_N|` | `Section03.Capacity` | placeholder |
 | Channel capacity upper bound | `Section03.Capacity` | placeholder |
 | GRAND syndrome and search loop | `Section04.Grand` | def |
+| `Codeword.xor_eq_add` (bridge to Pi.instAdd), `sub_eq_xor`, `neg_eq_self` (CharTwo) | `Section04.Grand` | proved (3) |
 | `Codeword.zero_xor`, `xor_zero`, `xor_self`, `xor_comm`, `xor_assoc` | `Section04.Grand` | proved (5) |
 | `Codeword.xor_xor_self` (XOR involution; now derived from the algebra) | `Section04.Grand` | proved |
 | `Codeword.xor_left_cancel`, `xor_right_cancel` | `Section04.Grand` | proved (2) |

@@ -326,6 +326,24 @@ theorem grandFind_sound
 
 /-! ### `Codeword.xor` algebra (pointwise lifts of ZMod 2 arithmetic) -/
 
+/-- `Codeword.xor` is just pointwise `ZMod 2` addition, lifted from
+    `Pi.instAdd`.  The bespoke `Codeword.xor` and the generic `+`
+    coincide. -/
+theorem Codeword.xor_eq_add {n : Nat} (a b : Codeword n) :
+    Codeword.xor a b = a + b :=
+  rfl
+
+/-- *Subtraction is XOR.*  In `ZMod 2`, pointwise subtraction
+    coincides with `Codeword.xor`.  Lifted from `CharTwo.sub_eq_add`. -/
+theorem Codeword.sub_eq_xor {n : Nat} (a b : Codeword n) :
+    a - b = Codeword.xor a b :=
+  funext fun i => CharTwo.sub_eq_add (a i) (b i)
+
+/-- *Negation is the identity.*  In `ZMod 2`, `-a = a` pointwise. -/
+theorem Codeword.neg_eq_self {n : Nat} (a : Codeword n) :
+    -a = a :=
+  funext fun i => CharTwo.neg_eq (a i)
+
 /-- `0 xor a = a`.  Pointwise `zero_add`. -/
 theorem Codeword.zero_xor {n : Nat} (a : Codeword n) :
     Codeword.xor 0 a = a :=
