@@ -155,5 +155,27 @@ theorem LinearIsi.receive_noise_add
     ch.receive X (N1 + N2) = ch.receive X N1 + N2 :=
   funext fun k => (add_assoc _ _ _).symm
 
+/-- *Full linearity of the receiver.*  The receive function is
+    additive in both arguments simultaneously:
+
+      `receive (X1 + X2) (N1 + N2) = receive X1 N1 + receive X2 N2`.
+
+    Proof: pointwise expansion uses `Matrix.mulVec_add` on the
+    channel product and `add_add_add_comm` to re-pair the four terms
+    into `(mulVec X1 + N1) + (mulVec X2 + N2)`. -/
+theorem LinearIsi.receive_add
+    {n_s : Nat} (ch : LinearIsi n_s)
+    (X1 X2 N1 N2 : SymbolVector n_s) :
+    ch.receive (X1 + X2) (N1 + N2) = ch.receive X1 N1 + ch.receive X2 N2 :=
+  funext fun k =>
+    let step1 : ch.channel.mulVec (X1 + X2) k
+                = ch.channel.mulVec X1 k + ch.channel.mulVec X2 k :=
+      congrFun (ch.channel.mulVec_add X1 X2) k
+    let step2 : ch.channel.mulVec (X1 + X2) k + (N1 + N2) k
+                = (ch.channel.mulVec X1 k + ch.channel.mulVec X2 k)
+                  + (N1 k + N2 k) :=
+      congrArg (· + (N1 + N2) k) step1
+    step2.trans (add_add_add_comm _ _ _ _)
+
 end Section02
 end OrbgrandAi

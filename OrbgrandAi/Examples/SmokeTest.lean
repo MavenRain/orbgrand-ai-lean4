@@ -188,6 +188,11 @@ example {n_s : Nat} (ch : LinearIsi n_s) (X N1 N2 : SymbolVector n_s) :
     ch.receive X (N1 + N2) = ch.receive X N1 + N2 :=
   LinearIsi.receive_noise_add ch X N1 N2
 
+/-- Full linearity of the receiver. -/
+example {n_s : Nat} (ch : LinearIsi n_s) (X1 X2 N1 N2 : SymbolVector n_s) :
+    ch.receive (X1 + X2) (N1 + N2) = ch.receive X1 N1 + ch.receive X2 N2 :=
+  LinearIsi.receive_add ch X1 X2 N1 N2
+
 /-- ORBGRAND ordering soundness: lower logistic weight => earlier bucket. -/
 example {n : Nat} (pi : ReliabilityRank n) (e1 e2 : Fin n -> Bool)
     (h : logisticWeight pi e1 < logisticWeight pi e2) :

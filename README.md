@@ -26,6 +26,7 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | `LinearIsi.receive_zero_noise` (`receive X 0 = h * X`) | `Section02.LinearIsi` | proved |
 | `LinearIsi.receive_zero_signal` (`receive 0 N = N`) | `Section02.LinearIsi` | proved |
 | `LinearIsi.receive_noise_add` (additivity in the noise term) | `Section02.LinearIsi` | proved |
+| `LinearIsi.receive_add` (full linearity: `receive (X1+X2) (N1+N2) = receive X1 N1 + receive X2 N2`) | `Section02.LinearIsi` | proved |
 | Dicode partial-response channel `(1, -rho, 0, ...)` (matrix def) | `Section02.Dicode` | def |
 | `dicode_bandwidth` (entries `j + 1 < i` vanish) | `Section02.Dicode` | proved |
 | `dicode_causal` (entries `i < j` vanish) | `Section02.Dicode` | proved |
