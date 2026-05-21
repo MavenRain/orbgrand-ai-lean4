@@ -99,6 +99,8 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | `orbgrandAi_sound` (codebook acceptance AND substitution-provenance, full spec) | `Section04.OrbgrandAi` | proved |
 | `orbgrandAiLoop_returns_strong`, `orbgrandAi_returns_strong` (witness pattern carries noSubsConflict + Phi) | `Section04.OrbgrandAi` | proved (2) |
 | `orbgrandAiLoop_none_of_all_fail`, `orbgrandAi_none_of_all_fail` (all-fail => none, dual of strong soundness) | `Section04.OrbgrandAi` | proved (2) |
+| `orbgrandAiLoop_none_imp_all_fail_of_budget` (sufficient budget => failure forces all-fail) | `Section04.OrbgrandAi` | proved |
+| `orbgrandAiLoop_none_iff_of_budget`, `orbgrandAi_none_iff_of_budget` (full iff under sufficient budget) | `Section04.OrbgrandAi` | proved (2) |
 | `orbgrandAiLoop_append_left`, `orbgrandAi_append_left` (extension stability) | `Section04.OrbgrandAi` | proved (2) |
 | Approximate-independence block factorisation | `Section04.OrbgrandAi` | def |
 | `perturbChannel_zero` (zero perturbation is identity) | `Section06.Csi` | proved |

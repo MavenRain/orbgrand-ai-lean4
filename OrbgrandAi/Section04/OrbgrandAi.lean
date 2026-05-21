@@ -644,5 +644,79 @@ theorem orbgrandAi_none_of_all_fail
       Y Phi budget patterns = none :=
   orbgrandAiLoop_none_of_all_fail Y Phi budget.toNat patterns hfail
 
+/-- *All-fail necessary condition under sufficient budget.*  When
+    `steps >= patterns.length`, the loop visits every pattern before
+    returning, so if the result is `none` every pattern must fail at
+    least one acceptance gate.  Structural recursion on
+    `(steps, patterns)` with case split on the conflict / `Phi`
+    discriminants; the accept branch produces a `some` contradicting
+    the `none` hypothesis (`nomatch`). -/
+theorem orbgrandAiLoop_none_imp_all_fail_of_budget
+    {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s) :
+    forall (steps : Nat)
+      (patterns : List (Fin (n_s / b) -> Fin numCandidates)),
+      patterns.length <= steps ->
+      orbgrandAiLoop Y Phi steps patterns = none ->
+      forall e, e ∈ patterns ->
+        ¬ noSubstitutionConflict e ∨ ¬ Phi (substitute Y e)
+  | _,     [],         _,    _,     _,  hmem => (List.not_mem_nil hmem).elim
+  | 0,     _ :: _,    hlen, _,     _,  _    =>
+      (Nat.not_succ_le_zero _ hlen).elim
+  | m + 1, e :: rest, hlen, hnone, Ng, hmem =>
+      let rest_len : rest.length <= m := Nat.le_of_succ_le_succ hlen
+      if hnc : noSubstitutionConflict e then
+        let hif : (if Phi (substitute Y e) then some (substitute Y e)
+                    else orbgrandAiLoop Y Phi m rest)
+                  = none :=
+            (dif_pos hnc).symm.trans hnone
+        if hp : Phi (substitute Y e) then
+          nomatch (if_pos hp).symm.trans hif
+        else
+          let h_rest_none : orbgrandAiLoop Y Phi m rest = none :=
+            (if_neg hp).symm.trans hif
+          match hmem with
+          | List.Mem.head _    => Or.inr hp
+          | List.Mem.tail _ hrm =>
+              orbgrandAiLoop_none_imp_all_fail_of_budget
+                Y Phi m rest rest_len h_rest_none Ng hrm
+      else
+        let h_rest_none : orbgrandAiLoop Y Phi m rest = none :=
+          (dif_neg hnc).symm.trans hnone
+        match hmem with
+        | List.Mem.head _    => Or.inl hnc
+        | List.Mem.tail _ hrm =>
+            orbgrandAiLoop_none_imp_all_fail_of_budget
+              Y Phi m rest rest_len h_rest_none Ng hrm
+
+/-- *Loop failure characterisation under sufficient budget.*
+    Combines `_none_of_all_fail` (always) with
+    `_none_imp_all_fail_of_budget` (under `steps >= patterns.length`)
+    to give the full iff. -/
+theorem orbgrandAiLoop_none_iff_of_budget
+    {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s)
+    (steps : Nat)
+    (patterns : List (Fin (n_s / b) -> Fin numCandidates))
+    (hbudget : patterns.length <= steps) :
+    orbgrandAiLoop Y Phi steps patterns = none <->
+      forall e, e ∈ patterns ->
+        ¬ noSubstitutionConflict e ∨ ¬ Phi (substitute Y e) :=
+  ⟨orbgrandAiLoop_none_imp_all_fail_of_budget Y Phi steps patterns hbudget,
+   orbgrandAiLoop_none_of_all_fail Y Phi steps patterns⟩
+
+/-- *Top-level failure characterisation under sufficient budget.* -/
+theorem orbgrandAi_none_iff_of_budget
+    {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s)
+    (budget : AbandonmentBudget)
+    (patterns : List (Fin (n_s / b) -> Fin numCandidates))
+    (hbudget : patterns.length <= budget.toNat) :
+    orbgrandAi (b := b) (numCandidates := numCandidates)
+      Y Phi budget patterns = none <->
+      forall e, e ∈ patterns ->
+        ¬ noSubstitutionConflict e ∨ ¬ Phi (substitute Y e) :=
+  orbgrandAiLoop_none_iff_of_budget Y Phi budget.toNat patterns hbudget
+
 end Section04
 end OrbgrandAi
