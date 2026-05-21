@@ -127,6 +127,35 @@ theorem LinearIsi.one_causal
   fun _ _ h_lt =>
     Matrix.one_apply_ne (fun heq => Nat.ne_of_lt h_lt (congrArg Fin.val heq))
 
+/-- *The zero channel has any bandwidth.*  Every entry is zero, so
+    the bandwidth-at-most-`b` clause holds vacuously. -/
+theorem LinearIsi.zero_bandwidth
+    {n_s : Nat} (noiseCov : CovMatrix n_s) (b : Nat) :
+    ({ channel := 0, noiseCov := noiseCov } : LinearIsi n_s).bandwidth b :=
+  fun _ _ _ => rfl
+
+/-- *The identity channel has any bandwidth.*  Off-diagonal entries
+    vanish; the bandwidth condition `j.val + b < i.val` forces
+    `j.val < i.val` (via `Nat.le_add_right`), which implies `i ≠ j`. -/
+theorem LinearIsi.one_bandwidth
+    {n_s : Nat} (noiseCov : CovMatrix n_s) (b : Nat) :
+    ({ channel := 1, noiseCov := noiseCov } : LinearIsi n_s).bandwidth b :=
+  fun i j hij =>
+    let j_lt_i : j.val < i.val :=
+      Nat.lt_of_le_of_lt (Nat.le_add_right j.val b) hij
+    Matrix.one_apply_ne (fun heq => j_lt_i.ne' (congrArg Fin.val heq))
+
+/-- *Bandwidth monotonicity.*  If a channel has bandwidth at most
+    `b`, it also has bandwidth at most any `b' >= b`.  Larger
+    bandwidth bounds describe a weaker predicate, so this is the
+    expected order. -/
+theorem LinearIsi.bandwidth_le
+    {n_s : Nat} {ch : LinearIsi n_s} {b b' : Nat} (hb : b <= b')
+    (h : ch.bandwidth b) :
+    ch.bandwidth b' :=
+  fun i j hij =>
+    h i j (Nat.lt_of_le_of_lt (Nat.add_le_add_left hb j.val) hij)
+
 /-- *Noise-free receive law.*  When the noise vector is zero, the
     receiver model degenerates to the channel-vector product `h * X`. -/
 theorem LinearIsi.receive_zero_noise

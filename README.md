@@ -23,6 +23,8 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | Linear ISI channel `Y = h * X + N`, causality, bandwidth predicates | `Section02.LinearIsi` | defs |
 | `LinearIsi.receive_one` (identity channel: `receive X N = X + N`) | `Section02.LinearIsi` | proved |
 | `LinearIsi.zero_causal`, `LinearIsi.one_causal` (boundary causality) | `Section02.LinearIsi` | proved (2) |
+| `LinearIsi.zero_bandwidth`, `LinearIsi.one_bandwidth` (boundary bandwidth) | `Section02.LinearIsi` | proved (2) |
+| `LinearIsi.bandwidth_le` (bandwidth monotonicity: stronger => weaker) | `Section02.LinearIsi` | proved |
 | `LinearIsi.receive_zero_noise` (`receive X 0 = h * X`) | `Section02.LinearIsi` | proved |
 | `LinearIsi.receive_zero_signal` (`receive 0 N = N`) | `Section02.LinearIsi` | proved |
 | `LinearIsi.receive_noise_add` (additivity in the noise term) | `Section02.LinearIsi` | proved |
