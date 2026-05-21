@@ -173,6 +173,21 @@ example {n_s : Nat} (X N : SymbolVector n_s) (noiseCov : CovMatrix n_s) :
       = fun k => X k + N k :=
   LinearIsi.receive_one X N noiseCov
 
+/-- Noise-free receive: `receive X 0 = h * X`. -/
+example {n_s : Nat} (ch : LinearIsi n_s) (X : SymbolVector n_s) :
+    ch.receive X 0 = fun k => ch.channel.mulVec X k :=
+  LinearIsi.receive_zero_noise ch X
+
+/-- Signal-free receive: `receive 0 N = N`. -/
+example {n_s : Nat} (ch : LinearIsi n_s) (N : SymbolVector n_s) :
+    ch.receive 0 N = N :=
+  LinearIsi.receive_zero_signal ch N
+
+/-- Receive is additive in the noise. -/
+example {n_s : Nat} (ch : LinearIsi n_s) (X N1 N2 : SymbolVector n_s) :
+    ch.receive X (N1 + N2) = ch.receive X N1 + N2 :=
+  LinearIsi.receive_noise_add ch X N1 N2
+
 /-- ORBGRAND ordering soundness: lower logistic weight => earlier bucket. -/
 example {n : Nat} (pi : ReliabilityRank n) (e1 e2 : Fin n -> Bool)
     (h : logisticWeight pi e1 < logisticWeight pi e2) :

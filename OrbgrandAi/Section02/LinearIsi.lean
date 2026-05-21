@@ -127,5 +127,33 @@ theorem LinearIsi.one_causal
   fun _ _ h_lt =>
     Matrix.one_apply_ne (fun heq => Nat.ne_of_lt h_lt (congrArg Fin.val heq))
 
+/-- *Noise-free receive law.*  When the noise vector is zero, the
+    receiver model degenerates to the channel-vector product `h * X`. -/
+theorem LinearIsi.receive_zero_noise
+    {n_s : Nat} (ch : LinearIsi n_s) (X : SymbolVector n_s) :
+    ch.receive X 0 = fun k => ch.channel.mulVec X k :=
+  funext fun k => add_zero _
+
+/-- *Signal-free receive law.*  When the signal vector is zero, the
+    receiver model degenerates to the noise vector `N`.  Combines
+    `Matrix.mulVec_zero` (zero in, zero out) with `zero_add` on the
+    surviving noise term. -/
+theorem LinearIsi.receive_zero_signal
+    {n_s : Nat} (ch : LinearIsi n_s) (N : SymbolVector n_s) :
+    ch.receive 0 N = N :=
+  funext fun k =>
+    let step1 : ch.channel.mulVec 0 k + N k = 0 + N k :=
+      congrArg (· + N k) (congrFun ch.channel.mulVec_zero k)
+    step1.trans (zero_add (N k))
+
+/-- *Additivity of the receiver in the noise.*  Sending `N1 + N2`
+    through the channel is the same as sending `N1` and adding `N2`
+    afterwards.  Pointwise add and `add_assoc` finish the proof. -/
+theorem LinearIsi.receive_noise_add
+    {n_s : Nat} (ch : LinearIsi n_s)
+    (X N1 N2 : SymbolVector n_s) :
+    ch.receive X (N1 + N2) = ch.receive X N1 + N2 :=
+  funext fun k => (add_assoc _ _ _).symm
+
 end Section02
 end OrbgrandAi
