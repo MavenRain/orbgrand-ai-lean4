@@ -70,6 +70,8 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | `orbgrand_ordering_sound` (lower logistic weight => earlier bucket) | `Section04.Orbgrand` | proved |
 | ORBGRAND-AI Algorithm 1 (`orbgrandAi`, `orbgrandAiLoop`) | `Section04.OrbgrandAi` | def |
 | `orbgrandAiLoop_accept_sound`, `orbgrandAi_accept_sound` | `Section04.OrbgrandAi` | proved |
+| `orbgrandAiLoop_nil`, `_zero_steps` (loop boundary cases) | `Section04.OrbgrandAi` | proved (2) |
+| `orbgrandAi_empty_patterns`, `_zero_budget` (top-level boundary cases) | `Section04.OrbgrandAi` | proved (2) |
 | Approximate-independence block factorisation | `Section04.OrbgrandAi` | def |
 | AR(2) least-squares coefficient fit | `Section06.Ar2Approximation` | def (opaque fit) |
 | `ar2_zero`, `ar2_one`, `ar2_succ_succ` base cases | `Section06.Ar2Approximation` | proved (3 rfl) |

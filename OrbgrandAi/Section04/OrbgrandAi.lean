@@ -262,5 +262,49 @@ theorem orbgrandAi_accept_sound
     Phi c = true :=
   orbgrandAiLoop_accept_sound Y Phi c budget.toNat patterns h
 
+/-! ## Boundary-case behaviour of the loop -/
+
+/-- *Empty pattern list.*  With no patterns to try, the loop returns
+    `none` regardless of the remaining step count. -/
+theorem orbgrandAiLoop_nil
+    {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s) :
+    forall (steps : Nat),
+      orbgrandAiLoop (b := b) (numCandidates := numCandidates)
+        Y Phi steps [] = none
+  | 0     => rfl
+  | _ + 1 => rfl
+
+/-- *Exhausted step budget.*  With zero remaining steps, the loop
+    returns `none` regardless of the pattern list. -/
+theorem orbgrandAiLoop_zero_steps
+    {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s) :
+    forall (patterns : List (Fin (n_s / b) -> Fin numCandidates)),
+      orbgrandAiLoop Y Phi 0 patterns = none
+  | []     => rfl
+  | _ :: _ => rfl
+
+/-- *Empty pattern list at the top level.*  Wrapper around
+    `orbgrandAiLoop_nil` for the public `orbgrandAi` entry point. -/
+theorem orbgrandAi_empty_patterns
+    {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s)
+    (budget : AbandonmentBudget) :
+    orbgrandAi (b := b) (numCandidates := numCandidates)
+      Y Phi budget [] = none :=
+  orbgrandAiLoop_nil Y Phi budget.toNat
+
+/-- *Zero budget at the top level.*  Wrapper around
+    `orbgrandAiLoop_zero_steps` for the public `orbgrandAi` entry
+    point. -/
+theorem orbgrandAi_zero_budget
+    {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s)
+    (patterns : List (Fin (n_s / b) -> Fin numCandidates)) :
+    orbgrandAi (b := b) (numCandidates := numCandidates)
+      Y Phi ⟨0⟩ patterns = none :=
+  orbgrandAiLoop_zero_steps Y Phi patterns
+
 end Section04
 end OrbgrandAi
