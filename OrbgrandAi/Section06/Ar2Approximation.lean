@@ -98,6 +98,29 @@ theorem ar2_succ_succ (phi1 phi2 z1 z2 : Complex) (n : Nat) :
       = phi1 * ar2 phi1 phi2 z1 z2 (n + 1)
         + phi2 * ar2 phi1 phi2 z1 z2 n := rfl
 
+/-- Closed-form value at index 2: `phi_1 * z_2 + phi_2 * z_1`. -/
+theorem ar2_two (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 2 = phi1 * z2 + phi2 * z1 := rfl
+
+/-- Closed-form value at index 3:
+    `phi_1 * (phi_1 * z_2 + phi_2 * z_1) + phi_2 * z_2`. -/
+theorem ar2_three (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 3
+      = phi1 * (phi1 * z2 + phi2 * z1) + phi2 * z2 := rfl
+
+/-- *Trivial coefficients.*  When both AR(2) coefficients are zero,
+    every recurrence step (index `n + 2`) vanishes regardless of
+    the initial conditions.  The initial conditions at indices 0 and
+    1 are unaffected. -/
+theorem ar2_phi_zero (z1 z2 : Complex) (n : Nat) :
+    ar2 0 0 z1 z2 (n + 2) = 0 :=
+  let step1 : ar2 0 0 z1 z2 (n + 2)
+              = 0 * ar2 0 0 z1 z2 (n + 1) + 0 * ar2 0 0 z1 z2 n := rfl
+  let step2 : 0 * ar2 0 0 z1 z2 (n + 1) + 0 * ar2 0 0 z1 z2 n
+              = (0 : Complex) + 0 :=
+    congrArg₂ (· + ·) (zero_mul _) (zero_mul _)
+  step1.trans (step2.trans (add_zero 0))
+
 /-! ## Regressor matrix and target -/
 
 /-- The `4 x 2` regressor matrix used in the least-squares fit.

@@ -96,6 +96,8 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | Approximate-independence block factorisation | `Section04.OrbgrandAi` | def |
 | AR(2) least-squares coefficient fit | `Section06.Ar2Approximation` | def (opaque fit) |
 | `ar2_zero`, `ar2_one`, `ar2_succ_succ` base cases | `Section06.Ar2Approximation` | proved (3 rfl) |
+| `ar2_two`, `ar2_three` closed-form values | `Section06.Ar2Approximation` | proved (2 rfl) |
+| `ar2_phi_zero` (trivial coefficients vanish past initial conditions) | `Section06.Ar2Approximation` | proved |
 | Query-order stability under `|delta_rho| <= eps` | `Section06.QueryOrderStability` | placeholder |
 
 ### Status legend
