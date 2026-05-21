@@ -599,5 +599,50 @@ theorem orbgrandAi_append_left
       Y Phi budget (p1 ++ p2) = some c :=
   orbgrandAiLoop_append_left Y Phi c budget.toNat p1 h p2
 
+/-- *All-fail sufficient condition.*  If every pattern in the input
+    fails at least one of the two acceptance gates (conflict check or
+    `Phi` acceptance), the loop returns `none`.  The dual of the
+    strong-soundness theorem: where the strong soundness extracts a
+    passing witness from a `some`, this rules out a `some` whenever
+    every candidate is forced to be skipped.  Structural recursion on
+    `(steps, patterns)`. -/
+theorem orbgrandAiLoop_none_of_all_fail
+    {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s) :
+    forall (steps : Nat)
+      (patterns : List (Fin (n_s / b) -> Fin numCandidates)),
+      (forall e, e ∈ patterns ->
+        ¬ noSubstitutionConflict e ∨ ¬ Phi (substitute Y e)) ->
+      orbgrandAiLoop Y Phi steps patterns = none
+  | _,     [],         _     => orbgrandAiLoop_nil _ _ _
+  | 0,     _ :: _,     _     => rfl
+  | m + 1, e :: rest, hfail =>
+      let heither : ¬ noSubstitutionConflict e ∨ ¬ Phi (substitute Y e) :=
+        hfail e List.mem_cons_self
+      let h_rest : forall e', e' ∈ rest ->
+          ¬ noSubstitutionConflict e' ∨ ¬ Phi (substitute Y e') :=
+        fun e' hmem => hfail e' (List.mem_cons_of_mem e hmem)
+      let ih : orbgrandAiLoop Y Phi m rest = none :=
+        orbgrandAiLoop_none_of_all_fail Y Phi m rest h_rest
+      if hnc : noSubstitutionConflict e then
+        let hp_not : ¬ Phi (substitute Y e) :=
+          heither.resolve_left (fun hnc_neg => hnc_neg hnc)
+        (orbgrandAiLoop_cons_reject Y Phi m e rest hnc hp_not).trans ih
+      else
+        (orbgrandAiLoop_cons_conflict Y Phi m e rest hnc).trans ih
+
+/-- *All-fail sufficient condition at the top level.*  Wrapper of
+    `orbgrandAiLoop_none_of_all_fail` for `orbgrandAi`. -/
+theorem orbgrandAi_none_of_all_fail
+    {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s)
+    (budget : AbandonmentBudget)
+    (patterns : List (Fin (n_s / b) -> Fin numCandidates))
+    (hfail : forall e, e ∈ patterns ->
+      ¬ noSubstitutionConflict e ∨ ¬ Phi (substitute Y e)) :
+    orbgrandAi (b := b) (numCandidates := numCandidates)
+      Y Phi budget patterns = none :=
+  orbgrandAiLoop_none_of_all_fail Y Phi budget.toNat patterns hfail
+
 end Section04
 end OrbgrandAi
