@@ -130,6 +130,7 @@ theorem syndromeZero_iff_noise_codeword
   ⟨fun hz i => (syndrome_codeword H Y N_g h i).symm.trans (hz i),
    fun hng i => (syndrome_codeword H Y N_g h i).trans (hng i)⟩
 
+
 /-! ## The GRAND search -/
 
 /-- The GRAND decoded output: search a finite list of candidate noise
@@ -546,6 +547,30 @@ theorem grand_ml_optimal
             absurd hsyn hp
         | List.Mem.tail _ hrest_mem =>
             grand_ml_optimal p H Y rest sorted_dec_rest c hrest Ng' hrest_mem hsyn
+
+/-! ## Syndrome boundary algebra -/
+
+/-- *Syndrome with zero noise.*  The syndrome of a zero-noise
+    candidate is the parity-check image of the received vector. -/
+theorem syndrome_zero_noise
+    {n k : Nat} (H : ParityCheck n k) (Y : Codeword n) (i : Fin (n - k)) :
+    syndrome H Y 0 i = H.matrix.mulVec Y i :=
+  congrArg (fun v => H.matrix.mulVec v i) (Codeword.xor_zero Y)
+
+/-- *Syndrome with zero received vector.*  The syndrome from a zero
+    receiver is the parity-check image of the noise candidate alone. -/
+theorem syndrome_zero_received
+    {n k : Nat} (H : ParityCheck n k) (N_g : Codeword n) (i : Fin (n - k)) :
+    syndrome H 0 N_g i = H.matrix.mulVec N_g i :=
+  congrArg (fun v => H.matrix.mulVec v i) (Codeword.zero_xor N_g)
+
+/-- *Syndrome symmetry.*  Swapping the received vector and noise
+    candidate leaves the syndrome unchanged.  Algebraically this is
+    just `Codeword.xor_comm` lifted under the parity-check map. -/
+theorem syndrome_comm
+    {n k : Nat} (H : ParityCheck n k) (Y N_g : Codeword n) (i : Fin (n - k)) :
+    syndrome H Y N_g i = syndrome H N_g Y i :=
+  congrArg (fun v => H.matrix.mulVec v i) (Codeword.xor_comm Y N_g)
 
 end Section04
 end OrbgrandAi

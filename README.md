@@ -72,6 +72,7 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | `syndrome_decomp` (syndrome linearity: H*Y + H*N_g) | `Section04.Grand` | proved |
 | `syndrome_codeword` (on a codeword receiver, syndrome = H*N_g) | `Section04.Grand` | proved |
 | `syndromeZero_iff_noise_codeword` (Y codeword => GRAND accepts iff N_g is codeword) | `Section04.Grand` | proved |
+| `syndrome_zero_noise`, `syndrome_zero_received`, `syndrome_comm` (boundary syndrome algebra) | `Section04.Grand` | proved (3) |
 | `grandFind_nil` (empty list returns none) | `Section04.Grand` | proved |
 | `grandFind_cons_zero_syndrome`, `_nonzero_syndrome` (cons-case decomposition) | `Section04.Grand` | proved (2) |
 | `grandFind_zero_syndrome` (decoder output has zero syndrome) | `Section04.Grand` | proved |
