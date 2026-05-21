@@ -105,6 +105,15 @@ def grandFind
       else
         grandFind H Y rest
 
+/-! ## Boundary cases of `grandFind` -/
+
+/-- *Empty candidate list.*  With no noise candidates, `grandFind`
+    returns `none`. -/
+theorem grandFind_nil
+    {n k : Nat} (H : ParityCheck n k) (Y : Codeword n) :
+    grandFind H Y [] = none :=
+  rfl
+
 /-! ## Soundness: the GRAND output has zero syndrome -/
 
 /-- If `grandFind` returns `some c`, then `c` has zero syndrome (it
@@ -143,6 +152,36 @@ theorem grandFind_zero_syndrome
         let hrest : grandFind H Y rest = some c :=
           (dif_neg hp).symm.trans hdite
         grandFind_zero_syndrome H Y rest c hrest i
+
+/-- *XOR provenance of GRAND output.*  If `grandFind` returns `some c`,
+    then there exists a noise candidate `Ng` in the input order list
+    such that `c = Codeword.xor Y Ng`.  Together with
+    `grandFind_zero_syndrome`, this characterises valid GRAND outputs
+    as "candidates from the input that have zero syndrome". -/
+theorem grandFind_returns_xor
+    {n k : Nat} :
+    forall (H : ParityCheck n k) (Y : Codeword n)
+      (order : List (Codeword n)) (c : Codeword n),
+      grandFind H Y order = some c ->
+        exists Ng, Ng ∈ order /\ c = Codeword.xor Y Ng
+  | _, _, [],            _, h => nomatch h
+  | H, Y, (Ng :: rest),  c, h =>
+      let hdite : (if _hp : forall (i : Fin (n - k)),
+                    H.matrix.mulVec (Codeword.xor Y Ng) i = 0 then
+                    some (Codeword.xor Y Ng)
+                  else grandFind H Y rest) = some c := h
+      if hp : forall (j : Fin (n - k)),
+          H.matrix.mulVec (Codeword.xor Y Ng) j = 0 then
+        let hsome : some (Codeword.xor Y Ng) = some c :=
+          (dif_pos hp).symm.trans hdite
+        let heq : Codeword.xor Y Ng = c := Option.some.inj hsome
+        ⟨Ng, List.mem_cons_self, heq.symm⟩
+      else
+        let hrest : grandFind H Y rest = some c :=
+          (dif_neg hp).symm.trans hdite
+        let ⟨Ng', hmem, hceq⟩ :=
+          grandFind_returns_xor H Y rest c hrest
+        ⟨Ng', List.mem_cons_of_mem Ng hmem, hceq⟩
 
 /-- Surface the soundness in `syndromeZero` form. -/
 theorem grandFind_syndromeZero
