@@ -262,6 +262,49 @@ theorem orbgrandAi_accept_sound
     Phi c = true :=
   orbgrandAiLoop_accept_sound Y Phi c budget.toNat patterns h
 
+/-! ## Cons-case decomposition -/
+
+/-- *Cons case, conflict branch.*  When the head pattern has a
+    substitution conflict, the loop discards it and recurses (one
+    step is consumed from the budget). -/
+theorem orbgrandAiLoop_cons_conflict
+    {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s) (m : Nat)
+    (e : Fin (n_s / b) -> Fin numCandidates)
+    (rest : List (Fin (n_s / b) -> Fin numCandidates))
+    (h : ¬ noSubstitutionConflict e) :
+    orbgrandAiLoop Y Phi (m + 1) (e :: rest)
+      = orbgrandAiLoop Y Phi m rest :=
+  dif_neg h
+
+/-- *Cons case, accept branch.*  When the head pattern has no
+    conflict and the substituted codeword is accepted by `Phi`, the
+    loop returns it immediately without consuming further steps. -/
+theorem orbgrandAiLoop_cons_accept
+    {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s) (m : Nat)
+    (e : Fin (n_s / b) -> Fin numCandidates)
+    (rest : List (Fin (n_s / b) -> Fin numCandidates))
+    (hnc : noSubstitutionConflict e)
+    (hp : Phi (substitute Y e)) :
+    orbgrandAiLoop Y Phi (m + 1) (e :: rest)
+      = some (substitute Y e) :=
+  (dif_pos hnc).trans (if_pos hp)
+
+/-- *Cons case, reject branch.*  When the head pattern has no
+    conflict but the substituted codeword is rejected by `Phi`, the
+    loop recurses (one step is consumed). -/
+theorem orbgrandAiLoop_cons_reject
+    {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s) (m : Nat)
+    (e : Fin (n_s / b) -> Fin numCandidates)
+    (rest : List (Fin (n_s / b) -> Fin numCandidates))
+    (hnc : noSubstitutionConflict e)
+    (hp : ¬ Phi (substitute Y e)) :
+    orbgrandAiLoop Y Phi (m + 1) (e :: rest)
+      = orbgrandAiLoop Y Phi m rest :=
+  (dif_pos hnc).trans (if_neg hp)
+
 /-! ## Boundary-case behaviour of the loop -/
 
 /-- *Empty pattern list.*  With no patterns to try, the loop returns

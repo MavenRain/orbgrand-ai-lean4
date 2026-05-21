@@ -70,6 +70,7 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | `syndrome_codeword` (on a codeword receiver, syndrome = H*N_g) | `Section04.Grand` | proved |
 | `syndromeZero_iff_noise_codeword` (Y codeword => GRAND accepts iff N_g is codeword) | `Section04.Grand` | proved |
 | `grandFind_nil` (empty list returns none) | `Section04.Grand` | proved |
+| `grandFind_cons_zero_syndrome`, `_nonzero_syndrome` (cons-case decomposition) | `Section04.Grand` | proved (2) |
 | `grandFind_zero_syndrome` (decoder output has zero syndrome) | `Section04.Grand` | proved |
 | `grandFind_returns_xor` (output = `Codeword.xor Y Ng` for some `Ng ∈ order`) | `Section04.Grand` | proved |
 | `grandFind_zero_first` (Y a codeword + 0 first in order => GRAND returns Y) | `Section04.Grand` | proved |
@@ -83,6 +84,7 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | `orbgrand_ordering_sound` (lower logistic weight => earlier bucket) | `Section04.Orbgrand` | proved |
 | ORBGRAND-AI Algorithm 1 (`orbgrandAi`, `orbgrandAiLoop`) | `Section04.OrbgrandAi` | def |
 | `orbgrandAiLoop_accept_sound`, `orbgrandAi_accept_sound` | `Section04.OrbgrandAi` | proved |
+| `orbgrandAiLoop_cons_conflict`, `_cons_accept`, `_cons_reject` (cons-case decomposition) | `Section04.OrbgrandAi` | proved (3) |
 | `orbgrandAiLoop_nil`, `_zero_steps` (loop boundary cases) | `Section04.OrbgrandAi` | proved (2) |
 | `orbgrandAi_empty_patterns`, `_zero_budget` (top-level boundary cases) | `Section04.OrbgrandAi` | proved (2) |
 | `orbgrandAiLoop_empty_codebook` (`Phi = fun _ => false` => loop returns none) | `Section04.OrbgrandAi` | proved |

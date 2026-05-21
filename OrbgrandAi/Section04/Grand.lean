@@ -162,6 +162,28 @@ theorem grandFind_nil
     grandFind H Y [] = none :=
   rfl
 
+/-- *Cons case, zero-syndrome branch.*  When the head candidate has
+    zero syndrome, `grandFind` returns `some (Y xor Ng)` immediately
+    without examining the tail. -/
+theorem grandFind_cons_zero_syndrome
+    {n k : Nat} (H : ParityCheck n k) (Y Ng : Codeword n)
+    (rest : List (Codeword n))
+    (h : forall (i : Fin (n - k)),
+          H.matrix.mulVec (Codeword.xor Y Ng) i = 0) :
+    grandFind H Y (Ng :: rest) = some (Codeword.xor Y Ng) :=
+  dif_pos h
+
+/-- *Cons case, nonzero-syndrome branch.*  When the head candidate
+    has nonzero syndrome, `grandFind` discards the head and recurses
+    on the tail. -/
+theorem grandFind_cons_nonzero_syndrome
+    {n k : Nat} (H : ParityCheck n k) (Y Ng : Codeword n)
+    (rest : List (Codeword n))
+    (h : ¬ (forall (i : Fin (n - k)),
+            H.matrix.mulVec (Codeword.xor Y Ng) i = 0)) :
+    grandFind H Y (Ng :: rest) = grandFind H Y rest :=
+  dif_neg h
+
 /-- *Singleton candidate list.*  With exactly one noise candidate,
     `grandFind` reduces to a single syndrome check: return
     `some (Y xor Ng)` if the syndrome is zero, else `none`.  This is
