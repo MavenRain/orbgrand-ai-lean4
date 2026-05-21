@@ -161,6 +161,27 @@ theorem yuleWalker_denom_pos
     absurd (h_lhs_eq_zero ▸ h_pos) (lt_irrefl 0)
   lt_of_le_of_ne h_nn (Ne.symm h_ne)
 
+/-- *Strict bound on `rho1^2`:* `rho1.val^2 < 1`.
+
+    Immediate corollary of `yuleWalker_denom_pos`: from
+    `0 < 1 - rho1.val^2`, `sub_pos.mp` gives `rho1.val^2 < 1`. -/
+theorem yuleWalker_rho1_sq_lt_one
+    (rho1 rho2 : CorrelationCoefficient)
+    (h : yuleWalker_variance_bound rho1 rho2) :
+    rho1.val ^ 2 < 1 :=
+  sub_pos.mp (yuleWalker_denom_pos rho1 rho2 h)
+
+/-- *Strict bound on `rho1`:* `rho1.val < 1`.
+
+    From `rho1.val^2 < 1` and `0 ≤ rho1.val` (the type bound),
+    `sq_lt_one_iff₀.mp` gives `rho1.val < 1`. -/
+theorem yuleWalker_rho1_lt_one
+    (rho1 rho2 : CorrelationCoefficient)
+    (h : yuleWalker_variance_bound rho1 rho2) :
+    rho1.val < 1 :=
+  (sq_lt_one_iff₀ rho1.nonneg).mp
+    (yuleWalker_rho1_sq_lt_one rho1 rho2 h)
+
 /-- *Clearing the denominator of the variance bound.*
 
     From `yuleWalker_variance_bound rho1 rho2` (with denominator
