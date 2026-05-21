@@ -174,6 +174,52 @@ theorem yuleWalker_num_lt_denom
       < 1 - rho1.val ^ 2 :=
   (div_lt_one (yuleWalker_denom_pos rho1 rho2 h)).mp h.2
 
+/-- *Algebraic rearrangement of the variance-bound numerator with the
+    denominator absorbed.*  From `num < 1 - rho1^2` (`num_lt_denom`),
+    adding `rho1^2` to both sides and simplifying gives
+    `2 * rho1^2 + rho2^2 - 2 * rho1^2 * rho2 < 1`.
+
+    Proof outline (term-mode chain):
+    * `add_lt_add_right h_num rho1^2` yields
+      `(num) + rho1^2 < (1 - rho1^2) + rho1^2`.
+    * `sub_add_cancel` collapses the RHS to `1`.
+    * On the LHS, `sub_add_eq_add_sub` reorders to
+      `(rho1^2 + rho2^2 + rho1^2) - 2*rho1^2*rho2`.
+    * `add_assoc` + `add_comm` + `add_assoc.symm` move the two
+      `rho1^2` terms adjacent and `(two_mul rho1^2).symm` folds them
+      into `2 * rho1^2`. -/
+theorem yuleWalker_step3
+    (rho1 rho2 : CorrelationCoefficient)
+    (h : yuleWalker_variance_bound rho1 rho2) :
+    2 * rho1.val ^ 2 + rho2.val ^ 2 - 2 * rho1.val ^ 2 * rho2.val < 1 :=
+  -- Shorthand for the three pieces.
+  let a : Real := rho1.val ^ 2
+  let b : Real := rho2.val ^ 2
+  let c : Real := 2 * rho1.val ^ 2 * rho2.val
+  -- num + rho1^2 < (1 - rho1^2) + rho1^2.  Mathlib's `add_lt_add_right`
+  -- in this commit has the signature `a < b → (c : α) → c + a < c + b`
+  -- (despite the name) -- which is what `add_lt_add_left` would
+  -- conventionally do.  We explicitly construct the right-add form
+  -- via `(add_lt_add_iff_right a).mpr h_num`.
+  let h_num := yuleWalker_num_lt_denom rho1 rho2 h
+  let h_added : (a + b - c) + a < (1 - a) + a :=
+    (add_lt_add_iff_right a).mpr h_num
+  -- RHS simplification: (1 - a) + a = 1
+  let h_rhs : (1 - a) + a = 1 := sub_add_cancel 1 a
+  -- LHS algebraic rearrangement: (a + b - c) + a = 2*a + b - c
+  let h_step_a : (a + b - c) + a = (a + b + a) - c :=
+    sub_add_eq_add_sub (a + b) c a
+  let h_step_b : (a + b) + a = (a + a) + b :=
+    (add_assoc a b a).trans
+      ((congrArg (a + ·) (add_comm b a)).trans (add_assoc a a b).symm)
+  let h_step_c : (a + a) + b = 2 * a + b :=
+    congrArg (· + b) (two_mul a).symm
+  let h_lhs : (a + b - c) + a = 2 * a + b - c :=
+    h_step_a.trans
+      (congrArg (· - c) (h_step_b.trans h_step_c))
+  -- Combine: substitute LHS and RHS forms into h_added.
+  h_lhs ▸ h_rhs ▸ h_added
+
 /-- The Yule-Walker bound implies the `rho_1^2 < (rho_2 + 1) / 2`
     consequence.
 

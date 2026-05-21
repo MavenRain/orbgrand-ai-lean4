@@ -42,7 +42,10 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | First-order Gauss-Markov `cov1_lag` and AR(1) recurrence | `Section03.GaussMarkov` | def |
 | Second-order Gauss-Markov `cov2_lag` and Yule-Walker coeffs | `Section03.GaussMarkov` | def |
 | `cov2_lag_zero`, `_one`, `_two`, `_succ_succ_succ` base cases | `Section03.GaussMarkov` | proved (4 rfl) |
-| Yule-Walker variance bound -> `rho_1^2 < (rho_2 + 1) / 2` | `Section03.GaussMarkov` | placeholder |
+| Yule-Walker variance bound -> `rho_1^2 < (rho_2 + 1) / 2` | `Section03.GaussMarkov` | placeholder (3/4 sub-lemmas) |
+| `yuleWalker_denom_pos` (sub-lemma 1) | `Section03.GaussMarkov` | proved |
+| `yuleWalker_num_lt_denom` (sub-lemma 2) | `Section03.GaussMarkov` | proved |
+| `yuleWalker_step3` (sub-lemma 3: `2*rho_1^2 + rho_2^2 - 2*rho_1^2*rho_2 < 1`) | `Section03.GaussMarkov` | proved |
 | Auto-covariance determinant closed form for `n_s >= 4` | `Section03.Determinant` | placeholder |
 | Determinant positivity under Yule-Walker | `Section03.Determinant` | placeholder |
 | `entropyRate1_eq` first-order entropy rate formula | `Section03.EntropyRate` | proved |
