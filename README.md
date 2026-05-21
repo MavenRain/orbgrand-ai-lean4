@@ -27,6 +27,7 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | `dicode_zf_equalisation` (post-equalisation covariance = Gauss-Markov template) | `Section02.Dicode` | proved |
 | `gaussMarkovCov_two_00`, `_01`, `_10`, `_11` (2x2 entry lemmas) | `Section02.Dicode` | proved (4) |
 | `cov1_det_fin_two` (2x2 first-order Gauss-Markov det, unfolded form) | `Section02.Dicode` | proved |
+| `cov1_det_fin_two_factored` (`= sigma^2 * (1 - rho^2)`) | `Section02.Dicode` | proved |
 | Delay-tap impulse response `h_{k', j} = sum_d a sinc(...)` | `Section02.DelayTap` | def |
 | `delayTap_causal` (entries `i < j` vanish) | `Section02.DelayTap` | proved |
 | `sinc_zero` (sinc(0) = 1) | `Section02.DelayTap` | proved |

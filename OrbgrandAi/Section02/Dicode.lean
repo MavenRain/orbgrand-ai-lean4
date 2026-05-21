@@ -272,18 +272,41 @@ theorem cov1_det_fin_two
 /-- *Determinant of the 2x2 first-order Gauss-Markov auto-covariance,
     in factored form.*
 
-    `det = sigma^2 * (1 - rho^2)`.  The algebra to bridge from the
-    unfolded form (`cov1_det_fin_two`) to the factored form requires
-    chained applications of `mul_sub`, `mul_mul_mul_comm`, `sq`, and
-    `mul_one` without `ring` or `linarith`.
-
-    *Placeholder shape.* -/
-theorem cov1_det_fin_two_factored_statement
+    `det = sigma^2 * (1 - rho^2)`.  Algebraic bridge from the
+    unfolded form (`cov1_det_fin_two`): step (A) folds `s * s = s^2`
+    via `sq.symm`; step (B) rearranges `(s * r) * (s * r)` to
+    `(s * s) * (r * r)` via `mul_mul_mul_comm` and then folds to
+    `s^2 * r^2`; step (C) factors `s^2 - s^2 * r^2 = s^2 * (1 - r^2)`
+    via `mul_sub` and `mul_one`.  Each step is a `.trans` chain
+    plumbed through `congrArg` / `congrArg₂` because kan-tactics'
+    `kan_rw` does not elaborate polymorphic Mathlib lemmas without
+    explicit type arguments. -/
+theorem cov1_det_fin_two_factored
     (sigma : NoisePower) (rho : CorrelationCoefficient) :
-    ((gaussMarkovCov 2 sigma rho).det
-      = (sigma.val : Complex) ^ 2 * (1 - (rho.val : Complex) ^ 2)) -> True := by
-  kan_intro _h
-  kan_constructor
+    (gaussMarkovCov 2 sigma rho).det
+      = (sigma.val : Complex) ^ 2 * (1 - (rho.val : Complex) ^ 2) :=
+  let s : Complex := sigma.val
+  let r : Complex := rho.val
+  -- Step (A): s * s = s^2
+  let hA : s * s = s ^ 2 := (sq s).symm
+  -- Step (B): (s * r) * (s * r) = s^2 * r^2
+  let hB1 : (s * r) * (s * r) = (s * s) * (r * r) := mul_mul_mul_comm s r s r
+  let hB2 : (s * s) * (r * r) = s ^ 2 * (r * r) :=
+    congrArg (· * (r * r)) (sq s).symm
+  let hB3 : s ^ 2 * (r * r) = s ^ 2 * r ^ 2 :=
+    congrArg (s ^ 2 * ·) (sq r).symm
+  let hB : (s * r) * (s * r) = s ^ 2 * r ^ 2 := hB1.trans (hB2.trans hB3)
+  -- Bridge: s * s - (s * r) * (s * r) = s^2 - s^2 * r^2
+  let bridge : s * s - (s * r) * (s * r) = s ^ 2 - s ^ 2 * r ^ 2 :=
+    congrArg₂ (· - ·) hA hB
+  -- Step (C): s^2 - s^2 * r^2 = s^2 * (1 - r^2)
+  let hC1 : s ^ 2 * (1 - r ^ 2) = s ^ 2 * 1 - s ^ 2 * r ^ 2 :=
+    mul_sub (s ^ 2) 1 (r ^ 2)
+  let hC2 : s ^ 2 * 1 - s ^ 2 * r ^ 2 = s ^ 2 - s ^ 2 * r ^ 2 :=
+    congrArg (· - s ^ 2 * r ^ 2) (mul_one (s ^ 2))
+  let hC : s ^ 2 - s ^ 2 * r ^ 2 = s ^ 2 * (1 - r ^ 2) :=
+    (hC1.trans hC2).symm
+  (cov1_det_fin_two sigma rho).trans (bridge.trans hC)
 
 end Section02
 end OrbgrandAi
