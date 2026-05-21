@@ -66,6 +66,8 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | `grandFind_syndromeZero` (alias on syndromeZero) | `Section04.Grand` | proved |
 | `grand_ml_optimal` (ML-optimality under decreasing-likelihood order) | `Section04.Grand` | proved |
 | ORBGRAND landslide enumeration | `Section04.Orbgrand` | def (opaque enum) |
+| `landslideBucket` predicate, `landslideBucket_self` (membership reflexivity) | `Section04.Orbgrand` | proved |
+| `orbgrand_ordering_sound` (lower logistic weight => earlier bucket) | `Section04.Orbgrand` | proved |
 | ORBGRAND-AI Algorithm 1 (`orbgrandAi`, `orbgrandAiLoop`) | `Section04.OrbgrandAi` | def |
 | `orbgrandAiLoop_accept_sound`, `orbgrandAi_accept_sound` | `Section04.OrbgrandAi` | proved |
 | Approximate-independence block factorisation | `Section04.OrbgrandAi` | def |

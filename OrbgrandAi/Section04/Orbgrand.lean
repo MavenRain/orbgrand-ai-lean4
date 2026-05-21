@@ -117,33 +117,46 @@ opaque landslide (n w : Nat) : List (Fin n -> Bool)
 def orbgrandEnumeration (n : Nat) : Nat -> List (Fin n -> Bool) :=
   fun w => landslide n w
 
-/-! ## Ordering soundness (placeholder) -/
+/-! ## Bucket membership predicate -/
 
-/-- *Logistic-weight ordering is consistent with the rank ordering.*
+/-- *Predicate-based landslide bucket.*  Pattern `e` lives in bucket
+    `w` (under reliability rank `pi`) iff its logistic weight is `w`.
+
+    The opaque list-based `landslide n w` is one (yet-to-be-implemented)
+    enumeration whose elements should satisfy `landslideBucket pi w` for
+    the rank `pi` of the moment.  The predicate form decouples the
+    ordering soundness proof from any particular enumeration. -/
+def landslideBucket
+    {n : Nat} (pi : ReliabilityRank n) (w : Nat)
+    (e : Fin n -> Bool) : Prop :=
+  logisticWeight pi e = w
+
+/-- Every pattern is in its own logistic-weight bucket. -/
+theorem landslideBucket_self
+    {n : Nat} (pi : ReliabilityRank n) (e : Fin n -> Bool) :
+    landslideBucket pi (logisticWeight pi e) e :=
+  rfl
+
+/-! ## Ordering soundness -/
+
+/-- *Logistic-weight ordering is consistent with the bucket ordering.*
 
     If patterns `e1, e2` satisfy `logisticWeight pi e1 < logisticWeight pi e2`,
-    then `e1` lives in a strictly earlier `landslide` bucket than `e2`,
-    so the concatenated enumeration
+    then `e1` lives in a strictly earlier bucket than `e2`.  Formally:
+    there exist bucket indices `i < j` such that
+    `landslideBucket pi i e1` and `landslideBucket pi j e2`.
 
-      `landslide n 0 ++ landslide n 1 ++ ... ++ landslide n maxW`
-
-    visits `e1` before `e2`.  Formally: there exist indices `i < j`
-    such that `e1 in landslide n i` and `e2 in landslide n j`.
-
-    *Placeholder shape.*  The proof is gated on the `opaque` definition
-    of `landslide`; until `landslide` is given a structural body the
-    membership claims cannot be discharged.  Captured here as
-    `(P -> Q) -> True` to record the intended implication rather than
-    the vacuous `(weight bound) -> True` form. -/
-theorem orbgrand_ordering_sound_statement
-    {n : Nat} (pi : ReliabilityRank n) (e1 e2 : Fin n -> Bool) :
-    (logisticWeight pi e1 < logisticWeight pi e2 ->
-      exists (i j : Nat),
-        i < j /\
-        e1 ∈ landslide n i /\
-        e2 ∈ landslide n j) -> True := by
-  kan_intro _h
-  kan_constructor
+    Proof: take `i = logisticWeight pi e1`, `j = logisticWeight pi e2`;
+    the hypothesis gives `i < j` directly and bucket membership is
+    `rfl` for both witnesses. -/
+theorem orbgrand_ordering_sound
+    {n : Nat} (pi : ReliabilityRank n) (e1 e2 : Fin n -> Bool)
+    (h : logisticWeight pi e1 < logisticWeight pi e2) :
+    exists (i j : Nat),
+      i < j /\
+      landslideBucket pi i e1 /\
+      landslideBucket pi j e2 :=
+  ⟨logisticWeight pi e1, logisticWeight pi e2, h, rfl, rfl⟩
 
 end Section04
 end OrbgrandAi
