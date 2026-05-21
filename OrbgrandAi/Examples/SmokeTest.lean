@@ -167,6 +167,18 @@ example {n k : Nat} (H : ParityCheck n k) (Y : Codeword n)
     grandFind H Y (0 :: rest) = some Y :=
   grandFind_zero_first H Y rest h_cw
 
+/-- Syndrome decomposes as `H * Y + H * N_g`. -/
+example {n k : Nat} (H : ParityCheck n k) (Y N_g : Codeword n)
+    (i : Fin (n - k)) :
+    syndrome H Y N_g i = H.matrix.mulVec Y i + H.matrix.mulVec N_g i :=
+  syndrome_decomp H Y N_g i
+
+/-- On a codeword receiver, the syndrome reduces to `H * N_g`. -/
+example {n k : Nat} (H : ParityCheck n k) (Y N_g : Codeword n)
+    (h : forall i, H.matrix.mulVec Y i = 0) (i : Fin (n - k)) :
+    syndrome H Y N_g i = H.matrix.mulVec N_g i :=
+  syndrome_codeword H Y N_g h i
+
 /-- Identity channel receive law: `receive X N = X + N`. -/
 example {n_s : Nat} (X N : SymbolVector n_s) (noiseCov : CovMatrix n_s) :
     LinearIsi.receive { channel := 1, noiseCov := noiseCov } X N

@@ -66,6 +66,9 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | `Codeword.xor_xor_self` (XOR involution; now derived from the algebra) | `Section04.Grand` | proved |
 | `Codeword.xor_left_cancel`, `xor_right_cancel` | `Section04.Grand` | proved (2) |
 | `Codeword.eq_iff_xor_eq_zero`, `eq_of_xor_eq_zero`, `xor_eq_zero_of_eq` | `Section04.Grand` | proved (3) |
+| `syndrome_decomp` (syndrome linearity: H*Y + H*N_g) | `Section04.Grand` | proved |
+| `syndrome_codeword` (on a codeword receiver, syndrome = H*N_g) | `Section04.Grand` | proved |
+| `syndromeZero_iff_noise_codeword` (Y codeword => GRAND accepts iff N_g is codeword) | `Section04.Grand` | proved |
 | `grandFind_nil` (empty list returns none) | `Section04.Grand` | proved |
 | `grandFind_zero_syndrome` (decoder output has zero syndrome) | `Section04.Grand` | proved |
 | `grandFind_returns_xor` (output = `Codeword.xor Y Ng` for some `Ng ∈ order`) | `Section04.Grand` | proved |

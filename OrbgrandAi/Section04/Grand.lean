@@ -82,6 +82,54 @@ def syndromeZero
     {n k : Nat} (H : ParityCheck n k) (Y N_g : Codeword n) : Prop :=
   forall (i : Fin (n - k)), syndrome H Y N_g i = 0
 
+/-! ## Syndrome decomposition -/
+
+/-- *Linearity of the syndrome.*  Syndrome decomposes into the
+    parity-check applied separately to the received vector and the
+    noise candidate:
+
+      `syndrome H Y N_g i = H * Y i + H * N_g i`.
+
+    Direct application of `Matrix.mulVec_add` since
+    `Codeword.xor` is pointwise `ZMod 2` addition. -/
+theorem syndrome_decomp
+    {n k : Nat} (H : ParityCheck n k) (Y N_g : Codeword n)
+    (i : Fin (n - k)) :
+    syndrome H Y N_g i = H.matrix.mulVec Y i + H.matrix.mulVec N_g i :=
+  congrFun (H.matrix.mulVec_add Y N_g) i
+
+/-- *Syndrome on a codeword receiver.*  If the received vector `Y` is
+    itself a codeword (zero parity-check image), the syndrome of any
+    noise candidate reduces to the parity-check applied to the noise
+    alone.  Composes `syndrome_decomp` with `zero_add`. -/
+theorem syndrome_codeword
+    {n k : Nat} (H : ParityCheck n k) (Y N_g : Codeword n)
+    (h : forall i, H.matrix.mulVec Y i = 0)
+    (i : Fin (n - k)) :
+    syndrome H Y N_g i = H.matrix.mulVec N_g i :=
+  let step1 : syndrome H Y N_g i
+              = H.matrix.mulVec Y i + H.matrix.mulVec N_g i :=
+    syndrome_decomp H Y N_g i
+  let step2 : H.matrix.mulVec Y i + H.matrix.mulVec N_g i
+              = 0 + H.matrix.mulVec N_g i :=
+    congrArg (· + H.matrix.mulVec N_g i) (h i)
+  step1.trans (step2.trans (zero_add _))
+
+/-- *Syndrome-zero equivalence under a codeword receiver.*  When `Y`
+    is already a codeword, `syndromeZero H Y N_g` (the GRAND acceptance
+    condition) is equivalent to `N_g` itself being a codeword.
+
+    Captures a structural property of GRAND: if the receiver is in the
+    valid codeword set, the only noise candidates that close into a
+    codeword are themselves codewords. -/
+theorem syndromeZero_iff_noise_codeword
+    {n k : Nat} (H : ParityCheck n k) (Y N_g : Codeword n)
+    (h : forall i, H.matrix.mulVec Y i = 0) :
+    syndromeZero H Y N_g <->
+      forall (i : Fin (n - k)), H.matrix.mulVec N_g i = 0 :=
+  ⟨fun hz i => (syndrome_codeword H Y N_g h i).symm.trans (hz i),
+   fun hng i => (syndrome_codeword H Y N_g h i).trans (hng i)⟩
+
 /-! ## The GRAND search -/
 
 /-- The GRAND decoded output: search a finite list of candidate noise
