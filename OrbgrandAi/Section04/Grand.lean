@@ -239,6 +239,38 @@ theorem Codeword.xor_right_cancel {n : Nat} {a b c : Codeword n}
     step1.trans (step2.trans step3)
   lhs_eq.symm.trans (h1.trans rhs_eq)
 
+/-- `a = b ↔ a xor b = 0` -- equality via XOR.  The "transmitted
+    codeword agrees with the received vector exactly when the noise
+    vector is zero". -/
+theorem Codeword.eq_iff_xor_eq_zero {n : Nat} (a b : Codeword n) :
+    a = b ↔ Codeword.xor a b = 0 :=
+  ⟨fun h => h ▸ Codeword.xor_self a,
+   fun h =>
+     -- From `a xor b = 0`, derive `a = b` by `(a xor b) xor b = b`
+     -- on the right and `a xor (b xor b) = a` on the left.
+     let h1 : Codeword.xor (Codeword.xor a b) b = Codeword.xor 0 b :=
+       congrArg (fun z => Codeword.xor z b) h
+     let h2 : Codeword.xor (Codeword.xor a b) b = Codeword.xor a (Codeword.xor b b) :=
+       Codeword.xor_assoc a b b
+     let h3 : Codeword.xor a (Codeword.xor b b) = Codeword.xor a 0 :=
+       congrArg (Codeword.xor a) (Codeword.xor_self b)
+     let h4 : Codeword.xor a 0 = a := Codeword.xor_zero a
+     let h5 : Codeword.xor 0 b = b := Codeword.zero_xor b
+     -- a = a xor 0 = a xor (b xor b) = (a xor b) xor b = 0 xor b = b
+     ((h4.symm.trans h3.symm).trans h2.symm).trans (h1.trans h5)⟩
+
+/-- A specific witness of `xor_eq_zero_iff`: from `a xor b = 0`,
+    conclude `a = b`. -/
+theorem Codeword.eq_of_xor_eq_zero {n : Nat} {a b : Codeword n}
+    (h : Codeword.xor a b = 0) : a = b :=
+  (Codeword.eq_iff_xor_eq_zero a b).mpr h
+
+/-- A specific witness of `xor_eq_zero_iff`: from `a = b`, conclude
+    `a xor b = 0`. -/
+theorem Codeword.xor_eq_zero_of_eq {n : Nat} {a b : Codeword n}
+    (h : a = b) : Codeword.xor a b = 0 :=
+  (Codeword.eq_iff_xor_eq_zero a b).mp h
+
 /-- *ML-optimality of GRAND* (paper, IV.A).
 
     When the noise-guess list `order` is sorted in non-increasing

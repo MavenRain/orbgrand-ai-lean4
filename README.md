@@ -53,6 +53,7 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | `Codeword.zero_xor`, `xor_zero`, `xor_self`, `xor_comm`, `xor_assoc` | `Section04.Grand` | proved (5) |
 | `Codeword.xor_xor_self` (XOR involution; now derived from the algebra) | `Section04.Grand` | proved |
 | `Codeword.xor_left_cancel`, `xor_right_cancel` | `Section04.Grand` | proved (2) |
+| `Codeword.eq_iff_xor_eq_zero`, `eq_of_xor_eq_zero`, `xor_eq_zero_of_eq` | `Section04.Grand` | proved (3) |
 | `grandFind_zero_syndrome` (decoder output has zero syndrome) | `Section04.Grand` | proved |
 | `grandFind_syndromeZero` (alias on syndromeZero) | `Section04.Grand` | proved |
 | `grand_ml_optimal` (ML-optimality under decreasing-likelihood order) | `Section04.Grand` | proved |
