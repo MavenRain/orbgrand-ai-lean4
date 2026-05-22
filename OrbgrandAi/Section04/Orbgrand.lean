@@ -349,6 +349,88 @@ theorem mem_map_extend_iff {n : Nat} (list : List (Fin n -> Bool))
       h_last ▸ landslideExtend_split e
     List.mem_map.mpr ⟨e ∘ Fin.castSucc, h_x_in, h_extend⟩⟩
 
+/-- *`landslide` correctness.*  Membership in `landslide n w` is
+    equivalent to having bit-weight `w`.  Structural recursion on `n`:
+    * `n = 0` is `landslide_zero_iff`.
+    * `n + 1` case-splits on `n + 1 ≤ w` and on `e (Fin.last n)`,
+      using `mem_map_extend_iff` to extract the restriction, the
+      `bitWeight_split_*` lemmas to relate weights, and the IH on the
+      restriction `e ∘ Fin.castSucc`. -/
+theorem landslide_correct : forall (n w : Nat) (e : Fin n -> Bool),
+    e ∈ landslide n w <-> bitWeight e = w
+  | 0,     w, e => landslide_zero_iff e w
+  | n + 1, w, e =>
+    let e' : Fin n -> Bool := e ∘ Fin.castSucc
+    let ih_w := landslide_correct n w e'
+    let ih_w_sub := landslide_correct n (w - (n + 1)) e'
+    ⟨fun h_mem =>
+       if h_le : n + 1 ≤ w then
+         let h_mem' :
+             e ∈ (landslide n (w - (n + 1))).map (landslideExtend true)
+                 ++ (landslide n w).map (landslideExtend false) :=
+           Eq.mp (congrArg (e ∈ ·) (if_pos h_le)) h_mem
+         (List.mem_append.mp h_mem').elim
+           (fun h_top =>
+             let ⟨h_b, h_x_in⟩ :=
+               (mem_map_extend_iff _ true e).mp h_top
+             let h_bw' : bitWeight e' = w - (n + 1) := ih_w_sub.mp h_x_in
+             let h_bw_e : bitWeight e = bitWeight e' + (n + 1) :=
+               bitWeight_split_true e h_b
+             let h_eq : bitWeight e' + (n + 1) = w :=
+               (congrArg (· + (n + 1)) h_bw').trans (Nat.sub_add_cancel h_le)
+             h_bw_e.trans h_eq)
+           (fun h_bot =>
+             let ⟨h_b, h_x_in⟩ :=
+               (mem_map_extend_iff _ false e).mp h_bot
+             let h_bw' : bitWeight e' = w := ih_w.mp h_x_in
+             let h_bw_e : bitWeight e = bitWeight e' :=
+               bitWeight_split_false e h_b
+             h_bw_e.trans h_bw')
+       else
+         let h_mem' : e ∈ (landslide n w).map (landslideExtend false) :=
+           Eq.mp (congrArg (e ∈ ·) (if_neg h_le)) h_mem
+         let ⟨h_b, h_x_in⟩ :=
+           (mem_map_extend_iff _ false e).mp h_mem'
+         let h_bw' : bitWeight e' = w := ih_w.mp h_x_in
+         let h_bw_e : bitWeight e = bitWeight e' :=
+           bitWeight_split_false e h_b
+         h_bw_e.trans h_bw',
+     fun h_bw =>
+       match h_b : e (Fin.last n) with
+       | true =>
+         let h_bw_e : bitWeight e = bitWeight e' + (n + 1) :=
+           bitWeight_split_true e h_b
+         let h_sum : bitWeight e' + (n + 1) = w := h_bw_e.symm.trans h_bw
+         let h_le : n + 1 ≤ w :=
+           h_sum ▸ Nat.le_add_left (n + 1) (bitWeight e')
+         let h_sub : bitWeight e' = w - (n + 1) :=
+           (Nat.add_sub_cancel (bitWeight e') (n + 1)).symm.trans
+             (congrArg (· - (n + 1)) h_sum)
+         let h_e'_in : e' ∈ landslide n (w - (n + 1)) := ih_w_sub.mpr h_sub
+         let h_top :
+             e ∈ (landslide n (w - (n + 1))).map (landslideExtend true) :=
+           (mem_map_extend_iff _ true e).mpr ⟨h_b, h_e'_in⟩
+         let h_app :
+             e ∈ (landslide n (w - (n + 1))).map (landslideExtend true)
+                 ++ (landslide n w).map (landslideExtend false) :=
+           List.mem_append.mpr (Or.inl h_top)
+         Eq.mpr (congrArg (e ∈ ·) (if_pos h_le)) h_app
+       | false =>
+         let h_bw_e : bitWeight e = bitWeight e' :=
+           bitWeight_split_false e h_b
+         let h_bw' : bitWeight e' = w := h_bw_e.symm.trans h_bw
+         let h_e'_in : e' ∈ landslide n w := ih_w.mpr h_bw'
+         let h_bot : e ∈ (landslide n w).map (landslideExtend false) :=
+           (mem_map_extend_iff _ false e).mpr ⟨h_b, h_e'_in⟩
+         if h_le : n + 1 ≤ w then
+           let h_app :
+               e ∈ (landslide n (w - (n + 1))).map (landslideExtend true)
+                   ++ (landslide n w).map (landslideExtend false) :=
+             List.mem_append.mpr (Or.inr h_bot)
+           Eq.mpr (congrArg (e ∈ ·) (if_pos h_le)) h_app
+         else
+           Eq.mpr (congrArg (e ∈ ·) (if_neg h_le)) h_bot⟩
+
 /-- The total ORBGRAND enumeration: concatenation of landslide
     enumerations for weights `0, 1, 2, ...`. -/
 def orbgrandEnumeration (n : Nat) : Nat -> List (Fin n -> Bool) :=
