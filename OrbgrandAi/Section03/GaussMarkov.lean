@@ -82,6 +82,27 @@ noncomputable def cov1_lag
     (sigma : NoisePower) (rho : CorrelationCoefficient) (i : Int) : Real :=
   sigma.val * (rho.val ^ i.natAbs)
 
+/-! ### Closed-form values of `cov1_lag` -/
+
+/-- `cov1_lag` at lag 0 is `sigma`.  Pointwise reduction `rho^0 = 1`
+    via `pow_zero` and `mul_one`. -/
+theorem cov1_lag_zero (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    cov1_lag sigma rho 0 = sigma.val :=
+  (congrArg (sigma.val * ·) (pow_zero rho.val)).trans (mul_one _)
+
+/-- `cov1_lag` at lag 1 is `sigma * rho`.  `rho^1 = rho` via `pow_one`. -/
+theorem cov1_lag_one (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    cov1_lag sigma rho 1 = sigma.val * rho.val :=
+  congrArg (sigma.val * ·) (pow_one rho.val)
+
+/-- `cov1_lag` is symmetric in the sign of the lag: `cov1_lag sigma rho (-i)
+    = cov1_lag sigma rho i`.  The `Int.natAbs` in the definition
+    flattens the sign. -/
+theorem cov1_lag_neg (sigma : NoisePower) (rho : CorrelationCoefficient)
+    (i : Int) :
+    cov1_lag sigma rho (-i) = cov1_lag sigma rho i :=
+  congrArg (fun n => sigma.val * (rho.val ^ n)) (Int.natAbs_neg i)
+
 /-! ## Second-order Gauss-Markov: AR coefficients via Yule-Walker -/
 
 /-- The second-order Gauss-Markov AR coefficient

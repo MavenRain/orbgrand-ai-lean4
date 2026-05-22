@@ -48,6 +48,7 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | `RFViewTaps.tap?_of_ge_seven` helper | `Section02.RFView` | proved |
 | `rfView_bandwidth` (entries `j + 6 < i` vanish) | `Section02.RFView` | proved |
 | First-order Gauss-Markov `cov1_lag` and AR(1) recurrence | `Section03.GaussMarkov` | def |
+| `cov1_lag_zero`, `cov1_lag_one`, `cov1_lag_neg` (closed-form values + sign-symmetry) | `Section03.GaussMarkov` | proved (3) |
 | Second-order Gauss-Markov `cov2_lag` and Yule-Walker coeffs | `Section03.GaussMarkov` | def |
 | `cov2_lag_zero`, `_one`, `_two`, `_succ_succ_succ` base cases | `Section03.GaussMarkov` | proved (4 rfl) |
 | Yule-Walker variance bound -> `rho_1^2 < (rho_2 + 1) / 2` | `Section03.GaussMarkov` | placeholder (3/4 sub-lemmas) |
