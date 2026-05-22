@@ -221,6 +221,31 @@ theorem bitWeight_extend_false {n : Nat} (e : Fin n -> Bool) :
   step1.trans
     ((congrArg₂ (· + ·) step_castSucc step_last).trans (add_zero _))
 
+/-- Extending by `true` adds `(n + 1)` to the bit-weight: the new top
+    bit at position `n` contributes `n + 1`, and the original
+    positions reproduce `bitWeight e` under `castSucc`. -/
+theorem bitWeight_extend_true {n : Nat} (e : Fin n -> Bool) :
+    bitWeight (landslideExtend true e) = bitWeight e + (n + 1) :=
+  let f : Fin (n + 1) -> Nat :=
+    fun i => if (landslideExtend true e) i then i.val + 1 else 0
+  let step1 : (Finset.univ : Finset (Fin (n + 1))).sum f
+            = (Finset.univ : Finset (Fin n)).sum (fun i => f i.castSucc)
+              + f (Fin.last n) :=
+    Fin.sum_univ_castSucc f
+  let step_last_ite : f (Fin.last n) = (Fin.last n).val + 1 :=
+    congrArg (fun b => if b then (Fin.last n).val + 1 else (0 : Nat))
+      (landslideExtend_last true e)
+  let step_last_val : (Fin.last n).val + 1 = n + 1 :=
+    congrArg (· + 1) (Fin.val_last n)
+  let step_last : f (Fin.last n) = n + 1 := step_last_ite.trans step_last_val
+  let step_castSucc :
+      (Finset.univ : Finset (Fin n)).sum (fun i => f i.castSucc)
+    = bitWeight e :=
+    Finset.sum_congr rfl fun i _ =>
+      congrArg (fun b => if b then i.castSucc.val + 1 else (0 : Nat))
+        (landslideExtend_castSucc true e i)
+  step1.trans (congrArg₂ (· + ·) step_castSucc step_last)
+
 /-- The total ORBGRAND enumeration: concatenation of landslide
     enumerations for weights `0, 1, 2, ...`. -/
 def orbgrandEnumeration (n : Nat) : Nat -> List (Fin n -> Bool) :=
