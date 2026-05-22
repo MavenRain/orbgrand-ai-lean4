@@ -221,6 +221,33 @@ theorem bitWeight_extend_false {n : Nat} (e : Fin n -> Bool) :
   step1.trans
     ((congrArg₂ (· + ·) step_castSucc step_last).trans (add_zero _))
 
+/-- Any pattern of length 0 has bit-weight zero (vacuous sum). -/
+theorem bitWeight_fin_zero (e : Fin 0 -> Bool) : bitWeight e = 0 :=
+  let h_uniq : e = Fin.elim0 :=
+    funext fun (i : Fin 0) => (i.elim0 : e i = Fin.elim0 i)
+  h_uniq.symm ▸ bitWeight_elim0
+
+/-- *`landslide` correctness, base case (n = 0).*  Membership in
+    `landslide 0 w` is equivalent to the pattern having bit-weight
+    `w`.  Splits on `w`:
+    * `w = 0`: any `e : Fin 0 → Bool` is `Fin.elim0` (uniquely
+      determined), so membership in `[Fin.elim0]` follows.
+    * `w > 0`: both sides are false (empty list, and `bitWeight = 0`
+      can't equal a positive number). -/
+theorem landslide_zero_iff (e : Fin 0 -> Bool) (w : Nat) :
+    e ∈ landslide 0 w <-> bitWeight e = w :=
+  let h_bw : bitWeight e = 0 := bitWeight_fin_zero e
+  let h_uniq : e = Fin.elim0 :=
+    funext fun (i : Fin 0) => (i.elim0 : e i = Fin.elim0 i)
+  match w with
+  | 0     =>
+      ⟨fun _ => h_bw,
+       fun _ => List.mem_singleton.mpr h_uniq⟩
+  | w + 1 =>
+      ⟨fun h_mem => (List.not_mem_nil h_mem).elim,
+       fun h_eq =>
+        (Nat.succ_ne_zero w (h_bw.symm.trans h_eq).symm).elim⟩
+
 /-- Extending by `true` adds `(n + 1)` to the bit-weight: the new top
     bit at position `n` contributes `n + 1`, and the original
     positions reproduce `bitWeight e` under `castSucc`. -/
