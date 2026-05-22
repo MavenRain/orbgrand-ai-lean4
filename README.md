@@ -102,6 +102,7 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | `landslide_self_mem` (every pattern is in its own bucket) | `Section04.Orbgrand` | proved |
 | `landslide_unique_bucket` (a pattern lives in only one bucket) | `Section04.Orbgrand` | proved |
 | `orbgrandEnumeration_correct` (wrapper around `landslide_correct`) | `Section04.Orbgrand` | proved |
+| `bitWeight_zero_iff_all_false` (zero weight iff all bits false) | `Section04.Orbgrand` | proved |
 | `landslide_zero_zero_length`, `landslide_zero_succ_length` (size at length 0) | `Section04.Orbgrand` | proved (2) |
 | `landslideBucket` predicate, `landslideBucket_self` (membership reflexivity) | `Section04.Orbgrand` | proved |
 | `orbgrand_ordering_sound` (lower logistic weight => earlier bucket) | `Section04.Orbgrand` | proved |

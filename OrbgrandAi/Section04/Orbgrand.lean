@@ -459,6 +459,45 @@ theorem orbgrandEnumeration_correct
     e ∈ orbgrandEnumeration n w <-> bitWeight e = w :=
   landslide_correct n w e
 
+/-- *Bit-weight zero characterisation.*  A pattern has bit-weight zero
+    iff all of its bits are `false`.  Structural recursion on `n`:
+    * `n = 0`: vacuous (no positions to check).
+    * `n + 1`: case-split on `e (Fin.last n)`.  The `true` case yields
+      `bitWeight e ≥ n + 1 > 0`, contradicting weight `0`.  The
+      `false` case recurses on the restriction. -/
+theorem bitWeight_zero_iff_all_false :
+    forall {n : Nat} (e : Fin n -> Bool),
+      bitWeight e = 0 <-> forall i, e i = false
+  | 0,     e =>
+      ⟨fun _ i => i.elim0,
+       fun _ => bitWeight_fin_zero e⟩
+  | n + 1, e =>
+      ⟨fun h_bw =>
+         match h_b : e (Fin.last n) with
+         | true =>
+             let h_split : bitWeight e = bitWeight (e ∘ Fin.castSucc) + (n + 1) :=
+               bitWeight_split_true e h_b
+             let h_sum : bitWeight (e ∘ Fin.castSucc) + (n + 1) = 0 :=
+               h_split.symm.trans h_bw
+             let h_le : n + 1 ≤ 0 :=
+               h_sum ▸ Nat.le_add_left (n + 1) (bitWeight (e ∘ Fin.castSucc))
+             (Nat.not_succ_le_zero n h_le).elim
+         | false =>
+             let h_split : bitWeight e = bitWeight (e ∘ Fin.castSucc) :=
+               bitWeight_split_false e h_b
+             let h_bw' : bitWeight (e ∘ Fin.castSucc) = 0 :=
+               h_split.symm.trans h_bw
+             let ih_fwd : forall j : Fin n, (e ∘ Fin.castSucc) j = false :=
+               (bitWeight_zero_iff_all_false (e ∘ Fin.castSucc)).mp h_bw'
+             fun i =>
+               Fin.lastCases (motive := fun j => e j = false)
+                 h_b
+                 (fun j => ih_fwd j)
+                 i,
+       fun h_all =>
+         Finset.sum_eq_zero fun i _ =>
+           congrArg (fun b => if b then i.val + 1 else (0 : Nat)) (h_all i)⟩
+
 /-! ## Bucket membership predicate -/
 
 /-- *Predicate-based landslide bucket.*  Pattern `e` lives in bucket
