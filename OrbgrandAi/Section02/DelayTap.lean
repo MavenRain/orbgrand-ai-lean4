@@ -129,5 +129,17 @@ theorem sinc_zero : sinc 0 = 1 :=
         else Real.sin (Real.pi * 0) / (Real.pi * 0)) = 1 from
     if_pos rfl
 
+/-- *Zero-attenuation delay-tap impulse response.*  When every path's
+    attenuation coefficient `a_d` is zero, the aggregate impulse
+    response vanishes for all symbol times.  Each summand becomes
+    `0 * sinc(...) = 0`, and `Finset.sum_eq_zero` finishes. -/
+theorem delayTapImpulseResponse_zero_attenuations
+    {p : Nat} (paths : Fin p -> DelayTapPath)
+    (h_zero : forall d, (paths d).attenuation = 0)
+    (f_s : SamplingFreq) (k' : SymbolIndex) :
+    delayTapImpulseResponse paths f_s k' = 0 :=
+  Finset.sum_eq_zero fun d _ =>
+    (congrArg (· * _) (h_zero d)).trans (zero_mul _)
+
 end Section02
 end OrbgrandAi
