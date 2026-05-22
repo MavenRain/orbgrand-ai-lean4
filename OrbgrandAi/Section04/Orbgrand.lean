@@ -150,6 +150,19 @@ theorem logisticWeight_elim0 {pi : ReliabilityRank 0} :
     logisticWeight pi Fin.elim0 = 0 :=
   Finset.sum_empty
 
+/-- `landslideExtend b e` evaluated at the new top position
+    `Fin.last n` returns the inserted bit `b`. -/
+theorem landslideExtend_last {n : Nat} (b : Bool) (e : Fin n -> Bool) :
+    landslideExtend b e (Fin.last n) = b :=
+  Fin.lastCases_last
+
+/-- `landslideExtend b e` evaluated at a `castSucc`-image position
+    returns the original pattern's value. -/
+theorem landslideExtend_castSucc
+    {n : Nat} (b : Bool) (e : Fin n -> Bool) (i : Fin n) :
+    landslideExtend b e i.castSucc = e i :=
+  Fin.lastCases_castSucc i
+
 /-- `landslide 1 0` contains the single all-false pattern. -/
 theorem landslide_one_zero :
     landslide 1 0 = [landslideExtend false Fin.elim0] := rfl
