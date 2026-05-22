@@ -30,6 +30,7 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | `LinearIsi.receive_noise_add` (additivity in the noise term) | `Section02.LinearIsi` | proved |
 | `LinearIsi.receive_add` (full linearity: `receive (X1+X2) (N1+N2) = receive X1 N1 + receive X2 N2`) | `Section02.LinearIsi` | proved |
 | Dicode partial-response channel `(1, -rho, 0, ...)` (matrix def) | `Section02.Dicode` | def |
+| `dicodeMatrix_diag`, `_subdiag`, `_off` (explicit per-branch entries) | `Section02.Dicode` | proved (3) |
 | `dicode_bandwidth` (entries `j + 1 < i` vanish) | `Section02.Dicode` | proved |
 | `dicode_causal` (entries `i < j` vanish) | `Section02.Dicode` | proved |
 | `dicode_zf_equalisation` (post-equalisation covariance = Gauss-Markov template) | `Section02.Dicode` | proved |

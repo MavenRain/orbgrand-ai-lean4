@@ -109,6 +109,44 @@ def dicode
   { channel := dicodeMatrix n_s rho,
     noiseCov := gaussMarkovCov n_s sigma rho }
 
+/-! ## Explicit entries of `dicodeMatrix` -/
+
+/-- The diagonal entry of the dicode channel matrix is `1`. -/
+theorem dicodeMatrix_diag
+    {n_s : Nat} (rho : CorrelationCoefficient) (i : Fin n_s) :
+    dicodeMatrix n_s rho i i = (1 : Complex) :=
+  if_pos rfl
+
+/-- The first sub-diagonal (`i = j + 1`) entry is `-rho`. -/
+theorem dicodeMatrix_subdiag
+    {n_s : Nat} (rho : CorrelationCoefficient)
+    (i j : Fin n_s) (h : i.val = j.val + 1) :
+    dicodeMatrix n_s rho i j = -(rho.val : Complex) :=
+  let h_ne : i.val ≠ j.val :=
+    fun h_eq => Nat.succ_ne_self j.val (h.symm.trans h_eq)
+  let step1 :
+      (if i.val = j.val then (1 : Complex)
+       else if i.val = j.val + 1 then -(rho.val : Complex)
+       else (0 : Complex))
+    = (if i.val = j.val + 1 then -(rho.val : Complex) else (0 : Complex)) :=
+    if_neg h_ne
+  step1.trans (if_pos h)
+
+/-- Entries away from both the diagonal and the first sub-diagonal
+    are zero. -/
+theorem dicodeMatrix_off
+    {n_s : Nat} (rho : CorrelationCoefficient)
+    (i j : Fin n_s)
+    (h1 : i.val ≠ j.val) (h2 : i.val ≠ j.val + 1) :
+    dicodeMatrix n_s rho i j = (0 : Complex) :=
+  let step1 :
+      (if i.val = j.val then (1 : Complex)
+       else if i.val = j.val + 1 then -(rho.val : Complex)
+       else (0 : Complex))
+    = (if i.val = j.val + 1 then -(rho.val : Complex) else (0 : Complex)) :=
+    if_neg h1
+  step1.trans (if_neg h2)
+
 /-! ## Structural properties (placeholders) -/
 
 /-- The dicode channel matrix has bandwidth at most `1`: every entry
