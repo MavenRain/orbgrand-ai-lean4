@@ -431,10 +431,33 @@ theorem landslide_correct : forall (n w : Nat) (e : Fin n -> Bool),
          else
            Eq.mpr (congrArg (e ∈ ·) (if_neg h_le)) h_bot⟩
 
+/-- *Self-membership.*  Every pattern is in its own bit-weight bucket. -/
+theorem landslide_self_mem {n : Nat} (e : Fin n -> Bool) :
+    e ∈ landslide n (bitWeight e) :=
+  (landslide_correct n (bitWeight e) e).mpr rfl
+
+/-- *Bucket weights are unique.*  A pattern cannot live in two
+    different landslide buckets.  Composes both directions of
+    `landslide_correct`. -/
+theorem landslide_unique_bucket
+    {n w1 w2 : Nat} {e : Fin n -> Bool}
+    (h1 : e ∈ landslide n w1) (h2 : e ∈ landslide n w2) :
+    w1 = w2 :=
+  ((landslide_correct n w1 e).mp h1).symm.trans
+    ((landslide_correct n w2 e).mp h2)
+
 /-- The total ORBGRAND enumeration: concatenation of landslide
     enumerations for weights `0, 1, 2, ...`. -/
 def orbgrandEnumeration (n : Nat) : Nat -> List (Fin n -> Bool) :=
   fun w => landslide n w
+
+/-- *ORBGRAND enumeration correctness.*  `orbgrandEnumeration n w` is
+    the list of all length-`n` patterns of bit-weight `w`.  Wrapper
+    around `landslide_correct`. -/
+theorem orbgrandEnumeration_correct
+    (n w : Nat) (e : Fin n -> Bool) :
+    e ∈ orbgrandEnumeration n w <-> bitWeight e = w :=
+  landslide_correct n w e
 
 /-! ## Bucket membership predicate -/
 

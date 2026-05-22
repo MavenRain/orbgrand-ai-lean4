@@ -355,4 +355,20 @@ example (s : Bool) : bpsk.exceed s s = 0 :=
 example {s s_hat : Bool} (h : s ≠ s_hat) : bpsk.exceed s s_hat = 1 :=
   bpsk_exceed_diff h
 
+/-- `landslide n w` exactly enumerates length-`n` patterns of bit-weight `w`. -/
+example (n w : Nat) (e : Fin n -> Bool) :
+    e ∈ landslide n w <-> bitWeight e = w :=
+  landslide_correct n w e
+
+/-- Every pattern is in its own bit-weight bucket. -/
+example {n : Nat} (e : Fin n -> Bool) :
+    e ∈ landslide n (bitWeight e) :=
+  landslide_self_mem e
+
+/-- A pattern's bucket is uniquely determined. -/
+example {n w1 w2 : Nat} {e : Fin n -> Bool}
+    (h1 : e ∈ landslide n w1) (h2 : e ∈ landslide n w2) :
+    w1 = w2 :=
+  landslide_unique_bucket h1 h2
+
 end OrbgrandAi.Examples.SmokeTest
