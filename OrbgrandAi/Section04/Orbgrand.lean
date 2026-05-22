@@ -498,6 +498,18 @@ theorem bitWeight_zero_iff_all_false :
          Finset.sum_eq_zero fun i _ =>
            congrArg (fun b => if b then i.val + 1 else (0 : Nat)) (h_all i)⟩
 
+/-- *Constant-false pattern has bit-weight zero.*  Direct corollary of
+    `bitWeight_zero_iff_all_false`. -/
+theorem bitWeight_const_false {n : Nat} :
+    bitWeight (fun _ : Fin n => false) = 0 :=
+  (bitWeight_zero_iff_all_false _).mpr (fun _ => rfl)
+
+/-- *Constant-false pattern is in landslide bucket 0.*  Combines
+    `landslide_correct` (mpr) with `bitWeight_const_false`. -/
+theorem const_false_mem_landslide_zero {n : Nat} :
+    (fun _ : Fin n => false) ∈ landslide n 0 :=
+  (landslide_correct n 0 _).mpr bitWeight_const_false
+
 /-! ## Bucket membership predicate -/
 
 /-- *Predicate-based landslide bucket.*  Pattern `e` lives in bucket
