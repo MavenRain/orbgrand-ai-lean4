@@ -18,7 +18,7 @@ set_option autoImplicit false
 
 namespace OrbgrandAi.Examples.SmokeTest
 
-open OrbgrandAi.Section02 OrbgrandAi.Section03 OrbgrandAi.Section04
+open OrbgrandAi.Section02 OrbgrandAi.Section03 OrbgrandAi.Section04 OrbgrandAi.Section06
 
 /-! ## Section II.  Channel-model lemmas -/
 
@@ -270,5 +270,78 @@ example {n_s b numCandidates : Nat}
     orbgrandAi (b := b) (numCandidates := numCandidates)
       Y Phi budget (p1 ++ p2) = some c :=
   orbgrandAi_append_left Y Phi budget p1 p2 c h
+
+/-- ORBGRAND-AI strong soundness: output is `substitute Y e` for some `e` passing both gates. -/
+example {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s)
+    (budget : AbandonmentBudget)
+    (patterns : List (Fin (n_s / b) -> Fin numCandidates))
+    (c : Codeword n_s)
+    (h : orbgrandAi (b := b) (numCandidates := numCandidates)
+        Y Phi budget patterns = some c) :
+    exists e, e ∈ patterns
+              /\ noSubstitutionConflict e
+              /\ Phi (substitute Y e)
+              /\ c = substitute Y e :=
+  orbgrandAi_returns_strong Y Phi budget patterns c h
+
+/-- ORBGRAND-AI all-fail sufficient condition: returns none when every pattern fails. -/
+example {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s)
+    (budget : AbandonmentBudget)
+    (patterns : List (Fin (n_s / b) -> Fin numCandidates))
+    (hfail : forall e, e ∈ patterns ->
+      ¬ noSubstitutionConflict e ∨ ¬ Phi (substitute Y e)) :
+    orbgrandAi (b := b) (numCandidates := numCandidates)
+      Y Phi budget patterns = none :=
+  orbgrandAi_none_of_all_fail Y Phi budget patterns hfail
+
+/-- GRAND failure characterisation: returns none iff every candidate fails. -/
+example {n k : Nat} (H : ParityCheck n k) (Y : Codeword n)
+    (order : List (Codeword n)) :
+    grandFind H Y order = none <->
+      forall Ng, Ng ∈ order ->
+        ¬ (forall (i : Fin (n - k)),
+            H.matrix.mulVec (Codeword.xor Y Ng) i = 0) :=
+  grandFind_none_iff H Y order
+
+/-- ORBGRAND-AI failure characterisation under sufficient budget. -/
+example {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s)
+    (budget : AbandonmentBudget)
+    (patterns : List (Fin (n_s / b) -> Fin numCandidates))
+    (hbudget : patterns.length <= budget.toNat) :
+    orbgrandAi (b := b) (numCandidates := numCandidates)
+      Y Phi budget patterns = none <->
+      forall e, e ∈ patterns ->
+        ¬ noSubstitutionConflict e ∨ ¬ Phi (substitute Y e) :=
+  orbgrandAi_none_iff_of_budget Y Phi budget patterns hbudget
+
+/-- Codeword.xor and `+` coincide as pointwise ZMod 2 addition. -/
+example {n : Nat} (a b : Codeword n) :
+    Codeword.xor a b = a + b :=
+  Codeword.xor_eq_add a b
+
+/-- Codeword negation is the identity in ZMod 2. -/
+example {n : Nat} (a : Codeword n) : -a = a :=
+  Codeword.neg_eq_self a
+
+/-- Bandwidth monotonicity: a stronger (smaller) bandwidth implies a weaker one. -/
+example {n_s : Nat} (ch : LinearIsi n_s) (b b' : Nat) (hb : b <= b')
+    (h : ch.bandwidth b) : ch.bandwidth b' :=
+  LinearIsi.bandwidth_le hb h
+
+/-- AR(2) closed-form at index 2. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 2 = phi1 * z2 + phi2 * z1 :=
+  ar2_two phi1 phi2 z1 z2
+
+/-- Imperfect-CSI perturbation preserves causality. -/
+example {n_s : Nat} {h : ChannelMatrix n_s}
+    {epsilon : Matrix (Fin n_s) (Fin n_s) Complex}
+    (hcausal : forall (i j : Fin n_s), i.val < j.val -> h i j = 0)
+    (i j : Fin n_s) (hij : i.val < j.val) :
+    perturbChannel h epsilon i j = 0 :=
+  perturbChannel_causal_of_causal hcausal i j hij
 
 end OrbgrandAi.Examples.SmokeTest
