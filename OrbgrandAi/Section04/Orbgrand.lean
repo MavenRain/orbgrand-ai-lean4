@@ -277,6 +277,7 @@ theorem landslideExtend_inj {n : Nat} (b : Bool) :
       (landslideExtend_castSucc b e1 i).symm.trans
         (h_at.trans (landslideExtend_castSucc b e2 i))
 
+
 /-- Extending by `true` adds `(n + 1)` to the bit-weight: the new top
     bit at position `n` contributes `n + 1`, and the original
     positions reproduce `bitWeight e` under `castSucc`. -/
@@ -301,6 +302,31 @@ theorem bitWeight_extend_true {n : Nat} (e : Fin n -> Bool) :
       congrArg (fun b => if b then i.castSucc.val + 1 else (0 : Nat))
         (landslideExtend_castSucc true e i)
   step1.trans (congrArg₂ (· + ·) step_castSucc step_last)
+
+/-- *Weight decomposition under top bit false.*  When the top bit is
+    `false`, the pattern's bit-weight equals its restriction's. -/
+theorem bitWeight_split_false {n : Nat} (e : Fin (n + 1) -> Bool)
+    (h : e (Fin.last n) = false) :
+    bitWeight e = bitWeight (e ∘ Fin.castSucc) :=
+  let h_split : landslideExtend (e (Fin.last n)) (e ∘ Fin.castSucc) = e :=
+    landslideExtend_split e
+  let h_split' : landslideExtend false (e ∘ Fin.castSucc) = e :=
+    h ▸ h_split
+  (congrArg bitWeight h_split'.symm).trans
+    (bitWeight_extend_false (e ∘ Fin.castSucc))
+
+/-- *Weight decomposition under top bit true.*  When the top bit is
+    `true`, the pattern's bit-weight equals its restriction's plus
+    `n + 1` (the top bit's logistic-weight contribution). -/
+theorem bitWeight_split_true {n : Nat} (e : Fin (n + 1) -> Bool)
+    (h : e (Fin.last n) = true) :
+    bitWeight e = bitWeight (e ∘ Fin.castSucc) + (n + 1) :=
+  let h_split : landslideExtend (e (Fin.last n)) (e ∘ Fin.castSucc) = e :=
+    landslideExtend_split e
+  let h_split' : landslideExtend true (e ∘ Fin.castSucc) = e :=
+    h ▸ h_split
+  (congrArg bitWeight h_split'.symm).trans
+    (bitWeight_extend_true (e ∘ Fin.castSucc))
 
 /-- The total ORBGRAND enumeration: concatenation of landslide
     enumerations for weights `0, 1, 2, ...`. -/
