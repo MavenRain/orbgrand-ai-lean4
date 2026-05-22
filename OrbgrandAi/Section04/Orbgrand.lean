@@ -248,6 +248,35 @@ theorem landslide_zero_iff (e : Fin 0 -> Bool) (w : Nat) :
        fun h_eq =>
         (Nat.succ_ne_zero w (h_bw.symm.trans h_eq).symm).elim⟩
 
+/-- *Pattern decomposition.*  Any length-`(n + 1)` pattern equals its
+    own `landslideExtend` of (top bit, castSucc-restriction).  Proof
+    by `funext` + `Fin.lastCases`: at `Fin.last n` it's by
+    `landslideExtend_last`; at `castSucc j` it's by
+    `landslideExtend_castSucc`. -/
+theorem landslideExtend_split {n : Nat} (e : Fin (n + 1) -> Bool) :
+    landslideExtend (e (Fin.last n)) (e ∘ Fin.castSucc) = e :=
+  funext fun i =>
+    Fin.lastCases
+      (motive := fun j =>
+        landslideExtend (e (Fin.last n)) (e ∘ Fin.castSucc) j = e j)
+      (landslideExtend_last (e (Fin.last n)) (e ∘ Fin.castSucc))
+      (fun j =>
+        landslideExtend_castSucc (e (Fin.last n)) (e ∘ Fin.castSucc) j)
+      i
+
+/-- *`landslideExtend` is injective for any fixed top bit.*  Two
+    length-`n` patterns extending to the same length-`(n + 1)` pattern
+    must have been equal.  Proof: `funext` + `landslideExtend_castSucc`
+    on each position. -/
+theorem landslideExtend_inj {n : Nat} (b : Bool) :
+    Function.Injective (landslideExtend (n := n) b) :=
+  fun e1 e2 h =>
+    funext fun i =>
+      let h_at : landslideExtend b e1 i.castSucc = landslideExtend b e2 i.castSucc :=
+        congrFun h i.castSucc
+      (landslideExtend_castSucc b e1 i).symm.trans
+        (h_at.trans (landslideExtend_castSucc b e2 i))
+
 /-- Extending by `true` adds `(n + 1)` to the bit-weight: the new top
     bit at position `n` contributes `n + 1`, and the original
     positions reproduce `bitWeight e` under `castSucc`. -/
