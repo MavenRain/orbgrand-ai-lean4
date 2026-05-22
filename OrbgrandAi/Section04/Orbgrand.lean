@@ -150,6 +150,24 @@ theorem logisticWeight_elim0 {pi : ReliabilityRank 0} :
     logisticWeight pi Fin.elim0 = 0 :=
   Finset.sum_empty
 
+/-- `landslide 1 0` contains the single all-false pattern. -/
+theorem landslide_one_zero :
+    landslide 1 0 = [landslideExtend false Fin.elim0] := rfl
+
+/-- `landslide 1 1` contains the single pattern with bit 0 set. -/
+theorem landslide_one_one :
+    landslide 1 1 = [landslideExtend true Fin.elim0] := rfl
+
+/-- `landslide n w` has length 0 (is empty) when `w` is high enough
+    that no pattern of length `n` can achieve it.  Specifically when
+    `n = 0` and `w > 0`. -/
+theorem landslide_zero_succ_length (w : Nat) :
+    (landslide 0 (w + 1)).length = 0 := rfl
+
+/-- `landslide 0 0` has length 1 -- the unique empty pattern. -/
+theorem landslide_zero_zero_length :
+    (landslide 0 0).length = 1 := rfl
+
 /-- The total ORBGRAND enumeration: concatenation of landslide
     enumerations for weights `0, 1, 2, ...`. -/
 def orbgrandEnumeration (n : Nat) : Nat -> List (Fin n -> Bool) :=

@@ -89,6 +89,8 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | `grand_ml_optimal` (ML-optimality under decreasing-likelihood order) | `Section04.Grand` | proved |
 | ORBGRAND landslide enumeration (`landslideExtend` + `landslide`) | `Section04.Orbgrand` | def (concrete) |
 | `landslide_zero_zero`, `landslide_zero_succ`, `logisticWeight_elim0` (base cases) | `Section04.Orbgrand` | proved (3) |
+| `landslide_one_zero`, `landslide_one_one` (closed-form at length 1) | `Section04.Orbgrand` | proved (2) |
+| `landslide_zero_zero_length`, `landslide_zero_succ_length` (size at length 0) | `Section04.Orbgrand` | proved (2) |
 | `landslideBucket` predicate, `landslideBucket_self` (membership reflexivity) | `Section04.Orbgrand` | proved |
 | `orbgrand_ordering_sound` (lower logistic weight => earlier bucket) | `Section04.Orbgrand` | proved |
 | ORBGRAND-AI Algorithm 1 (`orbgrandAi`, `orbgrandAiLoop`) | `Section04.OrbgrandAi` | def |
