@@ -91,6 +91,7 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | `landslide_zero_zero`, `landslide_zero_succ`, `logisticWeight_elim0` (base cases) | `Section04.Orbgrand` | proved (3) |
 | `landslide_one_zero`, `landslide_one_one` (closed-form at length 1) | `Section04.Orbgrand` | proved (2) |
 | `landslideExtend_last`, `landslideExtend_castSucc` (Fin.lastCases at last/castSucc) | `Section04.Orbgrand` | proved (2) |
+| `bitWeight` (identity-rank logistic weight) + `bitWeight_elim0`, `bitWeight_extend_false` | `Section04.Orbgrand` | def + proved (2) |
 | `landslide_zero_zero_length`, `landslide_zero_succ_length` (size at length 0) | `Section04.Orbgrand` | proved (2) |
 | `landslideBucket` predicate, `landslideBucket_self` (membership reflexivity) | `Section04.Orbgrand` | proved |
 | `orbgrand_ordering_sound` (lower logistic weight => earlier bucket) | `Section04.Orbgrand` | proved |

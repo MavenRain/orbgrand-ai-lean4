@@ -1,5 +1,6 @@
 import Mathlib.Data.Real.Basic
 import Mathlib.Data.Fin.VecNotation
+import Mathlib.Algebra.BigOperators.Fin
 import OrbgrandAi.Section02.Basic
 import OrbgrandAi.Section04.Grand
 import KanTactics
@@ -180,6 +181,45 @@ theorem landslide_zero_succ_length (w : Nat) :
 /-- `landslide 0 0` has length 1 -- the unique empty pattern. -/
 theorem landslide_zero_zero_length :
     (landslide 0 0).length = 1 := rfl
+
+/-! ## Identity-rank logistic weight (`bitWeight`) -/
+
+/-- The identity-rank logistic weight: sum of `(i + 1)` over positions
+    `i` where `e i = true`.  This is what `landslide` enumerates by:
+    `landslide n w` is the (yet-to-be-proven) list of all length-`n`
+    patterns with `bitWeight = w`. -/
+def bitWeight {n : Nat} (e : Fin n -> Bool) : Nat :=
+  Finset.univ.sum fun i =>
+    if e i then i.val + 1 else 0
+
+/-- The empty pattern has bit-weight zero (vacuous sum). -/
+theorem bitWeight_elim0 :
+    bitWeight (Fin.elim0 : Fin 0 -> Bool) = 0 :=
+  Finset.sum_empty
+
+/-- Extending by `false` preserves the bit-weight: the new top bit
+    contributes 0, and the original positions are reproduced under
+    `castSucc`.  Composes `Fin.sum_univ_castSucc` with
+    `landslideExtend_last`/`landslideExtend_castSucc`. -/
+theorem bitWeight_extend_false {n : Nat} (e : Fin n -> Bool) :
+    bitWeight (landslideExtend false e) = bitWeight e :=
+  let f : Fin (n + 1) -> Nat :=
+    fun i => if (landslideExtend false e) i then i.val + 1 else 0
+  let step1 : (Finset.univ : Finset (Fin (n + 1))).sum f
+            = (Finset.univ : Finset (Fin n)).sum (fun i => f i.castSucc)
+              + f (Fin.last n) :=
+    Fin.sum_univ_castSucc f
+  let step_last : f (Fin.last n) = 0 :=
+    congrArg (fun b => if b then (Fin.last n).val + 1 else (0 : Nat))
+      (landslideExtend_last false e)
+  let step_castSucc :
+      (Finset.univ : Finset (Fin n)).sum (fun i => f i.castSucc)
+    = bitWeight e :=
+    Finset.sum_congr rfl fun i _ =>
+      congrArg (fun b => if b then i.castSucc.val + 1 else (0 : Nat))
+        (landslideExtend_castSucc false e i)
+  step1.trans
+    ((congrArg₂ (· + ·) step_castSucc step_last).trans (add_zero _))
 
 /-- The total ORBGRAND enumeration: concatenation of landslide
     enumerations for weights `0, 1, 2, ...`. -/
