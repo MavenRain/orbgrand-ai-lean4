@@ -97,6 +97,7 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | `landslideExtend_split` (every pattern is extend of top bit + restriction) | `Section04.Orbgrand` | proved |
 | `landslideExtend_inj` (extend with fixed top bit is injective) | `Section04.Orbgrand` | proved |
 | `bitWeight_split_false`, `bitWeight_split_true` (weight decomposition under top bit) | `Section04.Orbgrand` | proved (2) |
+| `mem_map_extend_iff` (membership in `(...).map (landslideExtend b)`) | `Section04.Orbgrand` | proved |
 | `landslide_zero_zero_length`, `landslide_zero_succ_length` (size at length 0) | `Section04.Orbgrand` | proved (2) |
 | `landslideBucket` predicate, `landslideBucket_self` (membership reflexivity) | `Section04.Orbgrand` | proved |
 | `orbgrand_ordering_sound` (lower logistic weight => earlier bucket) | `Section04.Orbgrand` | proved |

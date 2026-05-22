@@ -328,6 +328,27 @@ theorem bitWeight_split_true {n : Nat} (e : Fin (n + 1) -> Bool)
   (congrArg bitWeight h_split'.symm).trans
     (bitWeight_extend_true (e ∘ Fin.castSucc))
 
+/-- *Membership in a `landslideExtend`-mapped list.*  Pattern `e` is in
+    `list.map (landslideExtend b)` iff its top bit equals `b` and its
+    restriction is in `list`.  Combines `List.mem_map` with
+    `landslideExtend_last`/`landslideExtend_castSucc`/`landslideExtend_split`. -/
+theorem mem_map_extend_iff {n : Nat} (list : List (Fin n -> Bool))
+    (b : Bool) (e : Fin (n + 1) -> Bool) :
+    e ∈ list.map (landslideExtend b) <->
+      e (Fin.last n) = b /\ (e ∘ Fin.castSucc) ∈ list :=
+  ⟨fun h_mem =>
+    let ⟨x, hx_in, hx_eq⟩ := List.mem_map.mp h_mem
+    let h_last : b = e (Fin.last n) :=
+      (landslideExtend_last b x).symm.trans (congrFun hx_eq (Fin.last n))
+    let h_x : x = e ∘ Fin.castSucc :=
+      funext fun i =>
+        (landslideExtend_castSucc b x i).symm.trans (congrFun hx_eq i.castSucc)
+    ⟨h_last.symm, h_x ▸ hx_in⟩,
+   fun ⟨h_last, h_x_in⟩ =>
+    let h_extend : landslideExtend b (e ∘ Fin.castSucc) = e :=
+      h_last ▸ landslideExtend_split e
+    List.mem_map.mpr ⟨e ∘ Fin.castSucc, h_x_in, h_extend⟩⟩
+
 /-- The total ORBGRAND enumeration: concatenation of landslide
     enumerations for weights `0, 1, 2, ...`. -/
 def orbgrandEnumeration (n : Nat) : Nat -> List (Fin n -> Bool) :=
