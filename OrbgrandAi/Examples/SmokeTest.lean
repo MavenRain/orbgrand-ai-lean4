@@ -344,4 +344,15 @@ example {n_s : Nat} {h : ChannelMatrix n_s}
     perturbChannel h epsilon i j = 0 :=
   perturbChannel_causal_of_causal hcausal i j hij
 
+/-- BPSK is a concrete `Constellation Bool`. -/
+example : Constellation Bool := bpsk
+
+/-- BPSK exceedance is 0 on agreement. -/
+example (s : Bool) : bpsk.exceed s s = 0 :=
+  bpsk_exceed_self s
+
+/-- BPSK exceedance is 1 on disagreement. -/
+example {s s_hat : Bool} (h : s ≠ s_hat) : bpsk.exceed s s_hat = 1 :=
+  bpsk_exceed_diff h
+
 end OrbgrandAi.Examples.SmokeTest

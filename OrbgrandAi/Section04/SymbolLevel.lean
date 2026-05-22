@@ -64,6 +64,39 @@ structure Constellation (chi : Type) where
   /-- Exceedance distance is `0` iff the two symbols agree. -/
   exceed_zero_iff : forall (s s_hat : chi), exceed s s_hat = 0 <-> s = s_hat
 
+/-! ## Concrete constellation instances -/
+
+/-- *BPSK* (binary phase-shift keying): a 2-symbol constellation with
+    alphabet `Bool`.  Exceedance distance is `0` when the symbols agree,
+    `1` otherwise -- the simplest non-trivial distance satisfying the
+    Constellation axioms. -/
+def bpsk : Constellation Bool :=
+  { decEq := inferInstance
+  , fintype := inferInstance
+  , exceed := fun s s_hat => if s = s_hat then (0 : Real) else 1
+  , exceed_nonneg := fun s s_hat =>
+      if h : s = s_hat then
+        le_of_eq (if_pos h).symm
+      else
+        zero_le_one.trans (le_of_eq (if_neg h).symm)
+  , exceed_zero_iff := fun s s_hat =>
+      ⟨fun h_ite =>
+        if hss : s = s_hat then hss
+        else (one_ne_zero ((if_neg hss).symm.trans h_ite)).elim,
+       fun h => if_pos h⟩
+  }
+
+/-- BPSK exceedance is `0` on agreement.  Direct unfolding via
+    `if_pos rfl`. -/
+theorem bpsk_exceed_self (s : Bool) : bpsk.exceed s s = 0 :=
+  if_pos rfl
+
+/-- BPSK exceedance is `1` on disagreement.  Direct unfolding via
+    `if_neg`. -/
+theorem bpsk_exceed_diff {s s_hat : Bool} (h : s ≠ s_hat) :
+    bpsk.exceed s s_hat = 1 :=
+  if_neg h
+
 /-! ## Per-symbol candidate list -/
 
 /-- For a fixed hard-decision `s_hat`, enumerate all candidate
