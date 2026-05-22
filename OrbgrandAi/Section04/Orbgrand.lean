@@ -98,19 +98,57 @@ def logisticWeight
 
 /-! ## Landslide enumeration (abstract) -/
 
-/-- The landslide enumeration `landslide n w` returns the list of
-    all `Fin n -> Bool` patterns whose logistic weight (in the
-    identity ordering) is exactly `w`.  In the actual ORBGRAND
-    pipeline the caller composes with a `ReliabilityRank` to get
-    the rank-ordered enumeration.
+/-- Extend a length-`n` pattern by setting the bit at position `n`
+    (the new highest position in `Fin (n + 1)`) to the value `b`.
+    Built directly from `Fin.lastCases`. -/
+def landslideExtend
+    {n : Nat} (b : Bool) (e : Fin n -> Bool) : Fin (n + 1) -> Bool :=
+  Fin.lastCases b e
 
-    The list is returned in lexicographic order on the sorted basis,
-    which matches the landslide-algorithm spec from the paper
-    (refs [14], [39]).
+/-- *Concrete landslide enumeration.*  `landslide n w` is the list of
+    all `Fin n -> Bool` patterns whose identity-rank logistic weight
+    is exactly `w`.  In the actual ORBGRAND pipeline the caller
+    composes with a `ReliabilityRank` to get the rank-ordered
+    enumeration.
 
-    *Placeholder shape.*  The full landslide construction is
-    deferred; for now we expose the signature. -/
-opaque landslide (n w : Nat) : List (Fin n -> Bool)
+    Structural recursion on `n`:
+    * `landslide 0 0` returns the empty pattern (which has weight 0).
+    * `landslide 0 (w + 1)` is empty (no positive weight on length 0).
+    * `landslide (n + 1) w` extends the length-`n` enumerations:
+        - With bit at position `n` set to `false`: keeps weight `w`.
+        - With bit at position `n` set to `true`: shifts weight by
+          `n + 1` (so we need patterns of weight `w - (n + 1)`),
+          conditional on `n + 1 <= w`.
+
+    The two extensions are concatenated `withTop ++ withoutTop`, so
+    "more bits set" patterns are visited first within each bucket. -/
+def landslide : (n w : Nat) -> List (Fin n -> Bool)
+  | 0,     0     => [Fin.elim0]
+  | 0,     _ + 1 => []
+  | n + 1, w     =>
+      let withoutTop : List (Fin (n + 1) -> Bool) :=
+        (landslide n w).map (landslideExtend false)
+      if n + 1 <= w then
+        let withTop : List (Fin (n + 1) -> Bool) :=
+          (landslide n (w - (n + 1))).map (landslideExtend true)
+        withTop ++ withoutTop
+      else
+        withoutTop
+
+/-- `landslide 0 0` contains exactly the empty pattern. -/
+theorem landslide_zero_zero :
+    landslide 0 0 = [Fin.elim0] := rfl
+
+/-- `landslide 0 (w + 1)` is empty: there are no length-0 patterns
+    of positive weight. -/
+theorem landslide_zero_succ (w : Nat) :
+    landslide 0 (w + 1) = [] := rfl
+
+/-- The empty pattern has logistic weight `0` under any reliability
+    rank (vacuous sum). -/
+theorem logisticWeight_elim0 {pi : ReliabilityRank 0} :
+    logisticWeight pi Fin.elim0 = 0 :=
+  Finset.sum_empty
 
 /-- The total ORBGRAND enumeration: concatenation of landslide
     enumerations for weights `0, 1, 2, ...`. -/
