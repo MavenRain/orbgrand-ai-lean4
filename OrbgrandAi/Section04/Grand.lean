@@ -407,6 +407,7 @@ theorem Codeword.xor_eq_iff_eq_xor {n : Nat} (a b c : Codeword n) :
     (congrArg (fun x => Codeword.xor x b) h).trans
       (Codeword.xor_xor_right c b)⟩
 
+
 /-- `Codeword.xor` is left-cancellable: `a xor b = a xor c → b = c`.
 
     Apply `Codeword.xor a` to both sides of `a xor b = a xor c`,
@@ -449,6 +450,18 @@ theorem Codeword.xor_right_cancel {n : Nat} {a b c : Codeword n}
     let step3 : Codeword.xor b 0 = b := Codeword.xor_zero b
     step1.trans (step2.trans step3)
   lhs_eq.symm.trans (h1.trans rhs_eq)
+
+/-- *Left cancellation iff.*  `a xor b = a xor c ↔ b = c`.  Iff form
+    of `Codeword.xor_left_cancel`. -/
+theorem Codeword.xor_left_eq_iff {n : Nat} (a b c : Codeword n) :
+    Codeword.xor a b = Codeword.xor a c <-> b = c :=
+  ⟨Codeword.xor_left_cancel, fun h => congrArg (Codeword.xor a) h⟩
+
+/-- *Right cancellation iff.*  `a xor c = b xor c ↔ a = b`.  Iff form
+    of `Codeword.xor_right_cancel`. -/
+theorem Codeword.xor_right_eq_iff {n : Nat} (a b c : Codeword n) :
+    Codeword.xor a c = Codeword.xor b c <-> a = b :=
+  ⟨Codeword.xor_right_cancel, fun h => congrArg (fun x => Codeword.xor x c) h⟩
 
 /-- `a = b ↔ a xor b = 0` -- equality via XOR.  The "transmitted
     codeword agrees with the received vector exactly when the noise
