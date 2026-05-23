@@ -521,6 +521,20 @@ theorem bitWeight_le_sum {n : Nat} (e : Fin n -> Bool) :
       (Nat.zero_le (i.val + 1))
       (Nat.le_refl (i.val + 1))
 
+/-- *Constant-true pattern realises the maximum bit-weight.*  Each
+    summand `(if (fun _ => true) i then i.val + 1 else 0)` reduces by
+    β + `cond true` to `i.val + 1`, so the entire sum collapses to
+    `Finset.univ.sum (fun i => i.val + 1)`. -/
+theorem bitWeight_const_true {n : Nat} :
+    bitWeight (fun _ : Fin n => true)
+      = Finset.univ.sum (fun i : Fin n => i.val + 1) := rfl
+
+/-- *`bitWeight (fun _ => true)` is the maximum bit-weight.*  Composes
+    `bitWeight_le_sum` with `bitWeight_const_true`. -/
+theorem bitWeight_le_const_true {n : Nat} (e : Fin n -> Bool) :
+    bitWeight e ≤ bitWeight (fun _ : Fin n => true) :=
+  (bitWeight_le_sum e).trans (le_of_eq bitWeight_const_true.symm)
+
 /-- *Extending all-false by false yields all-false.*  `Fin.lastCases`
     on each position: the new top is `false` (by `landslideExtend_last`),
     and original positions reproduce `false` (by `landslideExtend_castSucc`). -/

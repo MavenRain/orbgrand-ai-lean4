@@ -106,6 +106,8 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | `bitWeight_const_false`, `const_false_mem_landslide_zero` (all-false pattern in bucket 0) | `Section04.Orbgrand` | proved (2) |
 | `landslideExtend_false_const_false`, `landslide_zero_singleton` (bucket 0 is exactly `[fun _ => false]`) | `Section04.Orbgrand` | proved (2) |
 | `bitWeight_le_sum` (upper bound on bit-weight = sum of `(i + 1)` over `Fin n`) | `Section04.Orbgrand` | proved |
+| `bitWeight_const_true` (all-true pattern's weight = sum) | `Section04.Orbgrand` | proved (rfl) |
+| `bitWeight_le_const_true` (bit-weight always ≤ all-true's bit-weight) | `Section04.Orbgrand` | proved |
 | `landslide_zero_zero_length`, `landslide_zero_succ_length` (size at length 0) | `Section04.Orbgrand` | proved (2) |
 | `landslideBucket` predicate, `landslideBucket_self` (membership reflexivity) | `Section04.Orbgrand` | proved |
 | `orbgrand_ordering_sound` (lower logistic weight => earlier bucket) | `Section04.Orbgrand` | proved |
