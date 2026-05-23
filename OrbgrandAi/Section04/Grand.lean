@@ -667,6 +667,14 @@ theorem syndrome_comm
     syndrome H Y N_g i = syndrome H N_g Y i :=
   congrArg (fun v => H.matrix.mulVec v i) (Codeword.xor_comm Y N_g)
 
+/-- *Zero is a codeword.*  The all-zero codeword always lies in the
+    kernel of `H.matrix.mulVec`, since multiplying any matrix by the
+    zero vector gives zero. -/
+theorem Codeword.zero_is_codeword {n k : Nat} (H : ParityCheck n k)
+    (i : Fin (n - k)) :
+    H.matrix.mulVec 0 i = 0 :=
+  congrFun H.matrix.mulVec_zero i
+
 /-- *Codewords are closed under XOR.*  If `a` and `b` are both
     codewords (each in the kernel of `H.matrix.mulVec`), then their
     XOR `a xor b` is also a codeword.  This is the standard

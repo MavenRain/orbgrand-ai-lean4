@@ -460,4 +460,17 @@ example {n k : Nat} (H : ParityCheck n k) (Y N c : Codeword n)
     syndrome H (Codeword.xor Y c) N i = syndrome H Y N i :=
   syndrome_invariant_under_codeword H Y N c h_c i
 
+/-- The zero codeword is a codeword. -/
+example {n k : Nat} (H : ParityCheck n k) (i : Fin (n - k)) :
+    H.matrix.mulVec 0 i = 0 :=
+  Codeword.zero_is_codeword H i
+
+/-- Codewords are closed under XOR. -/
+example {n k : Nat} (H : ParityCheck n k) {a b : Codeword n}
+    (ha : forall (i : Fin (n - k)), H.matrix.mulVec a i = 0)
+    (hb : forall (i : Fin (n - k)), H.matrix.mulVec b i = 0)
+    (i : Fin (n - k)) :
+    H.matrix.mulVec (Codeword.xor a b) i = 0 :=
+  Codeword.xor_codeword_is_codeword H ha hb i
+
 end OrbgrandAi.Examples.SmokeTest
