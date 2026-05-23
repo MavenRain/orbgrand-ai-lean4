@@ -384,4 +384,24 @@ example {n : Nat} : (fun _ : Fin n => false) ∈ landslide n 0 :=
 example {n : Nat} : (landslide n 0).length = 1 :=
   landslide_zero_length
 
+/-- Bucket 0 is exactly `[fun _ => false]`. -/
+example {n : Nat} : landslide n 0 = [fun _ : Fin n => false] :=
+  landslide_zero_singleton
+
+/-- Bit-weight is bounded above by the all-true bit-weight. -/
+example {n : Nat} (e : Fin n -> Bool) :
+    bitWeight e ≤ bitWeight (fun _ : Fin n => true) :=
+  bitWeight_le_const_true e
+
+/-- All-true bit-weight equals the rank-sum. -/
+example {n : Nat} :
+    bitWeight (fun _ : Fin n => true)
+      = Finset.univ.sum (fun i : Fin n => i.val + 1) :=
+  bitWeight_const_true
+
+/-- Buckets above the max weight are empty. -/
+example {n w : Nat} (h : bitWeight (fun _ : Fin n => true) < w) :
+    landslide n w = [] :=
+  landslide_eq_nil_of_too_large h
+
 end OrbgrandAi.Examples.SmokeTest
