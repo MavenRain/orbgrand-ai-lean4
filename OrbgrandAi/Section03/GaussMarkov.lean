@@ -331,6 +331,14 @@ theorem cov2_lag_one
     (beta1 beta2 : Real) :
     cov2_lag sigma rho1 rho2 beta1 beta2 1 = sigma.val * rho1.val := rfl
 
+/-- `cov2_lag` at lag `3` is the first recurrence step:
+    `beta_1 * (sigma * rho_2) + beta_2 * (sigma * rho_1)`. -/
+theorem cov2_lag_three
+    (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta1 beta2 : Real) :
+    cov2_lag sigma rho1 rho2 beta1 beta2 3
+      = beta1 * (sigma.val * rho2.val) + beta2 * (sigma.val * rho1.val) := rfl
+
 /-- `cov2_lag` at lag `2` is `sigma^2 * rho_2`. -/
 theorem cov2_lag_two
     (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
