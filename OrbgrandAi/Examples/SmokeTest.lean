@@ -371,4 +371,17 @@ example {n w1 w2 : Nat} {e : Fin n -> Bool}
     w1 = w2 :=
   landslide_unique_bucket h1 h2
 
+/-- The bit-weight is zero iff all bits are false. -/
+example {n : Nat} (e : Fin n -> Bool) :
+    bitWeight e = 0 <-> forall i, e i = false :=
+  bitWeight_zero_iff_all_false e
+
+/-- The constant-false pattern is in bucket 0. -/
+example {n : Nat} : (fun _ : Fin n => false) ∈ landslide n 0 :=
+  const_false_mem_landslide_zero
+
+/-- Bucket 0 has length 1 for any n. -/
+example {n : Nat} : (landslide n 0).length = 1 :=
+  landslide_zero_length
+
 end OrbgrandAi.Examples.SmokeTest
