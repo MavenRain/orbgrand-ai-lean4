@@ -436,4 +436,28 @@ example {n : Nat} (b : Bool) (e : Fin n -> Bool) :
       = bitWeight e + (if b then n + 1 else 0) :=
   bitWeight_landslideExtend b e
 
+/-- Max-weight bucket is exactly the all-true singleton. -/
+example {n : Nat} :
+    landslide n (bitWeight (fun _ : Fin n => true))
+      = [fun _ : Fin n => true] :=
+  landslide_max_singleton
+
+/-- Zero bit-weight iff equal to the all-false pattern. -/
+example {n : Nat} (e : Fin n -> Bool) :
+    bitWeight e = 0 <-> e = (fun _ : Fin n => false) :=
+  bitWeight_zero_iff_eq_const_false e
+
+/-- Max bit-weight iff equal to the all-true pattern. -/
+example {n : Nat} (e : Fin n -> Bool) :
+    bitWeight e = bitWeight (fun _ : Fin n => true)
+      <-> e = (fun _ : Fin n => true) :=
+  bitWeight_eq_max_iff_eq_const_true e
+
+/-- Syndrome is invariant under XOR-shift of the receiver by a codeword. -/
+example {n k : Nat} (H : ParityCheck n k) (Y N c : Codeword n)
+    (h_c : forall (i : Fin (n - k)), H.matrix.mulVec c i = 0)
+    (i : Fin (n - k)) :
+    syndrome H (Codeword.xor Y c) N i = syndrome H Y N i :=
+  syndrome_invariant_under_codeword H Y N c h_c i
+
 end OrbgrandAi.Examples.SmokeTest
