@@ -80,6 +80,7 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | `syndromeZero_iff_noise_codeword` (Y codeword => GRAND accepts iff N_g is codeword) | `Section04.Grand` | proved |
 | `syndrome_zero_noise`, `syndrome_zero_received`, `syndrome_comm` (boundary syndrome algebra) | `Section04.Grand` | proved (3) |
 | `syndrome_invariant_under_codeword` (coset property: syndrome stable under codeword shift of Y) | `Section04.Grand` | proved |
+| `Codeword.xor_codeword_is_codeword` (codewords closed under XOR; linear-code subspace property) | `Section04.Grand` | proved |
 | `grandFind_none_imp`, `_mpr`, `_iff` (GRAND failure characterisation) | `Section04.Grand` | proved (3) |
 | `grandFind_nil` (empty list returns none) | `Section04.Grand` | proved |
 | `grandFind_cons_zero_syndrome`, `_nonzero_syndrome` (cons-case decomposition) | `Section04.Grand` | proved (2) |

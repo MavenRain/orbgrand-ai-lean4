@@ -667,6 +667,21 @@ theorem syndrome_comm
     syndrome H Y N_g i = syndrome H N_g Y i :=
   congrArg (fun v => H.matrix.mulVec v i) (Codeword.xor_comm Y N_g)
 
+/-- *Codewords are closed under XOR.*  If `a` and `b` are both
+    codewords (each in the kernel of `H.matrix.mulVec`), then their
+    XOR `a xor b` is also a codeword.  This is the standard
+    "linear code is a subspace" property: `Matrix.mulVec` is linear,
+    so its kernel is closed under addition (= XOR in ZMod 2). -/
+theorem Codeword.xor_codeword_is_codeword {n k : Nat} (H : ParityCheck n k)
+    {a b : Codeword n}
+    (ha : forall (i : Fin (n - k)), H.matrix.mulVec a i = 0)
+    (hb : forall (i : Fin (n - k)), H.matrix.mulVec b i = 0) :
+    forall (i : Fin (n - k)),
+      H.matrix.mulVec (Codeword.xor a b) i = 0 :=
+  fun i =>
+    (congrFun (H.matrix.mulVec_add a b) i).trans
+      ((congrArg₂ (· + ·) (ha i) (hb i)).trans (add_zero 0))
+
 /-- *Syndrome is invariant under codeword shifts of the receiver.*  If
     `c` is a codeword (zero parity-check image), then XOR-shifting the
     received vector by `c` leaves the syndrome unchanged.  Captures
