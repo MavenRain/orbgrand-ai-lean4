@@ -644,6 +644,19 @@ theorem landslideExtend_false_const_false {n : Nat} :
       (fun j => landslideExtend_castSucc false _ j)
       i
 
+/-- *Extending all-true by true yields all-true.*  Dual of
+    `landslideExtend_false_const_false`. -/
+theorem landslideExtend_true_const_true {n : Nat} :
+    landslideExtend true (fun _ : Fin n => true)
+      = (fun _ : Fin (n + 1) => true) :=
+  funext fun i =>
+    Fin.lastCases
+      (motive := fun j =>
+        landslideExtend true (fun _ : Fin n => true) j = true)
+      (landslideExtend_last true _)
+      (fun j => landslideExtend_castSucc true _ j)
+      i
+
 /-- *`landslide n 0` is the singleton of the all-false pattern.*
     Structural recursion on `n`:
     * `n = 0`: `landslide 0 0 = [Fin.elim0]`; the unique
