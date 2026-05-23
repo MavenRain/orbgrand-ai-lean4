@@ -415,4 +415,25 @@ example (s : Fin 4) : qpsk.exceed s s = 0 :=
 example {s s_hat : Fin 4} (h : s ≠ s_hat) : qpsk.exceed s s_hat = 1 :=
   qpsk_exceed_diff h
 
+/-- Bit-weight is strictly less than the max iff there is a false bit. -/
+example {n : Nat} (e : Fin n -> Bool) (h : ∃ i, e i = false) :
+    bitWeight e < bitWeight (fun _ : Fin n => true) :=
+  bitWeight_lt_const_true_of_exists_false e h
+
+/-- Bit-weight equals the max iff every bit is true. -/
+example {n : Nat} (e : Fin n -> Bool) :
+    bitWeight e = bitWeight (fun _ : Fin n => true) <-> forall i, e i = true :=
+  bitWeight_eq_const_true_iff e
+
+/-- A bucket is empty iff no pattern has that bit-weight. -/
+example {n w : Nat} :
+    landslide n w = [] <-> forall (e : Fin n -> Bool), bitWeight e ≠ w :=
+  landslide_eq_nil_iff
+
+/-- Unified extension weight rule. -/
+example {n : Nat} (b : Bool) (e : Fin n -> Bool) :
+    bitWeight (landslideExtend b e)
+      = bitWeight e + (if b then n + 1 else 0) :=
+  bitWeight_landslideExtend b e
+
 end OrbgrandAi.Examples.SmokeTest

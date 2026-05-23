@@ -92,6 +92,7 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | `landslide_one_zero`, `landslide_one_one` (closed-form at length 1) | `Section04.Orbgrand` | proved (2) |
 | `landslideExtend_last`, `landslideExtend_castSucc` (Fin.lastCases at last/castSucc) | `Section04.Orbgrand` | proved (2) |
 | `bitWeight` (identity-rank logistic weight) + `bitWeight_elim0`, `bitWeight_extend_false`, `bitWeight_extend_true` | `Section04.Orbgrand` | def + proved (3) |
+| `bitWeight_landslideExtend` (unified extension rule: bitWeight + ite) | `Section04.Orbgrand` | proved |
 | `bitWeight_fin_zero` (any length-0 pattern has zero bit-weight) | `Section04.Orbgrand` | proved |
 | `landslide_zero_iff` (landslide correctness base case n = 0) | `Section04.Orbgrand` | proved |
 | `landslideExtend_split` (every pattern is extend of top bit + restriction) | `Section04.Orbgrand` | proved |

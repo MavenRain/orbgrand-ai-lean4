@@ -303,6 +303,21 @@ theorem bitWeight_extend_true {n : Nat} (e : Fin n -> Bool) :
         (landslideExtend_castSucc true e i)
   step1.trans (congrArg₂ (· + ·) step_castSucc step_last)
 
+/-- *Unified extension weight rule.*  Combines `bitWeight_extend_false`
+    and `bitWeight_extend_true` into a single conditional formula:
+    extending by bit `b` adds `(if b then n + 1 else 0)` to the
+    bit-weight.  Useful when the top bit is bound to a generic
+    `b : Bool` rather than a literal. -/
+theorem bitWeight_landslideExtend {n : Nat} (b : Bool) (e : Fin n -> Bool) :
+    bitWeight (landslideExtend b e)
+      = bitWeight e + (if b then n + 1 else 0) :=
+  Bool.casesOn (motive := fun b' =>
+      bitWeight (landslideExtend b' e)
+        = bitWeight e + (if b' then n + 1 else 0))
+    b
+    ((bitWeight_extend_false e).trans (add_zero _).symm)
+    (bitWeight_extend_true e)
+
 /-- *Weight decomposition under top bit false.*  When the top bit is
     `false`, the pattern's bit-weight equals its restriction's. -/
 theorem bitWeight_split_false {n : Nat} (e : Fin (n + 1) -> Bool)
