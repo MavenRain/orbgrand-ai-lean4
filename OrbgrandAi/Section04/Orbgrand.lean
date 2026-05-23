@@ -510,6 +510,55 @@ theorem const_false_mem_landslide_zero {n : Nat} :
     (fun _ : Fin n => false) ∈ landslide n 0 :=
   (landslide_correct n 0 _).mpr bitWeight_const_false
 
+/-- *Extending all-false by false yields all-false.*  `Fin.lastCases`
+    on each position: the new top is `false` (by `landslideExtend_last`),
+    and original positions reproduce `false` (by `landslideExtend_castSucc`). -/
+theorem landslideExtend_false_const_false {n : Nat} :
+    landslideExtend false (fun _ : Fin n => false)
+      = (fun _ : Fin (n + 1) => false) :=
+  funext fun i =>
+    Fin.lastCases
+      (motive := fun j =>
+        landslideExtend false (fun _ : Fin n => false) j = false)
+      (landslideExtend_last false _)
+      (fun j => landslideExtend_castSucc false _ j)
+      i
+
+/-- *`landslide n 0` is the singleton of the all-false pattern.*
+    Structural recursion on `n`:
+    * `n = 0`: `landslide 0 0 = [Fin.elim0]`; the unique
+      `Fin 0 → Bool` value collapses to the all-false pattern.
+    * `n + 1`: by IH, `landslide n 0 = [fun _ => false]`; mapping
+      `landslideExtend false` yields `[fun _ => false]` via
+      `landslideExtend_false_const_false`. -/
+theorem landslide_zero_singleton : forall {n : Nat},
+    landslide n 0 = [fun _ : Fin n => false]
+  | 0 =>
+      congrArg (fun e => [e]) (funext fun i : Fin 0 => i.elim0)
+  | n + 1 =>
+      let ih : landslide n 0 = [fun _ : Fin n => false] :=
+        landslide_zero_singleton
+      let h_neg : ¬ (n + 1 ≤ 0) := Nat.not_succ_le_zero n
+      let h_unfolded_eq :
+          (if n + 1 ≤ 0 then
+             (landslide n (0 - (n + 1))).map (landslideExtend true)
+             ++ (landslide n 0).map (landslideExtend false)
+           else
+             (landslide n 0).map (landslideExtend false))
+          = (landslide n 0).map (landslideExtend false) :=
+        if_neg h_neg
+      let h_eq : landslide (n + 1) 0
+               = (landslide n 0).map (landslideExtend false) :=
+        h_unfolded_eq
+      let h_map : (landslide n 0).map (landslideExtend false)
+                = [landslideExtend false (fun _ : Fin n => false)] :=
+        congrArg (·.map (landslideExtend false)) ih
+      let h_singleton :
+          [landslideExtend false (fun _ : Fin n => false)]
+        = [fun _ : Fin (n + 1) => false] :=
+        congrArg (fun e => [e]) landslideExtend_false_const_false
+      h_eq.trans (h_map.trans h_singleton)
+
 /-- *`landslide n 0` has length 1.*  Structural recursion on `n`:
     * `n = 0`: trivially length 1 (the singleton `[Fin.elim0]`).
     * `n + 1`: `n + 1 > 0` forces the else branch, so

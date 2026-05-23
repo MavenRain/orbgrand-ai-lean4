@@ -104,6 +104,7 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | `orbgrandEnumeration_correct` (wrapper around `landslide_correct`) | `Section04.Orbgrand` | proved |
 | `bitWeight_zero_iff_all_false` (zero weight iff all bits false) | `Section04.Orbgrand` | proved |
 | `bitWeight_const_false`, `const_false_mem_landslide_zero` (all-false pattern in bucket 0) | `Section04.Orbgrand` | proved (2) |
+| `landslideExtend_false_const_false`, `landslide_zero_singleton` (bucket 0 is exactly `[fun _ => false]`) | `Section04.Orbgrand` | proved (2) |
 | `landslide_zero_zero_length`, `landslide_zero_succ_length` (size at length 0) | `Section04.Orbgrand` | proved (2) |
 | `landslideBucket` predicate, `landslideBucket_self` (membership reflexivity) | `Section04.Orbgrand` | proved |
 | `orbgrand_ordering_sound` (lower logistic weight => earlier bucket) | `Section04.Orbgrand` | proved |
