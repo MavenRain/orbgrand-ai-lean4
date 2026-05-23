@@ -133,6 +133,8 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | `perturbChannel_bandwidth_of_bandwidth` (bandwidth preserved under perturbation) | `Section06.Csi` | proved |
 | `bpsk` (BPSK constellation instance: `Constellation Bool`) | `Section04.SymbolLevel` | def |
 | `bpsk_exceed_self`, `bpsk_exceed_diff` (BPSK exceedance closed forms) | `Section04.SymbolLevel` | proved (2) |
+| `qpsk` (QPSK constellation: `Constellation (Fin 4)`) | `Section04.SymbolLevel` | def |
+| `qpsk_exceed_self`, `qpsk_exceed_diff` (QPSK exceedance closed forms) | `Section04.SymbolLevel` | proved (2) |
 | AR(2) least-squares coefficient fit | `Section06.Ar2Approximation` | def (opaque fit) |
 | `ar2_zero`, `ar2_one`, `ar2_succ_succ` base cases | `Section06.Ar2Approximation` | proved (3 rfl) |
 | `ar2_two`, `ar2_three` closed-form values | `Section06.Ar2Approximation` | proved (2 rfl) |

@@ -97,6 +97,36 @@ theorem bpsk_exceed_diff {s s_hat : Bool} (h : s ≠ s_hat) :
     bpsk.exceed s s_hat = 1 :=
   if_neg h
 
+/-- *QPSK* (quadrature phase-shift keying): a 4-symbol constellation
+    over `Fin 4`.  Same uniform exceedance distance as `bpsk` (0 on
+    agreement, 1 otherwise); QPSK's actual squared-Euclidean structure
+    over `{(1,1), (1,-1), (-1,1), (-1,-1)}` is encoded at the
+    bit-symbol mapping level, not in the `Constellation` interface. -/
+def qpsk : Constellation (Fin 4) :=
+  { decEq := inferInstance
+  , fintype := inferInstance
+  , exceed := fun s s_hat => if s = s_hat then (0 : Real) else 1
+  , exceed_nonneg := fun s s_hat =>
+      if h : s = s_hat then
+        le_of_eq (if_pos h).symm
+      else
+        zero_le_one.trans (le_of_eq (if_neg h).symm)
+  , exceed_zero_iff := fun s s_hat =>
+      ⟨fun h_ite =>
+        if hss : s = s_hat then hss
+        else (one_ne_zero ((if_neg hss).symm.trans h_ite)).elim,
+       fun h => if_pos h⟩
+  }
+
+/-- QPSK exceedance is `0` on agreement. -/
+theorem qpsk_exceed_self (s : Fin 4) : qpsk.exceed s s = 0 :=
+  if_pos rfl
+
+/-- QPSK exceedance is `1` on disagreement. -/
+theorem qpsk_exceed_diff {s s_hat : Fin 4} (h : s ≠ s_hat) :
+    qpsk.exceed s s_hat = 1 :=
+  if_neg h
+
 /-! ## Per-symbol candidate list -/
 
 /-- For a fixed hard-decision `s_hat`, enumerate all candidate

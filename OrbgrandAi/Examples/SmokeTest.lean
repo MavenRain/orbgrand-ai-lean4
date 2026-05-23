@@ -404,4 +404,15 @@ example {n w : Nat} (h : bitWeight (fun _ : Fin n => true) < w) :
     landslide n w = [] :=
   landslide_eq_nil_of_too_large h
 
+/-- QPSK is a concrete `Constellation (Fin 4)`. -/
+example : Constellation (Fin 4) := qpsk
+
+/-- QPSK exceedance is 0 on agreement. -/
+example (s : Fin 4) : qpsk.exceed s s = 0 :=
+  qpsk_exceed_self s
+
+/-- QPSK exceedance is 1 on disagreement. -/
+example {s s_hat : Fin 4} (h : s ≠ s_hat) : qpsk.exceed s s_hat = 1 :=
+  qpsk_exceed_diff h
+
 end OrbgrandAi.Examples.SmokeTest
