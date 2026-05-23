@@ -657,6 +657,79 @@ theorem landslideExtend_true_const_true {n : Nat} :
       (fun j => landslideExtend_castSucc true _ j)
       i
 
+/-- *`landslide n` at the max weight is the singleton of the all-true
+    pattern.*  Dual of `landslide_zero_singleton`.
+
+    Structural recursion on `n`:
+    * `n = 0`: `bitWeight (fun _ : Fin 0 => true) = 0`, so the bucket
+      is `landslide 0 0 = [Fin.elim0]`; identify with the all-true
+      pattern via `funext` over the empty domain.
+    * `n + 1`: factor `max_(n+1) = bitWeight (fun _ => true) + (n + 1)`
+      via `landslideExtend_true_const_true` + `bitWeight_extend_true`.
+      The if-pos branch fires (`n + 1 ≤ max_(n+1)`); `withTop` becomes
+      `[fun _ : Fin (n+1) => true]` by IH + extend-true; `withoutTop`
+      is empty because `landslide n max_(n+1) = []` (max_(n+1) > max_n
+      via `landslide_eq_nil_of_too_large`).  Combine with
+      `List.append_nil`. -/
+theorem landslide_max_singleton : forall {n : Nat},
+    landslide n (bitWeight (fun _ : Fin n => true))
+      = [fun _ : Fin n => true]
+  | 0 =>
+      let h_bw : bitWeight (fun _ : Fin 0 => true) = 0 :=
+        bitWeight_fin_zero _
+      let h_landslide : landslide 0 (bitWeight (fun _ : Fin 0 => true))
+                      = [Fin.elim0] :=
+        congrArg (landslide 0) h_bw
+      let h_const_eq : (Fin.elim0 : Fin 0 -> Bool)
+                     = (fun _ : Fin 0 => true) :=
+        funext fun i : Fin 0 => i.elim0
+      h_landslide.trans (congrArg (fun e => [e]) h_const_eq)
+  | n + 1 =>
+      let ih : landslide n (bitWeight (fun _ : Fin n => true))
+             = [fun _ : Fin n => true] := landslide_max_singleton
+      let M_n := bitWeight (fun _ : Fin n => true)
+      let h_max_eq : bitWeight (fun _ : Fin (n + 1) => true)
+                   = M_n + (n + 1) :=
+        (congrArg bitWeight landslideExtend_true_const_true.symm).trans
+          (bitWeight_extend_true _)
+      let h_le : n + 1 ≤ M_n + (n + 1) := Nat.le_add_left (n + 1) M_n
+      let h_sub : M_n + (n + 1) - (n + 1) = M_n :=
+        Nat.add_sub_cancel M_n (n + 1)
+      let h_lt : M_n < M_n + (n + 1) :=
+        Nat.lt_add_of_pos_right (Nat.succ_pos n)
+      let h_empty : landslide n (M_n + (n + 1)) = [] :=
+        landslide_eq_nil_of_too_large h_lt
+      let h_unfold : landslide (n + 1) (M_n + (n + 1))
+                   = (landslide n ((M_n + (n + 1)) - (n + 1))).map
+                       (landslideExtend true)
+                     ++ (landslide n (M_n + (n + 1))).map
+                       (landslideExtend false) :=
+        if_pos h_le
+      let h_with_sub :
+          (landslide n ((M_n + (n + 1)) - (n + 1))).map (landslideExtend true)
+          = (landslide n M_n).map (landslideExtend true) :=
+        congrArg (·.map (landslideExtend true)) (congrArg (landslide n) h_sub)
+      let h_with_ih : (landslide n M_n).map (landslideExtend true)
+                    = [landslideExtend true (fun _ : Fin n => true)] :=
+        congrArg (·.map (landslideExtend true)) ih
+      let h_with_extend : [landslideExtend true (fun _ : Fin n => true)]
+                        = [fun _ : Fin (n + 1) => true] :=
+        congrArg (fun e => [e]) landslideExtend_true_const_true
+      let h_without : (landslide n (M_n + (n + 1))).map (landslideExtend false)
+                    = [] :=
+        congrArg (·.map (landslideExtend false)) h_empty
+      let h_combine_with :
+          (landslide n ((M_n + (n + 1)) - (n + 1))).map (landslideExtend true)
+          = [fun _ : Fin (n + 1) => true] :=
+        h_with_sub.trans (h_with_ih.trans h_with_extend)
+      let h_rhs :
+          (landslide n ((M_n + (n + 1)) - (n + 1))).map (landslideExtend true)
+          ++ (landslide n (M_n + (n + 1))).map (landslideExtend false)
+          = [fun _ : Fin (n + 1) => true] :=
+        (congrArg₂ (· ++ ·) h_combine_with h_without).trans
+          (List.append_nil _)
+      (congrArg (landslide (n + 1)) h_max_eq).trans (h_unfold.trans h_rhs)
+
 /-- *`landslide n 0` is the singleton of the all-false pattern.*
     Structural recursion on `n`:
     * `n = 0`: `landslide 0 0 = [Fin.elim0]`; the unique
