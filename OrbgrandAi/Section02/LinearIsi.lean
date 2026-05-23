@@ -156,6 +156,21 @@ theorem LinearIsi.bandwidth_le
   fun i j hij =>
     h i j (Nat.lt_of_le_of_lt (Nat.add_le_add_left hb j.val) hij)
 
+/-- *Zero-channel receive ignores the signal.*  With `channel := 0`,
+    the channel-vector product `(0 : Matrix).mulVec X` vanishes, so
+    `receive X N = N` regardless of `X`. -/
+theorem LinearIsi.zero_channel_receive
+    {n_s : Nat} (noiseCov : CovMatrix n_s)
+    (X N : SymbolVector n_s) :
+    ({ channel := 0, noiseCov := noiseCov } : LinearIsi n_s).receive X N = N :=
+  funext fun k =>
+    let h_zero : (0 : Matrix (Fin n_s) (Fin n_s) Complex).mulVec X k = 0 :=
+      congrFun (Matrix.zero_mulVec X) k
+    let step1 :
+        (0 : Matrix (Fin n_s) (Fin n_s) Complex).mulVec X k + N k = 0 + N k :=
+      congrArg (· + N k) h_zero
+    step1.trans (zero_add (N k))
+
 /-- *Noise-free receive law.*  When the noise vector is zero, the
     receiver model degenerates to the channel-vector product `h * X`. -/
 theorem LinearIsi.receive_zero_noise
