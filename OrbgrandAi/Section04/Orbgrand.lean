@@ -510,6 +510,17 @@ theorem const_false_mem_landslide_zero {n : Nat} :
     (fun _ : Fin n => false) ∈ landslide n 0 :=
   (landslide_correct n 0 _).mpr bitWeight_const_false
 
+/-- *Upper bound on `bitWeight`.*  Each summand is bounded by
+    `i.val + 1` (since the alternative is `0`); `Finset.sum_le_sum`
+    gives the bound over the entire universe. -/
+theorem bitWeight_le_sum {n : Nat} (e : Fin n -> Bool) :
+    bitWeight e ≤ Finset.univ.sum (fun i : Fin n => i.val + 1) :=
+  Finset.sum_le_sum fun i _ =>
+    Bool.casesOn (motive := fun b => (if b then i.val + 1 else 0) ≤ i.val + 1)
+      (e i)
+      (Nat.zero_le (i.val + 1))
+      (Nat.le_refl (i.val + 1))
+
 /-- *Extending all-false by false yields all-false.*  `Fin.lastCases`
     on each position: the new top is `false` (by `landslideExtend_last`),
     and original positions reproduce `false` (by `landslideExtend_castSucc`). -/
