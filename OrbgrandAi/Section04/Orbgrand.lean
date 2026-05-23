@@ -535,6 +535,21 @@ theorem bitWeight_le_const_true {n : Nat} (e : Fin n -> Bool) :
     bitWeight e ≤ bitWeight (fun _ : Fin n => true) :=
   (bitWeight_le_sum e).trans (le_of_eq bitWeight_const_true.symm)
 
+/-- *Bucket empty above the max weight.*  When `w` strictly exceeds
+    `bitWeight (fun _ => true)` (the max), `landslide n w` is empty.
+    Proof: by `landslide_correct`, any element would have bit-weight
+    `w`, but `bitWeight_le_const_true` gives `bitWeight e < w`,
+    contradicting equality. -/
+theorem landslide_eq_nil_of_too_large {n w : Nat}
+    (h : bitWeight (fun _ : Fin n => true) < w) :
+    landslide n w = [] :=
+  List.eq_nil_iff_forall_not_mem.mpr fun e h_mem =>
+    let h_eq : bitWeight e = w := (landslide_correct n w e).mp h_mem
+    let h_le : bitWeight e ≤ bitWeight (fun _ : Fin n => true) :=
+      bitWeight_le_const_true e
+    let h_lt : bitWeight e < w := Nat.lt_of_le_of_lt h_le h
+    Nat.lt_irrefl w (h_eq ▸ h_lt)
+
 /-- *Extending all-false by false yields all-false.*  `Fin.lastCases`
     on each position: the new top is `false` (by `landslideExtend_last`),
     and original positions reproduce `false` (by `landslideExtend_castSucc`). -/
