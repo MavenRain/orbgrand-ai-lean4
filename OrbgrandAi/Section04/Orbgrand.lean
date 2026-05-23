@@ -277,6 +277,16 @@ theorem landslideExtend_inj {n : Nat} (b : Bool) :
       (landslideExtend_castSucc b e1 i).symm.trans
         (h_at.trans (landslideExtend_castSucc b e2 i))
 
+/-- *`landslideExtend` is injective in the top-bit argument.*  Two
+    extensions of the same restriction with different top bits must
+    have agreed on the top bit.  Evaluation at `Fin.last n` reads off
+    the top bit (via `landslideExtend_last`). -/
+theorem landslideExtend_inj_top {n : Nat} (e : Fin n -> Bool) {b1 b2 : Bool}
+    (h : landslideExtend b1 e = landslideExtend b2 e) :
+    b1 = b2 :=
+  (landslideExtend_last b1 e).symm.trans
+    ((congrFun h (Fin.last n)).trans (landslideExtend_last b2 e))
+
 
 /-- Extending by `true` adds `(n + 1)` to the bit-weight: the new top
     bit at position `n` contributes `n + 1`, and the original
