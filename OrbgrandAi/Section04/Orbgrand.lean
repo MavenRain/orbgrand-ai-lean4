@@ -510,6 +510,36 @@ theorem const_false_mem_landslide_zero {n : Nat} :
     (fun _ : Fin n => false) ∈ landslide n 0 :=
   (landslide_correct n 0 _).mpr bitWeight_const_false
 
+/-- *`landslide n 0` has length 1.*  Structural recursion on `n`:
+    * `n = 0`: trivially length 1 (the singleton `[Fin.elim0]`).
+    * `n + 1`: `n + 1 > 0` forces the else branch, so
+      `landslide (n + 1) 0 = (landslide n 0).map (landslideExtend false)`.
+      Length unchanged by `List.length_map`, and IH gives length 1. -/
+theorem landslide_zero_length : forall {n : Nat}, (landslide n 0).length = 1
+  | 0 => rfl
+  | n + 1 =>
+      let ih : (landslide n 0).length = 1 := landslide_zero_length
+      let h_neg : ¬ (n + 1 ≤ 0) := Nat.not_succ_le_zero n
+      let h_unfolded_eq :
+          (if n + 1 ≤ 0 then
+             (landslide n (0 - (n + 1))).map (landslideExtend true)
+             ++ (landslide n 0).map (landslideExtend false)
+           else
+             (landslide n 0).map (landslideExtend false))
+          = (landslide n 0).map (landslideExtend false) :=
+        if_neg h_neg
+      let h_eq : landslide (n + 1) 0
+               = (landslide n 0).map (landslideExtend false) :=
+        h_unfolded_eq
+      let h_step : (landslide (n + 1) 0).length
+                 = ((landslide n 0).map (landslideExtend false)).length :=
+        congrArg List.length h_eq
+      let h_map_len :
+          ((landslide n 0).map (landslideExtend false)).length
+        = (landslide n 0).length :=
+        List.length_map (landslideExtend false)
+      h_step.trans (h_map_len.trans ih)
+
 /-! ## Bucket membership predicate -/
 
 /-- *Predicate-based landslide bucket.*  Pattern `e` lives in bucket
