@@ -586,6 +586,23 @@ theorem bitWeight_eq_const_true_iff {n : Nat} (e : Fin n -> Bool) :
         (Nat.lt_irrefl _ (h_eq ▸ h_lt)).elim,
    fun h_all => congrArg bitWeight (funext h_all)⟩
 
+/-- *Zero-weight = pattern equality (with all-false).*  `bitWeight e = 0`
+    iff `e = (fun _ => false)`.  Wraps `bitWeight_zero_iff_all_false`
+    with `funext`. -/
+theorem bitWeight_zero_iff_eq_const_false {n : Nat} (e : Fin n -> Bool) :
+    bitWeight e = 0 <-> e = (fun _ : Fin n => false) :=
+  ⟨fun h => funext ((bitWeight_zero_iff_all_false e).mp h),
+   fun h => h ▸ bitWeight_const_false⟩
+
+/-- *Max-weight = pattern equality (with all-true).*  `bitWeight e =
+    bitWeight (fun _ => true)` iff `e = (fun _ => true)`.  Wraps
+    `bitWeight_eq_const_true_iff` with `funext`. -/
+theorem bitWeight_eq_max_iff_eq_const_true {n : Nat} (e : Fin n -> Bool) :
+    bitWeight e = bitWeight (fun _ : Fin n => true)
+      <-> e = (fun _ : Fin n => true) :=
+  ⟨fun h => funext ((bitWeight_eq_const_true_iff e).mp h),
+   fun h => congrArg bitWeight h⟩
+
 /-- *Bucket empty above the max weight.*  When `w` strictly exceeds
     `bitWeight (fun _ => true)` (the max), `landslide n w` is empty.
     Proof: by `landslide_correct`, any element would have bit-weight

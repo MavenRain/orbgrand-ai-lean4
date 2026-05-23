@@ -111,6 +111,7 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | `bitWeight_le_const_true` (bit-weight always ≤ all-true's bit-weight) | `Section04.Orbgrand` | proved |
 | `bitWeight_lt_const_true_of_exists_false` (strict <: any false bit ⇒ strict less) | `Section04.Orbgrand` | proved |
 | `bitWeight_eq_const_true_iff` (max-weight iff all bits true; dual of `bitWeight_zero_iff_all_false`) | `Section04.Orbgrand` | proved |
+| `bitWeight_zero_iff_eq_const_false`, `bitWeight_eq_max_iff_eq_const_true` (pattern-equality forms) | `Section04.Orbgrand` | proved (2) |
 | `landslide_eq_nil_of_too_large` (`w > bitWeight (fun _ => true)` ⇒ bucket empty) | `Section04.Orbgrand` | proved |
 | `landslide_eq_nil_iff` (bucket empty iff no pattern has that bit-weight) | `Section04.Orbgrand` | proved |
 | `landslide_zero_zero_length`, `landslide_zero_succ_length` (size at length 0) | `Section04.Orbgrand` | proved (2) |
