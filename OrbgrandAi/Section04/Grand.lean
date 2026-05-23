@@ -632,5 +632,31 @@ theorem syndrome_comm
     syndrome H Y N_g i = syndrome H N_g Y i :=
   congrArg (fun v => H.matrix.mulVec v i) (Codeword.xor_comm Y N_g)
 
+/-- *Syndrome is invariant under codeword shifts of the receiver.*  If
+    `c` is a codeword (zero parity-check image), then XOR-shifting the
+    received vector by `c` leaves the syndrome unchanged.  Captures
+    the standard "coset" property of syndrome decoding: codewords with
+    the same syndrome form a coset of the codebook. -/
+theorem syndrome_invariant_under_codeword
+    {n k : Nat} (H : ParityCheck n k) (Y N c : Codeword n)
+    (h_c : forall (i : Fin (n - k)), H.matrix.mulVec c i = 0)
+    (i : Fin (n - k)) :
+    syndrome H (Codeword.xor Y c) N i = syndrome H Y N i :=
+  let step_assoc : Codeword.xor (Codeword.xor Y c) N
+                 = Codeword.xor (Codeword.xor Y N) c :=
+    (Codeword.xor_assoc Y c N).trans
+      ((congrArg (Codeword.xor Y) (Codeword.xor_comm c N)).trans
+        (Codeword.xor_assoc Y N c).symm)
+  let step1 : syndrome H (Codeword.xor Y c) N i
+            = H.matrix.mulVec (Codeword.xor (Codeword.xor Y N) c) i :=
+    congrArg (fun v => H.matrix.mulVec v i) step_assoc
+  let step2 : H.matrix.mulVec (Codeword.xor (Codeword.xor Y N) c) i
+            = H.matrix.mulVec (Codeword.xor Y N) i + H.matrix.mulVec c i :=
+    congrFun (H.matrix.mulVec_add (Codeword.xor Y N) c) i
+  let step3 : H.matrix.mulVec (Codeword.xor Y N) i + H.matrix.mulVec c i
+            = H.matrix.mulVec (Codeword.xor Y N) i + 0 :=
+    congrArg (H.matrix.mulVec (Codeword.xor Y N) i + ·) (h_c i)
+  step1.trans (step2.trans (step3.trans (add_zero _)))
+
 end Section04
 end OrbgrandAi
