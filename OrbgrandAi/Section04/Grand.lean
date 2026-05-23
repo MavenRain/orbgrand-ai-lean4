@@ -385,6 +385,28 @@ theorem Codeword.xor_xor_self {n : Nat} (Y Ng : Codeword n) :
   let h3 : Codeword.xor 0 Ng = Ng := Codeword.zero_xor Ng
   h1.trans (h2.trans h3)
 
+/-- Right-cancel form: `(a xor b) xor b = a` in `ZMod 2`.  XOR is its
+    own right inverse.  Proof: `xor_assoc` + `xor_self` + `xor_zero`. -/
+theorem Codeword.xor_xor_right {n : Nat} (a b : Codeword n) :
+    Codeword.xor (Codeword.xor a b) b = a :=
+  let s1 : Codeword.xor (Codeword.xor a b) b
+         = Codeword.xor a (Codeword.xor b b) :=
+    Codeword.xor_assoc a b b
+  let s2 : Codeword.xor a (Codeword.xor b b) = Codeword.xor a 0 :=
+    congrArg (Codeword.xor a) (Codeword.xor_self b)
+  s1.trans (s2.trans (Codeword.xor_zero a))
+
+/-- *XOR transposition.*  `a xor b = c` iff `a = c xor b`.  The
+    fundamental "move XOR to the other side" rule for ZMod 2. -/
+theorem Codeword.xor_eq_iff_eq_xor {n : Nat} (a b c : Codeword n) :
+    Codeword.xor a b = c <-> a = Codeword.xor c b :=
+  ⟨fun h =>
+    (Codeword.xor_xor_right a b).symm.trans
+      (congrArg (fun x => Codeword.xor x b) h),
+   fun h =>
+    (congrArg (fun x => Codeword.xor x b) h).trans
+      (Codeword.xor_xor_right c b)⟩
+
 /-- `Codeword.xor` is left-cancellable: `a xor b = a xor c → b = c`.
 
     Apply `Codeword.xor a` to both sides of `a xor b = a xor c`,
