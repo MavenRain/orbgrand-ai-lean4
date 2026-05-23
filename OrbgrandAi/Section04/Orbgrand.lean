@@ -535,6 +535,25 @@ theorem bitWeight_le_const_true {n : Nat} (e : Fin n -> Bool) :
     bitWeight e ≤ bitWeight (fun _ : Fin n => true) :=
   (bitWeight_le_sum e).trans (le_of_eq bitWeight_const_true.symm)
 
+/-- *Strict inequality when a bit is false.*  If any position has
+    `e i = false`, then `bitWeight e < bitWeight (fun _ => true)`.
+    Proof: `Finset.sum_lt_sum` with the pointwise non-strict bound
+    (from `bitWeight_le_sum`'s argument) plus the strict-at-witness
+    bound `0 < i.val + 1` at the false position. -/
+theorem bitWeight_lt_const_true_of_exists_false {n : Nat} (e : Fin n -> Bool)
+    (h : ∃ i, e i = false) :
+    bitWeight e < bitWeight (fun _ : Fin n => true) :=
+  let ⟨i, h_e_i⟩ := h
+  Finset.sum_lt_sum
+    (fun j _ =>
+      Bool.casesOn (motive := fun b => (if b then j.val + 1 else 0) ≤ j.val + 1)
+        (e j)
+        (Nat.zero_le (j.val + 1))
+        (Nat.le_refl (j.val + 1)))
+    ⟨i, Finset.mem_univ i,
+     h_e_i ▸ (Nat.succ_pos i.val :
+       (0 : Nat) < i.val + 1)⟩
+
 /-- *Bucket empty above the max weight.*  When `w` strictly exceeds
     `bitWeight (fun _ => true)` (the max), `landslide n w` is empty.
     Proof: by `landslide_correct`, any element would have bit-weight
