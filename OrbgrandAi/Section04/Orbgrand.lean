@@ -586,6 +586,18 @@ theorem landslide_eq_nil_of_too_large {n w : Nat}
     let h_lt : bitWeight e < w := Nat.lt_of_le_of_lt h_le h
     Nat.lt_irrefl w (h_eq ▸ h_lt)
 
+/-- *Bucket emptiness characterisation.*  `landslide n w` is empty
+    iff no pattern has bit-weight `w`.  Both directions are direct
+    applications of `landslide_correct`. -/
+theorem landslide_eq_nil_iff {n w : Nat} :
+    landslide n w = [] <-> forall (e : Fin n -> Bool), bitWeight e ≠ w :=
+  ⟨fun h_nil e h_eq =>
+    let h_mem : e ∈ landslide n w := (landslide_correct n w e).mpr h_eq
+    List.not_mem_nil (h_nil ▸ h_mem),
+   fun h_no =>
+    List.eq_nil_iff_forall_not_mem.mpr fun e h_mem =>
+      h_no e ((landslide_correct n w e).mp h_mem)⟩
+
 /-- *Extending all-false by false yields all-false.*  `Fin.lastCases`
     on each position: the new top is `false` (by `landslideExtend_last`),
     and original positions reproduce `false` (by `landslideExtend_castSucc`). -/
