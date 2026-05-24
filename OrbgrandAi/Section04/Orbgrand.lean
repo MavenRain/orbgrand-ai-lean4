@@ -332,6 +332,31 @@ theorem landslideExtend_bijective {n : Nat} :
    fun e =>
     ⟨(e (Fin.last n), e ∘ Fin.castSucc), landslideExtend_split e⟩⟩
 
+/-- *Inverse of `landslideExtend`.*  Splits a length-`(n+1)` pattern
+    into its top bit and its restriction.  This is the explicit
+    inverse to `landslideExtend` (proven via the roundtrip theorems
+    below). -/
+def landslideExtend_inv {n : Nat} (e : Fin (n + 1) -> Bool) :
+    Bool × (Fin n -> Bool) :=
+  (e (Fin.last n), e ∘ Fin.castSucc)
+
+/-- *Roundtrip 1.*  `landslideExtend_inv (landslideExtend b e) = (b, e)`.
+    The inverse recovers the (top bit, restriction) pair. -/
+theorem landslideExtend_inv_landslideExtend
+    {n : Nat} (b : Bool) (e : Fin n -> Bool) :
+    landslideExtend_inv (landslideExtend b e) = (b, e) :=
+  Prod.ext
+    (landslideExtend_last b e)
+    (funext fun i => landslideExtend_castSucc b e i)
+
+/-- *Roundtrip 2.*  `landslideExtend (inv).1 (inv).2 = e`.  Building
+    the extension from the split recovers the original pattern.
+    Direct restatement of `landslideExtend_split`. -/
+theorem landslideExtend_landslideExtend_inv
+    {n : Nat} (e : Fin (n + 1) -> Bool) :
+    landslideExtend (landslideExtend_inv e).1 (landslideExtend_inv e).2 = e :=
+  landslideExtend_split e
+
 
 /-- Extending by `true` adds `(n + 1)` to the bit-weight: the new top
     bit at position `n` contributes `n + 1`, and the original
