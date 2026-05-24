@@ -287,6 +287,26 @@ theorem landslideExtend_inj_top {n : Nat} (e : Fin n -> Bool) {b1 b2 : Bool}
   (landslideExtend_last b1 e).symm.trans
     ((congrFun h (Fin.last n)).trans (landslideExtend_last b2 e))
 
+/-- *Full bidirectional injectivity of `landslideExtend`.*  Two
+    extensions are equal iff both the top bit and the restriction
+    agree.  Forward direction reads off the top bit at `Fin.last n`
+    and the restriction at `castSucc` positions; backward direction
+    is `congrArg₂`. -/
+theorem landslideExtend_eq_iff {n : Nat} {b1 b2 : Bool}
+    {e1 e2 : Fin n -> Bool} :
+    landslideExtend b1 e1 = landslideExtend b2 e2
+      <-> b1 = b2 /\ e1 = e2 :=
+  ⟨fun h =>
+    let h_top : b1 = b2 :=
+      (landslideExtend_last b1 e1).symm.trans
+        ((congrFun h (Fin.last n)).trans (landslideExtend_last b2 e2))
+    let h_rest : e1 = e2 :=
+      funext fun i =>
+        (landslideExtend_castSucc b1 e1 i).symm.trans
+          ((congrFun h i.castSucc).trans (landslideExtend_castSucc b2 e2 i))
+    ⟨h_top, h_rest⟩,
+   fun ⟨h_top, h_rest⟩ => congrArg₂ landslideExtend h_top h_rest⟩
+
 
 /-- Extending by `true` adds `(n + 1)` to the bit-weight: the new top
     bit at position `n` contributes `n + 1`, and the original
