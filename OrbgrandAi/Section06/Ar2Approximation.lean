@@ -108,6 +108,12 @@ theorem ar2_three (phi1 phi2 z1 z2 : Complex) :
     ar2 phi1 phi2 z1 z2 3
       = phi1 * (phi1 * z2 + phi2 * z1) + phi2 * z2 := rfl
 
+/-- Closed-form value at index 4: second recurrence step. -/
+theorem ar2_four (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 4
+      = phi1 * (phi1 * (phi1 * z2 + phi2 * z1) + phi2 * z2)
+        + phi2 * (phi1 * z2 + phi2 * z1) := rfl
+
 /-- *Trivial coefficients.*  When both AR(2) coefficients are zero,
     every recurrence step (index `n + 2`) vanishes regardless of
     the initial conditions.  The initial conditions at indices 0 and
