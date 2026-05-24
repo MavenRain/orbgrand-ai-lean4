@@ -97,6 +97,14 @@ theorem bpsk_exceed_diff {s s_hat : Bool} (h : s ≠ s_hat) :
     bpsk.exceed s s_hat = 1 :=
   if_neg h
 
+/-- *BPSK exceedance is symmetric.*  `bpsk.exceed s s_hat = bpsk.exceed s_hat s`. -/
+theorem bpsk_exceed_symm (s s_hat : Bool) :
+    bpsk.exceed s s_hat = bpsk.exceed s_hat s :=
+  if h : s = s_hat then
+    (if_pos h).trans (if_pos h.symm).symm
+  else
+    (if_neg h).trans (if_neg (fun heq => h heq.symm)).symm
+
 /-- *QPSK* (quadrature phase-shift keying): a 4-symbol constellation
     over `Fin 4`.  Same uniform exceedance distance as `bpsk` (0 on
     agreement, 1 otherwise); QPSK's actual squared-Euclidean structure
@@ -126,6 +134,14 @@ theorem qpsk_exceed_self (s : Fin 4) : qpsk.exceed s s = 0 :=
 theorem qpsk_exceed_diff {s s_hat : Fin 4} (h : s ≠ s_hat) :
     qpsk.exceed s s_hat = 1 :=
   if_neg h
+
+/-- *QPSK exceedance is symmetric.*  `qpsk.exceed s s_hat = qpsk.exceed s_hat s`. -/
+theorem qpsk_exceed_symm (s s_hat : Fin 4) :
+    qpsk.exceed s s_hat = qpsk.exceed s_hat s :=
+  if h : s = s_hat then
+    (if_pos h).trans (if_pos h.symm).symm
+  else
+    (if_neg h).trans (if_neg (fun heq => h heq.symm)).symm
 
 /-! ## Per-symbol candidate list -/
 
