@@ -473,4 +473,29 @@ example {n k : Nat} (H : ParityCheck n k) {a b : Codeword n}
     H.matrix.mulVec (Codeword.xor a b) i = 0 :=
   Codeword.xor_codeword_is_codeword H ha hb i
 
+/-- Codeword XOR right cancel: `(a xor b) xor b = a`. -/
+example {n : Nat} (a b : Codeword n) :
+    Codeword.xor (Codeword.xor a b) b = a :=
+  Codeword.xor_xor_right a b
+
+/-- Codeword XOR transposition: `a xor b = c ↔ a = c xor b`. -/
+example {n : Nat} (a b c : Codeword n) :
+    Codeword.xor a b = c <-> a = Codeword.xor c b :=
+  Codeword.xor_eq_iff_eq_xor a b c
+
+/-- `landslideExtend` is injective in both top bit and restriction. -/
+example {n : Nat} {b1 b2 : Bool} {e1 e2 : Fin n -> Bool} :
+    landslideExtend b1 e1 = landslideExtend b2 e2
+      <-> b1 = b2 /\ e1 = e2 :=
+  landslideExtend_eq_iff
+
+/-- Constellation: strict positivity of exceedance iff symbols differ. -/
+example {chi : Type} (cs : Constellation chi) (s s_hat : chi) :
+    0 < cs.exceed s s_hat <-> s ≠ s_hat :=
+  cs.exceed_pos_iff_ne s s_hat
+
+/-- AR(1)-like AR(2): `phi_1 = 1, phi_2 = 0` gives constant z2 from index 1. -/
+example (z1 z2 : Complex) (n : Nat) : ar2 1 0 z1 z2 (n + 1) = z2 :=
+  ar2_phi1_one_phi2_zero z1 z2 n
+
 end OrbgrandAi.Examples.SmokeTest
