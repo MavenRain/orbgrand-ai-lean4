@@ -160,6 +160,21 @@ theorem qpsk_exceed_symm (s s_hat : Fin 4) :
   else
     (if_neg h).trans (if_neg (fun heq => h heq.symm)).symm
 
+/-- *Trivial constellation.*  A 1-symbol constellation over `Unit`.
+    All exceedances are zero (degenerate case: only one symbol). -/
+def trivialConstellation : Constellation Unit :=
+  { decEq := inferInstance
+  , fintype := inferInstance
+  , exceed := fun _ _ => 0
+  , exceed_nonneg := fun _ _ => le_refl 0
+  , exceed_zero_iff := fun s s_hat =>
+      ⟨fun _ => Subsingleton.elim s s_hat, fun _ => rfl⟩
+  }
+
+/-- Trivial constellation exceedance is always zero. -/
+theorem trivialConstellation_exceed (s s_hat : Unit) :
+    trivialConstellation.exceed s s_hat = 0 := rfl
+
 /-! ## Per-symbol candidate list -/
 
 /-- For a fixed hard-decision `s_hat`, enumerate all candidate

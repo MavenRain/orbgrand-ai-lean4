@@ -157,6 +157,7 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | `bpsk_exceed_self`, `bpsk_exceed_diff`, `bpsk_exceed_symm` (BPSK exceedance: closed forms + symmetry) | `Section04.SymbolLevel` | proved (3) |
 | `qpsk` (QPSK constellation: `Constellation (Fin 4)`) | `Section04.SymbolLevel` | def |
 | `qpsk_exceed_self`, `qpsk_exceed_diff`, `qpsk_exceed_symm` (QPSK exceedance: closed forms + symmetry) | `Section04.SymbolLevel` | proved (3) |
+| `trivialConstellation` (1-symbol constellation over Unit) + `trivialConstellation_exceed` | `Section04.SymbolLevel` | def + proved |
 | AR(2) least-squares coefficient fit | `Section06.Ar2Approximation` | def (opaque fit) |
 | `ar2_zero`, `ar2_one`, `ar2_succ_succ` base cases | `Section06.Ar2Approximation` | proved (3 rfl) |
 | `ar2_two`, `ar2_three` closed-form values | `Section06.Ar2Approximation` | proved (2 rfl) |
