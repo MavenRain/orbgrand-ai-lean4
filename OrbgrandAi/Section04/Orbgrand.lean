@@ -670,6 +670,12 @@ theorem landslide_singleton_unique {n w : Nat} {e : Fin n -> Bool}
   let h_mem' : e' ∈ [e] := h ▸ h_mem
   List.mem_singleton.mp h_mem'
 
+/-- *Negation of `landslide_correct`.*  Non-membership in
+    `landslide n w` characterises the bit-weight being different. -/
+theorem landslide_not_mem_iff {n w : Nat} (e : Fin n -> Bool) :
+    e ∉ landslide n w <-> bitWeight e ≠ w :=
+  not_congr (landslide_correct n w e)
+
 /-- *Extending all-false by false yields all-false.*  `Fin.lastCases`
     on each position: the new top is `false` (by `landslideExtend_last`),
     and original positions reproduce `false` (by `landslideExtend_castSucc`). -/

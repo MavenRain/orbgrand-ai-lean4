@@ -125,6 +125,7 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | `landslide_eq_nil_of_too_large` (`w > bitWeight (fun _ => true)` ⇒ bucket empty) | `Section04.Orbgrand` | proved |
 | `landslide_eq_nil_iff` (bucket empty iff no pattern has that bit-weight) | `Section04.Orbgrand` | proved |
 | `landslide_singleton_unique` (singleton bucket's element is unique) | `Section04.Orbgrand` | proved |
+| `landslide_not_mem_iff` (negation of `landslide_correct`) | `Section04.Orbgrand` | proved |
 | `landslide_zero_zero_length`, `landslide_zero_succ_length` (size at length 0) | `Section04.Orbgrand` | proved (2) |
 | `landslideBucket` predicate, `landslideBucket_self` (membership reflexivity) | `Section04.Orbgrand` | proved |
 | `orbgrand_ordering_sound` (lower logistic weight => earlier bucket) | `Section04.Orbgrand` | proved |
