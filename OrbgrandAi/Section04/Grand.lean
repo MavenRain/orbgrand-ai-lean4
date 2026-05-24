@@ -463,6 +463,13 @@ theorem Codeword.xor_right_eq_iff {n : Nat} (a b c : Codeword n) :
     Codeword.xor a c = Codeword.xor b c <-> a = b :=
   ⟨Codeword.xor_right_cancel, fun h => congrArg (fun x => Codeword.xor x c) h⟩
 
+/-- *XOR is identity iff right argument is zero.*  `a xor b = a ↔ b = 0`.
+    Captures the standard "XOR with 0 is no-op" characterisation. -/
+theorem Codeword.xor_eq_self_iff {n : Nat} (a b : Codeword n) :
+    Codeword.xor a b = a <-> b = 0 :=
+  ⟨fun h => Codeword.xor_left_cancel (h.trans (Codeword.xor_zero a).symm),
+   fun h => (congrArg (Codeword.xor a) h).trans (Codeword.xor_zero a)⟩
+
 /-- `a = b ↔ a xor b = 0` -- equality via XOR.  The "transmitted
     codeword agrees with the received vector exactly when the noise
     vector is zero". -/
