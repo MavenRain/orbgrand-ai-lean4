@@ -307,6 +307,19 @@ theorem landslideExtend_eq_iff {n : Nat} {b1 b2 : Bool}
     ⟨h_top, h_rest⟩,
    fun ⟨h_top, h_rest⟩ => congrArg₂ landslideExtend h_top h_rest⟩
 
+/-- *`landslideExtend` as a bijection.*  Viewed as a function
+    `Bool × (Fin n → Bool) → (Fin (n + 1) → Bool)`, `landslideExtend`
+    is bijective.  Injectivity follows from `landslideExtend_eq_iff`
+    + `Prod.ext`; surjectivity follows from `landslideExtend_split`. -/
+theorem landslideExtend_bijective {n : Nat} :
+    Function.Bijective (fun (p : Bool × (Fin n -> Bool)) =>
+      landslideExtend p.1 p.2) :=
+  ⟨fun ⟨b1, e1⟩ ⟨b2, e2⟩ h =>
+    let ⟨h_b, h_e⟩ := landslideExtend_eq_iff.mp h
+    Prod.ext h_b h_e,
+   fun e =>
+    ⟨(e (Fin.last n), e ∘ Fin.castSucc), landslideExtend_split e⟩⟩
+
 
 /-- Extending by `true` adds `(n + 1)` to the bit-weight: the new top
     bit at position `n` contributes `n + 1`, and the original
