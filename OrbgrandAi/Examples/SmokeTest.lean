@@ -541,4 +541,37 @@ example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient) (n : Nat) :
     cov2_lag sigma rho1 rho2 0 0 (n + 3) = 0 :=
   cov2_lag_beta_zero sigma rho1 rho2 n
 
+/-- Extension never decreases bit-weight. -/
+example {n : Nat} (b : Bool) (e : Fin n -> Bool) :
+    bitWeight e ≤ bitWeight (landslideExtend b e) :=
+  bitWeight_le_landslideExtend b e
+
+/-- Extension by `true` strictly increases bit-weight. -/
+example {n : Nat} (e : Fin n -> Bool) :
+    bitWeight e < bitWeight (landslideExtend true e) :=
+  bitWeight_lt_landslideExtend_true e
+
+/-- `landslideExtend` as a bijection. -/
+example {n : Nat} :
+    Function.Bijective (fun (p : Bool × (Fin n -> Bool)) =>
+      landslideExtend p.1 p.2) :=
+  landslideExtend_bijective
+
+/-- The inverse `landslideExtend_inv` is a left inverse. -/
+example {n : Nat} (b : Bool) (e : Fin n -> Bool) :
+    landslideExtend_inv (landslideExtend b e) = (b, e) :=
+  landslideExtend_inv_landslideExtend b e
+
+/-- Codeword `+`-form equality characterisation. -/
+example {n : Nat} (a b : Codeword n) : a + b = 0 <-> a = b :=
+  Codeword.add_eq_zero_iff a b
+
+/-- Codeword XOR is identity iff right arg is zero. -/
+example {n : Nat} (a b : Codeword n) : Codeword.xor a b = a <-> b = 0 :=
+  Codeword.xor_eq_self_iff a b
+
+/-- Trivial constellation exceedance is zero. -/
+example (s s_hat : Unit) : trivialConstellation.exceed s s_hat = 0 :=
+  trivialConstellation_exceed s s_hat
+
 end OrbgrandAi.Examples.SmokeTest
