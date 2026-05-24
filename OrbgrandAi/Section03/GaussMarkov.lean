@@ -353,5 +353,20 @@ theorem cov2_lag_succ_succ_succ
       = beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 (n + 2)
         + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 (n + 1) := rfl
 
+/-- *Trivial AR coefficients.*  When both `beta_1 = beta_2 = 0`, the
+    recurrence step (lag `n + 3`) vanishes regardless of the
+    correlation parameters.  Analog of `ar2_phi_zero` for `cov2_lag`. -/
+theorem cov2_lag_beta_zero
+    (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient) (n : Nat) :
+    cov2_lag sigma rho1 rho2 0 0 (n + 3) = 0 :=
+  let step1 : cov2_lag sigma rho1 rho2 0 0 (n + 3)
+            = 0 * cov2_lag sigma rho1 rho2 0 0 (n + 2)
+              + 0 * cov2_lag sigma rho1 rho2 0 0 (n + 1) := rfl
+  let step2 : 0 * cov2_lag sigma rho1 rho2 0 0 (n + 2)
+              + 0 * cov2_lag sigma rho1 rho2 0 0 (n + 1)
+            = (0 : Real) + 0 :=
+    congrArg₂ (· + ·) (zero_mul _) (zero_mul _)
+  step1.trans (step2.trans (add_zero 0))
+
 end Section03
 end OrbgrandAi

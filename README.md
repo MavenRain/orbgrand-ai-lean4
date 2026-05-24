@@ -54,6 +54,7 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | `cov1_lag_zero`, `cov1_lag_one`, `cov1_lag_neg` (closed-form values + sign-symmetry) | `Section03.GaussMarkov` | proved (3) |
 | Second-order Gauss-Markov `cov2_lag` and Yule-Walker coeffs | `Section03.GaussMarkov` | def |
 | `cov2_lag_zero`, `_one`, `_two`, `_three`, `_succ_succ_succ` base cases + first recurrence step | `Section03.GaussMarkov` | proved (5 rfl) |
+| `cov2_lag_beta_zero` (trivial AR coeffs vanish past lag 2) | `Section03.GaussMarkov` | proved |
 | Yule-Walker variance bound -> `rho_1^2 < (rho_2 + 1) / 2` | `Section03.GaussMarkov` | placeholder (3/4 sub-lemmas) |
 | `yuleWalker_denom_pos` (sub-lemma 1: `0 < 1 - rho_1^2`) | `Section03.GaussMarkov` | proved |
 | `yuleWalker_rho1_sq_lt_one` (corollary: `rho_1^2 < 1`) | `Section03.GaussMarkov` | proved |
