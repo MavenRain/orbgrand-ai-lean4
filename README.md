@@ -99,6 +99,7 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | ORBGRAND landslide enumeration (`landslideExtend` + `landslide`) | `Section04.Orbgrand` | def (concrete) |
 | `landslide_zero_zero`, `landslide_zero_succ`, `logisticWeight_elim0` (base cases) | `Section04.Orbgrand` | proved (3) |
 | `landslide_one_zero`, `landslide_one_one` (closed-form at length 1) | `Section04.Orbgrand` | proved (2) |
+| `landslide_two_one`, `landslide_two_two` (closed-form at length 2) | `Section04.Orbgrand` | proved (2 rfl) |
 | `landslideExtend_last`, `landslideExtend_castSucc` (Fin.lastCases at last/castSucc) | `Section04.Orbgrand` | proved (2) |
 | `bitWeight` (identity-rank logistic weight) + `bitWeight_elim0`, `bitWeight_extend_false`, `bitWeight_extend_true` | `Section04.Orbgrand` | def + proved (3) |
 | `bitWeight_landslideExtend` (unified extension rule: bitWeight + ite) | `Section04.Orbgrand` | proved |

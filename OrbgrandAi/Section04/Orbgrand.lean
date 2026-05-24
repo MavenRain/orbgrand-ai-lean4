@@ -172,6 +172,18 @@ theorem landslide_one_zero :
 theorem landslide_one_one :
     landslide 1 1 = [landslideExtend true Fin.elim0] := rfl
 
+/-- `landslide 2 1` contains a single pattern: bit 0 set, bit 1 unset
+    (extended with `false` from the length-1 weight-1 enumeration). -/
+theorem landslide_two_one :
+    landslide 2 1
+      = [landslideExtend false (landslideExtend true Fin.elim0)] := rfl
+
+/-- `landslide 2 2` contains a single pattern: bit 0 unset, bit 1 set
+    (extended with `true` from the length-1 weight-0 enumeration). -/
+theorem landslide_two_two :
+    landslide 2 2
+      = [landslideExtend true (landslideExtend false Fin.elim0)] := rfl
+
 /-- `landslide n w` has length 0 (is empty) when `w` is high enough
     that no pattern of length `n` can achieve it.  Specifically when
     `n = 0` and `w > 0`. -/
