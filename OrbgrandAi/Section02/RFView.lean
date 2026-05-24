@@ -195,6 +195,30 @@ theorem rfViewMatrix_first_subdiag
     htap ▸ rfl
   step1.trans step2
 
+/-- *Second sub-diagonal entry of `rfViewMatrix`.*  When `i.val = j.val + 2`,
+    the delay is `d = 3` and the entry equals `(rowTaps i).tap3`. -/
+theorem rfViewMatrix_second_subdiag
+    {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps)
+    (i j : Fin n_s) (h : i.val = j.val + 2) :
+    rfViewMatrix n_s rowTaps i j = (rowTaps i).tap3 :=
+  let hle : j.val ≤ i.val := h.symm ▸ Nat.le_add_right j.val 2
+  let hd_inner : i.val - j.val = 2 :=
+    h.symm ▸ Nat.add_sub_cancel_left j.val 2
+  let hd : i.val - j.val + 1 = 3 :=
+    congrArg (· + 1) hd_inner
+  let htap : (rowTaps i).tap? (i.val - j.val + 1)
+           = some (rowTaps i).tap3 :=
+    hd.symm ▸ RFViewTaps.tap?_three (rowTaps i)
+  let step1 : (if j.val <= i.val then
+                ((rowTaps i).tap? (i.val - j.val + 1)).getD (0 : Complex)
+              else (0 : Complex))
+            = ((rowTaps i).tap? (i.val - j.val + 1)).getD (0 : Complex) :=
+    if_pos hle
+  let step2 : ((rowTaps i).tap? (i.val - j.val + 1)).getD (0 : Complex)
+            = (rowTaps i).tap3 :=
+    htap ▸ rfl
+  step1.trans step2
+
 /-- The RFView channel is causal: entries above the diagonal vanish.
 
     Direct from the `if j.val ≤ i.val` discriminant: under `i < j`,
