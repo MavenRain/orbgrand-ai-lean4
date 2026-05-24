@@ -596,4 +596,10 @@ example (sigma : NoisePower) (rho : CorrelationCoefficient) :
                   * (1 - rho.val ^ 2)) :=
   entropyRate1_asymp_eq sigma rho
 
+/-- Delay-tap response with no paths is zero. -/
+example (paths : Fin 0 -> DelayTapPath) (f_s : SamplingFreq)
+    (k' : SymbolIndex) :
+    delayTapImpulseResponse paths f_s k' = 0 :=
+  delayTapImpulseResponse_empty paths f_s k'
+
 end OrbgrandAi.Examples.SmokeTest

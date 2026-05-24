@@ -149,5 +149,15 @@ theorem delayTapImpulseResponse_empty
     delayTapImpulseResponse paths f_s k' = 0 :=
   Fin.sum_univ_zero _
 
+/-- *Delay-tap matrix entry above diagonal is zero.*  This is the
+    same statement as `delayTap_causal` (which packages the result
+    into `LinearIsi.causal`), restated as a direct matrix-entry
+    equation for convenience. -/
+theorem delayTapMatrix_zero_above_diag
+    {n_s : Nat} {p : Nat} (paths : Fin p -> DelayTapPath)
+    (f_s : SamplingFreq) (i j : Fin n_s) (hij : i.val < j.val) :
+    delayTapMatrix n_s paths f_s i j = (0 : Complex) :=
+  delayTap_causal paths f_s i j hij
+
 end Section02
 end OrbgrandAi
