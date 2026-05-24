@@ -602,4 +602,15 @@ example (paths : Fin 0 -> DelayTapPath) (f_s : SamplingFreq)
     delayTapImpulseResponse paths f_s k' = 0 :=
   delayTapImpulseResponse_empty paths f_s k'
 
+/-- RFView matrix diagonal entry equals tap1. -/
+example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i : Fin n_s) :
+    rfViewMatrix n_s rowTaps i i = (rowTaps i).tap1 :=
+  rfViewMatrix_diag rowTaps i
+
+/-- DelayTap matrix entry above diagonal is zero. -/
+example {n_s : Nat} {p : Nat} (paths : Fin p -> DelayTapPath)
+    (f_s : SamplingFreq) (i j : Fin n_s) (hij : i.val < j.val) :
+    delayTapMatrix n_s paths f_s i j = (0 : Complex) :=
+  delayTapMatrix_zero_above_diag paths f_s i j hij
+
 end OrbgrandAi.Examples.SmokeTest
