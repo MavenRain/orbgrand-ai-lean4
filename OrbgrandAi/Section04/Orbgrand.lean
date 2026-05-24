@@ -776,6 +776,12 @@ theorem landslide_max_singleton : forall {n : Nat},
           (List.append_nil _)
       (congrArg (landslide (n + 1)) h_max_eq).trans (h_unfold.trans h_rhs)
 
+/-- *`landslide n` at the max weight has length 1.*  Direct corollary
+    of `landslide_max_singleton`. -/
+theorem landslide_max_length {n : Nat} :
+    (landslide n (bitWeight (fun _ : Fin n => true))).length = 1 :=
+  congrArg List.length landslide_max_singleton
+
 /-- *`landslide n 0` is the singleton of the all-false pattern.*
     Structural recursion on `n`:
     * `n = 0`: `landslide 0 0 = [Fin.elim0]`; the unique

@@ -117,6 +117,7 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | `landslideExtend_false_const_false`, `landslide_zero_singleton` (bucket 0 is exactly `[fun _ => false]`) | `Section04.Orbgrand` | proved (2) |
 | `landslideExtend_true_const_true` (dual: extending all-true by true yields all-true) | `Section04.Orbgrand` | proved |
 | `landslide_max_singleton` (max-weight bucket = `[fun _ => true]`) | `Section04.Orbgrand` | proved |
+| `landslide_max_length` (max-weight bucket has length 1) | `Section04.Orbgrand` | proved |
 | `bitWeight_le_sum` (upper bound on bit-weight = sum of `(i + 1)` over `Fin n`) | `Section04.Orbgrand` | proved |
 | `bitWeight_const_true` (all-true pattern's weight = sum) | `Section04.Orbgrand` | proved (rfl) |
 | `bitWeight_le_const_true` (bit-weight always ≤ all-true's bit-weight) | `Section04.Orbgrand` | proved |
