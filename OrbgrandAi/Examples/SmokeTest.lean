@@ -574,4 +574,26 @@ example {n : Nat} (a b : Codeword n) : Codeword.xor a b = a <-> b = 0 :=
 example (s s_hat : Unit) : trivialConstellation.exceed s s_hat = 0 :=
   trivialConstellation_exceed s s_hat
 
+/-- Restriction never increases bit-weight. -/
+example {n : Nat} (e : Fin (n + 1) -> Bool) :
+    bitWeight (e ∘ Fin.castSucc) ≤ bitWeight e :=
+  bitWeight_castSucc_le e
+
+/-- Restriction strict-decreases when top bit was true. -/
+example {n : Nat} (e : Fin (n + 1) -> Bool) (h : e (Fin.last n) = true) :
+    bitWeight (e ∘ Fin.castSucc) < bitWeight e :=
+  bitWeight_castSucc_lt_of_last_true e h
+
+/-- Every length-`(n + 1)` pattern decomposes as an extension. -/
+example {n : Nat} (e : Fin (n + 1) -> Bool) :
+    ∃ b : Bool, ∃ e' : Fin n -> Bool, e = landslideExtend b e' :=
+  landslideExtend_exists e
+
+/-- Asymptotic entropy rate unfolding. -/
+example (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    entropyRate1_asymp sigma rho
+      = Real.log (2 * Real.exp 1 * Real.pi * sigma.val
+                  * (1 - rho.val ^ 2)) :=
+  entropyRate1_asymp_eq sigma rho
+
 end OrbgrandAi.Examples.SmokeTest
