@@ -49,6 +49,7 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | `delayTapMatrix_zero_above_diag` (direct matrix-entry form of causality) | `Section02.DelayTap` | proved |
 | RFView 6-tap channel matrix | `Section02.RFView` | def |
 | `rfView_causal` (entries `i < j` vanish) | `Section02.RFView` | proved |
+| `rfViewMatrix_diag` (diagonal entry = `(rowTaps i).tap1`) | `Section02.RFView` | proved |
 | `RFViewTaps.tap?_zero` through `tap?_six` | `Section02.RFView` | proved (7 rfl) |
 | `RFViewTaps.tap?_of_ge_seven` helper | `Section02.RFView` | proved |
 | `rfView_bandwidth` (entries `j + 6 < i` vanish) | `Section02.RFView` | proved |

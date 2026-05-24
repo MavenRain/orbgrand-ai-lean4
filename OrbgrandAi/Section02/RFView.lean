@@ -130,10 +130,7 @@ def rfViewMatrix
     (n_s : Nat) (rowTaps : Fin n_s -> RFViewTaps) : ChannelMatrix n_s :=
   fun i j =>
     if j.val <= i.val then
-      let d : Nat := i.val - j.val + 1
-      match (rowTaps i).tap? d with
-      | some c => c
-      | none   => (0 : Complex)
+      ((rowTaps i).tap? (i.val - j.val + 1)).getD (0 : Complex)
     else
       (0 : Complex)
 
@@ -152,6 +149,28 @@ def rfView
 
 /-! ## Structural placeholders -/
 
+/-- *Diagonal entry of `rfViewMatrix`.*  At the diagonal `i = j`, the
+    delay is `d = 1` and `(rowTaps i).tap? 1 = some (rowTaps i).tap1`,
+    so `Option.getD` returns `(rowTaps i).tap1`. -/
+theorem rfViewMatrix_diag
+    {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i : Fin n_s) :
+    rfViewMatrix n_s rowTaps i i = (rowTaps i).tap1 :=
+  let hle : i.val ≤ i.val := Nat.le_refl _
+  let hsub : i.val - i.val + 1 = 1 :=
+    congrArg (· + 1) (Nat.sub_self _)
+  let htap : (rowTaps i).tap? (i.val - i.val + 1)
+           = some (rowTaps i).tap1 :=
+    hsub.symm ▸ RFViewTaps.tap?_one (rowTaps i)
+  let step1 : (if i.val <= i.val then
+                ((rowTaps i).tap? (i.val - i.val + 1)).getD (0 : Complex)
+              else (0 : Complex))
+            = ((rowTaps i).tap? (i.val - i.val + 1)).getD (0 : Complex) :=
+    if_pos hle
+  let step2 : ((rowTaps i).tap? (i.val - i.val + 1)).getD (0 : Complex)
+            = (rowTaps i).tap1 :=
+    htap ▸ rfl
+  step1.trans step2
+
 /-- The RFView channel is causal: entries above the diagonal vanish.
 
     Direct from the `if j.val ≤ i.val` discriminant: under `i < j`,
@@ -160,10 +179,7 @@ theorem rfView_causal
     {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (sigma : NoisePower) :
     (rfView n_s rowTaps sigma).causal := fun i j hij =>
   show (if j.val <= i.val then
-          let d : Nat := i.val - j.val + 1
-          match (rowTaps i).tap? d with
-          | some c => c
-          | none   => (0 : Complex)
+          ((rowTaps i).tap? (i.val - j.val + 1)).getD (0 : Complex)
         else (0 : Complex)) = (0 : Complex) from
     if_neg (Nat.not_le_of_lt hij)
 
@@ -200,18 +216,11 @@ theorem rfView_bandwidth
   -- present in the goal so that `htap ▸ rfl` can synthesize
   -- the motive `fun x => (match x with ...) = 0`.
   let step1 : (if j.val <= i.val then
-                let d : Nat := i.val - j.val + 1
-                match (rowTaps i).tap? d with
-                | some c => c
-                | none   => (0 : Complex)
+                ((rowTaps i).tap? (i.val - j.val + 1)).getD (0 : Complex)
               else (0 : Complex))
-            = (match (rowTaps i).tap? (i.val - j.val + 1) with
-               | some c => c
-               | none   => (0 : Complex)) :=
+            = ((rowTaps i).tap? (i.val - j.val + 1)).getD (0 : Complex) :=
     if_pos hle
-  let step2 : (match (rowTaps i).tap? (i.val - j.val + 1) with
-               | some c => c
-               | none   => (0 : Complex))
+  let step2 : ((rowTaps i).tap? (i.val - j.val + 1)).getD (0 : Complex)
             = (0 : Complex) :=
     htap ▸ rfl
   step1.trans step2
