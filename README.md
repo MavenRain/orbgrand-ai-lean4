@@ -65,6 +65,8 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | Determinant positivity under Yule-Walker | `Section03.Determinant` | placeholder |
 | `entropyRate1_eq` first-order entropy rate formula | `Section03.EntropyRate` | proved |
 | `entropyRate1_block_eq` block-`b` entropy rate formula | `Section03.EntropyRate` | proved |
+| `entropyRate1_asymp_eq` (asymptotic form unfolding) | `Section03.EntropyRate` | proved (rfl) |
+| `entropyRate1_eq_block` (entropyRate1 = entropyRate1_block at n_s = b.toNat) | `Section03.EntropyRate` | proved (rfl) |
 | `entropyRate2_eq` second-order entropy rate formula | `Section03.EntropyRate` | proved |
 | Hadamard bound on `log |C_N|` | `Section03.Capacity` | placeholder |
 | Channel capacity upper bound | `Section03.Capacity` | placeholder |

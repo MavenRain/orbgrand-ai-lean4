@@ -129,6 +129,21 @@ theorem entropyRate1_block_eq
         + (1 - (1 : Real) / (b.toNat : Real))
             * Real.log (1 - rho.val ^ 2) := rfl
 
+/-- *Asymptotic entropy rate unfolding.*  `entropyRate1_asymp` is the
+    log of `2 * e * pi * sigma^2 * (1 - rho^2)`, the limit form. -/
+theorem entropyRate1_asymp_eq
+    (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    entropyRate1_asymp sigma rho
+      = Real.log (2 * Real.exp 1 * Real.pi * sigma.val
+                  * (1 - rho.val ^ 2)) := rfl
+
+/-- *Entropy rate matches block form when n_s = b.toNat.*  The
+    `entropyRate1` and `entropyRate1_block` formulas coincide
+    definitionally when the block size equals the sequence length. -/
+theorem entropyRate1_eq_block
+    (sigma : NoisePower) (rho : CorrelationCoefficient) (b : BlockSize) :
+    entropyRate1 sigma rho b.toNat = entropyRate1_block sigma rho b := rfl
+
 /-- The second-order entropy rate matches the substitution of
     `cov2DetFormula` into the Gaussian entropy formula.
 
