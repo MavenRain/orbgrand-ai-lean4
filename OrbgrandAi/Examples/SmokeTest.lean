@@ -498,4 +498,17 @@ example {chi : Type} (cs : Constellation chi) (s s_hat : chi) :
 example (z1 z2 : Complex) (n : Nat) : ar2 1 0 z1 z2 (n + 1) = z2 :=
   ar2_phi1_one_phi2_zero z1 z2 n
 
+/-- BPSK exceedance is symmetric. -/
+example (s s_hat : Bool) : bpsk.exceed s s_hat = bpsk.exceed s_hat s :=
+  bpsk_exceed_symm s s_hat
+
+/-- QPSK exceedance is symmetric. -/
+example (s s_hat : Fin 4) : qpsk.exceed s s_hat = qpsk.exceed s_hat s :=
+  qpsk_exceed_symm s s_hat
+
+/-- Zero channel stays zero under any perturbation. -/
+example {n_s : Nat} (epsilon : Matrix (Fin n_s) (Fin n_s) Complex) :
+    perturbChannel 0 epsilon = 0 :=
+  perturbChannel_zero_channel epsilon
+
 end OrbgrandAi.Examples.SmokeTest
