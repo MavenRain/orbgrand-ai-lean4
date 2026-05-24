@@ -502,6 +502,13 @@ theorem Codeword.xor_eq_zero_of_eq {n : Nat} {a b : Codeword n}
     (h : a = b) : Codeword.xor a b = 0 :=
   (Codeword.eq_iff_xor_eq_zero a b).mp h
 
+/-- *`+` form of equality characterisation.*  `a + b = 0 ↔ a = b`
+    (using `Codeword.xor = +` via `xor_eq_add`).  Convenient for
+    downstream code expressing the equation in `+` form. -/
+theorem Codeword.add_eq_zero_iff {n : Nat} (a b : Codeword n) :
+    a + b = 0 <-> a = b :=
+  (Codeword.eq_iff_xor_eq_zero a b).symm
+
 /-- *Zero-noise short-circuit.*  If `Y` is already a codeword (zero
     syndrome) and the zero-noise candidate is the head of the
     candidate list, `grandFind` returns `Y` immediately.  Composes the

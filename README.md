@@ -77,6 +77,7 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | `Codeword.xor_left_cancel`, `xor_right_cancel` | `Section04.Grand` | proved (2) |
 | `Codeword.xor_left_eq_iff`, `xor_right_eq_iff` (iff forms of cancellation) | `Section04.Grand` | proved (2) |
 | `Codeword.xor_eq_self_iff` (identity iff right arg zero) | `Section04.Grand` | proved |
+| `Codeword.add_eq_zero_iff` (`+` form of equality characterisation: `a + b = 0 ↔ a = b`) | `Section04.Grand` | proved |
 | `Codeword.eq_iff_xor_eq_zero`, `eq_of_xor_eq_zero`, `xor_eq_zero_of_eq` | `Section04.Grand` | proved (3) |
 | `syndrome_decomp` (syndrome linearity: H*Y + H*N_g) | `Section04.Grand` | proved |
 | `syndrome_codeword` (on a codeword receiver, syndrome = H*N_g) | `Section04.Grand` | proved |
