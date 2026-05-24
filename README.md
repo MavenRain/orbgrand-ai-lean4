@@ -115,6 +115,7 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | `landslideExtend_eq_iff` (extensions equal iff top bits AND restrictions agree) | `Section04.Orbgrand` | proved |
 | `landslideExtend_bijective` (as a function `Bool × restriction → pattern`) | `Section04.Orbgrand` | proved |
 | `landslideExtend_inv` (def) + roundtrip lemmas (`_inv_landslideExtend`, `landslideExtend_landslideExtend_inv`) | `Section04.Orbgrand` | def + proved (2) |
+| `landslideExtend_exists` (existential decomposition) | `Section04.Orbgrand` | proved |
 | `bitWeight_split_false`, `bitWeight_split_true` (weight decomposition under top bit) | `Section04.Orbgrand` | proved (2) |
 | `mem_map_extend_iff` (membership in `(...).map (landslideExtend b)`) | `Section04.Orbgrand` | proved |
 | `landslide_correct` (e ∈ landslide n w ↔ bitWeight e = w, full inductive proof) | `Section04.Orbgrand` | proved |

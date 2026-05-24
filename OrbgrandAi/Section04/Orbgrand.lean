@@ -357,6 +357,13 @@ theorem landslideExtend_landslideExtend_inv
     landslideExtend (landslideExtend_inv e).1 (landslideExtend_inv e).2 = e :=
   landslideExtend_split e
 
+/-- *Existential decomposition.*  Every length-`(n + 1)` pattern is
+    `landslideExtend b e'` for some `b, e'`.  Existential form of the
+    `landslideExtend_split` surjectivity. -/
+theorem landslideExtend_exists {n : Nat} (e : Fin (n + 1) -> Bool) :
+    ∃ b : Bool, ∃ e' : Fin n -> Bool, e = landslideExtend b e' :=
+  ⟨e (Fin.last n), e ∘ Fin.castSucc, (landslideExtend_split e).symm⟩
+
 
 /-- Extending by `true` adds `(n + 1)` to the bit-weight: the new top
     bit at position `n` contributes `n + 1`, and the original
