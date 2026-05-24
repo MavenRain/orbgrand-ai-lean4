@@ -121,6 +121,24 @@ theorem ar2_phi_zero (z1 z2 : Complex) (n : Nat) :
     congrArg₂ (· + ·) (zero_mul _) (zero_mul _)
   step1.trans (step2.trans (add_zero 0))
 
+/-- *AR(1)-like degenerate case.*  When `phi_1 = 1` and `phi_2 = 0`,
+    the recursion `ar2 1 0 z1 z2` becomes constant at `z2` from index
+    1 onwards.  Induction on `n` with `one_mul` + `zero_mul` +
+    `add_zero` in the recursion step. -/
+theorem ar2_phi1_one_phi2_zero (z1 z2 : Complex) :
+    forall (n : Nat), ar2 1 0 z1 z2 (n + 1) = z2
+  | 0     => rfl
+  | n + 1 =>
+      let ih : ar2 1 0 z1 z2 (n + 1) = z2 := ar2_phi1_one_phi2_zero z1 z2 n
+      let step1 : ar2 1 0 z1 z2 (n + 2)
+                = 1 * ar2 1 0 z1 z2 (n + 1) + 0 * ar2 1 0 z1 z2 n := rfl
+      let step2 : 1 * ar2 1 0 z1 z2 (n + 1) + 0 * ar2 1 0 z1 z2 n
+                = ar2 1 0 z1 z2 (n + 1) + 0 :=
+        congrArg₂ (· + ·) (one_mul _) (zero_mul _)
+      let step3 : ar2 1 0 z1 z2 (n + 1) + 0 = ar2 1 0 z1 z2 (n + 1) :=
+        add_zero _
+      (step1.trans (step2.trans step3)).trans ih
+
 /-! ## Regressor matrix and target -/
 
 /-- The `4 x 2` regressor matrix used in the least-squares fit.

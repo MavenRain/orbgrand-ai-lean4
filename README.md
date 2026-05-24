@@ -155,6 +155,7 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | `ar2_zero`, `ar2_one`, `ar2_succ_succ` base cases | `Section06.Ar2Approximation` | proved (3 rfl) |
 | `ar2_two`, `ar2_three` closed-form values | `Section06.Ar2Approximation` | proved (2 rfl) |
 | `ar2_phi_zero` (trivial coefficients vanish past initial conditions) | `Section06.Ar2Approximation` | proved |
+| `ar2_phi1_one_phi2_zero` (AR(1)-like degenerate: constant at z2 from index 1) | `Section06.Ar2Approximation` | proved |
 | Query-order stability under `|delta_rho| <= eps` | `Section06.QueryOrderStability` | placeholder |
 
 ### Status legend
