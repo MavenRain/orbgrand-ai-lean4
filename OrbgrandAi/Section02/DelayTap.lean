@@ -141,5 +141,13 @@ theorem delayTapImpulseResponse_zero_attenuations
   Finset.sum_eq_zero fun d _ =>
     (congrArg (· * _) (h_zero d)).trans (zero_mul _)
 
+/-- *Empty delay-tap impulse response.*  With zero paths (`p = 0`),
+    the sum is over the empty Finset and collapses to `0`. -/
+theorem delayTapImpulseResponse_empty
+    (paths : Fin 0 -> DelayTapPath)
+    (f_s : SamplingFreq) (k' : SymbolIndex) :
+    delayTapImpulseResponse paths f_s k' = 0 :=
+  Fin.sum_univ_zero _
+
 end Section02
 end OrbgrandAi

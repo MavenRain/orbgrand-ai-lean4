@@ -44,7 +44,8 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | Delay-tap impulse response `h_{k', j} = sum_d a sinc(...)` | `Section02.DelayTap` | def |
 | `delayTap_causal` (entries `i < j` vanish) | `Section02.DelayTap` | proved |
 | `sinc_zero` (sinc(0) = 1) | `Section02.DelayTap` | proved |
-| `delayTapImpulseResponse_zero_attenuations` (no paths => zero response) | `Section02.DelayTap` | proved |
+| `delayTapImpulseResponse_zero_attenuations` (zero attenuations => zero response) | `Section02.DelayTap` | proved |
+| `delayTapImpulseResponse_empty` (p = 0 => zero response) | `Section02.DelayTap` | proved |
 | RFView 6-tap channel matrix | `Section02.RFView` | def |
 | `rfView_causal` (entries `i < j` vanish) | `Section02.RFView` | proved |
 | `RFViewTaps.tap?_zero` through `tap?_six` | `Section02.RFView` | proved (7 rfl) |
