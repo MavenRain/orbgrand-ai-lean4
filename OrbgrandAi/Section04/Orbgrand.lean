@@ -459,6 +459,16 @@ theorem bitWeight_castSucc_le {n : Nat} (e : Fin (n + 1) -> Bool) :
         bitWeight_split_true e h
       (Nat.le_add_right _ _).trans (le_of_eq h_eq.symm)
 
+/-- *Restriction strictly decreases when top bit is true.*  When
+    `e (Fin.last n) = true`, the restriction's bit-weight is strictly
+    less than `bitWeight e` (by `n + 1 > 0`). -/
+theorem bitWeight_castSucc_lt_of_last_true
+    {n : Nat} (e : Fin (n + 1) -> Bool) (h : e (Fin.last n) = true) :
+    bitWeight (e ∘ Fin.castSucc) < bitWeight e :=
+  let h_eq : bitWeight e = bitWeight (e ∘ Fin.castSucc) + (n + 1) :=
+    bitWeight_split_true e h
+  (Nat.lt_add_of_pos_right (Nat.succ_pos n)).trans_eq h_eq.symm
+
 /-- *Membership in a `landslideExtend`-mapped list.*  Pattern `e` is in
     `list.map (landslideExtend b)` iff its top bit equals `b` and its
     restriction is in `list`.  Combines `List.mem_map` with

@@ -118,6 +118,7 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | `landslideExtend_exists` (existential decomposition) | `Section04.Orbgrand` | proved |
 | `bitWeight_split_false`, `bitWeight_split_true` (weight decomposition under top bit) | `Section04.Orbgrand` | proved (2) |
 | `bitWeight_castSucc_le` (restriction never increases bit-weight) | `Section04.Orbgrand` | proved |
+| `bitWeight_castSucc_lt_of_last_true` (strict <: when top bit true) | `Section04.Orbgrand` | proved |
 | `mem_map_extend_iff` (membership in `(...).map (landslideExtend b)`) | `Section04.Orbgrand` | proved |
 | `landslide_correct` (e ∈ landslide n w ↔ bitWeight e = w, full inductive proof) | `Section04.Orbgrand` | proved |
 | `landslide_self_mem` (every pattern is in its own bucket) | `Section04.Orbgrand` | proved |
