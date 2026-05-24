@@ -373,6 +373,14 @@ theorem bitWeight_landslideExtend {n : Nat} (b : Bool) (e : Fin n -> Bool) :
     ((bitWeight_extend_false e).trans (add_zero _).symm)
     (bitWeight_extend_true e)
 
+/-- *Extension never decreases bit-weight.*  Extending by either bit
+    `b` produces a pattern of at least the original bit-weight.
+    Composes `bitWeight_landslideExtend` with `Nat.le_add_right`. -/
+theorem bitWeight_le_landslideExtend {n : Nat} (b : Bool) (e : Fin n -> Bool) :
+    bitWeight e ≤ bitWeight (landslideExtend b e) :=
+  (Nat.le_add_right (bitWeight e) (if b then n + 1 else 0)).trans
+    (le_of_eq (bitWeight_landslideExtend b e).symm)
+
 /-- *Weight decomposition under top bit false.*  When the top bit is
     `false`, the pattern's bit-weight equals its restriction's. -/
 theorem bitWeight_split_false {n : Nat} (e : Fin (n + 1) -> Bool)
