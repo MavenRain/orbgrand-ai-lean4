@@ -511,4 +511,34 @@ example {n_s : Nat} (epsilon : Matrix (Fin n_s) (Fin n_s) Complex) :
     perturbChannel 0 epsilon = 0 :=
   perturbChannel_zero_channel epsilon
 
+/-- Max-weight bucket has no duplicates. -/
+example {n : Nat} :
+    (landslide n (bitWeight (fun _ : Fin n => true))).Nodup :=
+  landslide_max_nodup
+
+/-- Zero-weight bucket has no duplicates. -/
+example {n : Nat} : (landslide n 0).Nodup :=
+  landslide_zero_nodup
+
+/-- Max-weight bucket has length 1. -/
+example {n : Nat} :
+    (landslide n (bitWeight (fun _ : Fin n => true))).length = 1 :=
+  landslide_max_length
+
+/-- Singleton-bucket element is unique. -/
+example {n w : Nat} {e : Fin n -> Bool}
+    (h : landslide n w = [e]) (e' : Fin n -> Bool) (h_eq : bitWeight e' = w) :
+    e' = e :=
+  landslide_singleton_unique h e' h_eq
+
+/-- Non-membership iff wrong bit-weight. -/
+example {n w : Nat} (e : Fin n -> Bool) :
+    e ∉ landslide n w <-> bitWeight e ≠ w :=
+  landslide_not_mem_iff e
+
+/-- Trivial AR coefficients vanish for `cov2_lag` past lag 2. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient) (n : Nat) :
+    cov2_lag sigma rho1 rho2 0 0 (n + 3) = 0 :=
+  cov2_lag_beta_zero sigma rho1 rho2 n
+
 end OrbgrandAi.Examples.SmokeTest
