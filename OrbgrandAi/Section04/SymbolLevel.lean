@@ -64,6 +64,23 @@ structure Constellation (chi : Type) where
   /-- Exceedance distance is `0` iff the two symbols agree. -/
   exceed_zero_iff : forall (s s_hat : chi), exceed s s_hat = 0 <-> s = s_hat
 
+/-! ## Generic Constellation lemmas -/
+
+/-- *Exceedance is strictly positive iff symbols differ.*  The dual
+    of `exceed_zero_iff`: combined with `exceed_nonneg`, equality to
+    zero iff symbols equal yields strict positivity iff symbols
+    differ. -/
+theorem Constellation.exceed_pos_iff_ne {chi : Type} (cs : Constellation chi)
+    (s s_hat : chi) :
+    0 < cs.exceed s s_hat <-> s ≠ s_hat :=
+  ⟨fun h_pos h_eq =>
+    let h_zero : cs.exceed s s_hat = 0 := (cs.exceed_zero_iff s s_hat).mpr h_eq
+    lt_irrefl (0 : Real) (h_zero ▸ h_pos),
+   fun h_ne =>
+    let h_ne_zero : cs.exceed s s_hat ≠ 0 :=
+      fun h => h_ne ((cs.exceed_zero_iff s s_hat).mp h)
+    lt_of_le_of_ne (cs.exceed_nonneg s s_hat) (Ne.symm h_ne_zero)⟩
+
 /-! ## Concrete constellation instances -/
 
 /-- *BPSK* (binary phase-shift keying): a 2-symbol constellation with

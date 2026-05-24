@@ -146,6 +146,7 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | `perturbChannel_zero` (zero perturbation is identity) | `Section06.Csi` | proved |
 | `perturbChannel_causal_of_causal` (causality preserved under perturbation) | `Section06.Csi` | proved |
 | `perturbChannel_bandwidth_of_bandwidth` (bandwidth preserved under perturbation) | `Section06.Csi` | proved |
+| `Constellation.exceed_pos_iff_ne` (strict positivity dual of `exceed_zero_iff`) | `Section04.SymbolLevel` | proved |
 | `bpsk` (BPSK constellation instance: `Constellation Bool`) | `Section04.SymbolLevel` | def |
 | `bpsk_exceed_self`, `bpsk_exceed_diff`, `bpsk_exceed_symm` (BPSK exceedance: closed forms + symmetry) | `Section04.SymbolLevel` | proved (3) |
 | `qpsk` (QPSK constellation: `Constellation (Fin 4)`) | `Section04.SymbolLevel` | def |
