@@ -87,6 +87,15 @@ theorem perturbChannel_zero
   funext fun i => funext fun j =>
     (congrArg (h i j * ·) (add_zero (1 : Complex))).trans (mul_one (h i j))
 
+/-- *Zero channel stays zero under perturbation.*  When the underlying
+    channel matrix is zero, the perturbed channel is also zero
+    (regardless of the error matrix).  Each entry becomes
+    `0 * (1 + epsilon i j) = 0` via `zero_mul`. -/
+theorem perturbChannel_zero_channel
+    {n_s : Nat} (epsilon : Matrix (Fin n_s) (Fin n_s) Complex) :
+    perturbChannel 0 epsilon = 0 :=
+  funext fun i => funext fun j => zero_mul (1 + epsilon i j)
+
 /-- *Causality preservation.*  Multiplicative-additive perturbation
     preserves the causality predicate: if `h i j = 0` for `i < j`, then
     `(perturbChannel h epsilon) i j = 0` for the same indices.  The

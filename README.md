@@ -144,6 +144,7 @@ are stated as Lean theorems; the table tracks which are fully proved.
 | `orbgrandAiLoop_append_left`, `orbgrandAi_append_left` (extension stability) | `Section04.OrbgrandAi` | proved (2) |
 | Approximate-independence block factorisation | `Section04.OrbgrandAi` | def |
 | `perturbChannel_zero` (zero perturbation is identity) | `Section06.Csi` | proved |
+| `perturbChannel_zero_channel` (zero channel stays zero under any perturbation) | `Section06.Csi` | proved |
 | `perturbChannel_causal_of_causal` (causality preserved under perturbation) | `Section06.Csi` | proved |
 | `perturbChannel_bandwidth_of_bandwidth` (bandwidth preserved under perturbation) | `Section06.Csi` | proved |
 | `Constellation.exceed_pos_iff_ne` (strict positivity dual of `exceed_zero_iff`) | `Section04.SymbolLevel` | proved |
