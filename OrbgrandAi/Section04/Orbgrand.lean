@@ -446,6 +446,19 @@ theorem bitWeight_split_true {n : Nat} (e : Fin (n + 1) -> Bool)
   (congrArg bitWeight h_split'.symm).trans
     (bitWeight_extend_true (e ∘ Fin.castSucc))
 
+/-- *Restriction never increases bit-weight.*  `bitWeight (e ∘ castSucc)`
+    is always at most `bitWeight e`.  Dual of `bitWeight_le_landslideExtend`:
+    just as extending can only grow the weight, restricting can only
+    shrink it. -/
+theorem bitWeight_castSucc_le {n : Nat} (e : Fin (n + 1) -> Bool) :
+    bitWeight (e ∘ Fin.castSucc) ≤ bitWeight e :=
+  match h : e (Fin.last n) with
+  | false => le_of_eq (bitWeight_split_false e h).symm
+  | true =>
+      let h_eq : bitWeight e = bitWeight (e ∘ Fin.castSucc) + (n + 1) :=
+        bitWeight_split_true e h
+      (Nat.le_add_right _ _).trans (le_of_eq h_eq.symm)
+
 /-- *Membership in a `landslideExtend`-mapped list.*  Pattern `e` is in
     `list.map (landslideExtend b)` iff its top bit equals `b` and its
     restriction is in `list`.  Combines `List.mem_map` with
