@@ -660,6 +660,16 @@ theorem landslide_eq_nil_iff {n w : Nat} :
     List.eq_nil_iff_forall_not_mem.mpr fun e h_mem =>
       h_no e ((landslide_correct n w e).mp h_mem)⟩
 
+/-- *Singleton-bucket uniqueness.*  When `landslide n w = [e]`, the
+    pattern `e` is the unique pattern of bit-weight `w`.  Any other
+    pattern `e'` with the same weight must equal `e`. -/
+theorem landslide_singleton_unique {n w : Nat} {e : Fin n -> Bool}
+    (h : landslide n w = [e]) (e' : Fin n -> Bool) (h_eq : bitWeight e' = w) :
+    e' = e :=
+  let h_mem : e' ∈ landslide n w := (landslide_correct n w e').mpr h_eq
+  let h_mem' : e' ∈ [e] := h ▸ h_mem
+  List.mem_singleton.mp h_mem'
+
 /-- *Extending all-false by false yields all-false.*  `Fin.lastCases`
     on each position: the new top is `false` (by `landslideExtend_last`),
     and original positions reproduce `false` (by `landslideExtend_castSucc`). -/
