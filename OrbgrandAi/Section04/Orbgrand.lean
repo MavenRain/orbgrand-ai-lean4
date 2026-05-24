@@ -782,6 +782,11 @@ theorem landslide_max_length {n : Nat} :
     (landslide n (bitWeight (fun _ : Fin n => true))).length = 1 :=
   congrArg List.length landslide_max_singleton
 
+/-- *Max-weight bucket has no duplicates.*  Singleton list is `Nodup`. -/
+theorem landslide_max_nodup {n : Nat} :
+    (landslide n (bitWeight (fun _ : Fin n => true))).Nodup :=
+  Eq.mpr (congrArg List.Nodup landslide_max_singleton) (List.nodup_singleton _)
+
 /-- *`landslide n 0` is the singleton of the all-false pattern.*
     Structural recursion on `n`:
     * `n = 0`: `landslide 0 0 = [Fin.elim0]`; the unique
@@ -816,6 +821,11 @@ theorem landslide_zero_singleton : forall {n : Nat},
         = [fun _ : Fin (n + 1) => false] :=
         congrArg (fun e => [e]) landslideExtend_false_const_false
       h_eq.trans (h_map.trans h_singleton)
+
+/-- *Zero-weight bucket has no duplicates.*  Singleton list is `Nodup`. -/
+theorem landslide_zero_nodup {n : Nat} :
+    (landslide n 0).Nodup :=
+  Eq.mpr (congrArg List.Nodup landslide_zero_singleton) (List.nodup_singleton _)
 
 /-- *`landslide n 0` has length 1.*  Structural recursion on `n`:
     * `n = 0`: trivially length 1 (the singleton `[Fin.elim0]`).
