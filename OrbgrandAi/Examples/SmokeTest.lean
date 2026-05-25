@@ -620,4 +620,13 @@ example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
     rfViewMatrix n_s rowTaps i j = (0 : Complex) :=
   rfViewMatrix_at_six_below_diag rowTaps i j h
 
+/-- A row of `rfViewMatrix` is zero when all six of its taps are zero. -/
+example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i : Fin n_s)
+    (h1 : (rowTaps i).tap1 = 0) (h2 : (rowTaps i).tap2 = 0)
+    (h3 : (rowTaps i).tap3 = 0) (h4 : (rowTaps i).tap4 = 0)
+    (h5 : (rowTaps i).tap5 = 0) (h6 : (rowTaps i).tap6 = 0)
+    (j : Fin n_s) :
+    rfViewMatrix n_s rowTaps i j = (0 : Complex) :=
+  rfViewMatrix_row_zero_of_taps_zero rowTaps i h1 h2 h3 h4 h5 h6 j
+
 end OrbgrandAi.Examples.SmokeTest

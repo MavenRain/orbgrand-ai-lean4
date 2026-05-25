@@ -371,5 +371,52 @@ theorem rfView_bandwidth
     htap ▸ rfl
   step1.trans step2
 
+/-- *Zero-tap lookup is zero after `getD`.*  When every tap of `t` is
+    zero, the `getD`-extracted value at any delay is zero: in-band
+    delays `1..6` unwrap to `some 0`, while out-of-band delays
+    (`0` or `≥ 7`) unwrap from `none` to the default `0`.  This
+    is the key composition lemma for showing that a zero row of
+    `rfViewMatrix` is entirely zero. -/
+theorem RFViewTaps.tap?_getD_zero_of_all_zero
+    (t : RFViewTaps)
+    (h1 : t.tap1 = 0) (h2 : t.tap2 = 0) (h3 : t.tap3 = 0)
+    (h4 : t.tap4 = 0) (h5 : t.tap5 = 0) (h6 : t.tap6 = 0) :
+    forall (d : Nat), (t.tap? d).getD (0 : Complex) = (0 : Complex)
+  | 0     => rfl
+  | 1     => h1
+  | 2     => h2
+  | 3     => h3
+  | 4     => h4
+  | 5     => h5
+  | 6     => h6
+  | _ + 7 => rfl
+
+/-- *Row of `rfViewMatrix` is zero when its taps are all zero.*
+    Given a row `i` whose six taps are individually zero, every
+    entry `rfViewMatrix _ rowTaps i j` is zero, regardless of `j`.
+    Splits on `j.val ≤ i.val`: the lower-triangular branch uses
+    `tap?_getD_zero_of_all_zero`; the upper-triangular branch is
+    `0` by `if_neg`. -/
+theorem rfViewMatrix_row_zero_of_taps_zero
+    {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i : Fin n_s)
+    (h1 : (rowTaps i).tap1 = 0) (h2 : (rowTaps i).tap2 = 0)
+    (h3 : (rowTaps i).tap3 = 0) (h4 : (rowTaps i).tap4 = 0)
+    (h5 : (rowTaps i).tap5 = 0) (h6 : (rowTaps i).tap6 = 0)
+    (j : Fin n_s) :
+    rfViewMatrix n_s rowTaps i j = (0 : Complex) :=
+  if hle : j.val <= i.val then
+    let step1 : (if j.val <= i.val then
+                  ((rowTaps i).tap? (i.val - j.val + 1)).getD (0 : Complex)
+                else (0 : Complex))
+              = ((rowTaps i).tap? (i.val - j.val + 1)).getD (0 : Complex) :=
+      if_pos hle
+    let step2 : ((rowTaps i).tap? (i.val - j.val + 1)).getD (0 : Complex)
+              = (0 : Complex) :=
+      RFViewTaps.tap?_getD_zero_of_all_zero (rowTaps i)
+        h1 h2 h3 h4 h5 h6 (i.val - j.val + 1)
+    step1.trans step2
+  else
+    if_neg hle
+
 end Section02
 end OrbgrandAi
