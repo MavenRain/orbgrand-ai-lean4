@@ -66,6 +66,14 @@ structure Constellation (chi : Type) where
 
 /-! ## Generic Constellation lemmas -/
 
+/-- *Exceedance vanishes on the diagonal.*  Generic version of the
+    per-constellation `_exceed_self` lemmas: any `Constellation` has
+    `cs.exceed s s = 0` directly from the `exceed_zero_iff` axiom. -/
+theorem Constellation.exceed_self {chi : Type} (cs : Constellation chi)
+    (s : chi) :
+    cs.exceed s s = 0 :=
+  (cs.exceed_zero_iff s s).mpr rfl
+
 /-- *Exceedance is strictly positive iff symbols differ.*  The dual
     of `exceed_zero_iff`: combined with `exceed_nonneg`, equality to
     zero iff symbols equal yields strict positivity iff symbols
