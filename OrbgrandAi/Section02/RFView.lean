@@ -219,6 +219,78 @@ theorem rfViewMatrix_second_subdiag
     htap ▸ rfl
   step1.trans step2
 
+/-- *Third sub-diagonal entry of `rfViewMatrix`.*  When `i.val = j.val + 3`,
+    the delay is `d = 4` and the entry equals `(rowTaps i).tap4`. -/
+theorem rfViewMatrix_third_subdiag
+    {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps)
+    (i j : Fin n_s) (h : i.val = j.val + 3) :
+    rfViewMatrix n_s rowTaps i j = (rowTaps i).tap4 :=
+  let hle : j.val ≤ i.val := h.symm ▸ Nat.le_add_right j.val 3
+  let hd_inner : i.val - j.val = 3 :=
+    h.symm ▸ Nat.add_sub_cancel_left j.val 3
+  let hd : i.val - j.val + 1 = 4 :=
+    congrArg (· + 1) hd_inner
+  let htap : (rowTaps i).tap? (i.val - j.val + 1)
+           = some (rowTaps i).tap4 :=
+    hd.symm ▸ RFViewTaps.tap?_four (rowTaps i)
+  let step1 : (if j.val <= i.val then
+                ((rowTaps i).tap? (i.val - j.val + 1)).getD (0 : Complex)
+              else (0 : Complex))
+            = ((rowTaps i).tap? (i.val - j.val + 1)).getD (0 : Complex) :=
+    if_pos hle
+  let step2 : ((rowTaps i).tap? (i.val - j.val + 1)).getD (0 : Complex)
+            = (rowTaps i).tap4 :=
+    htap ▸ rfl
+  step1.trans step2
+
+/-- *Fourth sub-diagonal entry of `rfViewMatrix`.*  When `i.val = j.val + 4`,
+    the delay is `d = 5` and the entry equals `(rowTaps i).tap5`. -/
+theorem rfViewMatrix_fourth_subdiag
+    {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps)
+    (i j : Fin n_s) (h : i.val = j.val + 4) :
+    rfViewMatrix n_s rowTaps i j = (rowTaps i).tap5 :=
+  let hle : j.val ≤ i.val := h.symm ▸ Nat.le_add_right j.val 4
+  let hd_inner : i.val - j.val = 4 :=
+    h.symm ▸ Nat.add_sub_cancel_left j.val 4
+  let hd : i.val - j.val + 1 = 5 :=
+    congrArg (· + 1) hd_inner
+  let htap : (rowTaps i).tap? (i.val - j.val + 1)
+           = some (rowTaps i).tap5 :=
+    hd.symm ▸ RFViewTaps.tap?_five (rowTaps i)
+  let step1 : (if j.val <= i.val then
+                ((rowTaps i).tap? (i.val - j.val + 1)).getD (0 : Complex)
+              else (0 : Complex))
+            = ((rowTaps i).tap? (i.val - j.val + 1)).getD (0 : Complex) :=
+    if_pos hle
+  let step2 : ((rowTaps i).tap? (i.val - j.val + 1)).getD (0 : Complex)
+            = (rowTaps i).tap5 :=
+    htap ▸ rfl
+  step1.trans step2
+
+/-- *Fifth sub-diagonal entry of `rfViewMatrix`.*  When `i.val = j.val + 5`,
+    the delay is `d = 6` and the entry equals `(rowTaps i).tap6`. -/
+theorem rfViewMatrix_fifth_subdiag
+    {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps)
+    (i j : Fin n_s) (h : i.val = j.val + 5) :
+    rfViewMatrix n_s rowTaps i j = (rowTaps i).tap6 :=
+  let hle : j.val ≤ i.val := h.symm ▸ Nat.le_add_right j.val 5
+  let hd_inner : i.val - j.val = 5 :=
+    h.symm ▸ Nat.add_sub_cancel_left j.val 5
+  let hd : i.val - j.val + 1 = 6 :=
+    congrArg (· + 1) hd_inner
+  let htap : (rowTaps i).tap? (i.val - j.val + 1)
+           = some (rowTaps i).tap6 :=
+    hd.symm ▸ RFViewTaps.tap?_six (rowTaps i)
+  let step1 : (if j.val <= i.val then
+                ((rowTaps i).tap? (i.val - j.val + 1)).getD (0 : Complex)
+              else (0 : Complex))
+            = ((rowTaps i).tap? (i.val - j.val + 1)).getD (0 : Complex) :=
+    if_pos hle
+  let step2 : ((rowTaps i).tap? (i.val - j.val + 1)).getD (0 : Complex)
+            = (rowTaps i).tap6 :=
+    htap ▸ rfl
+  step1.trans step2
+
 /-- The RFView channel is causal: entries above the diagonal vanish.
 
     Direct from the `if j.val ≤ i.val` discriminant: under `i < j`,
