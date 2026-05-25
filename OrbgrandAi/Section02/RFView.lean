@@ -291,6 +291,32 @@ theorem rfViewMatrix_fifth_subdiag
     htap ▸ rfl
   step1.trans step2
 
+/-- *Sixth-position-below entry of `rfViewMatrix` is zero.*  When
+    `i.val = j.val + 6`, the delay `d = 7` falls past the explicit
+    tap range (1..6), so `tap?_of_ge_seven` returns `none` and
+    `Option.getD` returns the default `0`.  This is the boundary
+    just inside the "out of band" region. -/
+theorem rfViewMatrix_at_six_below_diag
+    {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps)
+    (i j : Fin n_s) (h : i.val = j.val + 6) :
+    rfViewMatrix n_s rowTaps i j = (0 : Complex) :=
+  let hle : j.val ≤ i.val := h.symm ▸ Nat.le_add_right j.val 6
+  let hd_inner : i.val - j.val = 6 :=
+    h.symm ▸ Nat.add_sub_cancel_left j.val 6
+  let hd : i.val - j.val + 1 = 7 :=
+    congrArg (· + 1) hd_inner
+  let htap : (rowTaps i).tap? (i.val - j.val + 1) = none :=
+    hd.symm ▸ RFViewTaps.tap?_of_ge_seven (rowTaps i) 7 (Nat.le_refl 7)
+  let step1 : (if j.val <= i.val then
+                ((rowTaps i).tap? (i.val - j.val + 1)).getD (0 : Complex)
+              else (0 : Complex))
+            = ((rowTaps i).tap? (i.val - j.val + 1)).getD (0 : Complex) :=
+    if_pos hle
+  let step2 : ((rowTaps i).tap? (i.val - j.val + 1)).getD (0 : Complex)
+            = (0 : Complex) :=
+    htap ▸ rfl
+  step1.trans step2
+
 /-- The RFView channel is causal: entries above the diagonal vanish.
 
     Direct from the `if j.val ≤ i.val` discriminant: under `i < j`,

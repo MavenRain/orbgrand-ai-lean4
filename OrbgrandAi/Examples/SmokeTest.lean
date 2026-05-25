@@ -613,4 +613,11 @@ example {n_s : Nat} {p : Nat} (paths : Fin p -> DelayTapPath)
     delayTapMatrix n_s paths f_s i j = (0 : Complex) :=
   delayTapMatrix_zero_above_diag paths f_s i j hij
 
+/-- RFView matrix at six-below-diagonal is zero (boundary just inside
+    the out-of-band region: `tap?_7` is `none`). -/
+example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
+    (h : i.val = j.val + 6) :
+    rfViewMatrix n_s rowTaps i j = (0 : Complex) :=
+  rfViewMatrix_at_six_below_diag rowTaps i j h
+
 end OrbgrandAi.Examples.SmokeTest
