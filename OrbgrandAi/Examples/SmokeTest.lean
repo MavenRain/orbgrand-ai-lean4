@@ -620,6 +620,11 @@ example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
     rfViewMatrix n_s rowTaps i j = (0 : Complex) :=
   rfViewMatrix_at_six_below_diag rowTaps i j h
 
+/-- `receive` is additive in the signal at zero noise. -/
+example {n_s : Nat} (ch : LinearIsi n_s) (X1 X2 : SymbolVector n_s) :
+    ch.receive (X1 + X2) 0 = ch.receive X1 0 + ch.receive X2 0 :=
+  LinearIsi.receive_signal_add_zero_noise ch X1 X2
+
 /-- Left transposition of Codeword XOR: `a xor (b xor c) = b xor (a xor c)`. -/
 example {n : Nat} (a b c : Codeword n) :
     Codeword.xor a (Codeword.xor b c)
