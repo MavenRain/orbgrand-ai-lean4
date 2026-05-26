@@ -620,6 +620,15 @@ example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
     rfViewMatrix n_s rowTaps i j = (0 : Complex) :=
   rfViewMatrix_at_six_below_diag rowTaps i j h
 
+/-- `cov2_lag` at lag 4: two-step recurrence expansion. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta1 beta2 : Real) :
+    cov2_lag sigma rho1 rho2 beta1 beta2 4
+      = beta1 * (beta1 * (sigma.val * rho2.val)
+                  + beta2 * (sigma.val * rho1.val))
+        + beta2 * (sigma.val * rho2.val) :=
+  cov2_lag_four sigma rho1 rho2 beta1 beta2
+
 /-- Generic constellation exceedance vanishes on the diagonal. -/
 example {chi : Type} (cs : Constellation chi) (s : chi) :
     cs.exceed s s = 0 :=
