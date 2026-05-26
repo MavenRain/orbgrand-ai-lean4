@@ -620,6 +620,14 @@ example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
     rfViewMatrix n_s rowTaps i j = (0 : Complex) :=
   rfViewMatrix_at_six_below_diag rowTaps i j h
 
+/-- `orbgrandAiLoop` with zero steps and a non-empty list returns `none`. -/
+example {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s)
+    (e : Fin (n_s / b) -> Fin numCandidates)
+    (rest : List (Fin (n_s / b) -> Fin numCandidates)) :
+    orbgrandAiLoop Y Phi 0 (e :: rest) = none :=
+  orbgrandAiLoop_zero_steps_cons Y Phi e rest
+
 /-- QPSK exceedance is binary-valued (0 or 1). -/
 example (s s_hat : Fin 4) :
     qpsk.exceed s s_hat = 0 ∨ qpsk.exceed s s_hat = 1 :=

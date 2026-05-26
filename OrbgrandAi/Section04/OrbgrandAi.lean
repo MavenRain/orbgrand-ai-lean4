@@ -307,6 +307,17 @@ theorem orbgrandAiLoop_cons_reject
 
 /-! ## Boundary-case behaviour of the loop -/
 
+/-- *Zero remaining steps on a non-empty list.*  The loop returns
+    `none` immediately when its abandonment budget is exhausted,
+    regardless of what patterns are still pending.  Matches the inner
+    `match steps_remaining with | 0 => none` branch by `rfl`. -/
+theorem orbgrandAiLoop_zero_steps_cons
+    {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s)
+    (e : Fin (n_s / b) -> Fin numCandidates)
+    (rest : List (Fin (n_s / b) -> Fin numCandidates)) :
+    orbgrandAiLoop Y Phi 0 (e :: rest) = none := rfl
+
 /-- *Empty pattern list.*  With no patterns to try, the loop returns
     `none` regardless of the remaining step count. -/
 theorem orbgrandAiLoop_nil
