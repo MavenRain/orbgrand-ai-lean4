@@ -370,6 +370,14 @@ theorem Codeword.xor_assoc {n : Nat} (a b c : Codeword n) :
     Codeword.xor (Codeword.xor a b) c = Codeword.xor a (Codeword.xor b c) :=
   funext fun i => add_assoc (a i) (b i) (c i)
 
+/-- *Four-argument XOR shuffle.*  `(a xor b) xor (c xor d)
+    = (a xor c) xor (b xor d)`: the abelian-group rearrangement
+    swapping the inner-pair partition.  Pointwise `add_add_add_comm`. -/
+theorem Codeword.xor_xor_comm {n : Nat} (a b c d : Codeword n) :
+    Codeword.xor (Codeword.xor a b) (Codeword.xor c d)
+      = Codeword.xor (Codeword.xor a c) (Codeword.xor b d) :=
+  funext fun i => add_add_add_comm (a i) (b i) (c i) (d i)
+
 /-- *Left transposition of XOR.*  `a xor (b xor c) = b xor (a xor c)`:
     the outer left arg swaps with the inner left arg.  Dual of
     `xor_right_comm`; derived from `xor_assoc.symm` + `xor_comm` on
