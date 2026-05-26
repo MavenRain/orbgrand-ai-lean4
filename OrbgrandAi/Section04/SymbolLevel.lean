@@ -180,6 +180,16 @@ theorem qpsk_exceed_diff {s s_hat : Fin 4} (h : s ≠ s_hat) :
     qpsk.exceed s s_hat = 1 :=
   if_neg h
 
+/-- *QPSK exceedance is binary-valued.*  Same uniform Hamming-style
+    metric as BPSK: every value is either `0` (agreement) or `1`
+    (disagreement).  Case split on the symbol-equality decidable. -/
+theorem qpsk_exceed_zero_or_one (s s_hat : Fin 4) :
+    qpsk.exceed s s_hat = 0 ∨ qpsk.exceed s s_hat = 1 :=
+  if h : s = s_hat then
+    Or.inl (if_pos h)
+  else
+    Or.inr (if_neg h)
+
 /-- *QPSK exceedance is symmetric.*  `qpsk.exceed s s_hat = qpsk.exceed s_hat s`. -/
 theorem qpsk_exceed_symm (s s_hat : Fin 4) :
     qpsk.exceed s s_hat = qpsk.exceed s_hat s :=
