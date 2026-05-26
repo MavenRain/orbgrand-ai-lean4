@@ -620,6 +620,21 @@ example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
     rfViewMatrix n_s rowTaps i j = (0 : Complex) :=
   rfViewMatrix_at_six_below_diag rowTaps i j h
 
+/-- Codeword XOR is commutative. -/
+example {n : Nat} (a b : Codeword n) :
+    Codeword.xor a b = Codeword.xor b a :=
+  Codeword.xor_comm a b
+
+/-- Codeword XOR has zero on the left as identity. -/
+example {n : Nat} (a : Codeword n) :
+    Codeword.xor 0 a = a :=
+  Codeword.zero_xor a
+
+/-- Codeword XOR has zero on the right as identity. -/
+example {n : Nat} (a : Codeword n) :
+    Codeword.xor a 0 = a :=
+  Codeword.xor_zero a
+
 /-- `orbgrandAiLoop` with zero steps and a non-empty list returns `none`. -/
 example {n_s b numCandidates : Nat}
     (Y : Codeword n_s) (Phi : CodebookMembership n_s)
