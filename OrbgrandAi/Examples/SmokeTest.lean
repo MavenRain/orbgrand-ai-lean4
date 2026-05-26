@@ -620,6 +620,11 @@ example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
     rfViewMatrix n_s rowTaps i j = (0 : Complex) :=
   rfViewMatrix_at_six_below_diag rowTaps i j h
 
+/-- At zero noise, `receive X 0 = 0` iff `h * X = 0`. -/
+example {n_s : Nat} (ch : LinearIsi n_s) (X : SymbolVector n_s) :
+    ch.receive X 0 = 0 <-> ch.channel.mulVec X = 0 :=
+  LinearIsi.receive_zero_noise_eq_zero_iff ch X
+
 /-- `perturbChannel` preserves zero entries pointwise. -/
 example {n_s : Nat} (h : ChannelMatrix n_s)
     (epsilon : Matrix (Fin n_s) (Fin n_s) Complex)

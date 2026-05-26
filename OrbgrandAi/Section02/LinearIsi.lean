@@ -221,6 +221,17 @@ theorem LinearIsi.receive_add
       congrArg (· + (N1 + N2) k) step1
     step2.trans (add_add_add_comm _ _ _ _)
 
+/-- *Zero-output characterisation at zero noise.*  With `N = 0`, the
+    receiver output is exactly the channel-vector product `h * X`, so
+    the output vanishes iff that product vanishes.  Lifts
+    `receive_zero_noise` to an `Iff`. -/
+theorem LinearIsi.receive_zero_noise_eq_zero_iff
+    {n_s : Nat} (ch : LinearIsi n_s) (X : SymbolVector n_s) :
+    ch.receive X 0 = 0 <-> ch.channel.mulVec X = 0 :=
+  let h_eq : ch.receive X 0 = ch.channel.mulVec X :=
+    LinearIsi.receive_zero_noise ch X
+  ⟨fun h => h_eq.symm.trans h, fun h => h_eq.trans h⟩
+
 /-- *Additivity of `receive` in the signal at zero noise.*  Specialises
     `receive_add` to `N1 = N2 = 0`, using `add_zero 0 : 0 + 0 = 0` to
     rewrite the noise argument.  Captures pure channel-superposition:
