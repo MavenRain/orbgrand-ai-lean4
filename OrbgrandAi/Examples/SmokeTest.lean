@@ -620,6 +620,11 @@ example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
     rfViewMatrix n_s rowTaps i j = (0 : Complex) :=
   rfViewMatrix_at_six_below_diag rowTaps i j h
 
+/-- BPSK exceedance is binary-valued (0 or 1). -/
+example (s s_hat : Bool) :
+    bpsk.exceed s s_hat = 0 ∨ bpsk.exceed s s_hat = 1 :=
+  bpsk_exceed_zero_or_one s s_hat
+
 /-- At zero noise, `receive X 0 = 0` iff `h * X = 0`. -/
 example {n_s : Nat} (ch : LinearIsi n_s) (X : SymbolVector n_s) :
     ch.receive X 0 = 0 <-> ch.channel.mulVec X = 0 :=

@@ -131,6 +131,17 @@ theorem bpsk_exceed_diff {s s_hat : Bool} (h : s ≠ s_hat) :
     bpsk.exceed s s_hat = 1 :=
   if_neg h
 
+/-- *BPSK exceedance is binary-valued.*  Every value is either `0`
+    (agreement) or `1` (disagreement), reflecting BPSK's uniform
+    Hamming-style metric.  Case split on the symbol-equality
+    decidable. -/
+theorem bpsk_exceed_zero_or_one (s s_hat : Bool) :
+    bpsk.exceed s s_hat = 0 ∨ bpsk.exceed s s_hat = 1 :=
+  if h : s = s_hat then
+    Or.inl (if_pos h)
+  else
+    Or.inr (if_neg h)
+
 /-- *BPSK exceedance is symmetric.*  `bpsk.exceed s s_hat = bpsk.exceed s_hat s`. -/
 theorem bpsk_exceed_symm (s s_hat : Bool) :
     bpsk.exceed s s_hat = bpsk.exceed s_hat s :=
