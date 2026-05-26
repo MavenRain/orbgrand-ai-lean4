@@ -74,6 +74,15 @@ theorem Constellation.exceed_self {chi : Type} (cs : Constellation chi)
     cs.exceed s s = 0 :=
   (cs.exceed_zero_iff s s).mpr rfl
 
+/-- *Exceedance is non-zero iff symbols differ.*  Contrapositive of
+    `exceed_zero_iff`: pushing `Not` through both sides of the
+    biconditional. -/
+theorem Constellation.exceed_ne_zero_iff_ne {chi : Type}
+    (cs : Constellation chi) (s s_hat : chi) :
+    cs.exceed s s_hat ≠ 0 <-> s ≠ s_hat :=
+  ⟨fun h_ne h_eq => h_ne ((cs.exceed_zero_iff s s_hat).mpr h_eq),
+   fun h_ne h_zero => h_ne ((cs.exceed_zero_iff s s_hat).mp h_zero)⟩
+
 /-- *Exceedance is strictly positive iff symbols differ.*  The dual
     of `exceed_zero_iff`: combined with `exceed_nonneg`, equality to
     zero iff symbols equal yields strict positivity iff symbols

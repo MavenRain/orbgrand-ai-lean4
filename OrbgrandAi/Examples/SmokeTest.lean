@@ -620,6 +620,11 @@ example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
     rfViewMatrix n_s rowTaps i j = (0 : Complex) :=
   rfViewMatrix_at_six_below_diag rowTaps i j h
 
+/-- Constellation exceedance is non-zero iff the symbols differ. -/
+example {chi : Type} (cs : Constellation chi) (s s_hat : chi) :
+    cs.exceed s s_hat ≠ 0 <-> s ≠ s_hat :=
+  cs.exceed_ne_zero_iff_ne s s_hat
+
 /-- Delay-tap matrix vanishes entirely when every path has zero attenuation. -/
 example {n_s p : Nat} (paths : Fin p -> DelayTapPath)
     (h_zero : forall d, (paths d).attenuation = 0)
