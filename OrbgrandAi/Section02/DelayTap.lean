@@ -159,5 +159,26 @@ theorem delayTapMatrix_zero_above_diag
     delayTapMatrix n_s paths f_s i j = (0 : Complex) :=
   delayTap_causal paths f_s i j hij
 
+/-- *Zero-attenuation delay-tap matrix is zero.*  Composing
+    `delayTapImpulseResponse_zero_attenuations` up to the matrix
+    level: every entry vanishes when each path has zero attenuation.
+    Splits on `j.val ≤ i.val`: the lower-triangular branch uses the
+    impulse-response lemma; the upper-triangular branch is `0` via
+    `dif_neg`. -/
+theorem delayTapMatrix_zero_attenuations
+    {n_s p : Nat} (paths : Fin p -> DelayTapPath)
+    (h_zero : forall d, (paths d).attenuation = 0)
+    (f_s : SamplingFreq) (i j : Fin n_s) :
+    delayTapMatrix n_s paths f_s i j = (0 : Complex) :=
+  if h : j.val <= i.val then
+    let step1 : delayTapMatrix n_s paths f_s i j
+              = delayTapImpulseResponse paths f_s
+                  { toNat := i.val - j.val } :=
+      dif_pos h
+    step1.trans
+      (delayTapImpulseResponse_zero_attenuations paths h_zero f_s _)
+  else
+    dif_neg h
+
 end Section02
 end OrbgrandAi

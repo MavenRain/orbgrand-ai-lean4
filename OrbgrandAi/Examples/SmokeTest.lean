@@ -620,6 +620,13 @@ example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
     rfViewMatrix n_s rowTaps i j = (0 : Complex) :=
   rfViewMatrix_at_six_below_diag rowTaps i j h
 
+/-- Delay-tap matrix vanishes entirely when every path has zero attenuation. -/
+example {n_s p : Nat} (paths : Fin p -> DelayTapPath)
+    (h_zero : forall d, (paths d).attenuation = 0)
+    (f_s : SamplingFreq) (i j : Fin n_s) :
+    delayTapMatrix n_s paths f_s i j = (0 : Complex) :=
+  delayTapMatrix_zero_attenuations paths h_zero f_s i j
+
 /-- `receive` is additive in the signal at zero noise. -/
 example {n_s : Nat} (ch : LinearIsi n_s) (X1 X2 : SymbolVector n_s) :
     ch.receive (X1 + X2) 0 = ch.receive X1 0 + ch.receive X2 0 :=
