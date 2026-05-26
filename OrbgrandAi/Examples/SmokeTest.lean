@@ -620,6 +620,12 @@ example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
     rfViewMatrix n_s rowTaps i j = (0 : Complex) :=
   rfViewMatrix_at_six_below_diag rowTaps i j h
 
+/-- Codeword XOR common-prefix cancellation: `(a xor b) xor (a xor c) = b xor c`. -/
+example {n : Nat} (a b c : Codeword n) :
+    Codeword.xor (Codeword.xor a b) (Codeword.xor a c)
+      = Codeword.xor b c :=
+  Codeword.xor_xor_xor_self a b c
+
 /-- Codeword XOR is commutative. -/
 example {n : Nat} (a b : Codeword n) :
     Codeword.xor a b = Codeword.xor b a :=

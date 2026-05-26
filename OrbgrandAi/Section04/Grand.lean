@@ -378,6 +378,24 @@ theorem Codeword.xor_xor_comm {n : Nat} (a b c d : Codeword n) :
       = Codeword.xor (Codeword.xor a c) (Codeword.xor b d) :=
   funext fun i => add_add_add_comm (a i) (b i) (c i) (d i)
 
+/-- *Common-prefix cancellation.*  `(a xor b) xor (a xor c) = b xor c`:
+    a shared first argument on both sides drops out under XOR.
+    Derived from `xor_xor_comm` (rearranging to put `a xor a` together)
+    followed by `xor_self` and `zero_xor`. -/
+theorem Codeword.xor_xor_xor_self {n : Nat} (a b c : Codeword n) :
+    Codeword.xor (Codeword.xor a b) (Codeword.xor a c)
+      = Codeword.xor b c :=
+  let s1 : Codeword.xor (Codeword.xor a b) (Codeword.xor a c)
+         = Codeword.xor (Codeword.xor a a) (Codeword.xor b c) :=
+    Codeword.xor_xor_comm a b a c
+  let s2 : Codeword.xor (Codeword.xor a a) (Codeword.xor b c)
+         = Codeword.xor 0 (Codeword.xor b c) :=
+    congrArg (fun z => Codeword.xor z (Codeword.xor b c))
+      (Codeword.xor_self a)
+  let s3 : Codeword.xor 0 (Codeword.xor b c) = Codeword.xor b c :=
+    Codeword.zero_xor _
+  s1.trans (s2.trans s3)
+
 /-- *Left transposition of XOR.*  `a xor (b xor c) = b xor (a xor c)`:
     the outer left arg swaps with the inner left arg.  Dual of
     `xor_right_comm`; derived from `xor_assoc.symm` + `xor_comm` on
