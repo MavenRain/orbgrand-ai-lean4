@@ -620,6 +620,11 @@ example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
     rfViewMatrix n_s rowTaps i j = (0 : Complex) :=
   rfViewMatrix_at_six_below_diag rowTaps i j h
 
+/-- AR(2) with `phi_1 = 0, phi_2 = 1` is 2-periodic. -/
+example (z1 z2 : Complex) (n : Nat) :
+    ar2 0 1 z1 z2 (n + 2) = ar2 0 1 z1 z2 n :=
+  ar2_phi1_zero_phi2_one z1 z2 n
+
 /-- `cov2_lag` at lag 4: two-step recurrence expansion. -/
 example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
     (beta1 beta2 : Real) :

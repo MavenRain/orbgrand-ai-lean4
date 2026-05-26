@@ -145,6 +145,21 @@ theorem ar2_phi1_one_phi2_zero (z1 z2 : Complex) :
         add_zero _
       (step1.trans (step2.trans step3)).trans ih
 
+/-- *Period-2 degenerate case.*  When `phi_1 = 0` and `phi_2 = 1`,
+    the recursion `ar2 0 1 z1 z2` is 2-periodic: index `n + 2` equals
+    index `n`.  Single-step calculation using the `n + 2` recurrence
+    together with `zero_mul`, `one_mul`, and `zero_add`. -/
+theorem ar2_phi1_zero_phi2_one (z1 z2 : Complex) (n : Nat) :
+    ar2 0 1 z1 z2 (n + 2) = ar2 0 1 z1 z2 n :=
+  let step1 : ar2 0 1 z1 z2 (n + 2)
+            = 0 * ar2 0 1 z1 z2 (n + 1) + 1 * ar2 0 1 z1 z2 n := rfl
+  let step2 : 0 * ar2 0 1 z1 z2 (n + 1) + 1 * ar2 0 1 z1 z2 n
+            = (0 : Complex) + ar2 0 1 z1 z2 n :=
+    congrArg₂ (· + ·) (zero_mul _) (one_mul _)
+  let step3 : (0 : Complex) + ar2 0 1 z1 z2 n = ar2 0 1 z1 z2 n :=
+    zero_add _
+  step1.trans (step2.trans step3)
+
 /-! ## Regressor matrix and target -/
 
 /-- The `4 x 2` regressor matrix used in the least-squares fit.
