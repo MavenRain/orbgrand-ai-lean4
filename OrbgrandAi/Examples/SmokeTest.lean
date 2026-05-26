@@ -620,6 +620,12 @@ example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
     rfViewMatrix n_s rowTaps i j = (0 : Complex) :=
   rfViewMatrix_at_six_below_diag rowTaps i j h
 
+/-- Left transposition of Codeword XOR: `a xor (b xor c) = b xor (a xor c)`. -/
+example {n : Nat} (a b c : Codeword n) :
+    Codeword.xor a (Codeword.xor b c)
+      = Codeword.xor b (Codeword.xor a c) :=
+  Codeword.xor_left_comm a b c
+
 /-- Right transposition of Codeword XOR: `(a xor b) xor c = (a xor c) xor b`. -/
 example {n : Nat} (a b c : Codeword n) :
     Codeword.xor (Codeword.xor a b) c
