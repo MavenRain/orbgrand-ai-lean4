@@ -620,6 +620,13 @@ example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
     rfViewMatrix n_s rowTaps i j = (0 : Complex) :=
   rfViewMatrix_at_six_below_diag rowTaps i j h
 
+/-- `perturbChannel` preserves zero entries pointwise. -/
+example {n_s : Nat} (h : ChannelMatrix n_s)
+    (epsilon : Matrix (Fin n_s) (Fin n_s) Complex)
+    {i j : Fin n_s} (hzero : h i j = 0) :
+    perturbChannel h epsilon i j = 0 :=
+  perturbChannel_zero_entry h epsilon hzero
+
 /-- Four-argument XOR shuffle: `(a xor b) xor (c xor d) = (a xor c) xor (b xor d)`. -/
 example {n : Nat} (a b c d : Codeword n) :
     Codeword.xor (Codeword.xor a b) (Codeword.xor c d)

@@ -96,6 +96,18 @@ theorem perturbChannel_zero_channel
     perturbChannel 0 epsilon = 0 :=
   funext fun i => funext fun j => zero_mul (1 + epsilon i j)
 
+/-- *Pointwise zero preservation.*  If a single entry `h i j` is zero,
+    the corresponding perturbed entry is also zero, for any error
+    matrix.  Generalises the per-cell logic of
+    `perturbChannel_causal_of_causal` and
+    `perturbChannel_bandwidth_of_bandwidth`. -/
+theorem perturbChannel_zero_entry
+    {n_s : Nat} (h : ChannelMatrix n_s)
+    (epsilon : Matrix (Fin n_s) (Fin n_s) Complex)
+    {i j : Fin n_s} (hzero : h i j = 0) :
+    perturbChannel h epsilon i j = 0 :=
+  (congrArg (· * (1 + epsilon i j)) hzero).trans (zero_mul _)
+
 /-- *Causality preservation.*  Multiplicative-additive perturbation
     preserves the causality predicate: if `h i j = 0` for `i < j`, then
     `(perturbChannel h epsilon) i j = 0` for the same indices.  The
