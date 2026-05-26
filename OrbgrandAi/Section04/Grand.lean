@@ -370,6 +370,24 @@ theorem Codeword.xor_assoc {n : Nat} (a b c : Codeword n) :
     Codeword.xor (Codeword.xor a b) c = Codeword.xor a (Codeword.xor b c) :=
   funext fun i => add_assoc (a i) (b i) (c i)
 
+/-- *Right transposition of XOR.*  `(a xor b) xor c = (a xor c) xor b`:
+    the right-hand two arguments swap freely, the classic
+    commutative-monoid `right_comm` law.  Derived from `xor_assoc`
+    together with `xor_comm` on the inner pair. -/
+theorem Codeword.xor_right_comm {n : Nat} (a b c : Codeword n) :
+    Codeword.xor (Codeword.xor a b) c
+      = Codeword.xor (Codeword.xor a c) b :=
+  let s1 : Codeword.xor (Codeword.xor a b) c
+         = Codeword.xor a (Codeword.xor b c) :=
+    Codeword.xor_assoc a b c
+  let s2 : Codeword.xor a (Codeword.xor b c)
+         = Codeword.xor a (Codeword.xor c b) :=
+    congrArg (Codeword.xor a) (Codeword.xor_comm b c)
+  let s3 : Codeword.xor a (Codeword.xor c b)
+         = Codeword.xor (Codeword.xor a c) b :=
+    (Codeword.xor_assoc a c b).symm
+  s1.trans (s2.trans s3)
+
 /-- XOR involution: `Y xor (Y xor Ng) = Ng` in `ZMod 2`.
 
     Derived from the algebra: `Y xor (Y xor Ng) = (Y xor Y) xor Ng
