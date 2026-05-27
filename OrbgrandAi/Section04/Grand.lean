@@ -782,6 +782,26 @@ theorem Codeword.mulVec_xor_codeword_left {n k : Nat} (H : ParityCheck n k)
     zero_add _
   s1.trans (s2.trans s3)
 
+/-- *Codeword-right shift is invisible under the parity-check map.*
+    If `b` is a codeword (zero parity-check image), then
+    `H * (a xor b) = H * a` for any `a`.  Dual of
+    `mulVec_xor_codeword_left`; same three-step structure with
+    `hb i` and `add_zero` on the right summand. -/
+theorem Codeword.mulVec_xor_codeword_right {n k : Nat} (H : ParityCheck n k)
+    {a b : Codeword n}
+    (hb : forall (i : Fin (n - k)), H.matrix.mulVec b i = 0)
+    (i : Fin (n - k)) :
+    H.matrix.mulVec (Codeword.xor a b) i = H.matrix.mulVec a i :=
+  let s1 : H.matrix.mulVec (Codeword.xor a b) i
+         = H.matrix.mulVec a i + H.matrix.mulVec b i :=
+    congrFun (Codeword.mulVec_xor H a b) i
+  let s2 : H.matrix.mulVec a i + H.matrix.mulVec b i
+         = H.matrix.mulVec a i + 0 :=
+    congrArg (H.matrix.mulVec a i + ·) (hb i)
+  let s3 : H.matrix.mulVec a i + (0 : ZMod 2) = H.matrix.mulVec a i :=
+    add_zero _
+  s1.trans (s2.trans s3)
+
 /-- *Codewords are closed under XOR.*  If `a` and `b` are both
     codewords (each in the kernel of `H.matrix.mulVec`), then their
     XOR `a xor b` is also a codeword.  This is the standard
