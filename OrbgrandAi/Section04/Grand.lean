@@ -751,6 +751,18 @@ theorem Codeword.zero_is_codeword {n k : Nat} (H : ParityCheck n k)
     H.matrix.mulVec 0 i = 0 :=
   congrFun H.matrix.mulVec_zero i
 
+/-- *Parity-check map is XOR-linear.*  `H * (a xor b) = H * a + H * b`:
+    rewrites `xor` to `+` (via `xor_eq_add`) and then applies
+    `Matrix.mulVec_add`. -/
+theorem Codeword.mulVec_xor {n k : Nat} (H : ParityCheck n k)
+    (a b : Codeword n) :
+    H.matrix.mulVec (Codeword.xor a b)
+      = H.matrix.mulVec a + H.matrix.mulVec b :=
+  let h_add : H.matrix.mulVec (Codeword.xor a b)
+            = H.matrix.mulVec (a + b) :=
+    congrArg H.matrix.mulVec (Codeword.xor_eq_add a b)
+  h_add.trans (H.matrix.mulVec_add a b)
+
 /-- *Codewords are closed under XOR.*  If `a` and `b` are both
     codewords (each in the kernel of `H.matrix.mulVec`), then their
     XOR `a xor b` is also a codeword.  This is the standard

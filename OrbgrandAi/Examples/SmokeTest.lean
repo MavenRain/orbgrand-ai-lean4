@@ -620,6 +620,12 @@ example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
     rfViewMatrix n_s rowTaps i j = (0 : Complex) :=
   rfViewMatrix_at_six_below_diag rowTaps i j h
 
+/-- Parity-check map is XOR-linear: `H * (a xor b) = H * a + H * b`. -/
+example {n k : Nat} (H : ParityCheck n k) (a b : Codeword n) :
+    H.matrix.mulVec (Codeword.xor a b)
+      = H.matrix.mulVec a + H.matrix.mulVec b :=
+  Codeword.mulVec_xor H a b
+
 /-- Codeword XOR common-prefix cancellation: `(a xor b) xor (a xor c) = b xor c`. -/
 example {n : Nat} (a b c : Codeword n) :
     Codeword.xor (Codeword.xor a b) (Codeword.xor a c)
