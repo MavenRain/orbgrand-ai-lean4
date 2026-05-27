@@ -620,6 +620,13 @@ example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
     rfViewMatrix n_s rowTaps i j = (0 : Complex) :=
   rfViewMatrix_at_six_below_diag rowTaps i j h
 
+/-- Codeword-left shift is invisible under the parity-check map. -/
+example {n k : Nat} (H : ParityCheck n k) {a b : Codeword n}
+    (ha : forall (i : Fin (n - k)), H.matrix.mulVec a i = 0)
+    (i : Fin (n - k)) :
+    H.matrix.mulVec (Codeword.xor a b) i = H.matrix.mulVec b i :=
+  Codeword.mulVec_xor_codeword_left H ha i
+
 /-- Parity-check map is XOR-linear: `H * (a xor b) = H * a + H * b`. -/
 example {n k : Nat} (H : ParityCheck n k) (a b : Codeword n) :
     H.matrix.mulVec (Codeword.xor a b)
