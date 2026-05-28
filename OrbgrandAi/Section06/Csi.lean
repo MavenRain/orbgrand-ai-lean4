@@ -96,6 +96,18 @@ theorem perturbChannel_zero_channel
     perturbChannel 0 epsilon = 0 :=
   funext fun i => funext fun j => zero_mul (1 + epsilon i j)
 
+/-- *Pointwise zero characterisation.*  A perturbed entry vanishes
+    iff either the underlying entry vanishes or the multiplicative
+    factor `1 + epsilon i j` is zero.  Since `Complex` is an
+    integral domain, `mul_eq_zero` is the iff. -/
+theorem perturbChannel_eq_zero_iff
+    {n_s : Nat} (h : ChannelMatrix n_s)
+    (epsilon : Matrix (Fin n_s) (Fin n_s) Complex)
+    (i j : Fin n_s) :
+    perturbChannel h epsilon i j = 0
+      <-> h i j = 0 ∨ 1 + epsilon i j = 0 :=
+  mul_eq_zero
+
 /-- *Pointwise zero preservation.*  If a single entry `h i j` is zero,
     the corresponding perturbed entry is also zero, for any error
     matrix.  Generalises the per-cell logic of

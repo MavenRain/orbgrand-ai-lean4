@@ -620,6 +620,15 @@ example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
     rfViewMatrix n_s rowTaps i j = (0 : Complex) :=
   rfViewMatrix_at_six_below_diag rowTaps i j h
 
+/-- Perturbed channel entry is zero iff the underlying entry is zero
+    or the `1 + epsilon` factor cancels. -/
+example {n_s : Nat} (h : ChannelMatrix n_s)
+    (epsilon : Matrix (Fin n_s) (Fin n_s) Complex)
+    (i j : Fin n_s) :
+    perturbChannel h epsilon i j = 0
+      <-> h i j = 0 ∨ 1 + epsilon i j = 0 :=
+  perturbChannel_eq_zero_iff h epsilon i j
+
 /-- Syndrome is invariant under codeword shifts of the noise candidate. -/
 example {n k : Nat} (H : ParityCheck n k) (Y N c : Codeword n)
     (h_c : forall (i : Fin (n - k)), H.matrix.mulVec c i = 0)
