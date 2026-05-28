@@ -620,6 +620,26 @@ example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
     rfViewMatrix n_s rowTaps i j = (0 : Complex) :=
   rfViewMatrix_at_six_below_diag rowTaps i j h
 
+/-- XOR involution: `Y xor (Y xor Ng) = Ng`. -/
+example {n : Nat} (Y Ng : Codeword n) :
+    Codeword.xor Y (Codeword.xor Y Ng) = Ng :=
+  Codeword.xor_xor_self Y Ng
+
+/-- Codeword XOR right-cancel: `(a xor b) xor b = a`. -/
+example {n : Nat} (a b : Codeword n) :
+    Codeword.xor (Codeword.xor a b) b = a :=
+  Codeword.xor_xor_right a b
+
+/-- Codeword XOR left cancellation: `a xor b = a xor c → b = c`. -/
+example {n : Nat} {a b c : Codeword n}
+    (h : Codeword.xor a b = Codeword.xor a c) : b = c :=
+  Codeword.xor_left_cancel h
+
+/-- Codeword XOR right cancellation: `a xor c = b xor c → a = b`. -/
+example {n : Nat} {a b c : Codeword n}
+    (h : Codeword.xor a c = Codeword.xor b c) : a = b :=
+  Codeword.xor_right_cancel h
+
 /-- Perturbed channel entry is zero iff the underlying entry is zero
     or the `1 + epsilon` factor cancels. -/
 example {n_s : Nat} (h : ChannelMatrix n_s)
