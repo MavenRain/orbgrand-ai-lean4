@@ -620,6 +620,11 @@ example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
     rfViewMatrix n_s rowTaps i j = (0 : Complex) :=
   rfViewMatrix_at_six_below_diag rowTaps i j h
 
+/-- Receiver is noise-injective at a fixed signal. -/
+example {n_s : Nat} (ch : LinearIsi n_s) (X N1 N2 : SymbolVector n_s) :
+    ch.receive X N1 = ch.receive X N2 <-> N1 = N2 :=
+  LinearIsi.receive_eq_iff_noise_eq ch X N1 N2
+
 /-- XOR involution: `Y xor (Y xor Ng) = Ng`. -/
 example {n : Nat} (Y Ng : Codeword n) :
     Codeword.xor Y (Codeword.xor Y Ng) = Ng :=

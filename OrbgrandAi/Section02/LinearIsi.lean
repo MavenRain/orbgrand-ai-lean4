@@ -221,6 +221,19 @@ theorem LinearIsi.receive_add
       congrArg (· + (N1 + N2) k) step1
     step2.trans (add_add_add_comm _ _ _ _)
 
+/-- *Receiver is noise-injective at a fixed signal.*  Two noise
+    realisations produce equal receiver output iff they are equal.
+    Pointwise `add_left_cancel` lifts to a `funext` equality. -/
+theorem LinearIsi.receive_eq_iff_noise_eq
+    {n_s : Nat} (ch : LinearIsi n_s) (X N1 N2 : SymbolVector n_s) :
+    ch.receive X N1 = ch.receive X N2 <-> N1 = N2 :=
+  ⟨fun h => funext fun k =>
+    let hk : ch.channel.mulVec X k + N1 k
+           = ch.channel.mulVec X k + N2 k :=
+      congrFun h k
+    add_left_cancel hk,
+   fun h => congrArg (ch.receive X) h⟩
+
 /-- *Zero-output characterisation at zero noise.*  With `N = 0`, the
     receiver output is exactly the channel-vector product `h * X`, so
     the output vanishes iff that product vanishes.  Lifts
