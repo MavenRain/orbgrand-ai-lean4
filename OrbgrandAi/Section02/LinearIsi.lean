@@ -234,6 +234,23 @@ theorem LinearIsi.receive_eq_iff_noise_eq
     add_left_cancel hk,
    fun h => congrArg (ch.receive X) h⟩
 
+/-- *Receiver agreement at fixed noise iff channel images agree.*
+    Two signals produce equal receiver output (with a common noise
+    realisation) iff their channel-vector products are equal.
+    Dual of `receive_eq_iff_noise_eq`, using pointwise
+    `add_right_cancel`. -/
+theorem LinearIsi.receive_eq_iff_mulVec_eq
+    {n_s : Nat} (ch : LinearIsi n_s) (X1 X2 N : SymbolVector n_s) :
+    ch.receive X1 N = ch.receive X2 N
+      <-> ch.channel.mulVec X1 = ch.channel.mulVec X2 :=
+  ⟨fun h => funext fun k =>
+    let hk : ch.channel.mulVec X1 k + N k
+           = ch.channel.mulVec X2 k + N k :=
+      congrFun h k
+    add_right_cancel hk,
+   fun h => funext fun k =>
+    congrArg (· + N k) (congrFun h k)⟩
+
 /-- *Zero-output characterisation at zero noise.*  With `N = 0`, the
     receiver output is exactly the channel-vector product `h * X`, so
     the output vanishes iff that product vanishes.  Lifts
