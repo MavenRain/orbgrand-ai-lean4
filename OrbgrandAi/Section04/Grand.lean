@@ -817,6 +817,24 @@ theorem Codeword.xor_codeword_is_codeword {n k : Nat} (H : ParityCheck n k)
     (congrFun (H.matrix.mulVec_add a b) i).trans
       ((congrArg₂ (· + ·) (ha i) (hb i)).trans (add_zero 0))
 
+/-- *Codeword-shift preserves codeword-membership.*  Given a fixed
+    codeword `a`, the XOR-shift `b ↦ a xor b` is a bijection on the
+    codeword set: `a xor b` is a codeword iff `b` is.  The forward
+    direction uses `mulVec_xor_codeword_left` to extract
+    `H * b = H * (a xor b) = 0`; the backward direction is
+    `xor_codeword_is_codeword`. -/
+theorem Codeword.xor_codeword_iff_codeword_of_left {n k : Nat}
+    (H : ParityCheck n k) {a b : Codeword n}
+    (ha : forall (i : Fin (n - k)), H.matrix.mulVec a i = 0) :
+    (forall (i : Fin (n - k)),
+        H.matrix.mulVec (Codeword.xor a b) i = 0)
+      <-> (forall (i : Fin (n - k)), H.matrix.mulVec b i = 0) :=
+  ⟨fun hxor i =>
+    let s : H.matrix.mulVec (Codeword.xor a b) i = H.matrix.mulVec b i :=
+      Codeword.mulVec_xor_codeword_left H ha i
+    s.symm.trans (hxor i),
+   fun hb => Codeword.xor_codeword_is_codeword H ha hb⟩
+
 /-- *Syndrome is invariant under codeword shifts of the receiver.*  If
     `c` is a codeword (zero parity-check image), then XOR-shifting the
     received vector by `c` leaves the syndrome unchanged.  Captures
