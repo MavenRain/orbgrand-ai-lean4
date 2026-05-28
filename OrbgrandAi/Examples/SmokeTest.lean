@@ -620,6 +620,13 @@ example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
     rfViewMatrix n_s rowTaps i j = (0 : Complex) :=
   rfViewMatrix_at_six_below_diag rowTaps i j h
 
+/-- Syndrome is invariant under codeword shifts of the noise candidate. -/
+example {n k : Nat} (H : ParityCheck n k) (Y N c : Codeword n)
+    (h_c : forall (i : Fin (n - k)), H.matrix.mulVec c i = 0)
+    (i : Fin (n - k)) :
+    syndrome H Y (Codeword.xor N c) i = syndrome H Y N i :=
+  syndrome_invariant_under_codeword_noise H Y N c h_c i
+
 /-- Right-side codeword-shift preserves codeword-membership: with `b` a codeword,
     `a xor b` is a codeword iff `a` is. -/
 example {n k : Nat} (H : ParityCheck n k) {a b : Codeword n}

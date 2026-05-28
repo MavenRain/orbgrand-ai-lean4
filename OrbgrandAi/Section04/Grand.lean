@@ -878,5 +878,27 @@ theorem syndrome_invariant_under_codeword
     congrArg (H.matrix.mulVec (Codeword.xor Y N) i + ·) (h_c i)
   step1.trans (step2.trans (step3.trans (add_zero _)))
 
+/-- *Syndrome is invariant under codeword shifts of the noise.*
+    Symmetric to `syndrome_invariant_under_codeword`: XOR-shifting the
+    noise candidate `N` by a codeword `c` leaves the syndrome
+    unchanged.  Cleaner two-step proof using
+    `mulVec_xor_codeword_right`: re-associate to bring `c` to the
+    right of `(Y xor N)`, then drop it. -/
+theorem syndrome_invariant_under_codeword_noise
+    {n k : Nat} (H : ParityCheck n k) (Y N c : Codeword n)
+    (h_c : forall (i : Fin (n - k)), H.matrix.mulVec c i = 0)
+    (i : Fin (n - k)) :
+    syndrome H Y (Codeword.xor N c) i = syndrome H Y N i :=
+  let assoc : Codeword.xor Y (Codeword.xor N c)
+            = Codeword.xor (Codeword.xor Y N) c :=
+    (Codeword.xor_assoc Y N c).symm
+  let step1 : syndrome H Y (Codeword.xor N c) i
+            = H.matrix.mulVec (Codeword.xor (Codeword.xor Y N) c) i :=
+    congrArg (fun v => H.matrix.mulVec v i) assoc
+  let step2 : H.matrix.mulVec (Codeword.xor (Codeword.xor Y N) c) i
+            = H.matrix.mulVec (Codeword.xor Y N) i :=
+    Codeword.mulVec_xor_codeword_right H h_c i
+  step1.trans step2
+
 end Section04
 end OrbgrandAi
