@@ -145,6 +145,25 @@ theorem ar2_phi1_one_phi2_zero (z1 z2 : Complex) :
         add_zero _
       (step1.trans (step2.trans step3)).trans ih
 
+/-- *Geometric degenerate case.*  When `phi_2 = 0`, the AR(2)
+    recurrence collapses to a pure geometric step: index `n + 2`
+    is `phi_1` times index `n + 1`, with no contribution from
+    index `n`.  Computed via `ar2_succ_succ` plus `zero_mul`
+    and `add_zero`. -/
+theorem ar2_phi2_zero_succ (phi1 z1 z2 : Complex) (n : Nat) :
+    ar2 phi1 0 z1 z2 (n + 2) = phi1 * ar2 phi1 0 z1 z2 (n + 1) :=
+  let step1 : ar2 phi1 0 z1 z2 (n + 2)
+            = phi1 * ar2 phi1 0 z1 z2 (n + 1)
+              + 0 * ar2 phi1 0 z1 z2 n := rfl
+  let step2 : phi1 * ar2 phi1 0 z1 z2 (n + 1)
+              + 0 * ar2 phi1 0 z1 z2 n
+            = phi1 * ar2 phi1 0 z1 z2 (n + 1) + 0 :=
+    congrArg (phi1 * ar2 phi1 0 z1 z2 (n + 1) + ·) (zero_mul _)
+  let step3 : phi1 * ar2 phi1 0 z1 z2 (n + 1) + 0
+            = phi1 * ar2 phi1 0 z1 z2 (n + 1) :=
+    add_zero _
+  step1.trans (step2.trans step3)
+
 /-- *Period-2 degenerate case.*  When `phi_1 = 0` and `phi_2 = 1`,
     the recursion `ar2 0 1 z1 z2` is 2-periodic: index `n + 2` equals
     index `n`.  Single-step calculation using the `n + 2` recurrence
