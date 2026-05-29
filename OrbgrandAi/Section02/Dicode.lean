@@ -379,6 +379,16 @@ theorem gaussMarkovCov_two_10
     congrArg ((sigma.val : Complex) * ·) (pow_one (rho.val : Complex))
   h0.trans h1
 
+/-- *2x2 Gauss-Markov off-diagonal symmetry.*  Specialisation of
+    `gaussMarkovCov_sym` to the `n_s = 2` case; both off-diagonal
+    entries collapse to `sigma * rho` via the explicit closed forms,
+    so equality is immediate by transitivity. -/
+theorem gaussMarkovCov_two_01_eq_10
+    (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    (gaussMarkovCov 2 sigma rho) 0 1 = (gaussMarkovCov 2 sigma rho) 1 0 :=
+  (gaussMarkovCov_two_01 sigma rho).trans
+    (gaussMarkovCov_two_10 sigma rho).symm
+
 /-- *Determinant of the 2x2 first-order Gauss-Markov auto-covariance,
     in unfolded form.*
 

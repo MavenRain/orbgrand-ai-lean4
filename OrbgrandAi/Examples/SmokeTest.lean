@@ -620,6 +620,11 @@ example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
     rfViewMatrix n_s rowTaps i j = (0 : Complex) :=
   rfViewMatrix_at_six_below_diag rowTaps i j h
 
+/-- 2x2 Gauss-Markov covariance: explicit off-diagonal symmetry. -/
+example (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    (gaussMarkovCov 2 sigma rho) 0 1 = (gaussMarkovCov 2 sigma rho) 1 0 :=
+  gaussMarkovCov_two_01_eq_10 sigma rho
+
 /-- Logistic weight is upper-bounded by the all-true weight. -/
 example {n : Nat} (pi : ReliabilityRank n) (e : Fin n -> Bool) :
     logisticWeight pi e
