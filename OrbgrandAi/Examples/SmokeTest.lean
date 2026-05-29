@@ -620,6 +620,12 @@ example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
     rfViewMatrix n_s rowTaps i j = (0 : Complex) :=
   rfViewMatrix_at_six_below_diag rowTaps i j h
 
+/-- Logistic weight is upper-bounded by the all-true weight. -/
+example {n : Nat} (pi : ReliabilityRank n) (e : Fin n -> Bool) :
+    logisticWeight pi e
+      <= logisticWeight pi (fun _ : Fin n => true) :=
+  logisticWeight_le_const_true pi e
+
 /-- The all-true noise pattern has rank-sum logistic weight. -/
 example {n : Nat} (pi : ReliabilityRank n) :
     logisticWeight pi (fun _ : Fin n => true)

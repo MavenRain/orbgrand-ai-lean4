@@ -169,6 +169,22 @@ theorem logisticWeight_const_true {n : Nat} (pi : ReliabilityRank n) :
       = Finset.univ.sum (fun i : Fin n => i.val + 1) :=
   Finset.sum_congr rfl fun _ _ => rfl
 
+/-- *Upper bound on `logisticWeight`.*  The all-true pattern maximises
+    the logistic weight: each summand is bounded by `i.val + 1`
+    (since the alternative is `0`); `Finset.sum_le_sum` lifts the
+    pointwise bound to the universal sum.  Mirrors `bitWeight_le_sum`
+    but with the rank permutation applied. -/
+theorem logisticWeight_le_const_true
+    {n : Nat} (pi : ReliabilityRank n) (e : Fin n -> Bool) :
+    logisticWeight pi e
+      <= logisticWeight pi (fun _ : Fin n => true) :=
+  Finset.sum_le_sum fun i _ =>
+    Bool.casesOn (motive :=
+        fun b => (if b then i.val + 1 else 0) <= i.val + 1)
+      (e (pi.perm i))
+      (Nat.zero_le _)
+      (Nat.le_refl _)
+
 /-- `landslideExtend b e` evaluated at the new top position
     `Fin.last n` returns the inserted bit `b`. -/
 theorem landslideExtend_last {n : Nat} (b : Bool) (e : Fin n -> Bool) :
