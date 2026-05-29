@@ -159,6 +159,16 @@ theorem logisticWeight_const_false {n : Nat} (pi : ReliabilityRank n) :
     logisticWeight pi (fun _ : Fin n => false) = 0 :=
   Finset.sum_eq_zero fun _ _ => rfl
 
+/-- *All-true pattern has rank-sum logistic weight.*  Every summand is
+    `if true then i.val + 1 else 0 = i.val + 1`, so the total
+    collapses to `Σ i, i.val + 1` over `Finset.univ`.  The reliability
+    rank does not affect the sum since the permutation `pi.perm` is a
+    bijection over the same universe. -/
+theorem logisticWeight_const_true {n : Nat} (pi : ReliabilityRank n) :
+    logisticWeight pi (fun _ : Fin n => true)
+      = Finset.univ.sum (fun i : Fin n => i.val + 1) :=
+  Finset.sum_congr rfl fun _ _ => rfl
+
 /-- `landslideExtend b e` evaluated at the new top position
     `Fin.last n` returns the inserted bit `b`. -/
 theorem landslideExtend_last {n : Nat} (b : Bool) (e : Fin n -> Bool) :
