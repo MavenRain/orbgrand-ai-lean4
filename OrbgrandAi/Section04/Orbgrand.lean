@@ -151,6 +151,14 @@ theorem logisticWeight_elim0 {pi : ReliabilityRank 0} :
     logisticWeight pi Fin.elim0 = 0 :=
   Finset.sum_empty
 
+/-- *All-false pattern has zero logistic weight.*  Each summand has
+    the form `if (fun _ => false) (pi.perm i) then i.val + 1 else 0`,
+    which reduces to `0` by `rfl` on the inner `if false`.  Finishing
+    via `Finset.sum_eq_zero`. -/
+theorem logisticWeight_const_false {n : Nat} (pi : ReliabilityRank n) :
+    logisticWeight pi (fun _ : Fin n => false) = 0 :=
+  Finset.sum_eq_zero fun _ _ => rfl
+
 /-- `landslideExtend b e` evaluated at the new top position
     `Fin.last n` returns the inserted bit `b`. -/
 theorem landslideExtend_last {n : Nat} (b : Bool) (e : Fin n -> Bool) :

@@ -620,6 +620,11 @@ example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
     rfViewMatrix n_s rowTaps i j = (0 : Complex) :=
   rfViewMatrix_at_six_below_diag rowTaps i j h
 
+/-- The all-false noise pattern has zero logistic weight. -/
+example {n : Nat} (pi : ReliabilityRank n) :
+    logisticWeight pi (fun _ : Fin n => false) = 0 :=
+  logisticWeight_const_false pi
+
 /-- Involution variant `a xor (b xor a) = b`. -/
 example {n : Nat} (a b : Codeword n) :
     Codeword.xor a (Codeword.xor b a) = b :=
