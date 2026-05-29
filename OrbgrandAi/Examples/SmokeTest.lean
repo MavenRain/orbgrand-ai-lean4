@@ -620,6 +620,12 @@ example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
     rfViewMatrix n_s rowTaps i j = (0 : Complex) :=
   rfViewMatrix_at_six_below_diag rowTaps i j h
 
+/-- Zero-noise syndrome-zero is exactly the codeword condition. -/
+example {n k : Nat} (H : ParityCheck n k) (Y : Codeword n) :
+    syndromeZero H Y 0
+      <-> forall (i : Fin (n - k)), H.matrix.mulVec Y i = 0 :=
+  syndromeZero_zero_noise_iff_codeword H Y
+
 /-- Bandwidth depends only on the channel matrix. -/
 example {n_s : Nat} {ch1 ch2 : LinearIsi n_s} (h : ch1.channel = ch2.channel)
     (b : Nat) :
