@@ -620,6 +620,20 @@ example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
     rfViewMatrix n_s rowTaps i j = (0 : Complex) :=
   rfViewMatrix_at_six_below_diag rowTaps i j h
 
+/-- Extending by `false` leaves the bit-weight unchanged. -/
+example {n : Nat} (e : Fin n -> Bool) :
+    bitWeight (landslideExtend false e) = bitWeight e :=
+  bitWeight_extend_false e
+
+/-- Extending by `true` adds `n + 1` to the bit-weight. -/
+example {n : Nat} (e : Fin n -> Bool) :
+    bitWeight (landslideExtend true e) = bitWeight e + (n + 1) :=
+  bitWeight_extend_true e
+
+/-- Bit-weight of the unique length-0 pattern is zero. -/
+example (e : Fin 0 -> Bool) : bitWeight e = 0 :=
+  bitWeight_fin_zero e
+
 /-- AR(2) with `phi_1 = 0` skips the immediate predecessor. -/
 example (phi2 z1 z2 : Complex) (n : Nat) :
     ar2 0 phi2 z1 z2 (n + 2) = phi2 * ar2 0 phi2 z1 z2 n :=
