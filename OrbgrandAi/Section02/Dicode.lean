@@ -109,6 +109,21 @@ def dicode
   { channel := dicodeMatrix n_s rho,
     noiseCov := gaussMarkovCov n_s sigma rho }
 
+/-! ## Definitional projections of `dicode` -/
+
+/-- *Channel of `dicode` is `dicodeMatrix`.*  Direct projection of the
+    structure, useful as a named API when rewriting through
+    `dicode.channel`. -/
+theorem dicode_channel
+    (n_s : Nat) (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    (dicode n_s sigma rho).channel = dicodeMatrix n_s rho := rfl
+
+/-- *Noise covariance of `dicode` is `gaussMarkovCov`.*  Direct
+    projection of the structure. -/
+theorem dicode_noiseCov
+    (n_s : Nat) (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    (dicode n_s sigma rho).noiseCov = gaussMarkovCov n_s sigma rho := rfl
+
 /-! ## Explicit entries of `dicodeMatrix` -/
 
 /-- The diagonal entry of the dicode channel matrix is `1`. -/

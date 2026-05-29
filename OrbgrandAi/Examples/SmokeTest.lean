@@ -620,6 +620,16 @@ example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
     rfViewMatrix n_s rowTaps i j = (0 : Complex) :=
   rfViewMatrix_at_six_below_diag rowTaps i j h
 
+/-- `dicode.channel` unfolds to `dicodeMatrix`. -/
+example (n_s : Nat) (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    (dicode n_s sigma rho).channel = dicodeMatrix n_s rho :=
+  dicode_channel n_s sigma rho
+
+/-- `dicode.noiseCov` unfolds to `gaussMarkovCov`. -/
+example (n_s : Nat) (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    (dicode n_s sigma rho).noiseCov = gaussMarkovCov n_s sigma rho :=
+  dicode_noiseCov n_s sigma rho
+
 /-- rfView noise covariance: diagonal entry is `sigma.val`. -/
 example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (sigma : NoisePower)
     (i : Fin n_s) :
