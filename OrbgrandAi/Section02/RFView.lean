@@ -418,6 +418,15 @@ theorem rfViewMatrix_row_zero_of_taps_zero
   else
     if_neg hle
 
+/-! ## Definitional projections of `rfView` -/
+
+/-- *Channel of `rfView` is `rfViewMatrix`.*  Direct projection of the
+    structure; parallel to `dicode_channel`.  Useful as a named API
+    surface when rewriting through `rfView.channel`. -/
+theorem rfView_channel
+    (n_s : Nat) (rowTaps : Fin n_s -> RFViewTaps) (sigma : NoisePower) :
+    (rfView n_s rowTaps sigma).channel = rfViewMatrix n_s rowTaps := rfl
+
 /-! ## `rfView.noiseCov` entries -/
 
 /-- *Diagonal entry of the rfView noise covariance.*  The

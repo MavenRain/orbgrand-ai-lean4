@@ -620,6 +620,11 @@ example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
     rfViewMatrix n_s rowTaps i j = (0 : Complex) :=
   rfViewMatrix_at_six_below_diag rowTaps i j h
 
+/-- `rfView.channel` unfolds to `rfViewMatrix`. -/
+example (n_s : Nat) (rowTaps : Fin n_s -> RFViewTaps) (sigma : NoisePower) :
+    (rfView n_s rowTaps sigma).channel = rfViewMatrix n_s rowTaps :=
+  rfView_channel n_s rowTaps sigma
+
 /-- `dicode.channel` unfolds to `dicodeMatrix`. -/
 example (n_s : Nat) (sigma : NoisePower) (rho : CorrelationCoefficient) :
     (dicode n_s sigma rho).channel = dicodeMatrix n_s rho :=
