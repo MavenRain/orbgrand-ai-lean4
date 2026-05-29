@@ -620,6 +620,12 @@ example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
     rfViewMatrix n_s rowTaps i j = (0 : Complex) :=
   rfViewMatrix_at_six_below_diag rowTaps i j h
 
+/-- Bandwidth depends only on the channel matrix. -/
+example {n_s : Nat} {ch1 ch2 : LinearIsi n_s} (h : ch1.channel = ch2.channel)
+    (b : Nat) :
+    ch1.bandwidth b <-> ch2.bandwidth b :=
+  LinearIsi.bandwidth_iff_of_eq_channels h b
+
 /-- Causality depends only on the channel matrix. -/
 example {n_s : Nat} {ch1 ch2 : LinearIsi n_s} (h : ch1.channel = ch2.channel) :
     ch1.causal <-> ch2.causal :=

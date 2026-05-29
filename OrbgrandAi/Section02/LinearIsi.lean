@@ -238,6 +238,22 @@ theorem LinearIsi.causal_iff_of_eq_channels
       congrFun (congrFun h i) j
     s.trans (h2 i j hij)⟩
 
+/-- *Bandwidth depends only on the channel matrix.*  Dual of
+    `causal_iff_of_eq_channels`: two `LinearIsi` bundles with equal
+    channel matrices have the same bandwidth status for any `b`. -/
+theorem LinearIsi.bandwidth_iff_of_eq_channels
+    {n_s : Nat} {ch1 ch2 : LinearIsi n_s}
+    (h : ch1.channel = ch2.channel) (b : Nat) :
+    ch1.bandwidth b <-> ch2.bandwidth b :=
+  ⟨fun h1 i j hij =>
+    let s : ch1.channel i j = ch2.channel i j :=
+      congrFun (congrFun h i) j
+    s.symm.trans (h1 i j hij),
+   fun h2 i j hij =>
+    let s : ch1.channel i j = ch2.channel i j :=
+      congrFun (congrFun h i) j
+    s.trans (h2 i j hij)⟩
+
 /-- *Receiver depends only on the channel matrix.*  Two `LinearIsi`
     bundles with equal channel matrices produce equal receiver
     outputs for every `(X, N)`, regardless of how their noise
