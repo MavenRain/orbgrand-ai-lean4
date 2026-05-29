@@ -418,5 +418,26 @@ theorem rfViewMatrix_row_zero_of_taps_zero
   else
     if_neg hle
 
+/-! ## `rfView.noiseCov` entries -/
+
+/-- *Diagonal entry of the rfView noise covariance.*  The
+    pre-equalisation noise is white with variance `sigma^2`, so the
+    diagonal of `rfView.noiseCov` is `sigma.val`.  Direct unfolding
+    via `if_pos rfl`. -/
+theorem rfView_noiseCov_diag
+    {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps)
+    (sigma : NoisePower) (i : Fin n_s) :
+    (rfView n_s rowTaps sigma).noiseCov i i = (sigma.val : Complex) :=
+  if_pos rfl
+
+/-- *Off-diagonal entry of the rfView noise covariance.*  Whiteness
+    means zero correlation between distinct sample times.  Direct
+    unfolding via `if_neg`. -/
+theorem rfView_noiseCov_off
+    {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps)
+    (sigma : NoisePower) (i j : Fin n_s) (h : i.val ≠ j.val) :
+    (rfView n_s rowTaps sigma).noiseCov i j = (0 : Complex) :=
+  if_neg h
+
 end Section02
 end OrbgrandAi

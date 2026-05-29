@@ -620,6 +620,18 @@ example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
     rfViewMatrix n_s rowTaps i j = (0 : Complex) :=
   rfViewMatrix_at_six_below_diag rowTaps i j h
 
+/-- rfView noise covariance: diagonal entry is `sigma.val`. -/
+example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (sigma : NoisePower)
+    (i : Fin n_s) :
+    (rfView n_s rowTaps sigma).noiseCov i i = (sigma.val : Complex) :=
+  rfView_noiseCov_diag rowTaps sigma i
+
+/-- rfView noise covariance: off-diagonal is zero (white noise). -/
+example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (sigma : NoisePower)
+    (i j : Fin n_s) (h : i.val ≠ j.val) :
+    (rfView n_s rowTaps sigma).noiseCov i j = (0 : Complex) :=
+  rfView_noiseCov_off rowTaps sigma i j h
+
 /-- Extending by `false` leaves the bit-weight unchanged. -/
 example {n : Nat} (e : Fin n -> Bool) :
     bitWeight (landslideExtend false e) = bitWeight e :=
