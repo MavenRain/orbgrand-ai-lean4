@@ -620,6 +620,11 @@ example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
     rfViewMatrix n_s rowTaps i j = (0 : Complex) :=
   rfViewMatrix_at_six_below_diag rowTaps i j h
 
+/-- Involution variant `a xor (b xor a) = b`. -/
+example {n : Nat} (a b : Codeword n) :
+    Codeword.xor a (Codeword.xor b a) = b :=
+  Codeword.xor_xor_left a b
+
 /-- Zero-received syndrome-zero is exactly the noise-codeword condition. -/
 example {n k : Nat} (H : ParityCheck n k) (N : Codeword n) :
     syndromeZero H 0 N

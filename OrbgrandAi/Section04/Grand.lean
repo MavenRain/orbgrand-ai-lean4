@@ -447,6 +447,18 @@ theorem Codeword.xor_xor_self {n : Nat} (Y Ng : Codeword n) :
   let h3 : Codeword.xor 0 Ng = Ng := Codeword.zero_xor Ng
   h1.trans (h2.trans h3)
 
+/-- *Involution variant: outer-left matches inner-right.*
+    `a xor (b xor a) = b`.  Complements `xor_xor_self` (outer-left
+    matches inner-left) and `xor_xor_right` (outer-right matches
+    inner-right).  Derived by `xor_comm` on the inner pair plus
+    `xor_xor_self`. -/
+theorem Codeword.xor_xor_left {n : Nat} (a b : Codeword n) :
+    Codeword.xor a (Codeword.xor b a) = b :=
+  let s1 : Codeword.xor a (Codeword.xor b a)
+         = Codeword.xor a (Codeword.xor a b) :=
+    congrArg (Codeword.xor a) (Codeword.xor_comm b a)
+  s1.trans (Codeword.xor_xor_self a b)
+
 /-- Right-cancel form: `(a xor b) xor b = a` in `ZMod 2`.  XOR is its
     own right inverse.  Proof: `xor_assoc` + `xor_self` + `xor_zero`. -/
 theorem Codeword.xor_xor_right {n : Nat} (a b : Codeword n) :
