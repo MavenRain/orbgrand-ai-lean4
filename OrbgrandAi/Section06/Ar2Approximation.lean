@@ -164,6 +164,25 @@ theorem ar2_phi2_zero_succ (phi1 z1 z2 : Complex) (n : Nat) :
     add_zero _
   step1.trans (step2.trans step3)
 
+/-- *Lag-skip degenerate case.*  When `phi_1 = 0`, the AR(2)
+    recurrence skips the immediate predecessor: index `n + 2` is
+    `phi_2` times index `n`, with no contribution from index
+    `n + 1`.  Dual of `ar2_phi2_zero_succ`; same three-step
+    structure with `zero_mul` and `zero_add` on the left summand. -/
+theorem ar2_phi1_zero_succ (phi2 z1 z2 : Complex) (n : Nat) :
+    ar2 0 phi2 z1 z2 (n + 2) = phi2 * ar2 0 phi2 z1 z2 n :=
+  let step1 : ar2 0 phi2 z1 z2 (n + 2)
+            = 0 * ar2 0 phi2 z1 z2 (n + 1)
+              + phi2 * ar2 0 phi2 z1 z2 n := rfl
+  let step2 : 0 * ar2 0 phi2 z1 z2 (n + 1)
+              + phi2 * ar2 0 phi2 z1 z2 n
+            = 0 + phi2 * ar2 0 phi2 z1 z2 n :=
+    congrArg (· + phi2 * ar2 0 phi2 z1 z2 n) (zero_mul _)
+  let step3 : (0 : Complex) + phi2 * ar2 0 phi2 z1 z2 n
+            = phi2 * ar2 0 phi2 z1 z2 n :=
+    zero_add _
+  step1.trans (step2.trans step3)
+
 /-- *Period-2 degenerate case.*  When `phi_1 = 0` and `phi_2 = 1`,
     the recursion `ar2 0 1 z1 z2` is 2-periodic: index `n + 2` equals
     index `n`.  Single-step calculation using the `n + 2` recurrence

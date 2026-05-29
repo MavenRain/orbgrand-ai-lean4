@@ -620,6 +620,11 @@ example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
     rfViewMatrix n_s rowTaps i j = (0 : Complex) :=
   rfViewMatrix_at_six_below_diag rowTaps i j h
 
+/-- AR(2) with `phi_1 = 0` skips the immediate predecessor. -/
+example (phi2 z1 z2 : Complex) (n : Nat) :
+    ar2 0 phi2 z1 z2 (n + 2) = phi2 * ar2 0 phi2 z1 z2 n :=
+  ar2_phi1_zero_succ phi2 z1 z2 n
+
 /-- AR(2) with `phi_2 = 0` collapses to a geometric step. -/
 example (phi1 z1 z2 : Complex) (n : Nat) :
     ar2 phi1 0 z1 z2 (n + 2) = phi1 * ar2 phi1 0 z1 z2 (n + 1) :=
