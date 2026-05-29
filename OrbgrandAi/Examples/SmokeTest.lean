@@ -620,6 +620,12 @@ example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
     rfViewMatrix n_s rowTaps i j = (0 : Complex) :=
   rfViewMatrix_at_six_below_diag rowTaps i j h
 
+/-- Zero-received syndrome-zero is exactly the noise-codeword condition. -/
+example {n k : Nat} (H : ParityCheck n k) (N : Codeword n) :
+    syndromeZero H 0 N
+      <-> forall (i : Fin (n - k)), H.matrix.mulVec N i = 0 :=
+  syndromeZero_zero_received_iff_codeword H N
+
 /-- Zero-noise syndrome-zero is exactly the codeword condition. -/
 example {n k : Nat} (H : ParityCheck n k) (Y : Codeword n) :
     syndromeZero H Y 0

@@ -894,6 +894,23 @@ theorem syndromeZero_zero_noise_iff_codeword
       congrArg (fun v => H.matrix.mulVec v i) (Codeword.xor_zero Y)
     s.trans (h i)⟩
 
+/-- *Zero-received syndrome-zero ↔ noise codeword.*  Dual of
+    `syndromeZero_zero_noise_iff_codeword`: with `Y = 0`, the
+    syndrome reduces to `H * N`, so `syndromeZero H 0 N` is exactly
+    the assertion that `N` is a codeword. -/
+theorem syndromeZero_zero_received_iff_codeword
+    {n k : Nat} (H : ParityCheck n k) (N : Codeword n) :
+    syndromeZero H 0 N
+      <-> forall (i : Fin (n - k)), H.matrix.mulVec N i = 0 :=
+  ⟨fun h i =>
+    let s : syndrome H 0 N i = H.matrix.mulVec N i :=
+      congrArg (fun v => H.matrix.mulVec v i) (Codeword.zero_xor N)
+    s.symm.trans (h i),
+   fun h i =>
+    let s : syndrome H 0 N i = H.matrix.mulVec N i :=
+      congrArg (fun v => H.matrix.mulVec v i) (Codeword.zero_xor N)
+    s.trans (h i)⟩
+
 /-- *Syndrome is invariant under codeword shifts of the noise.*
     Symmetric to `syndrome_invariant_under_codeword`: XOR-shifting the
     noise candidate `N` by a codeword `c` leaves the syndrome
