@@ -620,6 +620,12 @@ example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
     rfViewMatrix n_s rowTaps i j = (0 : Complex) :=
   rfViewMatrix_at_six_below_diag rowTaps i j h
 
+/-- Receiver depends only on the channel matrix (noiseCov is unread). -/
+example {n_s : Nat} (ch1 ch2 : LinearIsi n_s)
+    (h : ch1.channel = ch2.channel) (X N : SymbolVector n_s) :
+    ch1.receive X N = ch2.receive X N :=
+  LinearIsi.receive_of_eq_channels ch1 ch2 h X N
+
 /-- `rfView.channel` unfolds to `rfViewMatrix`. -/
 example (n_s : Nat) (rowTaps : Fin n_s -> RFViewTaps) (sigma : NoisePower) :
     (rfView n_s rowTaps sigma).channel = rfViewMatrix n_s rowTaps :=

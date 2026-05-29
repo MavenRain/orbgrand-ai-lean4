@@ -221,6 +221,20 @@ theorem LinearIsi.receive_add
       congrArg (· + (N1 + N2) k) step1
     step2.trans (add_add_add_comm _ _ _ _)
 
+/-- *Receiver depends only on the channel matrix.*  Two `LinearIsi`
+    bundles with equal channel matrices produce equal receiver
+    outputs for every `(X, N)`, regardless of how their noise
+    covariances differ.  Captures the fact that `receive` does not
+    read `noiseCov`. -/
+theorem LinearIsi.receive_of_eq_channels
+    {n_s : Nat} (ch1 ch2 : LinearIsi n_s)
+    (h : ch1.channel = ch2.channel) (X N : SymbolVector n_s) :
+    ch1.receive X N = ch2.receive X N :=
+  funext fun k =>
+    let mulVec_eq : ch1.channel.mulVec X k = ch2.channel.mulVec X k :=
+      congrFun (congrArg (fun M => Matrix.mulVec M X) h) k
+    congrArg (· + N k) mulVec_eq
+
 /-- *Receiver is noise-injective at a fixed signal.*  Two noise
     realisations produce equal receiver output iff they are equal.
     Pointwise `add_left_cancel` lifts to a `funext` equality. -/
