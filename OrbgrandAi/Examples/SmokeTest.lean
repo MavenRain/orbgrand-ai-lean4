@@ -620,6 +620,11 @@ example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
     rfViewMatrix n_s rowTaps i j = (0 : Complex) :=
   rfViewMatrix_at_six_below_diag rowTaps i j h
 
+/-- Causality depends only on the channel matrix. -/
+example {n_s : Nat} {ch1 ch2 : LinearIsi n_s} (h : ch1.channel = ch2.channel) :
+    ch1.causal <-> ch2.causal :=
+  LinearIsi.causal_iff_of_eq_channels h
+
 /-- Receiver depends only on the channel matrix (noiseCov is unread). -/
 example {n_s : Nat} (ch1 ch2 : LinearIsi n_s)
     (h : ch1.channel = ch2.channel) (X N : SymbolVector n_s) :

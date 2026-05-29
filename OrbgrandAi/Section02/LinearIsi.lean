@@ -221,6 +221,23 @@ theorem LinearIsi.receive_add
       congrArg (· + (N1 + N2) k) step1
     step2.trans (add_add_add_comm _ _ _ _)
 
+/-- *Causality depends only on the channel matrix.*  Two `LinearIsi`
+    bundles with equal channel matrices have the same causality
+    status, regardless of how their noise covariances differ.  Both
+    directions follow by pointwise rewriting through `h`. -/
+theorem LinearIsi.causal_iff_of_eq_channels
+    {n_s : Nat} {ch1 ch2 : LinearIsi n_s}
+    (h : ch1.channel = ch2.channel) :
+    ch1.causal <-> ch2.causal :=
+  ⟨fun h1 i j hij =>
+    let s : ch1.channel i j = ch2.channel i j :=
+      congrFun (congrFun h i) j
+    s.symm.trans (h1 i j hij),
+   fun h2 i j hij =>
+    let s : ch1.channel i j = ch2.channel i j :=
+      congrFun (congrFun h i) j
+    s.trans (h2 i j hij)⟩
+
 /-- *Receiver depends only on the channel matrix.*  Two `LinearIsi`
     bundles with equal channel matrices produce equal receiver
     outputs for every `(X, N)`, regardless of how their noise
