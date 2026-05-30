@@ -253,6 +253,7 @@ theorem logisticWeight_eq_bitWeight_comp
     {n : Nat} (pi : ReliabilityRank n) (e : Fin n -> Bool) :
     logisticWeight pi e = bitWeight (e ∘ pi.perm) := rfl
 
+
 /-- Extending by `false` preserves the bit-weight: the new top bit
     contributes 0, and the original positions are reproduced under
     `castSucc`.  Composes `Fin.sum_univ_castSucc` with
@@ -688,6 +689,22 @@ theorem bitWeight_zero_iff_all_false :
 theorem bitWeight_const_false {n : Nat} :
     bitWeight (fun _ : Fin n => false) = 0 :=
   (bitWeight_zero_iff_all_false _).mpr (fun _ => rfl)
+
+/-- *Zero logistic weight characterisation.*  Bridges
+    `bitWeight_zero_iff_all_false` over the rank permutation:
+    `logisticWeight pi e = 0` iff every bit `e (pi.perm i)` is
+    `false`.  Composes `logisticWeight_eq_bitWeight_comp` with the
+    bit-weight iff. -/
+theorem logisticWeight_zero_iff_all_false_at_perm
+    {n : Nat} (pi : ReliabilityRank n) (e : Fin n -> Bool) :
+    logisticWeight pi e = 0 <-> forall i, e (pi.perm i) = false :=
+  let bridge : logisticWeight pi e = bitWeight (e ∘ pi.perm) :=
+    logisticWeight_eq_bitWeight_comp pi e
+  let h_bw : bitWeight (e ∘ pi.perm) = 0
+           <-> forall i, (e ∘ pi.perm) i = false :=
+    bitWeight_zero_iff_all_false (e ∘ pi.perm)
+  ⟨fun h => h_bw.mp (bridge.symm.trans h),
+   fun h => bridge.trans (h_bw.mpr h)⟩
 
 /-- *Constant-false pattern is in landslide bucket 0.*  Combines
     `landslide_correct` (mpr) with `bitWeight_const_false`. -/

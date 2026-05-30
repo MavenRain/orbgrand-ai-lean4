@@ -620,6 +620,11 @@ example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
     rfViewMatrix n_s rowTaps i j = (0 : Complex) :=
   rfViewMatrix_at_six_below_diag rowTaps i j h
 
+/-- Logistic weight is zero iff every bit at every rank position is false. -/
+example {n : Nat} (pi : ReliabilityRank n) (e : Fin n -> Bool) :
+    logisticWeight pi e = 0 <-> forall i, e (pi.perm i) = false :=
+  logisticWeight_zero_iff_all_false_at_perm pi e
+
 /-- Logistic weight equals bit-weight of the rank-permuted pattern. -/
 example {n : Nat} (pi : ReliabilityRank n) (e : Fin n -> Bool) :
     logisticWeight pi e = bitWeight (e ∘ pi.perm) :=
