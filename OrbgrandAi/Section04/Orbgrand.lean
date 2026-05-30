@@ -690,6 +690,18 @@ theorem bitWeight_const_false {n : Nat} :
     bitWeight (fun _ : Fin n => false) = 0 :=
   (bitWeight_zero_iff_all_false _).mpr (fun _ => rfl)
 
+/-- *All-true logistic weight = all-true bit-weight.*  Composing the
+    constant-true function with the rank permutation gives back the
+    same constant-true function (defeq via `∘` and beta), so the
+    `logisticWeight_eq_bitWeight_comp` bridge collapses both sides
+    to the same `bitWeight (fun _ => true)`.  Captures the
+    permutation-invariance of the maximum logistic weight. -/
+theorem logisticWeight_const_true_eq_bitWeight_const_true
+    {n : Nat} (pi : ReliabilityRank n) :
+    logisticWeight pi (fun _ : Fin n => true)
+      = bitWeight (fun _ : Fin n => true) :=
+  logisticWeight_eq_bitWeight_comp pi (fun _ : Fin n => true)
+
 /-- *Zero logistic weight characterisation.*  Bridges
     `bitWeight_zero_iff_all_false` over the rank permutation:
     `logisticWeight pi e = 0` iff every bit `e (pi.perm i)` is

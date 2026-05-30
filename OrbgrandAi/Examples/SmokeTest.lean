@@ -620,6 +620,12 @@ example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
     rfViewMatrix n_s rowTaps i j = (0 : Complex) :=
   rfViewMatrix_at_six_below_diag rowTaps i j h
 
+/-- All-true logistic weight equals all-true bit-weight (rank-invariant maximum). -/
+example {n : Nat} (pi : ReliabilityRank n) :
+    logisticWeight pi (fun _ : Fin n => true)
+      = bitWeight (fun _ : Fin n => true) :=
+  logisticWeight_const_true_eq_bitWeight_const_true pi
+
 /-- Logistic weight is zero iff every bit at every rank position is false. -/
 example {n : Nat} (pi : ReliabilityRank n) (e : Fin n -> Bool) :
     logisticWeight pi e = 0 <-> forall i, e (pi.perm i) = false :=
@@ -821,6 +827,12 @@ example {n k : Nat} (H : ParityCheck n k) (a b : Codeword n) :
     H.matrix.mulVec (Codeword.xor a b)
       = H.matrix.mulVec a + H.matrix.mulVec b :=
   Codeword.mulVec_xor H a b
+
+/-- Pairwise XOR equality rearrangement: `a xor b = c xor d ↔ a xor c = b xor d`. -/
+example {n : Nat} (a b c d : Codeword n) :
+    (Codeword.xor a b = Codeword.xor c d)
+      <-> (Codeword.xor a c = Codeword.xor b d) :=
+  Codeword.xor_eq_xor_iff_xor_eq_xor a b c d
 
 /-- Codeword XOR common-suffix cancellation: `(a xor b) xor (c xor b) = a xor c`. -/
 example {n : Nat} (a b c : Codeword n) :

@@ -600,6 +600,41 @@ theorem Codeword.add_eq_zero_iff {n : Nat} (a b : Codeword n) :
     a + b = 0 <-> a = b :=
   (Codeword.eq_iff_xor_eq_zero a b).symm
 
+/-- *Pairwise XOR equality rearrangement.*  `a xor b = c xor d ↔
+    a xor c = b xor d`: the equation can be rearranged by moving
+    `b` and `c` to the opposite sides.  Both directions convert to
+    `(_ xor _) = 0` via `eq_iff_xor_eq_zero`, then `xor_xor_comm`
+    rearranges the four arguments. -/
+theorem Codeword.xor_eq_xor_iff_xor_eq_xor {n : Nat} (a b c d : Codeword n) :
+    (Codeword.xor a b = Codeword.xor c d)
+      <-> (Codeword.xor a c = Codeword.xor b d) :=
+  ⟨fun h =>
+    let s1 : Codeword.xor (Codeword.xor a c) (Codeword.xor b d)
+           = Codeword.xor (Codeword.xor a b) (Codeword.xor c d) :=
+      Codeword.xor_xor_comm a c b d
+    let s2 : Codeword.xor (Codeword.xor a b) (Codeword.xor c d)
+           = Codeword.xor (Codeword.xor c d) (Codeword.xor c d) :=
+      congrArg (fun z => Codeword.xor z (Codeword.xor c d)) h
+    let s3 : Codeword.xor (Codeword.xor c d) (Codeword.xor c d) = 0 :=
+      Codeword.xor_self _
+    let h_zero : Codeword.xor (Codeword.xor a c) (Codeword.xor b d) = 0 :=
+      s1.trans (s2.trans s3)
+    (Codeword.eq_iff_xor_eq_zero (Codeword.xor a c)
+        (Codeword.xor b d)).mpr h_zero,
+   fun h =>
+    let s1 : Codeword.xor (Codeword.xor a b) (Codeword.xor c d)
+           = Codeword.xor (Codeword.xor a c) (Codeword.xor b d) :=
+      Codeword.xor_xor_comm a b c d
+    let s2 : Codeword.xor (Codeword.xor a c) (Codeword.xor b d)
+           = Codeword.xor (Codeword.xor b d) (Codeword.xor b d) :=
+      congrArg (fun z => Codeword.xor z (Codeword.xor b d)) h
+    let s3 : Codeword.xor (Codeword.xor b d) (Codeword.xor b d) = 0 :=
+      Codeword.xor_self _
+    let h_zero : Codeword.xor (Codeword.xor a b) (Codeword.xor c d) = 0 :=
+      s1.trans (s2.trans s3)
+    (Codeword.eq_iff_xor_eq_zero (Codeword.xor a b)
+        (Codeword.xor c d)).mpr h_zero⟩
+
 /-- *Zero-noise short-circuit.*  If `Y` is already a codeword (zero
     syndrome) and the zero-noise candidate is the head of the
     candidate list, `grandFind` returns `Y` immediately.  Composes the
