@@ -997,5 +997,23 @@ theorem syndrome_invariant_under_codeword_noise
     Codeword.mulVec_xor_codeword_right H h_c i
   step1.trans step2
 
+/-- *`syndromeZero` is invariant under codeword shifts of the noise.*
+    Lifts `syndrome_invariant_under_codeword_noise` to the
+    `syndromeZero` predicate: XOR-shifting the noise candidate by a
+    codeword preserves the acceptance condition.  Both iff
+    directions chain through the entry-level invariance. -/
+theorem syndromeZero_xor_codeword_noise_iff
+    {n k : Nat} (H : ParityCheck n k) (Y N c : Codeword n)
+    (h_c : forall (i : Fin (n - k)), H.matrix.mulVec c i = 0) :
+    syndromeZero H Y (Codeword.xor N c) <-> syndromeZero H Y N :=
+  ⟨fun h i =>
+    let s : syndrome H Y (Codeword.xor N c) i = syndrome H Y N i :=
+      syndrome_invariant_under_codeword_noise H Y N c h_c i
+    s.symm.trans (h i),
+   fun h i =>
+    let s : syndrome H Y (Codeword.xor N c) i = syndrome H Y N i :=
+      syndrome_invariant_under_codeword_noise H Y N c h_c i
+    s.trans (h i)⟩
+
 end Section04
 end OrbgrandAi

@@ -783,6 +783,12 @@ example {n_s : Nat} (h : ChannelMatrix n_s)
       <-> h i j = 0 ∨ 1 + epsilon i j = 0 :=
   perturbChannel_eq_zero_iff h epsilon i j
 
+/-- `syndromeZero` is invariant under codeword shifts of the noise candidate. -/
+example {n k : Nat} (H : ParityCheck n k) (Y N c : Codeword n)
+    (h_c : forall (i : Fin (n - k)), H.matrix.mulVec c i = 0) :
+    syndromeZero H Y (Codeword.xor N c) <-> syndromeZero H Y N :=
+  syndromeZero_xor_codeword_noise_iff H Y N c h_c
+
 /-- Syndrome is invariant under codeword shifts of the noise candidate. -/
 example {n k : Nat} (H : ParityCheck n k) (Y N c : Codeword n)
     (h_c : forall (i : Fin (n - k)), H.matrix.mulVec c i = 0)
