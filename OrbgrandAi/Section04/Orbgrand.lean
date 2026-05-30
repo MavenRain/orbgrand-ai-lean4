@@ -243,6 +243,16 @@ theorem bitWeight_elim0 :
     bitWeight (Fin.elim0 : Fin 0 -> Bool) = 0 :=
   Finset.sum_empty
 
+/-- *Logistic weight = bit-weight of the rank-permuted pattern.*  The
+    two sums are definitionally equal: `logisticWeight pi e`'s
+    `let bit_at_rank_i := pi.perm i; if e bit_at_rank_i then ...` and
+    `bitWeight (e ∘ pi.perm)`'s `if e (pi.perm i) then ...` reduce
+    to the same `Finset.univ.sum` body.  This connection allows
+    transferring bit-weight theorems across the rank permutation. -/
+theorem logisticWeight_eq_bitWeight_comp
+    {n : Nat} (pi : ReliabilityRank n) (e : Fin n -> Bool) :
+    logisticWeight pi e = bitWeight (e ∘ pi.perm) := rfl
+
 /-- Extending by `false` preserves the bit-weight: the new top bit
     contributes 0, and the original positions are reproduced under
     `castSucc`.  Composes `Fin.sum_univ_castSucc` with
