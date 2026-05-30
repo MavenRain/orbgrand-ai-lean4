@@ -822,6 +822,12 @@ example {n k : Nat} (H : ParityCheck n k) (a b : Codeword n) :
       = H.matrix.mulVec a + H.matrix.mulVec b :=
   Codeword.mulVec_xor H a b
 
+/-- Codeword XOR common-suffix cancellation: `(a xor b) xor (c xor b) = a xor c`. -/
+example {n : Nat} (a b c : Codeword n) :
+    Codeword.xor (Codeword.xor a b) (Codeword.xor c b)
+      = Codeword.xor a c :=
+  Codeword.xor_xor_xor_self_right a b c
+
 /-- Codeword XOR common-prefix cancellation: `(a xor b) xor (a xor c) = b xor c`. -/
 example {n : Nat} (a b c : Codeword n) :
     Codeword.xor (Codeword.xor a b) (Codeword.xor a c)
