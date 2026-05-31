@@ -830,6 +830,13 @@ example {n_s : Nat} (h : ChannelMatrix n_s)
       <-> h i j = 0 ∨ 1 + epsilon i j = 0 :=
   perturbChannel_eq_zero_iff h epsilon i j
 
+/-- Syndrome-zero equivalence under a codeword noise candidate. -/
+example {n k : Nat} (H : ParityCheck n k) (Y N_g : Codeword n)
+    (h : forall i, H.matrix.mulVec N_g i = 0) :
+    syndromeZero H Y N_g <->
+      forall (i : Fin (n - k)), H.matrix.mulVec Y i = 0 :=
+  syndromeZero_iff_received_codeword H Y N_g h
+
 /-- `syndromeZero` is invariant under simultaneous codeword shifts. -/
 example {n k : Nat} (H : ParityCheck n k) (Y N c_r c_n : Codeword n)
     (h_cr : forall (i : Fin (n - k)), H.matrix.mulVec c_r i = 0)

@@ -1059,5 +1059,25 @@ theorem syndromeZero_xor_codeword_both_iff
       (Codeword.xor N c_n) c_r h_cr).trans
     (syndromeZero_xor_codeword_noise_iff H Y N c_n h_cn)
 
+/-- *Syndrome-zero equivalence under a codeword noise candidate.*
+    Dual of `syndromeZero_iff_noise_codeword`: when the noise
+    candidate `N_g` is a codeword, the syndrome reduces to `H * Y`,
+    so the GRAND acceptance condition is equivalent to `Y` itself
+    being a codeword.  Two-step proof via
+    `Codeword.mulVec_xor_codeword_right` in both directions. -/
+theorem syndromeZero_iff_received_codeword
+    {n k : Nat} (H : ParityCheck n k) (Y N_g : Codeword n)
+    (h : forall i, H.matrix.mulVec N_g i = 0) :
+    syndromeZero H Y N_g <->
+      forall (i : Fin (n - k)), H.matrix.mulVec Y i = 0 :=
+  ⟨fun hz i =>
+    let s : syndrome H Y N_g i = H.matrix.mulVec Y i :=
+      Codeword.mulVec_xor_codeword_right H h i
+    s.symm.trans (hz i),
+   fun hy i =>
+    let s : syndrome H Y N_g i = H.matrix.mulVec Y i :=
+      Codeword.mulVec_xor_codeword_right H h i
+    s.trans (hy i)⟩
+
 end Section04
 end OrbgrandAi
