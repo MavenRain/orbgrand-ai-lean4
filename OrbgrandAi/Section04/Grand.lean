@@ -997,6 +997,23 @@ theorem syndrome_invariant_under_codeword_noise
     Codeword.mulVec_xor_codeword_right H h_c i
   step1.trans step2
 
+/-- *`syndromeZero` is invariant under codeword shifts of the receiver.*
+    Lifts `syndrome_invariant_under_codeword` to the `syndromeZero`
+    predicate.  Dual of `syndromeZero_xor_codeword_noise_iff`;
+    same iff-chaining structure. -/
+theorem syndromeZero_xor_codeword_received_iff
+    {n k : Nat} (H : ParityCheck n k) (Y N c : Codeword n)
+    (h_c : forall (i : Fin (n - k)), H.matrix.mulVec c i = 0) :
+    syndromeZero H (Codeword.xor Y c) N <-> syndromeZero H Y N :=
+  ⟨fun h i =>
+    let s : syndrome H (Codeword.xor Y c) N i = syndrome H Y N i :=
+      syndrome_invariant_under_codeword H Y N c h_c i
+    s.symm.trans (h i),
+   fun h i =>
+    let s : syndrome H (Codeword.xor Y c) N i = syndrome H Y N i :=
+      syndrome_invariant_under_codeword H Y N c h_c i
+    s.trans (h i)⟩
+
 /-- *`syndromeZero` is invariant under codeword shifts of the noise.*
     Lifts `syndrome_invariant_under_codeword_noise` to the
     `syndromeZero` predicate: XOR-shifting the noise candidate by a
