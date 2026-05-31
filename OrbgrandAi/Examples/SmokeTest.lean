@@ -331,6 +331,16 @@ example {n_s : Nat} (ch : LinearIsi n_s) (b b' : Nat) (hb : b <= b')
     (h : ch.bandwidth b) : ch.bandwidth b' :=
   LinearIsi.bandwidth_le hb h
 
+/-- Constant log-density-ratio gives lim-inf information rate equal to the constant. -/
+example (c : Real) :
+    liminfInformationRate (fun _ => c) = c :=
+  liminfInformationRate_const c
+
+/-- Constant log-inverse-density gives lim-sup entropy rate equal to the constant. -/
+example (c : Real) :
+    limsupEntropyRate (fun _ => c) = c :=
+  limsupEntropyRate_const c
+
 /-- AR(2) closed-form at index 2. -/
 example (phi1 phi2 z1 z2 : Complex) :
     ar2 phi1 phi2 z1 z2 2 = phi1 * z2 + phi2 * z1 :=

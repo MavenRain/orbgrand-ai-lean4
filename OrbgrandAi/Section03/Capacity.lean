@@ -92,6 +92,23 @@ noncomputable def liminfInformationRate (logDensityRatio : Nat -> Real) : Real :
 noncomputable def limsupEntropyRate (logInverseDensity : Nat -> Real) : Real :=
   Filter.limsup logInverseDensity Filter.atTop
 
+/-! ### Constant-sequence base cases -/
+
+/-- *Constant log-density ratio.*  If the log-density-ratio sequence
+    is constant at `c`, the lim-inf information rate equals `c`.
+    Direct application of `Filter.liminf_const` (which needs
+    `atTop`'s nonemptiness, automatic for `Nat`). -/
+theorem liminfInformationRate_const (c : Real) :
+    liminfInformationRate (fun _ => c) = c :=
+  Filter.liminf_const c
+
+/-- *Constant log-inverse-density.*  If the log-inverse-density
+    sequence is constant at `c`, the lim-sup entropy rate equals
+    `c`.  Direct application of `Filter.limsup_const`. -/
+theorem limsupEntropyRate_const (c : Real) :
+    limsupEntropyRate (fun _ => c) = c :=
+  Filter.limsup_const c
+
 /-! ## Hadamard bound on the noise entropy rate -/
 
 /-- *Hadamard inequality* (Section III, page 4, right column).
