@@ -719,6 +719,16 @@ example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (sigma : NoisePower)
     (rfView n_s rowTaps sigma).noiseCov i j = (0 : Complex) :=
   rfView_noiseCov_off rowTaps sigma i j h
 
+/-- `landslideExtend b e` at the new top position returns the inserted bit. -/
+example {n : Nat} (b : Bool) (e : Fin n -> Bool) :
+    landslideExtend b e (Fin.last n) = b :=
+  landslideExtend_last b e
+
+/-- `landslideExtend b e` at a `castSucc` position returns the original bit. -/
+example {n : Nat} (b : Bool) (e : Fin n -> Bool) (i : Fin n) :
+    landslideExtend b e i.castSucc = e i :=
+  landslideExtend_castSucc b e i
+
 /-- Extending by `false` leaves the bit-weight unchanged. -/
 example {n : Nat} (e : Fin n -> Bool) :
     bitWeight (landslideExtend false e) = bitWeight e :=
