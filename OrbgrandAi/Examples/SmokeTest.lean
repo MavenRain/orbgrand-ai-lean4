@@ -331,6 +331,21 @@ example {n_s : Nat} (ch : LinearIsi n_s) (b b' : Nat) (hb : b <= b')
     (h : ch.bandwidth b) : ch.bandwidth b' :=
   LinearIsi.bandwidth_le hb h
 
+/-- Capacity upper-bound definitional unfolding. -/
+example (sigmaX : SignalPower) (sigmaN : NoisePower)
+    (rho1 rho2 : CorrelationCoefficient) (n_s : Nat) :
+    capacityUpperBound sigmaX sigmaN rho1 rho2 n_s
+      = (1 / 2 : Real) * Real.log (2 * Real.pi * Real.exp 1)
+        + (1 / 2 : Real) * Real.log (sigmaX.val + sigmaN.val)
+        - (1 / 2 : Real)
+            * Real.log (2 * Real.pi * Real.exp 1 * sigmaN.val)
+        - (1 / (2 * (n_s : Real)))
+            * Real.log
+                (- (rho2.val - 1) ^ (n_s - 2)
+                    * (1 - 2 * rho1.val ^ 2 + rho2.val) ^ (n_s - 2)
+                  / (rho1.val ^ 2 - 1) ^ (n_s - 3)) :=
+  capacityUpperBound_eq sigmaX sigmaN rho1 rho2 n_s
+
 /-- Constant log-density-ratio gives lim-inf information rate equal to the constant. -/
 example (c : Real) :
     liminfInformationRate (fun _ => c) = c :=

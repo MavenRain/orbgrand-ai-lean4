@@ -171,6 +171,23 @@ noncomputable def capacityUpperBound
                 * (1 - 2 * r1 ^ 2 + r2) ^ (n_s - 2)
               / (r1 ^ 2 - 1) ^ (n_s - 3))
 
+/-- *Definitional unfolding of `capacityUpperBound`.*  Exposes the
+    closed-form expression by zeta-reducing the internal `let r1`,
+    `let r2` bindings, parallel to `entropyRate1_eq`. -/
+theorem capacityUpperBound_eq
+    (sigmaX : SignalPower) (sigmaN : NoisePower)
+    (rho1 rho2 : CorrelationCoefficient) (n_s : Nat) :
+    capacityUpperBound sigmaX sigmaN rho1 rho2 n_s
+      = (1 / 2 : Real) * Real.log (2 * Real.pi * Real.exp 1)
+        + (1 / 2 : Real) * Real.log (sigmaX.val + sigmaN.val)
+        - (1 / 2 : Real)
+            * Real.log (2 * Real.pi * Real.exp 1 * sigmaN.val)
+        - (1 / (2 * (n_s : Real)))
+            * Real.log
+                (- (rho2.val - 1) ^ (n_s - 2)
+                    * (1 - 2 * rho1.val ^ 2 + rho2.val) ^ (n_s - 2)
+                  / (rho1.val ^ 2 - 1) ^ (n_s - 3)) := rfl
+
 /-- The Shannon channel capacity `C` (formal symbol, treated as an
     abstract real) is bounded by `capacityUpperBound` in the limit
     `n_s -> infinity`.
