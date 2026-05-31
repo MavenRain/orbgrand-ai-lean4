@@ -788,6 +788,10 @@ example {n : Nat} (e : Fin n -> Bool) :
     bitWeight (landslideExtend true e) = bitWeight e + (n + 1) :=
   bitWeight_extend_true e
 
+/-- All-true at length 1 has bit-weight 1. -/
+example : bitWeight (fun _ : Fin 1 => true) = 1 :=
+  bitWeight_one_true
+
 /-- Bit-weight of the unique length-0 pattern is zero. -/
 example (e : Fin 0 -> Bool) : bitWeight e = 0 :=
   bitWeight_fin_zero e

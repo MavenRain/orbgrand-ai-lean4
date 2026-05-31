@@ -243,6 +243,13 @@ theorem bitWeight_elim0 :
     bitWeight (Fin.elim0 : Fin 0 -> Bool) = 0 :=
   Finset.sum_empty
 
+/-- *All-true at length 1 has bit-weight 1.*  Concrete base case at
+    `n = 1`: the single summand reduces to `(0 : Fin 1).val + 1 = 1`
+    via `Fin.sum_univ_one`. -/
+theorem bitWeight_one_true :
+    bitWeight (fun _ : Fin 1 => true) = 1 :=
+  Fin.sum_univ_one _
+
 /-- *Logistic weight = bit-weight of the rank-permuted pattern.*  The
     two sums are definitionally equal: `logisticWeight pi e`'s
     `let bit_at_rank_i := pi.perm i; if e bit_at_rank_i then ...` and
