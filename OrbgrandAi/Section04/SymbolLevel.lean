@@ -85,6 +85,16 @@ theorem Constellation.eq_of_exceed_zero {chi : Type}
     s = s_hat :=
   (cs.exceed_zero_iff s s_hat).mp h
 
+/-- *Symbol equality implies zero exceedance.*  Backward direction
+    of `exceed_zero_iff`, packaged for direct use in proof chains
+    that need to inject a known symbol equality into an exceedance
+    expression.  Dual of `eq_of_exceed_zero`. -/
+theorem Constellation.exceed_zero_of_eq {chi : Type}
+    (cs : Constellation chi) {s s_hat : chi}
+    (h : s = s_hat) :
+    cs.exceed s s_hat = 0 :=
+  (cs.exceed_zero_iff s s_hat).mpr h
+
 /-- *Diagonal exceedance is a lower bound.*  Since `exceed s s = 0`
     (by `exceed_self`) and exceedance is nonneg (by axiom),
     `cs.exceed s s ≤ cs.exceed s s_hat` for any `s_hat`.  One-line
