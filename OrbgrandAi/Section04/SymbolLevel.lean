@@ -74,6 +74,15 @@ theorem Constellation.exceed_self {chi : Type} (cs : Constellation chi)
     cs.exceed s s = 0 :=
   (cs.exceed_zero_iff s s).mpr rfl
 
+/-- *Diagonal exceedance is a lower bound.*  Since `exceed s s = 0`
+    (by `exceed_self`) and exceedance is nonneg (by axiom),
+    `cs.exceed s s ≤ cs.exceed s s_hat` for any `s_hat`.  One-line
+    chain via `Eq.trans_le`. -/
+theorem Constellation.exceed_self_le_exceed {chi : Type}
+    (cs : Constellation chi) (s s_hat : chi) :
+    cs.exceed s s <= cs.exceed s s_hat :=
+  (cs.exceed_self s).trans_le (cs.exceed_nonneg s s_hat)
+
 /-- *Exceedance is non-zero iff symbols differ.*  Contrapositive of
     `exceed_zero_iff`: pushing `Not` through both sides of the
     biconditional. -/
