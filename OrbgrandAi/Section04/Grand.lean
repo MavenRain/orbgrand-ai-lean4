@@ -554,6 +554,17 @@ theorem Codeword.xor_right_eq_iff {n : Nat} (a b c : Codeword n) :
     Codeword.xor a c = Codeword.xor b c <-> a = b :=
   ⟨Codeword.xor_right_cancel, fun h => congrArg (fun x => Codeword.xor x c) h⟩
 
+/-- *Double-cancellation iff.*  `(a xor b) xor c = (a xor d) xor c ↔
+    b = d`: peel off the shared `c` via `xor_right_eq_iff`, then the
+    shared `a` via `xor_left_eq_iff`.  Saves a two-step cancellation
+    chain on every use. -/
+theorem Codeword.xor_xor_eq_xor_xor_iff {n : Nat} (a b c d : Codeword n) :
+    Codeword.xor (Codeword.xor a b) c = Codeword.xor (Codeword.xor a d) c
+      <-> b = d :=
+  (Codeword.xor_right_eq_iff (Codeword.xor a b)
+      (Codeword.xor a d) c).trans
+    (Codeword.xor_left_eq_iff a b d)
+
 /-- *XOR is identity iff right argument is zero.*  `a xor b = a ↔ b = 0`.
     Captures the standard "XOR with 0 is no-op" characterisation. -/
 theorem Codeword.xor_eq_self_iff {n : Nat} (a b : Codeword n) :

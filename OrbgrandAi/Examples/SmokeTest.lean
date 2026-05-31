@@ -840,6 +840,12 @@ example {n k : Nat} (H : ParityCheck n k) (a b : Codeword n) :
       = H.matrix.mulVec a + H.matrix.mulVec b :=
   Codeword.mulVec_xor H a b
 
+/-- Double-cancellation: `(a xor b) xor c = (a xor d) xor c ↔ b = d`. -/
+example {n : Nat} (a b c d : Codeword n) :
+    Codeword.xor (Codeword.xor a b) c = Codeword.xor (Codeword.xor a d) c
+      <-> b = d :=
+  Codeword.xor_xor_eq_xor_xor_iff a b c d
+
 /-- Pairwise XOR equality rearrangement: `a xor b = c xor d ↔ a xor c = b xor d`. -/
 example {n : Nat} (a b c d : Codeword n) :
     (Codeword.xor a b = Codeword.xor c d)
