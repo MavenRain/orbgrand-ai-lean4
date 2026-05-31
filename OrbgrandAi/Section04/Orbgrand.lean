@@ -702,6 +702,22 @@ theorem logisticWeight_const_true_eq_bitWeight_const_true
       = bitWeight (fun _ : Fin n => true) :=
   logisticWeight_eq_bitWeight_comp pi (fun _ : Fin n => true)
 
+/-- *Logistic-weight equality is bit-weight equality under permutation.*
+    Two patterns have equal logistic weight (under the same rank `pi`)
+    iff their `pi.perm`-permuted compositions have equal bit-weight.
+    Direct biconditional via two applications of the
+    `logisticWeight_eq_bitWeight_comp` bridge. -/
+theorem logisticWeight_eq_iff
+    {n : Nat} (pi : ReliabilityRank n) (e1 e2 : Fin n -> Bool) :
+    logisticWeight pi e1 = logisticWeight pi e2
+      <-> bitWeight (e1 ∘ pi.perm) = bitWeight (e2 ∘ pi.perm) :=
+  let f1 : logisticWeight pi e1 = bitWeight (e1 ∘ pi.perm) :=
+    logisticWeight_eq_bitWeight_comp pi e1
+  let f2 : logisticWeight pi e2 = bitWeight (e2 ∘ pi.perm) :=
+    logisticWeight_eq_bitWeight_comp pi e2
+  ⟨fun h => f1.symm.trans (h.trans f2),
+   fun h => f1.trans (h.trans f2.symm)⟩
+
 /-- *Zero logistic weight characterisation.*  Bridges
     `bitWeight_zero_iff_all_false` over the rank permutation:
     `logisticWeight pi e = 0` iff every bit `e (pi.perm i)` is
