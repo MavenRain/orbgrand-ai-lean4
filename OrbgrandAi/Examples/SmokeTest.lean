@@ -774,6 +774,12 @@ example {n : Nat} (e : Fin n -> Bool) :
 example (e : Fin 0 -> Bool) : bitWeight e = 0 :=
   bitWeight_fin_zero e
 
+/-- AR(2) with `phi_1 = phi_2 = 1` is the Fibonacci recurrence. -/
+example (z1 z2 : Complex) (n : Nat) :
+    ar2 1 1 z1 z2 (n + 2)
+      = ar2 1 1 z1 z2 (n + 1) + ar2 1 1 z1 z2 n :=
+  ar2_phi1_one_phi2_one_succ z1 z2 n
+
 /-- AR(2) with `phi_1 = 0` skips the immediate predecessor. -/
 example (phi2 z1 z2 : Complex) (n : Nat) :
     ar2 0 phi2 z1 z2 (n + 2) = phi2 * ar2 0 phi2 z1 z2 n :=

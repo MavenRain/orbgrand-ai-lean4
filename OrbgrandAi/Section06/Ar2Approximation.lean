@@ -183,6 +183,22 @@ theorem ar2_phi1_zero_succ (phi2 z1 z2 : Complex) (n : Nat) :
     zero_add _
   step1.trans (step2.trans step3)
 
+/-- *Fibonacci-like recurrence.*  When both AR(2) coefficients are
+    `1`, the recurrence collapses to pure addition:
+    `ar2 1 1 z1 z2 (n + 2) = ar2 1 1 z1 z2 (n + 1) + ar2 1 1 z1 z2 n`,
+    i.e., the classical Fibonacci shape with initial seeds `z1, z2`.
+    Three-step proof via `ar2_succ_succ` plus `one_mul` on both
+    summands. -/
+theorem ar2_phi1_one_phi2_one_succ (z1 z2 : Complex) (n : Nat) :
+    ar2 1 1 z1 z2 (n + 2)
+      = ar2 1 1 z1 z2 (n + 1) + ar2 1 1 z1 z2 n :=
+  let step1 : ar2 1 1 z1 z2 (n + 2)
+            = 1 * ar2 1 1 z1 z2 (n + 1) + 1 * ar2 1 1 z1 z2 n := rfl
+  let step2 : 1 * ar2 1 1 z1 z2 (n + 1) + 1 * ar2 1 1 z1 z2 n
+            = ar2 1 1 z1 z2 (n + 1) + ar2 1 1 z1 z2 n :=
+    congrArg₂ (· + ·) (one_mul _) (one_mul _)
+  step1.trans step2
+
 /-- *Period-2 degenerate case.*  When `phi_1 = 0` and `phi_2 = 1`,
     the recursion `ar2 0 1 z1 z2` is 2-periodic: index `n + 2` equals
     index `n`.  Single-step calculation using the `n + 2` recurrence
