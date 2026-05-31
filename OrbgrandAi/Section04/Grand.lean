@@ -1043,5 +1043,21 @@ theorem syndromeZero_xor_codeword_noise_iff
       syndrome_invariant_under_codeword_noise H Y N c h_c i
     s.trans (h i)⟩
 
+/-- *`syndromeZero` is invariant under simultaneous codeword shifts.*
+    Given codewords `c_r` and `c_n`, XOR-shifting the receiver by
+    `c_r` and the noise candidate by `c_n` leaves the acceptance
+    condition unchanged.  Composes `syndromeZero_xor_codeword_received_iff`
+    (drops `c_r`) with `syndromeZero_xor_codeword_noise_iff` (drops
+    `c_n`) via `Iff.trans`. -/
+theorem syndromeZero_xor_codeword_both_iff
+    {n k : Nat} (H : ParityCheck n k) (Y N c_r c_n : Codeword n)
+    (h_cr : forall (i : Fin (n - k)), H.matrix.mulVec c_r i = 0)
+    (h_cn : forall (i : Fin (n - k)), H.matrix.mulVec c_n i = 0) :
+    syndromeZero H (Codeword.xor Y c_r) (Codeword.xor N c_n)
+      <-> syndromeZero H Y N :=
+  (syndromeZero_xor_codeword_received_iff H Y
+      (Codeword.xor N c_n) c_r h_cr).trans
+    (syndromeZero_xor_codeword_noise_iff H Y N c_n h_cn)
+
 end Section04
 end OrbgrandAi

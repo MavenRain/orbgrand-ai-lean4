@@ -830,6 +830,14 @@ example {n_s : Nat} (h : ChannelMatrix n_s)
       <-> h i j = 0 ∨ 1 + epsilon i j = 0 :=
   perturbChannel_eq_zero_iff h epsilon i j
 
+/-- `syndromeZero` is invariant under simultaneous codeword shifts. -/
+example {n k : Nat} (H : ParityCheck n k) (Y N c_r c_n : Codeword n)
+    (h_cr : forall (i : Fin (n - k)), H.matrix.mulVec c_r i = 0)
+    (h_cn : forall (i : Fin (n - k)), H.matrix.mulVec c_n i = 0) :
+    syndromeZero H (Codeword.xor Y c_r) (Codeword.xor N c_n)
+      <-> syndromeZero H Y N :=
+  syndromeZero_xor_codeword_both_iff H Y N c_r c_n h_cr h_cn
+
 /-- `syndromeZero` is invariant under codeword shifts of the receiver. -/
 example {n k : Nat} (H : ParityCheck n k) (Y N c : Codeword n)
     (h_c : forall (i : Fin (n - k)), H.matrix.mulVec c i = 0) :
