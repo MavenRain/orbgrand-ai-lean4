@@ -257,6 +257,13 @@ theorem bitWeight_two_true :
     bitWeight (fun _ : Fin 2 => true) = 3 :=
   Fin.sum_univ_two _
 
+/-- *All-true at length 3 has bit-weight 6.*  Concrete value at
+    `n = 3`: the triangular sum `1 + 2 + 3`, via
+    `Fin.sum_univ_three`. -/
+theorem bitWeight_three_true :
+    bitWeight (fun _ : Fin 3 => true) = 6 :=
+  Fin.sum_univ_three _
+
 /-- *Logistic weight = bit-weight of the rank-permuted pattern.*  The
     two sums are definitionally equal: `logisticWeight pi e`'s
     `let bit_at_rank_i := pi.perm i; if e bit_at_rank_i then ...` and
