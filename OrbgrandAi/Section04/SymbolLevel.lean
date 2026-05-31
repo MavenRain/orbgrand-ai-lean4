@@ -209,6 +209,14 @@ theorem qpsk_exceed_zero_or_one (s s_hat : Fin 4) :
   else
     Or.inr (if_neg h)
 
+/-- *QPSK exceedance is bounded by 1.*  Same case split as
+    `bpsk_exceed_le_one` on `qpsk_exceed_zero_or_one`. -/
+theorem qpsk_exceed_le_one (s s_hat : Fin 4) :
+    qpsk.exceed s s_hat <= 1 :=
+  match qpsk_exceed_zero_or_one s s_hat with
+  | Or.inl h => h.trans_le zero_le_one
+  | Or.inr h => le_of_eq h
+
 /-- *QPSK exceedance is symmetric.*  `qpsk.exceed s s_hat = qpsk.exceed s_hat s`. -/
 theorem qpsk_exceed_symm (s s_hat : Fin 4) :
     qpsk.exceed s s_hat = qpsk.exceed s_hat s :=

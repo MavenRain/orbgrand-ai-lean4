@@ -956,6 +956,10 @@ example {n_s b numCandidates : Nat}
     orbgrandAiLoop Y Phi 0 (e :: rest) = none :=
   orbgrandAiLoop_zero_steps_cons Y Phi e rest
 
+/-- QPSK exceedance is bounded above by 1. -/
+example (s s_hat : Fin 4) : qpsk.exceed s s_hat <= 1 :=
+  qpsk_exceed_le_one s s_hat
+
 /-- QPSK exceedance is binary-valued (0 or 1). -/
 example (s s_hat : Fin 4) :
     qpsk.exceed s s_hat = 0 ∨ qpsk.exceed s s_hat = 1 :=
