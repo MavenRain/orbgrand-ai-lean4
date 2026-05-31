@@ -638,6 +638,12 @@ example {n_s : Nat} {p : Nat} (paths : Fin p -> DelayTapPath)
     delayTapMatrix n_s paths f_s i j = (0 : Complex) :=
   delayTapMatrix_zero_above_diag paths f_s i j hij
 
+/-- `rfViewMatrix` is strictly lower-triangular (direct entry-level form). -/
+example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
+    (hij : i.val < j.val) :
+    rfViewMatrix n_s rowTaps i j = (0 : Complex) :=
+  rfViewMatrix_is_lower_triangular rowTaps i j hij
+
 /-- RFView matrix at six-below-diagonal is zero (boundary just inside
     the out-of-band region: `tap?_7` is `none`). -/
 example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)

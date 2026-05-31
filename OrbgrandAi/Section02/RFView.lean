@@ -418,6 +418,17 @@ theorem rfViewMatrix_row_zero_of_taps_zero
   else
     if_neg hle
 
+/-- *`rfViewMatrix` is strictly lower-triangular.*  Direct entry-level
+    statement of the causality property (entries strictly above the
+    diagonal vanish) at the `rfViewMatrix` level, without going
+    through the `LinearIsi` wrapper.  One-line proof via `if_neg`
+    on the `j.val ≤ i.val` guard of the matrix definition. -/
+theorem rfViewMatrix_is_lower_triangular
+    {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps)
+    (i j : Fin n_s) (hij : i.val < j.val) :
+    rfViewMatrix n_s rowTaps i j = (0 : Complex) :=
+  if_neg (Nat.not_le_of_lt hij)
+
 /-! ## Definitional projections of `rfView` -/
 
 /-- *Channel of `rfView` is `rfViewMatrix`.*  Direct projection of the
