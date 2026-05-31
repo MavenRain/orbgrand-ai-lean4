@@ -1048,6 +1048,12 @@ example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
         + beta2 * (sigma.val * rho2.val) :=
   cov2_lag_four sigma rho1 rho2 beta1 beta2
 
+/-- Zero exceedance implies symbol equality (generic). -/
+example {chi : Type} (cs : Constellation chi) {s s_hat : chi}
+    (h : cs.exceed s s_hat = 0) :
+    s = s_hat :=
+  cs.eq_of_exceed_zero h
+
 /-- Generic constellation exceedance vanishes on the diagonal. -/
 example {chi : Type} (cs : Constellation chi) (s : chi) :
     cs.exceed s s = 0 :=

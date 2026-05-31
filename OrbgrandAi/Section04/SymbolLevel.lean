@@ -74,6 +74,17 @@ theorem Constellation.exceed_self {chi : Type} (cs : Constellation chi)
     cs.exceed s s = 0 :=
   (cs.exceed_zero_iff s s).mpr rfl
 
+/-- *Zero exceedance implies symbol equality.*  Forward extraction
+    from the `exceed_zero_iff` axiom: converting an exceedance
+    measurement back into an equality between symbols.  Useful for
+    decoder soundness arguments that observe a zero distance and
+    need to conclude the candidate symbol equals the hard decision. -/
+theorem Constellation.eq_of_exceed_zero {chi : Type}
+    (cs : Constellation chi) {s s_hat : chi}
+    (h : cs.exceed s s_hat = 0) :
+    s = s_hat :=
+  (cs.exceed_zero_iff s s_hat).mp h
+
 /-- *Diagonal exceedance is a lower bound.*  Since `exceed s s = 0`
     (by `exceed_self`) and exceedance is nonneg (by axiom),
     `cs.exceed s s ≤ cs.exceed s s_hat` for any `s_hat`.  One-line
