@@ -1079,5 +1079,19 @@ theorem syndromeZero_iff_received_codeword
       Codeword.mulVec_xor_codeword_right H h i
     s.trans (hy i)⟩
 
+/-- *Syndrome-zero is the codeword condition on `Y xor N`.*
+    Unconditional reformulation: by definition `syndrome H Y N i =
+    H.matrix.mulVec (Codeword.xor Y N) i`, so `syndromeZero H Y N`
+    is exactly the assertion that `Y xor N` lies in the codebook.
+    Direct `Iff.rfl` (no preconditions, no codeword hypotheses).
+    Subsumes the conditioned forms `syndromeZero_iff_noise_codeword`
+    and `syndromeZero_iff_received_codeword` in the general case. -/
+theorem syndromeZero_iff_xor_codeword
+    {n k : Nat} (H : ParityCheck n k) (Y N : Codeword n) :
+    syndromeZero H Y N <->
+      forall (i : Fin (n - k)),
+        H.matrix.mulVec (Codeword.xor Y N) i = 0 :=
+  Iff.rfl
+
 end Section04
 end OrbgrandAi
