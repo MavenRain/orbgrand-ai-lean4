@@ -788,6 +788,10 @@ example {n : Nat} (e : Fin n -> Bool) :
     bitWeight (landslideExtend true e) = bitWeight e + (n + 1) :=
   bitWeight_extend_true e
 
+/-- All-true at length 2 has bit-weight 3. -/
+example : bitWeight (fun _ : Fin 2 => true) = 3 :=
+  bitWeight_two_true
+
 /-- All-true at length 1 has bit-weight 1. -/
 example : bitWeight (fun _ : Fin 1 => true) = 1 :=
   bitWeight_one_true
