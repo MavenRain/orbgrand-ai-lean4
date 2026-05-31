@@ -718,6 +718,20 @@ theorem logisticWeight_eq_iff
   ⟨fun h => f1.symm.trans (h.trans f2),
    fun h => f1.trans (h.trans f2.symm)⟩
 
+/-- *Logistic-weight strict order is bit-weight strict order under
+    permutation.*  Strict-inequality companion of `logisticWeight_le_iff`.
+    Each direction chains `Eq.trans_lt` with `LT.lt.trans_eq`. -/
+theorem logisticWeight_lt_iff
+    {n : Nat} (pi : ReliabilityRank n) (e1 e2 : Fin n -> Bool) :
+    logisticWeight pi e1 < logisticWeight pi e2
+      <-> bitWeight (e1 ∘ pi.perm) < bitWeight (e2 ∘ pi.perm) :=
+  let f1 : logisticWeight pi e1 = bitWeight (e1 ∘ pi.perm) :=
+    logisticWeight_eq_bitWeight_comp pi e1
+  let f2 : logisticWeight pi e2 = bitWeight (e2 ∘ pi.perm) :=
+    logisticWeight_eq_bitWeight_comp pi e2
+  ⟨fun h => (f1.symm.trans_lt h).trans_eq f2,
+   fun h => (f1.trans_lt h).trans_eq f2.symm⟩
+
 /-- *Logistic-weight order is bit-weight order under permutation.*
     Inequality version of `logisticWeight_eq_iff`: ordering of
     logistic weights matches ordering of their `pi.perm`-permuted

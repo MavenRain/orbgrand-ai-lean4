@@ -657,6 +657,12 @@ example {n : Nat} (pi : ReliabilityRank n) :
       = bitWeight (fun _ : Fin n => true) :=
   logisticWeight_const_true_eq_bitWeight_const_true pi
 
+/-- Logistic-weight strict ordering iff bit-weight strict ordering. -/
+example {n : Nat} (pi : ReliabilityRank n) (e1 e2 : Fin n -> Bool) :
+    logisticWeight pi e1 < logisticWeight pi e2
+      <-> bitWeight (e1 ∘ pi.perm) < bitWeight (e2 ∘ pi.perm) :=
+  logisticWeight_lt_iff pi e1 e2
+
 /-- Logistic-weight ordering iff bit-weight ordering under the rank permutation. -/
 example {n : Nat} (pi : ReliabilityRank n) (e1 e2 : Fin n -> Bool) :
     logisticWeight pi e1 <= logisticWeight pi e2
