@@ -129,6 +129,22 @@ theorem sinc_zero : sinc 0 = 1 :=
         else Real.sin (Real.pi * 0) / (Real.pi * 0)) = 1 from
     if_pos rfl
 
+/-- *`sinc(1) = 0`.*  Since `1 ≠ 0`, the `if`-branch evaluates to
+    `sin(pi * 1) / (pi * 1) = sin(pi) / pi = 0 / pi = 0`.  Chains
+    `if_neg one_ne_zero`, `mul_one`, `Real.sin_pi`, and `zero_div`. -/
+theorem sinc_one : sinc 1 = 0 :=
+  let h_ne : (1 : Real) ≠ 0 := one_ne_zero
+  let step1 : sinc 1 = Real.sin (Real.pi * 1) / (Real.pi * 1) :=
+    if_neg h_ne
+  let pi_eq : Real.pi * 1 = Real.pi := mul_one Real.pi
+  let step2 : Real.sin (Real.pi * 1) / (Real.pi * 1)
+            = Real.sin Real.pi / Real.pi :=
+    congrArg₂ (· / ·) (congrArg Real.sin pi_eq) pi_eq
+  let step3 : Real.sin Real.pi / Real.pi = (0 : Real) / Real.pi :=
+    congrArg (· / Real.pi) Real.sin_pi
+  let step4 : (0 : Real) / Real.pi = 0 := zero_div Real.pi
+  step1.trans (step2.trans (step3.trans step4))
+
 /-- *Zero-attenuation delay-tap impulse response.*  When every path's
     attenuation coefficient `a_d` is zero, the aggregate impulse
     response vanishes for all symbol times.  Each summand becomes

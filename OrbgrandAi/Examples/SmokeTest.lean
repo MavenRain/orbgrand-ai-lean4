@@ -1020,6 +1020,9 @@ example {chi : Type} (cs : Constellation chi) (s s_hat : chi) :
     cs.exceed s s_hat ≠ 0 <-> s ≠ s_hat :=
   cs.exceed_ne_zero_iff_ne s s_hat
 
+/-- `sinc(1) = 0`. -/
+example : sinc 1 = 0 := sinc_one
+
 /-- Single-path delay-tap impulse response is the attenuation times sinc. -/
 example (paths : Fin 1 -> DelayTapPath) (f_s : SamplingFreq) (k' : SymbolIndex) :
     delayTapImpulseResponse paths f_s k'
