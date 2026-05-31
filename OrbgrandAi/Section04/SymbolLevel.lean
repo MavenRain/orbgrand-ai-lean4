@@ -151,6 +151,16 @@ theorem bpsk_exceed_zero_or_one (s s_hat : Bool) :
   else
     Or.inr (if_neg h)
 
+/-- *BPSK exceedance is bounded by 1.*  Direct consequence of
+    binary-valuedness: case-split on `bpsk_exceed_zero_or_one`, the
+    `0` branch chains through `zero_le_one`, the `1` branch is
+    `le_of_eq`. -/
+theorem bpsk_exceed_le_one (s s_hat : Bool) :
+    bpsk.exceed s s_hat <= 1 :=
+  match bpsk_exceed_zero_or_one s s_hat with
+  | Or.inl h => h.trans_le zero_le_one
+  | Or.inr h => le_of_eq h
+
 /-- *BPSK exceedance is symmetric.*  `bpsk.exceed s s_hat = bpsk.exceed s_hat s`. -/
 theorem bpsk_exceed_symm (s s_hat : Bool) :
     bpsk.exceed s s_hat = bpsk.exceed s_hat s :=

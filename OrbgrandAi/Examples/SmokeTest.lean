@@ -961,6 +961,10 @@ example (s s_hat : Fin 4) :
     qpsk.exceed s s_hat = 0 ∨ qpsk.exceed s s_hat = 1 :=
   qpsk_exceed_zero_or_one s s_hat
 
+/-- BPSK exceedance is bounded above by 1. -/
+example (s s_hat : Bool) : bpsk.exceed s s_hat <= 1 :=
+  bpsk_exceed_le_one s s_hat
+
 /-- BPSK exceedance is binary-valued (0 or 1). -/
 example (s s_hat : Bool) :
     bpsk.exceed s s_hat = 0 ∨ bpsk.exceed s s_hat = 1 :=
