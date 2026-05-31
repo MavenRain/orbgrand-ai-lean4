@@ -323,5 +323,21 @@ theorem LinearIsi.receive_signal_add_zero_noise
     congrArg (ch.receive (X1 + X2)) (add_zero 0)
   h.symm.trans step
 
+/-- *Additivity of `receive` in the noise at zero signal.*  Dual of
+    `receive_signal_add_zero_noise`: specialises `receive_add` to
+    `X1 = X2 = 0`, using `add_zero 0 : 0 + 0 = 0` to rewrite the
+    signal argument.  Captures pure noise-superposition through the
+    channel. -/
+theorem LinearIsi.receive_noise_add_zero_signal
+    {n_s : Nat} (ch : LinearIsi n_s) (N1 N2 : SymbolVector n_s) :
+    ch.receive 0 (N1 + N2) = ch.receive 0 N1 + ch.receive 0 N2 :=
+  let step : ch.receive (0 + 0) (N1 + N2)
+            = ch.receive 0 N1 + ch.receive 0 N2 :=
+    LinearIsi.receive_add ch 0 0 N1 N2
+  let h : ch.receive (0 + 0) (N1 + N2)
+        = ch.receive 0 (N1 + N2) :=
+    congrArg (fun X => ch.receive X (N1 + N2)) (add_zero 0)
+  h.symm.trans step
+
 end Section02
 end OrbgrandAi

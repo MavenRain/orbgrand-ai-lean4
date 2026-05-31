@@ -1017,6 +1017,11 @@ example {n_s p : Nat} (paths : Fin p -> DelayTapPath)
     delayTapMatrix n_s paths f_s i j = (0 : Complex) :=
   delayTapMatrix_zero_attenuations paths h_zero f_s i j
 
+/-- `receive` is additive in the noise at zero signal. -/
+example {n_s : Nat} (ch : LinearIsi n_s) (N1 N2 : SymbolVector n_s) :
+    ch.receive 0 (N1 + N2) = ch.receive 0 N1 + ch.receive 0 N2 :=
+  LinearIsi.receive_noise_add_zero_signal ch N1 N2
+
 /-- `receive` is additive in the signal at zero noise. -/
 example {n_s : Nat} (ch : LinearIsi n_s) (X1 X2 : SymbolVector n_s) :
     ch.receive (X1 + X2) 0 = ch.receive X1 0 + ch.receive X2 0 :=
