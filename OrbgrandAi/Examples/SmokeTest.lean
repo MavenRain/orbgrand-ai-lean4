@@ -914,6 +914,14 @@ example {chi : Type} (cs : Constellation chi) (s s_hat : chi) :
     cs.exceed s s_hat ≠ 0 <-> s ≠ s_hat :=
   cs.exceed_ne_zero_iff_ne s s_hat
 
+/-- Single-path delay-tap impulse response is the attenuation times sinc. -/
+example (paths : Fin 1 -> DelayTapPath) (f_s : SamplingFreq) (k' : SymbolIndex) :
+    delayTapImpulseResponse paths f_s k'
+      = (paths 0).attenuation *
+        (((sinc ((paths 0).delay * f_s.val - (k'.toNat : Real))
+          : Real)) : Complex) :=
+  delayTapImpulseResponse_single paths f_s k'
+
 /-- Delay-tap matrix vanishes entirely when every path has zero attenuation. -/
 example {n_s p : Nat} (paths : Fin p -> DelayTapPath)
     (h_zero : forall d, (paths d).attenuation = 0)

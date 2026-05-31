@@ -149,6 +149,18 @@ theorem delayTapImpulseResponse_empty
     delayTapImpulseResponse paths f_s k' = 0 :=
   Fin.sum_univ_zero _
 
+/-- *Single-path delay-tap impulse response.*  With exactly one path
+    (`p = 1`), the universal sum collapses to the single summand at
+    `d = 0`, yielding the explicit `attenuation * sinc(delay)` form. -/
+theorem delayTapImpulseResponse_single
+    (paths : Fin 1 -> DelayTapPath)
+    (f_s : SamplingFreq) (k' : SymbolIndex) :
+    delayTapImpulseResponse paths f_s k'
+      = (paths 0).attenuation *
+        (((sinc ((paths 0).delay * f_s.val - (k'.toNat : Real))
+          : Real)) : Complex) :=
+  Fin.sum_univ_one _
+
 /-- *Delay-tap matrix entry above diagonal is zero.*  This is the
     same statement as `delayTap_causal` (which packages the result
     into `LinearIsi.causal`), restated as a direct matrix-entry
