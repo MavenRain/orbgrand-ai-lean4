@@ -604,6 +604,12 @@ example {n : Nat} (e : Fin (n + 1) -> Bool) :
     bitWeight (e ∘ Fin.castSucc) ≤ bitWeight e :=
   bitWeight_castSucc_le e
 
+/-- Restriction strictly decreases bit-weight iff the top bit was true (iff lift). -/
+example {n : Nat} (e : Fin (n + 1) -> Bool) :
+    bitWeight (e ∘ Fin.castSucc) < bitWeight e
+      <-> e (Fin.last n) = true :=
+  bitWeight_castSucc_lt_iff_last_true e
+
 /-- Restriction strict-decreases when top bit was true. -/
 example {n : Nat} (e : Fin (n + 1) -> Bool) (h : e (Fin.last n) = true) :
     bitWeight (e ∘ Fin.castSucc) < bitWeight e :=

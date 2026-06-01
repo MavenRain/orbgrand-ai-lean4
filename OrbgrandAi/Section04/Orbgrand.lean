@@ -706,6 +706,27 @@ theorem bitWeight_zero_iff_all_false :
          Finset.sum_eq_zero fun i _ =>
            congrArg (fun b => if b then i.val + 1 else (0 : Nat)) (h_all i)⟩
 
+/-- *Restriction strict-decrease characterisation.*  The restriction
+    `e ∘ Fin.castSucc` strictly decreases the bit-weight iff the top
+    bit was true.  Lifts the forward-only
+    `bitWeight_castSucc_lt_of_last_true` to an iff: the backward
+    direction case-splits on `e (Fin.last n)` and uses
+    `bitWeight_split_false` to derive contradiction when the top
+    bit is false. -/
+theorem bitWeight_castSucc_lt_iff_last_true
+    {n : Nat} (e : Fin (n + 1) -> Bool) :
+    bitWeight (e ∘ Fin.castSucc) < bitWeight e
+      <-> e (Fin.last n) = true :=
+  ⟨fun h_lt =>
+    match h_b : e (Fin.last n) with
+    | true  => rfl
+    | false =>
+        let h_eq : bitWeight e = bitWeight (e ∘ Fin.castSucc) :=
+          bitWeight_split_false e h_b
+        (Nat.lt_irrefl (bitWeight (e ∘ Fin.castSucc))
+          (h_eq ▸ h_lt)).elim,
+   fun h_true => bitWeight_castSucc_lt_of_last_true e h_true⟩
+
 /-- *Constant-false pattern has bit-weight zero.*  Direct corollary of
     `bitWeight_zero_iff_all_false`. -/
 theorem bitWeight_const_false {n : Nat} :
