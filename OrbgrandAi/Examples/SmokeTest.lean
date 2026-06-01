@@ -1018,6 +1018,11 @@ example (s s_hat : Bool) :
     bpsk.exceed s s_hat = 0 ∨ bpsk.exceed s s_hat = 1 :=
   bpsk_exceed_zero_or_one s s_hat
 
+/-- At zero signal, `receive 0 N = 0` iff `N = 0`. -/
+example {n_s : Nat} (ch : LinearIsi n_s) (N : SymbolVector n_s) :
+    ch.receive 0 N = 0 <-> N = 0 :=
+  LinearIsi.receive_zero_signal_eq_zero_iff ch N
+
 /-- At zero noise, `receive X 0 = 0` iff `h * X = 0`. -/
 example {n_s : Nat} (ch : LinearIsi n_s) (X : SymbolVector n_s) :
     ch.receive X 0 = 0 <-> ch.channel.mulVec X = 0 :=

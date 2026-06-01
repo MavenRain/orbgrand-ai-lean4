@@ -298,6 +298,17 @@ theorem LinearIsi.receive_eq_iff_mulVec_eq
    fun h => funext fun k =>
     congrArg (· + N k) (congrFun h k)⟩
 
+/-- *Zero-output characterisation at zero signal.*  With `X = 0`, the
+    receiver output equals `N` (by `receive_zero_signal`), so the
+    output vanishes iff the noise vanishes.  Dual of
+    `receive_zero_noise_eq_zero_iff`. -/
+theorem LinearIsi.receive_zero_signal_eq_zero_iff
+    {n_s : Nat} (ch : LinearIsi n_s) (N : SymbolVector n_s) :
+    ch.receive 0 N = 0 <-> N = 0 :=
+  let h_eq : ch.receive 0 N = N :=
+    LinearIsi.receive_zero_signal ch N
+  ⟨fun h => h_eq.symm.trans h, fun h => h_eq.trans h⟩
+
 /-- *Zero-output characterisation at zero noise.*  With `N = 0`, the
     receiver output is exactly the channel-vector product `h * X`, so
     the output vanishes iff that product vanishes.  Lifts
