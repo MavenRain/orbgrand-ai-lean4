@@ -894,6 +894,15 @@ theorem landslide_one_two_eq_nil :
   landslide_eq_nil_of_too_large
     (bitWeight_one_true.trans_lt (Nat.lt_succ_self 1))
 
+/-- *At length 2, the bucket for weight 4 is empty.*  The maximum
+    bit-weight at `n = 2` is `3` (from `bitWeight_two_true`), so
+    weight `4` is unrealisable.  Same composition pattern as
+    `landslide_one_two_eq_nil`. -/
+theorem landslide_two_four_eq_nil :
+    landslide 2 4 = [] :=
+  landslide_eq_nil_of_too_large
+    (bitWeight_two_true.trans_lt (Nat.lt_succ_self 3))
+
 /-- *Bucket emptiness characterisation.*  `landslide n w` is empty
     iff no pattern has bit-weight `w`.  Both directions are direct
     applications of `landslide_correct`. -/
