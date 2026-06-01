@@ -1053,6 +1053,11 @@ example {n : Nat} (a b c d : Codeword n) :
       = Codeword.xor (Codeword.xor a c) (Codeword.xor b d) :=
   Codeword.xor_xor_comm a b c d
 
+/-- Symbol inequality implies strictly positive exceedance (generic). -/
+example {chi : Type} (cs : Constellation chi) {s s_hat : chi} (h : s ≠ s_hat) :
+    0 < cs.exceed s s_hat :=
+  cs.exceed_pos_of_ne h
+
 /-- Constellation diagonal exceedance is a lower bound. -/
 example {chi : Type} (cs : Constellation chi) (s s_hat : chi) :
     cs.exceed s s <= cs.exceed s s_hat :=

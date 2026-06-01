@@ -128,6 +128,14 @@ theorem Constellation.exceed_pos_iff_ne {chi : Type} (cs : Constellation chi)
       fun h => h_ne ((cs.exceed_zero_iff s s_hat).mp h)
     lt_of_le_of_ne (cs.exceed_nonneg s s_hat) (Ne.symm h_ne_zero)⟩
 
+/-- *Symbol inequality implies strictly positive exceedance.*  Forward
+    direction of `exceed_pos_iff_ne`, packaged for direct injection
+    when only the implication direction is needed in a chain. -/
+theorem Constellation.exceed_pos_of_ne {chi : Type} (cs : Constellation chi)
+    {s s_hat : chi} (h : s ≠ s_hat) :
+    0 < cs.exceed s s_hat :=
+  (cs.exceed_pos_iff_ne s s_hat).mpr h
+
 /-! ## Concrete constellation instances -/
 
 /-- *BPSK* (binary phase-shift keying): a 2-symbol constellation with
