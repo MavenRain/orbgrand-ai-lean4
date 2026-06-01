@@ -1071,6 +1071,12 @@ example {n : Nat} (a b c d : Codeword n) :
       = Codeword.xor (Codeword.xor a c) (Codeword.xor b d) :=
   Codeword.xor_xor_comm a b c d
 
+/-- Two-argument congruence for Constellation exceed. -/
+example {chi : Type} (cs : Constellation chi) {s s' s_hat s_hat' : chi}
+    (h_s : s = s') (h_hat : s_hat = s_hat') :
+    cs.exceed s s_hat = cs.exceed s' s_hat' :=
+  cs.exceed_eq_of_eq h_s h_hat
+
 /-- Symbol inequality implies strictly positive exceedance (generic). -/
 example {chi : Type} (cs : Constellation chi) {s s_hat : chi} (h : s ≠ s_hat) :
     0 < cs.exceed s s_hat :=

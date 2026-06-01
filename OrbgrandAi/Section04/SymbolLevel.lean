@@ -136,6 +136,17 @@ theorem Constellation.exceed_pos_of_ne {chi : Type} (cs : Constellation chi)
     0 < cs.exceed s s_hat :=
   (cs.exceed_pos_iff_ne s s_hat).mpr h
 
+/-- *Two-argument congruence for `exceed`.*  If both arguments are
+    equal under separate hypotheses, so are the exceedances.  Two
+    sequential `▸` substitutions reduce the goal to `rfl`.  Useful
+    when substituting symbols (e.g., via decoder identifications) on
+    either argument of `exceed`. -/
+theorem Constellation.exceed_eq_of_eq {chi : Type}
+    (cs : Constellation chi) {s s' s_hat s_hat' : chi}
+    (h_s : s = s') (h_hat : s_hat = s_hat') :
+    cs.exceed s s_hat = cs.exceed s' s_hat' :=
+  h_s ▸ h_hat ▸ rfl
+
 /-! ## Concrete constellation instances -/
 
 /-- *BPSK* (binary phase-shift keying): a 2-symbol constellation with
