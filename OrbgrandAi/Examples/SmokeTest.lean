@@ -650,6 +650,12 @@ example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
     rfViewMatrix n_s rowTaps i j = (0 : Complex) :=
   rfViewMatrix_is_lower_triangular rowTaps i j hij
 
+/-- `rfViewMatrix` out-of-band (strict): `j + 6 < i → entry = 0`. -/
+example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
+    (hij : j.val + 6 < i.val) :
+    rfViewMatrix n_s rowTaps i j = (0 : Complex) :=
+  rfViewMatrix_out_of_band rowTaps i j hij
+
 /-- RFView matrix at six-below-diagonal is zero (boundary just inside
     the out-of-band region: `tap?_7` is `none`). -/
 example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)

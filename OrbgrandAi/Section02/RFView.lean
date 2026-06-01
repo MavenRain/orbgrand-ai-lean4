@@ -371,6 +371,19 @@ theorem rfView_bandwidth
     htap ▸ rfl
   step1.trans step2
 
+/-- *Matrix-level out-of-band statement.*  Strict bandwidth-6 form
+    at the `rfViewMatrix` level (without the `LinearIsi` wrapper):
+    every entry with `j + 6 < i` vanishes.  Reuses `rfView_bandwidth`
+    by feeding the wrapper a zero-power `sigma`; the noise covariance
+    does not enter the bandwidth proof.  Result type unifies with
+    `rfViewMatrix _ _ _ _ = 0` by definitional unfolding of
+    `(rfView _ _ _).channel`. -/
+theorem rfViewMatrix_out_of_band
+    {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps)
+    (i j : Fin n_s) (hij : j.val + 6 < i.val) :
+    rfViewMatrix n_s rowTaps i j = (0 : Complex) :=
+  rfView_bandwidth rowTaps ⟨0, le_refl 0⟩ i j hij
+
 /-- *Zero-tap lookup is zero after `getD`.*  When every tap of `t` is
     zero, the `getD`-extracted value at any delay is zero: in-band
     delays `1..6` unwrap to `some 0`, while out-of-band delays
