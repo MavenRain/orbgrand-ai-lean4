@@ -747,6 +747,13 @@ example {n_s : Nat} (ch1 ch2 : LinearIsi n_s)
     ch1.receive X N = ch2.receive X N :=
   LinearIsi.receive_of_eq_channels ch1 ch2 h X N
 
+/-- `rfView.noiseCov` is the full white-noise lambda. -/
+example (n_s : Nat) (rowTaps : Fin n_s -> RFViewTaps) (sigma : NoisePower) :
+    (rfView n_s rowTaps sigma).noiseCov
+      = fun i j =>
+          if i.val = j.val then (sigma.val : Complex) else (0 : Complex) :=
+  rfView_noiseCov n_s rowTaps sigma
+
 /-- `rfView.channel` unfolds to `rfViewMatrix`. -/
 example (n_s : Nat) (rowTaps : Fin n_s -> RFViewTaps) (sigma : NoisePower) :
     (rfView n_s rowTaps sigma).channel = rfViewMatrix n_s rowTaps :=

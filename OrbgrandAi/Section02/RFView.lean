@@ -438,6 +438,18 @@ theorem rfView_channel
     (n_s : Nat) (rowTaps : Fin n_s -> RFViewTaps) (sigma : NoisePower) :
     (rfView n_s rowTaps sigma).channel = rfViewMatrix n_s rowTaps := rfl
 
+/-- *Noise covariance of `rfView`.*  Direct projection of the
+    structure, exposing the diagonal `sigma`-valued / off-diagonal
+    zero white-noise pattern as a lambda.  Parallel to
+    `dicode_noiseCov`; the per-entry forms are `rfView_noiseCov_diag`
+    and `rfView_noiseCov_off`. -/
+theorem rfView_noiseCov
+    (n_s : Nat) (rowTaps : Fin n_s -> RFViewTaps) (sigma : NoisePower) :
+    (rfView n_s rowTaps sigma).noiseCov
+      = fun i j =>
+          if i.val = j.val then (sigma.val : Complex) else (0 : Complex) :=
+  rfl
+
 /-! ## `rfView.noiseCov` entries -/
 
 /-- *Diagonal entry of the rfView noise covariance.*  The
