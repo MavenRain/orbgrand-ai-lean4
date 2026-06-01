@@ -264,6 +264,7 @@ theorem bitWeight_three_true :
     bitWeight (fun _ : Fin 3 => true) = 6 :=
   Fin.sum_univ_three _
 
+
 /-- *Logistic weight = bit-weight of the rank-permuted pattern.*  The
     two sums are definitionally equal: `logisticWeight pi e`'s
     `let bit_at_rank_i := pi.perm i; if e bit_at_rank_i then ...` and
@@ -883,6 +884,15 @@ theorem landslide_eq_nil_of_too_large {n w : Nat}
       bitWeight_le_const_true e
     let h_lt : bitWeight e < w := Nat.lt_of_le_of_lt h_le h
     Nat.lt_irrefl w (h_eq ▸ h_lt)
+
+/-- *At length 1, the bucket for weight 2 is empty.*  Specialisation
+    of `landslide_eq_nil_of_too_large`: since the maximum bit-weight
+    at `n = 1` is `1` (from `bitWeight_one_true`), any weight `≥ 2`
+    is unrealisable. -/
+theorem landslide_one_two_eq_nil :
+    landslide 1 2 = [] :=
+  landslide_eq_nil_of_too_large
+    (bitWeight_one_true.trans_lt (Nat.lt_succ_self 1))
 
 /-- *Bucket emptiness characterisation.*  `landslide n w` is empty
     iff no pattern has bit-weight `w`.  Both directions are direct
