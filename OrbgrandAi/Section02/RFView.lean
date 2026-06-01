@@ -455,6 +455,19 @@ theorem rfViewMatrix_below_6band
   | Or.inr h_eq =>
       rfViewMatrix_at_six_below_diag rowTaps i j h_eq.symm
 
+/-- *Outside-band zero.*  Every entry strictly above the diagonal or
+    strictly past the 5th sub-diagonal vanishes.  The 6-band region
+    is exactly the complement: `j ≤ i ≤ j + 5`.  Or-elimination over
+    `rfViewMatrix_is_lower_triangular` (above-diagonal) and
+    `rfViewMatrix_below_6band` (below 5th sub-diagonal). -/
+theorem rfViewMatrix_outside_band
+    {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps)
+    (i j : Fin n_s) (h : i.val < j.val ∨ j.val + 6 <= i.val) :
+    rfViewMatrix n_s rowTaps i j = (0 : Complex) :=
+  match h with
+  | Or.inl h_lt => rfViewMatrix_is_lower_triangular rowTaps i j h_lt
+  | Or.inr h_ge => rfViewMatrix_below_6band rowTaps i j h_ge
+
 /-! ## Definitional projections of `rfView` -/
 
 /-- *Channel of `rfView` is `rfViewMatrix`.*  Direct projection of the
