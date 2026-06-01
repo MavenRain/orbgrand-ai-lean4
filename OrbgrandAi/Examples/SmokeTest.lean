@@ -1025,6 +1025,11 @@ example (s s_hat : Bool) :
     bpsk.exceed s s_hat = 0 ∨ bpsk.exceed s s_hat = 1 :=
   bpsk_exceed_zero_or_one s s_hat
 
+/-- Receiver at both-zero inputs is zero. -/
+example {n_s : Nat} (ch : LinearIsi n_s) :
+    ch.receive 0 0 = 0 :=
+  LinearIsi.receive_zero_signal_zero_noise ch
+
 /-- At zero signal, `receive 0 N = 0` iff `N = 0`. -/
 example {n_s : Nat} (ch : LinearIsi n_s) (N : SymbolVector n_s) :
     ch.receive 0 N = 0 <-> N = 0 :=
