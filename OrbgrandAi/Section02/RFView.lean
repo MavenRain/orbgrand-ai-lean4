@@ -442,6 +442,19 @@ theorem rfViewMatrix_is_lower_triangular
     rfViewMatrix n_s rowTaps i j = (0 : Complex) :=
   if_neg (Nat.not_le_of_lt hij)
 
+/-- *Combined below-6-band zero.*  Every entry with `j + 6 ≤ i` is
+    zero.  Dispatches the strict case (`j + 6 < i`) to
+    `rfViewMatrix_out_of_band` and the boundary case (`j + 6 = i`)
+    to `rfViewMatrix_at_six_below_diag`, via `Nat.lt_or_eq_of_le`. -/
+theorem rfViewMatrix_below_6band
+    {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps)
+    (i j : Fin n_s) (h : j.val + 6 ≤ i.val) :
+    rfViewMatrix n_s rowTaps i j = (0 : Complex) :=
+  match Nat.lt_or_eq_of_le h with
+  | Or.inl h_lt => rfViewMatrix_out_of_band rowTaps i j h_lt
+  | Or.inr h_eq =>
+      rfViewMatrix_at_six_below_diag rowTaps i j h_eq.symm
+
 /-! ## Definitional projections of `rfView` -/
 
 /-- *Channel of `rfView` is `rfViewMatrix`.*  Direct projection of the

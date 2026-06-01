@@ -650,6 +650,12 @@ example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
     rfViewMatrix n_s rowTaps i j = (0 : Complex) :=
   rfViewMatrix_is_lower_triangular rowTaps i j hij
 
+/-- `rfViewMatrix` below-6-band (combined): `j + 6 ≤ i → entry = 0`. -/
+example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
+    (h : j.val + 6 ≤ i.val) :
+    rfViewMatrix n_s rowTaps i j = (0 : Complex) :=
+  rfViewMatrix_below_6band rowTaps i j h
+
 /-- `rfViewMatrix` out-of-band (strict): `j + 6 < i → entry = 0`. -/
 example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
     (hij : j.val + 6 < i.val) :
