@@ -121,6 +121,17 @@ theorem cov1_lag_of_nat
     (sigma : NoisePower) (rho : CorrelationCoefficient) (n : Nat) :
     cov1_lag sigma rho (n : Int) = sigma.val * rho.val ^ n := rfl
 
+/-- *General negative-lag formula.*  Composes the sign-symmetry
+    `cov1_lag_neg` with `cov1_lag_of_nat` to give the closed form at
+    `(-(n : Int))` for any `n : Nat`.  Captures stationarity of the
+    Gauss-Markov process: lag `-n` produces the same auto-covariance
+    as lag `+n`. -/
+theorem cov1_lag_of_neg_nat
+    (sigma : NoisePower) (rho : CorrelationCoefficient) (n : Nat) :
+    cov1_lag sigma rho (-(n : Int)) = sigma.val * rho.val ^ n :=
+  (cov1_lag_neg sigma rho (n : Int)).trans
+    (cov1_lag_of_nat sigma rho n)
+
 /-! ## Second-order Gauss-Markov: AR coefficients via Yule-Walker -/
 
 /-- The second-order Gauss-Markov AR coefficient
