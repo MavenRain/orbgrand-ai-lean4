@@ -177,6 +177,28 @@ theorem delayTapImpulseResponse_single
           : Real)) : Complex) :=
   Fin.sum_univ_one _
 
+/-- *Diagonal entry of `delayTapMatrix`.*  At `i = j` the dependent
+    `if` discriminant `j.val ≤ i.val` holds reflexively; the inner
+    delay `i.val - j.val` collapses to `0`, giving
+    `delayTapImpulseResponse paths f_s ⟨0⟩`.  Composes
+    `dif_pos (le_refl _)` with `Nat.sub_self`. -/
+theorem delayTapMatrix_diag
+    {n_s : Nat} {p : Nat} (paths : Fin p -> DelayTapPath)
+    (f_s : SamplingFreq) (i : Fin n_s) :
+    delayTapMatrix n_s paths f_s i i
+      = delayTapImpulseResponse paths f_s { toNat := 0 } :=
+  let hle : i.val ≤ i.val := le_refl _
+  let step1 : delayTapMatrix n_s paths f_s i i
+            = delayTapImpulseResponse paths f_s
+                { toNat := i.val - i.val } :=
+    dif_pos hle
+  let hsub : i.val - i.val = 0 := Nat.sub_self _
+  let step2 : delayTapImpulseResponse paths f_s
+                { toNat := i.val - i.val }
+            = delayTapImpulseResponse paths f_s { toNat := 0 } :=
+    congrArg (fun n => delayTapImpulseResponse paths f_s { toNat := n }) hsub
+  step1.trans step2
+
 /-- *Delay-tap matrix entry above diagonal is zero.*  This is the
     same statement as `delayTap_causal` (which packages the result
     into `LinearIsi.causal`), restated as a direct matrix-entry
