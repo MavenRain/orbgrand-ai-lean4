@@ -1095,6 +1095,21 @@ example {chi : Type} (cs : Constellation chi) (s s_hat : chi) :
 /-- `sinc(1) = 0`. -/
 example : sinc 1 = 0 := sinc_one
 
+/-- Delay-tap matrix lower-triangular branch: entry = impulse at `i - j`. -/
+example {n_s p : Nat} (paths : Fin p -> DelayTapPath) (f_s : SamplingFreq)
+    (i j : Fin n_s) (h : j.val ≤ i.val) :
+    delayTapMatrix n_s paths f_s i j
+      = delayTapImpulseResponse paths f_s
+          { toNat := i.val - j.val } :=
+  delayTapMatrix_apply_le paths f_s i j h
+
+/-- Delay-tap matrix at arbitrary sub-diagonal `d`: impulse response at delay `d`. -/
+example {n_s p d : Nat} (paths : Fin p -> DelayTapPath) (f_s : SamplingFreq)
+    (i j : Fin n_s) (h : i.val = j.val + d) :
+    delayTapMatrix n_s paths f_s i j
+      = delayTapImpulseResponse paths f_s { toNat := d } :=
+  delayTapMatrix_at_subdiag paths f_s i j h
+
 /-- Delay-tap matrix first sub-diagonal: impulse response at delay 1. -/
 example {n_s p : Nat} (paths : Fin p -> DelayTapPath) (f_s : SamplingFreq)
     (i j : Fin n_s) (h : i.val = j.val + 1) :
