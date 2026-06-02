@@ -1095,6 +1095,13 @@ example {chi : Type} (cs : Constellation chi) (s s_hat : chi) :
 /-- `sinc(1) = 0`. -/
 example : sinc 1 = 0 := sinc_one
 
+/-- Delay-tap matrix first sub-diagonal: impulse response at delay 1. -/
+example {n_s p : Nat} (paths : Fin p -> DelayTapPath) (f_s : SamplingFreq)
+    (i j : Fin n_s) (h : i.val = j.val + 1) :
+    delayTapMatrix n_s paths f_s i j
+      = delayTapImpulseResponse paths f_s { toNat := 1 } :=
+  delayTapMatrix_first_subdiag paths f_s i j h
+
 /-- Delay-tap matrix diagonal entry is the impulse response at delay 0. -/
 example {n_s p : Nat} (paths : Fin p -> DelayTapPath)
     (f_s : SamplingFreq) (i : Fin n_s) :

@@ -199,6 +199,28 @@ theorem delayTapMatrix_diag
     congrArg (fun n => delayTapImpulseResponse paths f_s { toNat := n }) hsub
   step1.trans step2
 
+/-- *First sub-diagonal of `delayTapMatrix`.*  When `i.val = j.val + 1`,
+    the dependent `if` reduces (since `j.val ≤ i.val`) and the inner
+    delay `i.val - j.val` collapses to `1`, giving the impulse
+    response at delay 1.  Parallels `rfViewMatrix_first_subdiag`. -/
+theorem delayTapMatrix_first_subdiag
+    {n_s : Nat} {p : Nat} (paths : Fin p -> DelayTapPath)
+    (f_s : SamplingFreq) (i j : Fin n_s) (h : i.val = j.val + 1) :
+    delayTapMatrix n_s paths f_s i j
+      = delayTapImpulseResponse paths f_s { toNat := 1 } :=
+  let hle : j.val ≤ i.val := h.symm ▸ Nat.le_succ j.val
+  let step1 : delayTapMatrix n_s paths f_s i j
+            = delayTapImpulseResponse paths f_s
+                { toNat := i.val - j.val } :=
+    dif_pos hle
+  let hsub : i.val - j.val = 1 :=
+    h.symm ▸ Nat.add_sub_cancel_left j.val 1
+  let step2 : delayTapImpulseResponse paths f_s
+                { toNat := i.val - j.val }
+            = delayTapImpulseResponse paths f_s { toNat := 1 } :=
+    congrArg (fun n => delayTapImpulseResponse paths f_s { toNat := n }) hsub
+  step1.trans step2
+
 /-- *Delay-tap matrix entry above diagonal is zero.*  This is the
     same statement as `delayTap_causal` (which packages the result
     into `LinearIsi.causal`), restated as a direct matrix-entry
