@@ -1137,6 +1137,11 @@ example (z1 z2 : Complex) (n : Nat) :
     ar2 0 1 z1 z2 (n + 2) = ar2 0 1 z1 z2 n :=
   ar2_phi1_zero_phi2_one z1 z2 n
 
+/-- `cov1_lag` at any natural lag: general closed form. -/
+example (sigma : NoisePower) (rho : CorrelationCoefficient) (n : Nat) :
+    cov1_lag sigma rho (n : Int) = sigma.val * rho.val ^ n :=
+  cov1_lag_of_nat sigma rho n
+
 /-- `cov1_lag` at lag 3 = `sigma * rho^3`. -/
 example (sigma : NoisePower) (rho : CorrelationCoefficient) :
     cov1_lag sigma rho 3 = sigma.val * rho.val ^ 3 :=

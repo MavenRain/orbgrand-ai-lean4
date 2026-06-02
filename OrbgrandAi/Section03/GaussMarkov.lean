@@ -113,6 +113,14 @@ theorem cov1_lag_two (sigma : NoisePower) (rho : CorrelationCoefficient) :
 theorem cov1_lag_three (sigma : NoisePower) (rho : CorrelationCoefficient) :
     cov1_lag sigma rho 3 = sigma.val * rho.val ^ 3 := rfl
 
+/-- *General positive-lag formula.*  For any natural-number lag `n`
+    (coerced to `Int`), `cov1_lag sigma rho ↑n = sigma * rho^n`.
+    Subsumes `_zero`, `_one`, `_two`, `_three` as the `n = 0, 1, 2, 3`
+    instances.  Defeq via `(Int.ofNat n).natAbs = n`. -/
+theorem cov1_lag_of_nat
+    (sigma : NoisePower) (rho : CorrelationCoefficient) (n : Nat) :
+    cov1_lag sigma rho (n : Int) = sigma.val * rho.val ^ n := rfl
+
 /-! ## Second-order Gauss-Markov: AR coefficients via Yule-Walker -/
 
 /-- The second-order Gauss-Markov AR coefficient
