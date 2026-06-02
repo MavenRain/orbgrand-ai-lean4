@@ -108,6 +108,11 @@ theorem cov1_lag_neg (sigma : NoisePower) (rho : CorrelationCoefficient)
 theorem cov1_lag_two (sigma : NoisePower) (rho : CorrelationCoefficient) :
     cov1_lag sigma rho 2 = sigma.val * rho.val ^ 2 := rfl
 
+/-- `cov1_lag` at lag 3 is `sigma * rho^3`.  Same defeq pattern as
+    `cov1_lag_two`. -/
+theorem cov1_lag_three (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    cov1_lag sigma rho 3 = sigma.val * rho.val ^ 3 := rfl
+
 /-! ## Second-order Gauss-Markov: AR coefficients via Yule-Walker -/
 
 /-- The second-order Gauss-Markov AR coefficient
