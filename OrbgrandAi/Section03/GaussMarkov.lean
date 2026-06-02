@@ -103,6 +103,11 @@ theorem cov1_lag_neg (sigma : NoisePower) (rho : CorrelationCoefficient)
     cov1_lag sigma rho (-i) = cov1_lag sigma rho i :=
   congrArg (fun n => sigma.val * (rho.val ^ n)) (Int.natAbs_neg i)
 
+/-- `cov1_lag` at lag 2 is `sigma * rho^2`.  Defeq: `(2 : Int).natAbs
+    = 2`, so the definition unfolds directly. -/
+theorem cov1_lag_two (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    cov1_lag sigma rho 2 = sigma.val * rho.val ^ 2 := rfl
+
 /-! ## Second-order Gauss-Markov: AR coefficients via Yule-Walker -/
 
 /-- The second-order Gauss-Markov AR coefficient
