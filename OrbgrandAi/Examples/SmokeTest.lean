@@ -242,6 +242,17 @@ example {n_s b numCandidates : Nat}
     Phi c = true /\ (exists e, e ∈ patterns /\ c = substitute Y e) :=
   orbgrandAi_sound Y Phi budget patterns c h
 
+/-- `grandFind` cons dispatch: syndrome-check on the head determines branch. -/
+example {n k : Nat} (H : ParityCheck n k) (Y Ng : Codeword n)
+    (rest : List (Codeword n)) :
+    grandFind H Y (Ng :: rest)
+      = if _hp : forall (i : Fin (n - k)),
+            H.matrix.mulVec (Codeword.xor Y Ng) i = 0 then
+          some (Codeword.xor Y Ng)
+        else
+          grandFind H Y rest :=
+  grandFind_cons_eq H Y Ng rest
+
 /-- GRAND on a singleton candidate list reduces to a single syndrome check. -/
 example {n k : Nat} (H : ParityCheck n k) (Y Ng : Codeword n) :
     grandFind H Y [Ng]

@@ -185,6 +185,22 @@ theorem grandFind_cons_nonzero_syndrome
     grandFind H Y (Ng :: rest) = grandFind H Y rest :=
   dif_neg h
 
+/-- *Unified cons dispatch.*  Direct definitional characterization
+    of `grandFind` on a cons list: the syndrome check on the head
+    dispatches via an `if-then-else`.  Subsumes both
+    `grandFind_cons_zero_syndrome` (then branch) and
+    `grandFind_cons_nonzero_syndrome` (else branch) into one
+    rewrite.  `rfl` directly. -/
+theorem grandFind_cons_eq
+    {n k : Nat} (H : ParityCheck n k) (Y Ng : Codeword n)
+    (rest : List (Codeword n)) :
+    grandFind H Y (Ng :: rest)
+      = if _hp : forall (i : Fin (n - k)),
+            H.matrix.mulVec (Codeword.xor Y Ng) i = 0 then
+          some (Codeword.xor Y Ng)
+        else
+          grandFind H Y rest := rfl
+
 /-- *Singleton candidate list.*  With exactly one noise candidate,
     `grandFind` reduces to a single syndrome check: return
     `some (Y xor Ng)` if the syndrome is zero, else `none`.  This is
