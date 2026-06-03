@@ -699,6 +699,12 @@ example {n : Nat} (pi : ReliabilityRank n) :
       = bitWeight (fun _ : Fin n => true) :=
   logisticWeight_const_true_eq_bitWeight_const_true pi
 
+/-- Logistic weight equals the max iff every rank-permuted bit is true. -/
+example {n : Nat} (pi : ReliabilityRank n) (e : Fin n -> Bool) :
+    logisticWeight pi e = logisticWeight pi (fun _ : Fin n => true)
+      <-> forall i, e (pi.perm i) = true :=
+  logisticWeight_eq_const_true_iff_all_true pi e
+
 /-- Logistic-weight strict ordering iff bit-weight strict ordering. -/
 example {n : Nat} (pi : ReliabilityRank n) (e1 e2 : Fin n -> Bool) :
     logisticWeight pi e1 < logisticWeight pi e2

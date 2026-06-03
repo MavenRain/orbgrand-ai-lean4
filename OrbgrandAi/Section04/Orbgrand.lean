@@ -1174,5 +1174,36 @@ theorem orbgrand_ordering_sound
       landslideBucket pi j e2 :=
   ⟨logisticWeight pi e1, logisticWeight pi e2, h, rfl, rfl⟩
 
+/-- *Maximum logistic weight characterisation.*  A pattern reaches the
+    `(fun _ => true)` maximum logistic weight iff every bit at every
+    rank position is `true`.  Composes three existing theorems:
+    `logisticWeight_const_true_eq_bitWeight_const_true` (max equals
+    `bitWeight (fun _ => true)`), `logisticWeight_eq_bitWeight_comp`
+    (bridge to permuted bit-weight), and `bitWeight_eq_const_true_iff`
+    (bit-weight maximum characterisation). -/
+theorem logisticWeight_eq_const_true_iff_all_true
+    {n : Nat} (pi : ReliabilityRank n) (e : Fin n -> Bool) :
+    logisticWeight pi e = logisticWeight pi (fun _ : Fin n => true)
+      <-> forall i, e (pi.perm i) = true :=
+  let max_eq : logisticWeight pi (fun _ : Fin n => true)
+             = bitWeight (fun _ : Fin n => true) :=
+    logisticWeight_const_true_eq_bitWeight_const_true pi
+  let bridge : logisticWeight pi e = bitWeight (e ∘ pi.perm) :=
+    logisticWeight_eq_bitWeight_comp pi e
+  let bw_iff : bitWeight (e ∘ pi.perm)
+              = bitWeight (fun _ : Fin n => true)
+             <-> forall i, (e ∘ pi.perm) i = true :=
+    bitWeight_eq_const_true_iff (e ∘ pi.perm)
+  ⟨fun h =>
+    let h2 : bitWeight (e ∘ pi.perm)
+           = bitWeight (fun _ : Fin n => true) :=
+      (bridge.symm.trans h).trans max_eq
+    bw_iff.mp h2,
+   fun h =>
+    let h2 : bitWeight (e ∘ pi.perm)
+           = bitWeight (fun _ : Fin n => true) :=
+      bw_iff.mpr h
+    (bridge.trans h2).trans max_eq.symm⟩
+
 end Section04
 end OrbgrandAi
