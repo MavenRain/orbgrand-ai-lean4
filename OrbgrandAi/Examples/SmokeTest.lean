@@ -291,6 +291,15 @@ example {n k : Nat} (H : ParityCheck n k) (Y Ng : Codeword n) :
           none :=
   grandFind_singleton H Y Ng
 
+/-- GRAND append: dispatch on prefix result. -/
+example {n k : Nat} (H : ParityCheck n k) (Y : Codeword n)
+    (order1 order2 : List (Codeword n)) :
+    grandFind H Y (order1 ++ order2)
+      = match grandFind H Y order1 with
+        | some c => some c
+        | none   => grandFind H Y order2 :=
+  grandFind_append_eq H Y order1 order2
+
 /-- GRAND on a `none`-yielding prefix: the suffix takes over. -/
 example {n k : Nat} (H : ParityCheck n k) (Y : Codeword n)
     (order1 : List (Codeword n)) (h_none : grandFind H Y order1 = none)

@@ -1185,5 +1185,22 @@ theorem grandFind_append_none
         h_cons_append.trans
           (grandFind_append_none H Y rest h_rest_none order2)
 
+/-- *Combined append dispatch.*  The append behavior of `grandFind`
+    is fully determined by the prefix result: if the prefix yields
+    `some c`, the append yields `some c`; if the prefix yields
+    `none`, the append yields the suffix's own result.  Composes
+    `grandFind_append_left` and `grandFind_append_none` into a
+    single rewrite via `match h : ... with`. -/
+theorem grandFind_append_eq
+    {n k : Nat} (H : ParityCheck n k) (Y : Codeword n)
+    (order1 order2 : List (Codeword n)) :
+    grandFind H Y (order1 ++ order2)
+      = match grandFind H Y order1 with
+        | some c => some c
+        | none   => grandFind H Y order2 :=
+  match h : grandFind H Y order1 with
+  | some c => grandFind_append_left H Y order1 c h order2
+  | none   => grandFind_append_none H Y order1 h order2
+
 end Section04
 end OrbgrandAi
