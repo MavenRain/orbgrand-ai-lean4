@@ -1040,6 +1040,14 @@ example {n : Nat} (a : Codeword n) :
     Codeword.xor a 0 = a :=
   Codeword.xor_zero a
 
+/-- `orbgrandAi` with zero budget returns `none`. -/
+example {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s)
+    (patterns : List (Fin (n_s / b) -> Fin numCandidates)) :
+    orbgrandAi (b := b) (numCandidates := numCandidates)
+      Y Phi ⟨0⟩ patterns = none :=
+  orbgrandAi_zero_budget Y Phi patterns
+
 /-- `orbgrandAi` on empty pattern list returns `none`. -/
 example {n_s b numCandidates : Nat}
     (Y : Codeword n_s) (Phi : CodebookMembership n_s)
