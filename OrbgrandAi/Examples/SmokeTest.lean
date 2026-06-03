@@ -1040,6 +1040,11 @@ example {n : Nat} (a : Codeword n) :
     Codeword.xor a 0 = a :=
   Codeword.xor_zero a
 
+/-- `BlockSize.mk?` on a non-positive input returns `Except.error`. -/
+example (n : Nat) (h : ¬ 0 < n) :
+    BlockSize.mk? n = Except.error (ChannelError.nonPositive "BlockSize") :=
+  BlockSize.mk?_of_not_pos n h
+
 /-- `BlockSize.mk?` on a positive input returns `Except.ok`. -/
 example (n : Nat) (h : 0 < n) :
     BlockSize.mk? n = Except.ok ⟨n, h⟩ :=

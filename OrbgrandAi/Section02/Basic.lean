@@ -175,6 +175,13 @@ theorem mk?_of_pos (n : Nat) (h : 0 < n) :
     BlockSize.mk? n = Except.ok ⟨n, h⟩ :=
   dif_pos h
 
+/-- *Non-positive input gives `error`.*  Direct `dif_neg` form: when
+    the positivity precondition fails, `BlockSize.mk?` emits a
+    `nonPositive` channel error. -/
+theorem mk?_of_not_pos (n : Nat) (h : ¬ 0 < n) :
+    BlockSize.mk? n = Except.error (ChannelError.nonPositive "BlockSize") :=
+  dif_neg h
+
 end BlockSize
 
 namespace CodewordLength
