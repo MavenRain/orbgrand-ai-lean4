@@ -1126,5 +1126,20 @@ theorem syndromeZero_iff_xor_codeword
         H.matrix.mulVec (Codeword.xor Y N) i = 0 :=
   Iff.rfl
 
+/-- *GRAND output with noise recovery.*  Extends `grandFind_sound`
+    with the noise-recovery identity `Y xor c = Ng`: the guessed
+    noise candidate is recoverable from the decoder output and the
+    receiver via XOR.  Composes `grandFind_sound` with
+    `Codeword.xor_xor_self` (XOR involution). -/
+theorem grandFind_output_characterization
+    {n k : Nat} (H : ParityCheck n k) (Y : Codeword n)
+    (order : List (Codeword n)) (c : Codeword n)
+    (hfind : grandFind H Y order = some c) :
+    (forall (i : Fin (n - k)), H.matrix.mulVec c i = 0)
+    /\ (exists Ng, Ng ∈ order /\ c = Codeword.xor Y Ng
+                /\ Codeword.xor Y c = Ng) :=
+  let ⟨h_syn, ⟨Ng, h_mem, h_eq⟩⟩ := grandFind_sound H Y order c hfind
+  ⟨h_syn, Ng, h_mem, h_eq, h_eq ▸ Codeword.xor_xor_self Y Ng⟩
+
 end Section04
 end OrbgrandAi

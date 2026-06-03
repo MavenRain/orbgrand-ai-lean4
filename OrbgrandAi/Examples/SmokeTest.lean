@@ -242,6 +242,15 @@ example {n_s b numCandidates : Nat}
     Phi c = true /\ (exists e, e ∈ patterns /\ c = substitute Y e) :=
   orbgrandAi_sound Y Phi budget patterns c h
 
+/-- GRAND output with noise recovery: `Y xor c = Ng` extracted from soundness. -/
+example {n k : Nat} (H : ParityCheck n k) (Y : Codeword n)
+    (order : List (Codeword n)) (c : Codeword n)
+    (hfind : grandFind H Y order = some c) :
+    (forall (i : Fin (n - k)), H.matrix.mulVec c i = 0)
+    /\ (exists Ng, Ng ∈ order /\ c = Codeword.xor Y Ng
+                /\ Codeword.xor Y c = Ng) :=
+  grandFind_output_characterization H Y order c hfind
+
 /-- `grandFind` on singleton list returns `none` iff the candidate has nonzero syndrome. -/
 example {n k : Nat} (H : ParityCheck n k) (Y Ng : Codeword n) :
     grandFind H Y [Ng] = none
