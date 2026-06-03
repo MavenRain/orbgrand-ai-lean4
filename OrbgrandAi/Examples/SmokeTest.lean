@@ -1040,6 +1040,11 @@ example {n : Nat} (a : Codeword n) :
     Codeword.xor a 0 = a :=
   Codeword.xor_zero a
 
+/-- `BlockSize.mk?` on a positive input returns `Except.ok`. -/
+example (n : Nat) (h : 0 < n) :
+    BlockSize.mk? n = Except.ok ⟨n, h⟩ :=
+  BlockSize.mk?_of_pos n h
+
 /-- `orbgrandAi` with zero budget returns `none`. -/
 example {n_s b numCandidates : Nat}
     (Y : Codeword n_s) (Phi : CodebookMembership n_s)

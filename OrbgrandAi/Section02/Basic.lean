@@ -169,6 +169,12 @@ def mk? (n : Nat) : Except ChannelError BlockSize :=
   else
     Except.error (ChannelError.nonPositive "BlockSize")
 
+/-- *Positive input gives `ok`.*  Direct `dif_pos` characterization
+    of `BlockSize.mk?` on a positive input. -/
+theorem mk?_of_pos (n : Nat) (h : 0 < n) :
+    BlockSize.mk? n = Except.ok ⟨n, h⟩ :=
+  dif_pos h
+
 end BlockSize
 
 namespace CodewordLength
