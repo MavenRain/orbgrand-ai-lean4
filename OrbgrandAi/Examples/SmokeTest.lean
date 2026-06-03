@@ -1136,6 +1136,13 @@ example {n_s p d : Nat} (paths : Fin p -> DelayTapPath) (f_s : SamplingFreq)
       = delayTapImpulseResponse paths f_s { toNat := d } :=
   delayTapMatrix_at_subdiag paths f_s i j h
 
+/-- Delay-tap matrix second sub-diagonal: impulse response at delay 2. -/
+example {n_s p : Nat} (paths : Fin p -> DelayTapPath) (f_s : SamplingFreq)
+    (i j : Fin n_s) (h : i.val = j.val + 2) :
+    delayTapMatrix n_s paths f_s i j
+      = delayTapImpulseResponse paths f_s { toNat := 2 } :=
+  delayTapMatrix_second_subdiag paths f_s i j h
+
 /-- Delay-tap matrix first sub-diagonal: impulse response at delay 1. -/
 example {n_s p : Nat} (paths : Fin p -> DelayTapPath) (f_s : SamplingFreq)
     (i j : Fin n_s) (h : i.val = j.val + 1) :

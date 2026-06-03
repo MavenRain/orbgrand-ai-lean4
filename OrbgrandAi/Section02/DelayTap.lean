@@ -258,6 +258,16 @@ theorem delayTapMatrix_first_subdiag
     congrArg (fun n => delayTapImpulseResponse paths f_s { toNat := n }) hsub
   step1.trans step2
 
+/-- *Second sub-diagonal of `delayTapMatrix`.*  When `i.val = j.val
+    + 2`, the entry is the impulse response at delay 2.  One-liner
+    via the general `delayTapMatrix_at_subdiag`. -/
+theorem delayTapMatrix_second_subdiag
+    {n_s : Nat} {p : Nat} (paths : Fin p -> DelayTapPath)
+    (f_s : SamplingFreq) (i j : Fin n_s) (h : i.val = j.val + 2) :
+    delayTapMatrix n_s paths f_s i j
+      = delayTapImpulseResponse paths f_s { toNat := 2 } :=
+  delayTapMatrix_at_subdiag paths f_s i j h
+
 /-- *Delay-tap matrix entry above diagonal is zero.*  This is the
     same statement as `delayTap_causal` (which packages the result
     into `LinearIsi.causal`), restated as a direct matrix-entry
