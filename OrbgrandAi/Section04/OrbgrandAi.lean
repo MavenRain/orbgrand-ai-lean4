@@ -743,5 +743,18 @@ theorem orbgrandAi_unfolds_to_loop
       Y Phi budget patterns
       = orbgrandAiLoop Y Phi budget.toNat patterns := rfl
 
+/-- *Empty pattern list at the public API.*  With no patterns to
+    try, the top-level `orbgrandAi` decoder returns `none` for any
+    `Y`, `Phi`, `budget`.  Composes `orbgrandAi_unfolds_to_loop`
+    with `orbgrandAiLoop_nil` at `budget.toNat`. -/
+theorem orbgrandAi_nil
+    {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s)
+    (budget : AbandonmentBudget) :
+    orbgrandAi (b := b) (numCandidates := numCandidates)
+      Y Phi budget [] = none :=
+  (orbgrandAi_unfolds_to_loop Y Phi budget []).trans
+    (orbgrandAiLoop_nil Y Phi budget.toNat)
+
 end Section04
 end OrbgrandAi

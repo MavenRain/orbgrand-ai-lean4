@@ -1040,6 +1040,14 @@ example {n : Nat} (a : Codeword n) :
     Codeword.xor a 0 = a :=
   Codeword.xor_zero a
 
+/-- `orbgrandAi` on empty pattern list returns `none`. -/
+example {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s)
+    (budget : AbandonmentBudget) :
+    orbgrandAi (b := b) (numCandidates := numCandidates)
+      Y Phi budget [] = none :=
+  orbgrandAi_nil Y Phi budget
+
 /-- `orbgrandAi` unfolds to `orbgrandAiLoop` at `budget.toNat`. -/
 example {n_s b numCandidates : Nat}
     (Y : Codeword n_s) (Phi : CodebookMembership n_s)
