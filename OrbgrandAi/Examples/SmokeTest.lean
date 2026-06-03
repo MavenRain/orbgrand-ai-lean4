@@ -664,6 +664,12 @@ example {n : Nat} (e : Fin (n + 1) -> Bool) :
     bitWeight (e ∘ Fin.castSucc) ≤ bitWeight e :=
   bitWeight_castSucc_le e
 
+/-- Restrict-then-extend by `true`: bit-weight equals original plus complementary cost. -/
+example {n : Nat} (e : Fin (n + 1) -> Bool) :
+    bitWeight (landslideExtend true (e ∘ Fin.castSucc))
+      = bitWeight e + (if e (Fin.last n) then 0 else n + 1) :=
+  landslideExtend_true_castSucc_bitWeight e
+
 /-- Restrict-then-extend by `false`: bit-weight equals original minus top-bit cost. -/
 example {n : Nat} (e : Fin (n + 1) -> Bool) :
     bitWeight (landslideExtend false (e ∘ Fin.castSucc))

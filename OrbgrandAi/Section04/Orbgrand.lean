@@ -1205,6 +1205,35 @@ theorem logisticWeight_eq_const_true_iff_all_true
       bw_iff.mpr h
     (bridge.trans h2).trans max_eq.symm⟩
 
+/-- *Restriction-then-extend by `true`.*  Symmetric to the `false`
+    version: extending the restriction by `true` adds zero (if the
+    original top bit was already `true`) or `n + 1` (if the top was
+    `false`).  Cleaner addition form than the subtraction-based
+    `_false` variant. -/
+theorem landslideExtend_true_castSucc_bitWeight
+    {n : Nat} (e : Fin (n + 1) -> Bool) :
+    bitWeight (landslideExtend true (e ∘ Fin.castSucc))
+      = bitWeight e + (if e (Fin.last n) then 0 else n + 1) :=
+  match h_b : e (Fin.last n) with
+  | true =>
+      let h_split : bitWeight e
+                  = bitWeight (e ∘ Fin.castSucc) + (n + 1) :=
+        bitWeight_split_true e h_b
+      let h_extend : bitWeight (landslideExtend true (e ∘ Fin.castSucc))
+                   = bitWeight (e ∘ Fin.castSucc) + (n + 1) :=
+        bitWeight_extend_true (e ∘ Fin.castSucc)
+      h_extend.trans h_split.symm
+  | false =>
+      let h_split : bitWeight e = bitWeight (e ∘ Fin.castSucc) :=
+        bitWeight_split_false e h_b
+      let h_extend : bitWeight (landslideExtend true (e ∘ Fin.castSucc))
+                   = bitWeight (e ∘ Fin.castSucc) + (n + 1) :=
+        bitWeight_extend_true (e ∘ Fin.castSucc)
+      let h_lift : bitWeight (e ∘ Fin.castSucc) + (n + 1)
+                 = bitWeight e + (n + 1) :=
+        congrArg (fun x => x + (n + 1)) h_split.symm
+      h_extend.trans h_lift
+
 /-- *Restriction-then-extend by `false` recovers bit-weight minus
     top-bit contribution.*  Combines `bitWeight_split_true` /
     `bitWeight_split_false` with `bitWeight_extend_false`: the
