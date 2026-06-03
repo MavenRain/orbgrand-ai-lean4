@@ -1154,5 +1154,36 @@ theorem grandFind_output_characterization
   let ⟨h_syn, ⟨Ng, h_mem, h_eq⟩⟩ := grandFind_sound H Y order c hfind
   ⟨h_syn, Ng, h_mem, h_eq, h_eq ▸ Codeword.xor_xor_self Y Ng⟩
 
+/-- *Append with failed prefix.*  When `grandFind H Y order1` returns
+    `none` (every candidate in `order1` has nonzero syndrome), then
+    `grandFind H Y (order1 ++ order2) = grandFind H Y order2`: the
+    suffix takes over once the prefix is exhausted.  Structural
+    recursion on `order1` with case-split on the head's syndrome via
+    `grandFind_cons_zero_syndrome` / `_cons_nonzero_syndrome`. -/
+theorem grandFind_append_none
+    {n k : Nat} (H : ParityCheck n k) (Y : Codeword n) :
+    forall (order1 : List (Codeword n)),
+      grandFind H Y order1 = none ->
+      forall (order2 : List (Codeword n)),
+        grandFind H Y (order1 ++ order2) = grandFind H Y order2
+  | [],         _      => fun _ => rfl
+  | Ng :: rest, h_none => fun order2 =>
+      if h_synd : forall (i : Fin (n - k)),
+                    H.matrix.mulVec (Codeword.xor Y Ng) i = 0 then
+        let h_some : grandFind H Y (Ng :: rest)
+                   = some (Codeword.xor Y Ng) :=
+          grandFind_cons_zero_syndrome H Y Ng rest h_synd
+        nomatch h_some.symm.trans h_none
+      else
+        let h_rest_none : grandFind H Y rest = none :=
+          (grandFind_cons_nonzero_syndrome H Y Ng rest h_synd).symm.trans
+            h_none
+        let h_cons_append :
+            grandFind H Y ((Ng :: rest) ++ order2)
+              = grandFind H Y (rest ++ order2) :=
+          grandFind_cons_nonzero_syndrome H Y Ng (rest ++ order2) h_synd
+        h_cons_append.trans
+          (grandFind_append_none H Y rest h_rest_none order2)
+
 end Section04
 end OrbgrandAi
