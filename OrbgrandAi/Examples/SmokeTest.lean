@@ -941,6 +941,40 @@ example {n_s : Nat} (ch : LinearIsi n_s) (X N1 N2 : SymbolVector n_s) :
     ch.receive X N1 = ch.receive X N2 <-> N1 = N2 :=
   LinearIsi.receive_eq_iff_noise_eq ch X N1 N2
 
+/-- Codeword self-XOR is zero: `a xor a = 0`. -/
+example {n : Nat} (a : Codeword n) : Codeword.xor a a = 0 :=
+  Codeword.xor_self a
+
+/-- Codeword equation via XOR-zero: `a = b ↔ a xor b = 0`. -/
+example {n : Nat} (a b : Codeword n) :
+    a = b <-> Codeword.xor a b = 0 :=
+  Codeword.eq_iff_xor_eq_zero a b
+
+/-- From `a xor b = 0` deduce `a = b`. -/
+example {n : Nat} {a b : Codeword n}
+    (h : Codeword.xor a b = 0) : a = b :=
+  Codeword.eq_of_xor_eq_zero h
+
+/-- From `a = b` deduce `a xor b = 0`. -/
+example {n : Nat} {a b : Codeword n} (h : a = b) :
+    Codeword.xor a b = 0 :=
+  Codeword.xor_eq_zero_of_eq h
+
+/-- Codeword left-cancellation iff: `a xor b = a xor c ↔ b = c`. -/
+example {n : Nat} (a b c : Codeword n) :
+    Codeword.xor a b = Codeword.xor a c <-> b = c :=
+  Codeword.xor_left_eq_iff a b c
+
+/-- Codeword right-cancellation iff: `a xor c = b xor c ↔ a = b`. -/
+example {n : Nat} (a b c : Codeword n) :
+    Codeword.xor a c = Codeword.xor b c <-> a = b :=
+  Codeword.xor_right_eq_iff a b c
+
+/-- Codeword subtraction equals XOR: `a - b = a xor b`. -/
+example {n : Nat} (a b : Codeword n) :
+    a - b = Codeword.xor a b :=
+  Codeword.sub_eq_xor a b
+
 /-- XOR involution: `Y xor (Y xor Ng) = Ng`. -/
 example {n : Nat} (Y Ng : Codeword n) :
     Codeword.xor Y (Codeword.xor Y Ng) = Ng :=
