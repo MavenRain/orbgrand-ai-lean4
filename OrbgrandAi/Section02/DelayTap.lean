@@ -258,6 +258,19 @@ theorem delayTapMatrix_first_subdiag
     congrArg (fun n => delayTapImpulseResponse paths f_s { toNat := n }) hsub
   step1.trans step2
 
+/-- *Diagonal entry via val-equality.*  When `i.val = j.val` (not
+    necessarily `i = j` syntactically), the entry collapses to the
+    impulse response at delay 0.  Useful when working with index
+    values directly.  One-liner via `delayTapMatrix_at_subdiag` at
+    `d = 0`. -/
+theorem delayTapMatrix_at_diag
+    {n_s : Nat} {p : Nat} (paths : Fin p -> DelayTapPath)
+    (f_s : SamplingFreq) (i j : Fin n_s) (h : i.val = j.val) :
+    delayTapMatrix n_s paths f_s i j
+      = delayTapImpulseResponse paths f_s { toNat := 0 } :=
+  delayTapMatrix_at_subdiag paths f_s i j
+    (h.trans (Nat.add_zero j.val).symm)
+
 /-- *Second sub-diagonal of `delayTapMatrix`.*  When `i.val = j.val
     + 2`, the entry is the impulse response at delay 2.  One-liner
     via the general `delayTapMatrix_at_subdiag`. -/
