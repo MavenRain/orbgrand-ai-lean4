@@ -219,6 +219,19 @@ noncomputable def mk? (v : Real) : Except ChannelError NoisePower :=
   else
     Except.error (ChannelError.negativeVariance v)
 
+/-- *Non-negative input gives `ok`.*  Direct `dif_pos` characterization
+    of `NoisePower.mk?` on a non-negative real. -/
+theorem mk?_of_nonneg (v : Real) (h : 0 <= v) :
+    NoisePower.mk? v = Except.ok ⟨v, h⟩ :=
+  dif_pos h
+
+/-- *Negative input gives `error`.*  Direct `dif_neg` form: when the
+    non-negativity precondition fails, `NoisePower.mk?` emits a
+    `negativeVariance` channel error carrying the offending value. -/
+theorem mk?_of_neg (v : Real) (h : ¬ 0 <= v) :
+    NoisePower.mk? v = Except.error (ChannelError.negativeVariance v) :=
+  dif_neg h
+
 end NoisePower
 
 namespace SignalPower
