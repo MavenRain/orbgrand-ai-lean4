@@ -510,5 +510,15 @@ theorem rfView_noiseCov_off
     (rfView n_s rowTaps sigma).noiseCov i j = (0 : Complex) :=
   if_neg h
 
+/-- *Structural summary of `rfView`.*  Packages the two structural
+    properties of the RFView channel (causality and bandwidth ≤ 6)
+    into a single conjunction.  Useful when downstream code needs
+    both predicates simultaneously without re-deriving each. -/
+theorem rfView_structural
+    {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (sigma : NoisePower) :
+    (rfView n_s rowTaps sigma).causal
+      /\ (rfView n_s rowTaps sigma).bandwidth 6 :=
+  ⟨rfView_causal rowTaps sigma, rfView_bandwidth rowTaps sigma⟩
+
 end Section02
 end OrbgrandAi

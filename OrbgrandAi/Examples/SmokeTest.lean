@@ -60,6 +60,12 @@ example {n_s : Nat} {p : Nat} (paths : Fin p -> DelayTapPath)
     delayTapMatrix n_s paths f_s i j = (0 : Complex) :=
   delayTap_causal paths f_s i j h
 
+/-- RFView channel: combined causality + bandwidth-6 conjunction. -/
+example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (sigma : NoisePower) :
+    (rfView n_s rowTaps sigma).causal
+      /\ (rfView n_s rowTaps sigma).bandwidth 6 :=
+  rfView_structural rowTaps sigma
+
 /-- RFView channel is causal. -/
 example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (sigma : NoisePower) :
     (rfView n_s rowTaps sigma).causal :=
