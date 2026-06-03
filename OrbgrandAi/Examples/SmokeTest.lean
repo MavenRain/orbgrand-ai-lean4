@@ -1028,6 +1028,16 @@ example {n : Nat} (a : Codeword n) :
     Codeword.xor a 0 = a :=
   Codeword.xor_zero a
 
+/-- `orbgrandAi` unfolds to `orbgrandAiLoop` at `budget.toNat`. -/
+example {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s)
+    (budget : AbandonmentBudget)
+    (patterns : List (Fin (n_s / b) -> Fin numCandidates)) :
+    orbgrandAi (b := b) (numCandidates := numCandidates)
+      Y Phi budget patterns
+      = orbgrandAiLoop Y Phi budget.toNat patterns :=
+  orbgrandAi_unfolds_to_loop Y Phi budget patterns
+
 /-- `orbgrandAiLoop` with zero steps and a non-empty list returns `none`. -/
 example {n_s b numCandidates : Nat}
     (Y : Codeword n_s) (Phi : CodebookMembership n_s)

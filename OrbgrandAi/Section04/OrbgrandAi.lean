@@ -729,5 +729,19 @@ theorem orbgrandAi_none_iff_of_budget
         ¬ noSubstitutionConflict e ∨ ¬ Phi (substitute Y e) :=
   orbgrandAiLoop_none_iff_of_budget Y Phi budget.toNat patterns hbudget
 
+/-- *Definitional bridge from `orbgrandAi` to `orbgrandAiLoop`.*  By
+    definition, the public entry point `orbgrandAi` is just
+    `orbgrandAiLoop` invoked at `budget.toNat`.  Exposes this as a
+    named rewrite so downstream proofs can drop into the loop layer
+    without re-wrapping through `AbandonmentBudget`.  Direct `rfl`. -/
+theorem orbgrandAi_unfolds_to_loop
+    {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s)
+    (budget : AbandonmentBudget)
+    (patterns : List (Fin (n_s / b) -> Fin numCandidates)) :
+    orbgrandAi (b := b) (numCandidates := numCandidates)
+      Y Phi budget patterns
+      = orbgrandAiLoop Y Phi budget.toNat patterns := rfl
+
 end Section04
 end OrbgrandAi
