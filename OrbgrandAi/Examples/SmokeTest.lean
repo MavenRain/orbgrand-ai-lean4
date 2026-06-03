@@ -1134,6 +1134,16 @@ example {n : Nat} (a : Codeword n) :
     Codeword.xor a 0 = a :=
   Codeword.xor_zero a
 
+/-- `SignalPower.mk?` on non-negative input returns `Except.ok`. -/
+example (v : Real) (h : 0 <= v) :
+    SignalPower.mk? v = Except.ok ⟨v, h⟩ :=
+  SignalPower.mk?_of_nonneg v h
+
+/-- `SignalPower.mk?` on negative input returns `Except.error`. -/
+example (v : Real) (h : ¬ 0 <= v) :
+    SignalPower.mk? v = Except.error (ChannelError.negativeVariance v) :=
+  SignalPower.mk?_of_neg v h
+
 /-- `NoisePower.mk?` on non-negative input returns `Except.ok`. -/
 example (v : Real) (h : 0 <= v) :
     NoisePower.mk? v = Except.ok ⟨v, h⟩ :=

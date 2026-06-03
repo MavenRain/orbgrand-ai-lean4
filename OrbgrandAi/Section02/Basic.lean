@@ -244,6 +244,18 @@ noncomputable def mk? (v : Real) : Except ChannelError SignalPower :=
   else
     Except.error (ChannelError.negativeVariance v)
 
+/-- *Non-negative input gives `ok`.*  Parallel of
+    `NoisePower.mk?_of_nonneg`. -/
+theorem mk?_of_nonneg (v : Real) (h : 0 <= v) :
+    SignalPower.mk? v = Except.ok ⟨v, h⟩ :=
+  dif_pos h
+
+/-- *Negative input gives `error`.*  Parallel of
+    `NoisePower.mk?_of_neg`. -/
+theorem mk?_of_neg (v : Real) (h : ¬ 0 <= v) :
+    SignalPower.mk? v = Except.error (ChannelError.negativeVariance v) :=
+  dif_neg h
+
 end SignalPower
 
 namespace CorrelationCoefficient
