@@ -284,6 +284,20 @@ noncomputable def mk? (v : Real) : Except ChannelError SamplingFreq :=
   else
     Except.error (ChannelError.nonPositiveSamplingFreq v)
 
+/-- *Strictly positive input gives `ok`.*  Direct `dif_pos`
+    characterization. -/
+theorem mk?_of_pos (v : Real) (h : 0 < v) :
+    SamplingFreq.mk? v = Except.ok ⟨v, h⟩ :=
+  dif_pos h
+
+/-- *Non-positive input gives `error`.*  Direct `dif_neg` form: the
+    `nonPositiveSamplingFreq` channel error carries the offending
+    value. -/
+theorem mk?_of_not_pos (v : Real) (h : ¬ 0 < v) :
+    SamplingFreq.mk? v
+      = Except.error (ChannelError.nonPositiveSamplingFreq v) :=
+  dif_neg h
+
 end SamplingFreq
 
 end Section02

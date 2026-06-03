@@ -1134,6 +1134,17 @@ example {n : Nat} (a : Codeword n) :
     Codeword.xor a 0 = a :=
   Codeword.xor_zero a
 
+/-- `SamplingFreq.mk?` on strictly positive input returns `Except.ok`. -/
+example (v : Real) (h : 0 < v) :
+    SamplingFreq.mk? v = Except.ok ⟨v, h⟩ :=
+  SamplingFreq.mk?_of_pos v h
+
+/-- `SamplingFreq.mk?` on non-positive input returns `Except.error`. -/
+example (v : Real) (h : ¬ 0 < v) :
+    SamplingFreq.mk? v
+      = Except.error (ChannelError.nonPositiveSamplingFreq v) :=
+  SamplingFreq.mk?_of_not_pos v h
+
 /-- `SignalPower.mk?` on non-negative input returns `Except.ok`. -/
 example (v : Real) (h : 0 <= v) :
     SignalPower.mk? v = Except.ok ⟨v, h⟩ :=
