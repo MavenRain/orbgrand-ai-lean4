@@ -104,6 +104,16 @@ theorem Constellation.exceed_self_le_exceed {chi : Type}
     cs.exceed s s <= cs.exceed s s_hat :=
   (cs.exceed_self s).trans_le (cs.exceed_nonneg s s_hat)
 
+/-- *Diagonal at `s_hat` is also a lower bound.*  Mirror of
+    `exceed_self_le_exceed`: the diagonal value at the second
+    argument (`exceed s_hat s_hat = 0`) is at most any exceedance
+    landing at `s_hat`.  Useful when the second argument is the
+    "anchor" symbol. -/
+theorem Constellation.exceed_self_le_exceed_right {chi : Type}
+    (cs : Constellation chi) (s s_hat : chi) :
+    cs.exceed s_hat s_hat <= cs.exceed s s_hat :=
+  (cs.exceed_self s_hat).trans_le (cs.exceed_nonneg s s_hat)
+
 /-- *Exceedance is non-zero iff symbols differ.*  Contrapositive of
     `exceed_zero_iff`: pushing `Not` through both sides of the
     biconditional. -/

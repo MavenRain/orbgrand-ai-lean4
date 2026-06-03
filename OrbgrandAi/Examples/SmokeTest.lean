@@ -1173,6 +1173,11 @@ example {chi : Type} (cs : Constellation chi) {s s_hat : chi} (h : s ≠ s_hat) 
     0 < cs.exceed s s_hat :=
   cs.exceed_pos_of_ne h
 
+/-- Constellation diagonal at `s_hat` is a lower bound (right form). -/
+example {chi : Type} (cs : Constellation chi) (s s_hat : chi) :
+    cs.exceed s_hat s_hat <= cs.exceed s s_hat :=
+  cs.exceed_self_le_exceed_right s s_hat
+
 /-- Constellation diagonal exceedance is a lower bound. -/
 example {chi : Type} (cs : Constellation chi) (s s_hat : chi) :
     cs.exceed s s <= cs.exceed s s_hat :=
