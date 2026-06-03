@@ -22,6 +22,12 @@ open OrbgrandAi.Section02 OrbgrandAi.Section03 OrbgrandAi.Section04 OrbgrandAi.S
 
 /-! ## Section II.  Channel-model lemmas -/
 
+/-- Dicode channel: combined causality + bandwidth-1 conjunction. -/
+example {n_s : Nat} (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    (dicode n_s sigma rho).causal
+      /\ (dicode n_s sigma rho).bandwidth 1 :=
+  dicode_structural sigma rho
+
 /-- Dicode channel is causal (entries `i < j` vanish). -/
 example {n_s : Nat} (sigma : NoisePower) (rho : CorrelationCoefficient) :
     (dicode n_s sigma rho).causal :=

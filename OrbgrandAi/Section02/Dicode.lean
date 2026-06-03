@@ -468,5 +468,14 @@ theorem cov1_det_fin_two_factored
     (hC1.trans hC2).symm
   (cov1_det_fin_two sigma rho).trans (bridge.trans hC)
 
+/-- *Structural summary of `dicode`.*  Packages the two structural
+    properties of the dicode channel (causality and bandwidth ≤ 1)
+    into a single conjunction.  Parallel to `rfView_structural`. -/
+theorem dicode_structural
+    {n_s : Nat} (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    (dicode n_s sigma rho).causal
+      /\ (dicode n_s sigma rho).bandwidth 1 :=
+  ⟨dicode_causal sigma rho, dicode_bandwidth sigma rho⟩
+
 end Section02
 end OrbgrandAi
