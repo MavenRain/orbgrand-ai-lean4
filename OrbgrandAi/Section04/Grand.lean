@@ -810,6 +810,23 @@ theorem grandFind_none_iff
             H.matrix.mulVec (Codeword.xor Y Ng) i = 0) :=
   ⟨grandFind_none_imp H Y order, grandFind_none_mpr H Y order⟩
 
+/-- *Singleton-list failure characterization.*  Specialises
+    `grandFind_none_iff` to a length-1 candidate list: the GRAND
+    search returns `none` iff the single candidate has nonzero
+    syndrome.  Uses `List.mem_singleton` to collapse the universal
+    quantifier over `[Ng]`. -/
+theorem grandFind_singleton_none_iff
+    {n k : Nat} (H : ParityCheck n k) (Y Ng : Codeword n) :
+    grandFind H Y [Ng] = none
+      <-> ¬ (forall (i : Fin (n - k)),
+              H.matrix.mulVec (Codeword.xor Y Ng) i = 0) :=
+  ⟨fun h =>
+    (grandFind_none_iff H Y [Ng]).mp h Ng (List.mem_singleton.mpr rfl),
+   fun h_nss =>
+    (grandFind_none_iff H Y [Ng]).mpr fun Ng' h_mem =>
+      let h_eq : Ng' = Ng := List.mem_singleton.mp h_mem
+      h_eq ▸ h_nss⟩
+
 /-! ## Syndrome boundary algebra -/
 
 /-- *Syndrome with zero noise.*  The syndrome of a zero-noise
