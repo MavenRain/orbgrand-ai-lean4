@@ -214,6 +214,35 @@ theorem ar2_phi1_zero_phi2_one (z1 z2 : Complex) (n : Nat) :
     zero_add _
   step1.trans (step2.trans step3)
 
+/-- *Zero initial conditions stay zero forever.*  With `z1 = z2 = 0`,
+    `ar2 phi1 phi2 0 0 n = 0` for every `n`, irrespective of the
+    AR(2) coefficients.  Structural recursion: base cases at `0` and
+    `1` are `rfl` (initial conditions are literally `0`); the
+    `n + 2` step combines the IH at `n + 1` and `n` with
+    `mul_zero` on both summands and `add_zero`. -/
+theorem ar2_const_zero (phi1 phi2 : Complex) :
+    forall (n : Nat), ar2 phi1 phi2 0 0 n = 0
+  | 0     => rfl
+  | 1     => rfl
+  | n + 2 =>
+      let ih1 : ar2 phi1 phi2 0 0 (n + 1) = 0 :=
+        ar2_const_zero phi1 phi2 (n + 1)
+      let ih2 : ar2 phi1 phi2 0 0 n = 0 :=
+        ar2_const_zero phi1 phi2 n
+      let step1 : ar2 phi1 phi2 0 0 (n + 2)
+                = phi1 * ar2 phi1 phi2 0 0 (n + 1)
+                  + phi2 * ar2 phi1 phi2 0 0 n := rfl
+      let step2 : phi1 * ar2 phi1 phi2 0 0 (n + 1)
+                  + phi2 * ar2 phi1 phi2 0 0 n
+                = phi1 * 0 + phi2 * 0 :=
+        congrArg₂ (· + ·)
+          (congrArg (phi1 * ·) ih1)
+          (congrArg (phi2 * ·) ih2)
+      let step3 : phi1 * 0 + phi2 * 0 = 0 :=
+        (congrArg₂ (· + ·) (mul_zero phi1) (mul_zero phi2)).trans
+          (add_zero 0)
+      step1.trans (step2.trans step3)
+
 /-! ## Regressor matrix and target -/
 
 /-- The `4 x 2` regressor matrix used in the least-squares fit.

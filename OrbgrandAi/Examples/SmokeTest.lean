@@ -854,6 +854,11 @@ example : bitWeight (fun _ : Fin 1 => true) = 1 :=
 example (e : Fin 0 -> Bool) : bitWeight e = 0 :=
   bitWeight_fin_zero e
 
+/-- AR(2) with zero initial conditions stays zero forever. -/
+example (phi1 phi2 : Complex) (n : Nat) :
+    ar2 phi1 phi2 0 0 n = 0 :=
+  ar2_const_zero phi1 phi2 n
+
 /-- AR(2) with `phi_1 = phi_2 = 1` is the Fibonacci recurrence. -/
 example (z1 z2 : Complex) (n : Nat) :
     ar2 1 1 z1 z2 (n + 2)
