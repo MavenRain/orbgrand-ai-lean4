@@ -542,6 +542,11 @@ example {n : Nat} (a b : Codeword n) :
     Codeword.xor (Codeword.xor a b) b = a :=
   Codeword.xor_xor_right a b
 
+/-- Codeword XOR transposition (left-arg move): `a xor b = c ↔ b = a xor c`. -/
+example {n : Nat} (a b c : Codeword n) :
+    Codeword.xor a b = c <-> b = Codeword.xor a c :=
+  Codeword.xor_eq_iff_left_eq_xor a b c
+
 /-- Codeword XOR transposition: `a xor b = c ↔ a = c xor b`. -/
 example {n : Nat} (a b c : Codeword n) :
     Codeword.xor a b = c <-> a = Codeword.xor c b :=

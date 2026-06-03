@@ -514,6 +514,19 @@ theorem Codeword.xor_eq_iff_eq_xor {n : Nat} (a b c : Codeword n) :
     (congrArg (fun x => Codeword.xor x b) h).trans
       (Codeword.xor_xor_right c b)⟩
 
+/-- *XOR transposition (left-arg move).*  `a xor b = c` iff
+    `b = a xor c`: the LEFT argument moves to the right side
+    instead of the right argument.  Dual of `xor_eq_iff_eq_xor`;
+    derived via `xor_xor_self` (instead of `xor_xor_right`). -/
+theorem Codeword.xor_eq_iff_left_eq_xor {n : Nat} (a b c : Codeword n) :
+    Codeword.xor a b = c <-> b = Codeword.xor a c :=
+  ⟨fun h =>
+    (Codeword.xor_xor_self a b).symm.trans
+      (congrArg (Codeword.xor a) h),
+   fun h =>
+    (congrArg (Codeword.xor a) h).trans
+      (Codeword.xor_xor_self a c)⟩
+
 
 /-- `Codeword.xor` is left-cancellable: `a xor b = a xor c → b = c`.
 
