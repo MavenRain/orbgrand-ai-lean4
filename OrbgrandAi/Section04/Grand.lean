@@ -112,6 +112,7 @@ theorem Codeword.zero_xor_apply {n : Nat} (a : Codeword n) (i : Fin n) :
   (Codeword.xor_apply 0 a i).trans
     ((congrArg (· + a i) (Codeword.zero_apply i)).trans (zero_add (a i)))
 
+
 /-- The syndrome `H * (Y xor N_g)` for a candidate noise vector. -/
 def syndrome
     {n k : Nat} (H : ParityCheck n k) (Y N_g : Codeword n) :
@@ -417,6 +418,12 @@ theorem Codeword.xor_zero {n : Nat} (a : Codeword n) :
 theorem Codeword.xor_self {n : Nat} (a : Codeword n) :
     Codeword.xor a a = 0 :=
   funext fun i => CharTwo.add_self_eq_zero (a i)
+
+/-- *Pointwise self-XOR vanishes.*  `(a xor a) i = 0`.  Direct
+    `congrFun` of `xor_self` followed by the rfl `zero_apply`. -/
+theorem Codeword.xor_self_apply {n : Nat} (a : Codeword n) (i : Fin n) :
+    Codeword.xor a a i = 0 :=
+  (congrFun (Codeword.xor_self a) i).trans (Codeword.zero_apply i)
 
 /-- `a xor b = b xor a`.  Pointwise `add_comm`. -/
 theorem Codeword.xor_comm {n : Nat} (a b : Codeword n) :
