@@ -1182,6 +1182,11 @@ example {n : Nat} (a b c : Codeword n) :
       = Codeword.xor b c :=
   Codeword.xor_xor_xor_self a b c
 
+/-- Pointwise XOR with zero on the left: `(0 xor a) i = a i`. -/
+example {n : Nat} (a : Codeword n) (i : Fin n) :
+    Codeword.xor 0 a i = a i :=
+  Codeword.zero_xor_apply a i
+
 /-- Pointwise XOR with zero on the right: `(a xor 0) i = a i`. -/
 example {n : Nat} (a : Codeword n) (i : Fin n) :
     Codeword.xor a 0 i = a i :=

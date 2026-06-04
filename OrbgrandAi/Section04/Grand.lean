@@ -104,6 +104,14 @@ theorem Codeword.xor_zero_apply {n : Nat} (a : Codeword n) (i : Fin n) :
   (Codeword.xor_apply a 0 i).trans
     ((congrArg (a i + ·) (Codeword.zero_apply i)).trans (add_zero (a i)))
 
+/-- *Pointwise XOR with zero on the left.*  `(0 xor a) i = a i`.
+    Dual of `xor_zero_apply`; composes `xor_apply` + `zero_apply` +
+    `zero_add` on the left summand. -/
+theorem Codeword.zero_xor_apply {n : Nat} (a : Codeword n) (i : Fin n) :
+    Codeword.xor 0 a i = a i :=
+  (Codeword.xor_apply 0 a i).trans
+    ((congrArg (· + a i) (Codeword.zero_apply i)).trans (zero_add (a i)))
+
 /-- The syndrome `H * (Y xor N_g)` for a candidate noise vector. -/
 def syndrome
     {n k : Nat} (H : ParityCheck n k) (Y N_g : Codeword n) :
