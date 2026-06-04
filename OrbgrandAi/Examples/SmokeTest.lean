@@ -726,6 +726,30 @@ example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
       = ((rowTaps i).tap? (i.val - j.val + 1)).getD (0 : Complex) :=
   rfViewMatrix_apply_le rowTaps i j h
 
+/-- Dicode matrix sub-diagonal entry is `-rho`. -/
+example {n_s : Nat} (rho : CorrelationCoefficient) (i j : Fin n_s)
+    (h : i.val = j.val + 1) :
+    dicodeMatrix n_s rho i j = -(rho.val : Complex) :=
+  dicodeMatrix_subdiag rho i j h
+
+/-- Dicode matrix off-diagonal/off-sub-diagonal entry is `0`. -/
+example {n_s : Nat} (rho : CorrelationCoefficient) (i j : Fin n_s)
+    (h1 : i.val ≠ j.val) (h2 : i.val ≠ j.val + 1) :
+    dicodeMatrix n_s rho i j = (0 : Complex) :=
+  dicodeMatrix_off rho i j h1 h2
+
+/-- RFView matrix first sub-diagonal entry is `tap2`. -/
+example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
+    (h : i.val = j.val + 1) :
+    rfViewMatrix n_s rowTaps i j = (rowTaps i).tap2 :=
+  rfViewMatrix_first_subdiag rowTaps i j h
+
+/-- RFView matrix fifth sub-diagonal entry is `tap6`. -/
+example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
+    (h : i.val = j.val + 5) :
+    rfViewMatrix n_s rowTaps i j = (rowTaps i).tap6 :=
+  rfViewMatrix_fifth_subdiag rowTaps i j h
+
 /-- RFView matrix diagonal entry equals tap1. -/
 example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i : Fin n_s) :
     rfViewMatrix n_s rowTaps i i = (rowTaps i).tap1 :=
