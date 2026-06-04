@@ -1005,6 +1005,31 @@ example {n : Nat} (e : Fin n -> Bool) :
 /-- `landslide 1 1` has length 1. -/
 example : (landslide 1 1).length = 1 := landslide_one_one_length
 
+/-- `landslide 0 0` has length 1 (just the empty pattern). -/
+example : (landslide 0 0).length = 1 := landslide_zero_zero_length
+
+/-- `landslide 0 (w + 1)` is empty for all w. -/
+example (w : Nat) : (landslide 0 (w + 1)).length = 0 :=
+  landslide_zero_succ_length w
+
+/-- `landslide 1 0` is the singleton all-false pattern. -/
+example : landslide 1 0 = [landslideExtend false Fin.elim0] :=
+  landslide_one_zero
+
+/-- `landslide 1 1` is the singleton bit-0-set pattern. -/
+example : landslide 1 1 = [landslideExtend true Fin.elim0] :=
+  landslide_one_one
+
+/-- `landslide 2 1` is a singleton: bit 0 set, bit 1 unset. -/
+example : landslide 2 1
+      = [landslideExtend false (landslideExtend true Fin.elim0)] :=
+  landslide_two_one
+
+/-- `landslide 2 2` is a singleton: bit 0 unset, bit 1 set. -/
+example : landslide 2 2
+      = [landslideExtend true (landslideExtend false Fin.elim0)] :=
+  landslide_two_two
+
 /-- `landslide 2 0` is the singleton all-false (twice-extended) pattern. -/
 example :
     landslide 2 0
