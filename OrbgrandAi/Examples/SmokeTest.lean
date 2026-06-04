@@ -1305,6 +1305,12 @@ example {n_s : Nat} (ch : LinearIsi n_s) (X : SymbolVector n_s) :
     ch.receive X 0 = 0 <-> ch.channel.mulVec X = 0 :=
   LinearIsi.receive_zero_noise_eq_zero_iff ch X
 
+/-- Perturbed channel diagonal entry. -/
+example {n_s : Nat} (h : ChannelMatrix n_s)
+    (epsilon : Matrix (Fin n_s) (Fin n_s) Complex) (i : Fin n_s) :
+    perturbChannel h epsilon i i = h i i * (1 + epsilon i i) :=
+  perturbChannel_diag h epsilon i
+
 /-- `perturbChannel` preserves zero entries pointwise. -/
 example {n_s : Nat} (h : ChannelMatrix n_s)
     (epsilon : Matrix (Fin n_s) (Fin n_s) Complex)

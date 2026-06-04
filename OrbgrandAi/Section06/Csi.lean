@@ -96,6 +96,14 @@ theorem perturbChannel_zero_channel
     perturbChannel 0 epsilon = 0 :=
   funext fun i => funext fun j => zero_mul (1 + epsilon i j)
 
+/-- *Diagonal entry of `perturbChannel`.*  At `i = j`, the entry is
+    simply `h i i * (1 + epsilon i i)`.  Direct definitional
+    unfolding; useful as a named API surface. -/
+theorem perturbChannel_diag
+    {n_s : Nat} (h : ChannelMatrix n_s)
+    (epsilon : Matrix (Fin n_s) (Fin n_s) Complex) (i : Fin n_s) :
+    perturbChannel h epsilon i i = h i i * (1 + epsilon i i) := rfl
+
 /-- *Pointwise zero characterisation.*  A perturbed entry vanishes
     iff either the underlying entry vanishes or the multiplicative
     factor `1 + epsilon i j` is zero.  Since `Complex` is an
