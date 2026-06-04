@@ -1238,6 +1238,30 @@ theorem landslideExtend_false_castSucc_eq_iff_last_false
        (fun j => landslideExtend_castSucc false (e ∘ Fin.castSucc) j)
        i⟩
 
+/-- *Restriction-then-extend by `true` recovers equality when top bit
+    is true.*  Symmetric to `landslideExtend_false_castSucc_eq_iff_last_false`:
+    `landslideExtend true (e ∘ Fin.castSucc) = e` iff
+    `e (Fin.last n) = true`. -/
+theorem landslideExtend_true_castSucc_eq_iff_last_true
+    {n : Nat} (e : Fin (n + 1) -> Bool) :
+    landslideExtend true (e ∘ Fin.castSucc) = e
+      <-> e (Fin.last n) = true :=
+  ⟨fun h =>
+    let s_last : landslideExtend true (e ∘ Fin.castSucc) (Fin.last n)
+               = true :=
+      landslideExtend_last true (e ∘ Fin.castSucc)
+    let s_eval : landslideExtend true (e ∘ Fin.castSucc) (Fin.last n)
+               = e (Fin.last n) :=
+      congrFun h (Fin.last n)
+    s_eval.symm.trans s_last,
+   fun h_last => funext fun i =>
+     Fin.lastCases
+       (motive :=
+         fun i => landslideExtend true (e ∘ Fin.castSucc) i = e i)
+       ((landslideExtend_last true (e ∘ Fin.castSucc)).trans h_last.symm)
+       (fun j => landslideExtend_castSucc true (e ∘ Fin.castSucc) j)
+       i⟩
+
 /-- *Restriction-then-extend by `true`.*  Symmetric to the `false`
     version: extending the restriction by `true` adds zero (if the
     original top bit was already `true`) or `n + 1` (if the top was

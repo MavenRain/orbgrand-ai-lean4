@@ -686,6 +686,12 @@ example {n : Nat} (e : Fin (n + 1) -> Bool) :
     bitWeight (e ∘ Fin.castSucc) ≤ bitWeight e :=
   bitWeight_castSucc_le e
 
+/-- `landslideExtend true ∘ (·∘ castSucc) = id` iff top bit was already `true`. -/
+example {n : Nat} (e : Fin (n + 1) -> Bool) :
+    landslideExtend true (e ∘ Fin.castSucc) = e
+      <-> e (Fin.last n) = true :=
+  landslideExtend_true_castSucc_eq_iff_last_true e
+
 /-- `landslideExtend false ∘ (·∘ castSucc) = id` iff top bit was already `false`. -/
 example {n : Nat} (e : Fin (n + 1) -> Bool) :
     landslideExtend false (e ∘ Fin.castSucc) = e
