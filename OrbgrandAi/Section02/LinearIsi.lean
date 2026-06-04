@@ -341,6 +341,23 @@ theorem LinearIsi.receive_signal_add_zero_noise
     congrArg (ch.receive (X1 + X2)) (add_zero 0)
   h.symm.trans step
 
+/-- *Identity-channel zero-noise receive is the signal.*  With
+    `channel := 1` and `N = 0`, the receiver is the identity on `X`.
+    Composes `receive_one` (channel = identity reduces to `X + N`)
+    with `add_zero` (zero noise drops out). -/
+theorem LinearIsi.receive_one_zero_noise
+    {n_s : Nat} (X : SymbolVector n_s) (noiseCov : CovMatrix n_s) :
+    ({ channel := 1, noiseCov := noiseCov } : LinearIsi n_s).receive X 0
+      = X :=
+  funext fun k =>
+    let h1 : ({ channel := (1 : Matrix (Fin n_s) (Fin n_s) Complex),
+                noiseCov := noiseCov } : LinearIsi n_s).receive X
+                  (0 : SymbolVector n_s) k
+           = X k + (0 : SymbolVector n_s) k :=
+      congrFun
+        (LinearIsi.receive_one X (0 : SymbolVector n_s) noiseCov) k
+    h1.trans (add_zero (X k))
+
 /-- *Additivity of `receive` in the noise at zero signal.*  Dual of
     `receive_signal_add_zero_noise`: specialises `receive_add` to
     `X1 = X2 = 0`, using `add_zero 0 : 0 + 0 = 0` to rewrite the
