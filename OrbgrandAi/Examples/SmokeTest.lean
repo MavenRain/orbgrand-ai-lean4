@@ -721,6 +721,18 @@ example {n : Nat} (e : Fin (n + 1) -> Bool) (h : e (Fin.last n) = true) :
     bitWeight (e ∘ Fin.castSucc) < bitWeight e :=
   bitWeight_castSucc_lt_of_last_true e h
 
+/-- `landslideExtend false` of all-false is all-false (at length `n + 1`). -/
+example {n : Nat} :
+    landslideExtend false (fun _ : Fin n => false)
+      = (fun _ : Fin (n + 1) => false) :=
+  landslideExtend_false_const_false
+
+/-- `landslideExtend true` of all-true is all-true (at length `n + 1`). -/
+example {n : Nat} :
+    landslideExtend true (fun _ : Fin n => true)
+      = (fun _ : Fin (n + 1) => true) :=
+  landslideExtend_true_const_true
+
 /-- Every length-`(n + 1)` pattern decomposes as an extension. -/
 example {n : Nat} (e : Fin (n + 1) -> Bool) :
     ∃ b : Bool, ∃ e' : Fin n -> Bool, e = landslideExtend b e' :=
@@ -1298,6 +1310,11 @@ example {n : Nat} (a : Codeword n) (i : Fin n) :
 example {n : Nat} (a : Codeword n) (i : Fin n) :
     Codeword.xor 0 a i = a i :=
   Codeword.zero_xor_apply a i
+
+/-- Codeword XOR equals add pointwise: `(a xor b) i = (a + b) i`. -/
+example {n : Nat} (a b : Codeword n) (i : Fin n) :
+    Codeword.xor a b i = (a + b) i :=
+  Codeword.xor_eq_add_apply a b i
 
 /-- Pointwise XOR with zero on the right: `(a xor 0) i = a i`. -/
 example {n : Nat} (a : Codeword n) (i : Fin n) :

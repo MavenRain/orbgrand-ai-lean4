@@ -96,6 +96,14 @@ theorem Codeword.add_apply {n : Nat} (a b : Codeword n) (i : Fin n) :
 theorem Codeword.xor_xor_apply {n : Nat} (a b c : Codeword n) (i : Fin n) :
     Codeword.xor (Codeword.xor a b) c i = a i + b i + c i := rfl
 
+/-- *XOR equals add pointwise.*  Named application form of
+    `xor_eq_add`: `(Codeword.xor a b) i = (a + b) i`.  Useful when
+    rewriting between the `xor` and `+` views at a single bit. -/
+theorem Codeword.xor_eq_add_apply
+    {n : Nat} (a b : Codeword n) (i : Fin n) :
+    Codeword.xor a b i = (a + b) i :=
+  (Codeword.xor_apply a b i).trans (Codeword.add_apply a b i).symm
+
 /-- *Pointwise XOR with zero on the right.*  `(a xor 0) i = a i`.
     Combines `xor_apply` with `Codeword.zero_apply` and `add_zero`.
     Captures the identity-on-the-right behavior at a single bit. -/
