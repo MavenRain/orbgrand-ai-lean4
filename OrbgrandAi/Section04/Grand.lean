@@ -76,6 +76,12 @@ def Codeword.xor {n : Nat} (a b : Codeword n) : Codeword n :=
 theorem Codeword.xor_apply {n : Nat} (a b : Codeword n) (i : Fin n) :
     Codeword.xor a b i = a i + b i := rfl
 
+/-- *Pointwise value of the zero codeword.*  Every bit of `(0 : Codeword n)`
+    is `0` (the zero of `ZMod 2`).  Direct rfl via the `Pi.instZero`
+    instance. -/
+theorem Codeword.zero_apply {n : Nat} (i : Fin n) :
+    (0 : Codeword n) i = 0 := rfl
+
 /-- The syndrome `H * (Y xor N_g)` for a candidate noise vector. -/
 def syndrome
     {n k : Nat} (H : ParityCheck n k) (Y N_g : Codeword n) :
