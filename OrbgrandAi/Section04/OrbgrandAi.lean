@@ -756,5 +756,22 @@ theorem orbgrandAi_nil
   (orbgrandAi_unfolds_to_loop Y Phi budget []).trans
     (orbgrandAiLoop_nil Y Phi budget.toNat)
 
+/-- *Public-API cons-accept.*  Wrapper around `orbgrandAiLoop_cons_accept`
+    threaded through the `AbandonmentBudget` structure: with budget
+    `⟨m + 1⟩`, a non-conflicting head pattern whose substitution is
+    accepted by `Phi` returns immediately.  Defeq unfolding gives
+    `orbgrandAi Y Phi ⟨m + 1⟩ (e :: rest) = orbgrandAiLoop Y Phi (m + 1) (e :: rest)`. -/
+theorem orbgrandAi_cons_accept
+    {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s) (m : Nat)
+    (e : Fin (n_s / b) -> Fin numCandidates)
+    (rest : List (Fin (n_s / b) -> Fin numCandidates))
+    (hnc : noSubstitutionConflict e)
+    (hp : Phi (substitute Y e)) :
+    orbgrandAi (b := b) (numCandidates := numCandidates)
+      Y Phi ⟨m + 1⟩ (e :: rest)
+      = some (substitute Y e) :=
+  orbgrandAiLoop_cons_accept Y Phi m e rest hnc hp
+
 end Section04
 end OrbgrandAi

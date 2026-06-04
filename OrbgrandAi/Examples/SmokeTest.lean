@@ -1267,6 +1267,18 @@ example {n_s b numCandidates : Nat}
       Y Phi budget [] = none :=
   orbgrandAi_nil Y Phi budget
 
+/-- `orbgrandAi` cons-accept: head pattern accepted, return `some (substitute Y e)`. -/
+example {n_s b numCandidates : Nat} (Y : Codeword n_s) (Phi : CodebookMembership n_s)
+    (m : Nat)
+    (e : Fin (n_s / b) -> Fin numCandidates)
+    (rest : List (Fin (n_s / b) -> Fin numCandidates))
+    (hnc : noSubstitutionConflict e)
+    (hp : Phi (substitute Y e)) :
+    orbgrandAi (b := b) (numCandidates := numCandidates)
+      Y Phi ⟨m + 1⟩ (e :: rest)
+      = some (substitute Y e) :=
+  orbgrandAi_cons_accept Y Phi m e rest hnc hp
+
 /-- `orbgrandAi` unfolds to `orbgrandAiLoop` at `budget.toNat`. -/
 example {n_s b numCandidates : Nat}
     (Y : Codeword n_s) (Phi : CodebookMembership n_s)
