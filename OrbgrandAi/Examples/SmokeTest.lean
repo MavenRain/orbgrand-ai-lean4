@@ -768,6 +768,13 @@ example (paths : Fin 0 -> DelayTapPath) (f_s : SamplingFreq)
     delayTapImpulseResponse paths f_s k' = 0 :=
   delayTapImpulseResponse_empty paths f_s k'
 
+/-- RFView matrix general sub-diagonal via tap lookup: any offset `d`. -/
+example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
+    (d : Nat) (h : i.val = j.val + d) :
+    rfViewMatrix n_s rowTaps i j
+      = ((rowTaps i).tap? (d + 1)).getD (0 : Complex) :=
+  rfViewMatrix_at_subdiag_via_tap rowTaps i j d h
+
 /-- RFView matrix lower-triangular branch: getD-extracted tap. -/
 example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
     (h : j.val ≤ i.val) :

@@ -480,6 +480,30 @@ theorem rfViewMatrix_apply_le
       = ((rowTaps i).tap? (i.val - j.val + 1)).getD (0 : Complex) :=
   if_pos h
 
+/-- *General sub-diagonal entry of `rfViewMatrix` via tap lookup.*
+    For any offset `d` with `i.val = j.val + d`, the matrix entry
+    is `((rowTaps i).tap? (d + 1)).getD 0`.  Generalises
+    `rfViewMatrix_first_subdiag` through `_fifth_subdiag` and
+    `rfViewMatrix_at_six_below_diag` as `d = 1, 2, 3, 4, 5, 6`
+    instances; parallels `delayTapMatrix_at_subdiag`. -/
+theorem rfViewMatrix_at_subdiag_via_tap
+    {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps)
+    (i j : Fin n_s) (d : Nat) (h : i.val = j.val + d) :
+    rfViewMatrix n_s rowTaps i j
+      = ((rowTaps i).tap? (d + 1)).getD (0 : Complex) :=
+  let hle : j.val ≤ i.val := h.symm ▸ Nat.le_add_right j.val d
+  let hd_inner : i.val - j.val = d :=
+    h.symm ▸ Nat.add_sub_cancel_left j.val d
+  let hd : i.val - j.val + 1 = d + 1 :=
+    congrArg (· + 1) hd_inner
+  let step1 : rfViewMatrix n_s rowTaps i j
+            = ((rowTaps i).tap? (i.val - j.val + 1)).getD (0 : Complex) :=
+    rfViewMatrix_apply_le rowTaps i j hle
+  let step2 : ((rowTaps i).tap? (i.val - j.val + 1)).getD (0 : Complex)
+            = ((rowTaps i).tap? (d + 1)).getD (0 : Complex) :=
+    congrArg (fun n => ((rowTaps i).tap? n).getD (0 : Complex)) hd
+  step1.trans step2
+
 /-! ## Definitional projections of `rfView` -/
 
 /-- *Channel of `rfView` is `rfViewMatrix`.*  Direct projection of the
