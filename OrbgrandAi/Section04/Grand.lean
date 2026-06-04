@@ -89,6 +89,21 @@ theorem Codeword.zero_apply {n : Nat} (i : Fin n) :
 theorem Codeword.add_apply {n : Nat} (a b : Codeword n) (i : Fin n) :
     (a + b) i = a i + b i := rfl
 
+/-- *Pointwise application of double XOR.*  `(a xor b) xor c` evaluated
+    at `i` is `a i + b i + c i`.  Direct rfl through two
+    `Codeword.xor` unfoldings.  Useful when reasoning about three-arg
+    XOR chains at individual bit positions. -/
+theorem Codeword.xor_xor_apply {n : Nat} (a b c : Codeword n) (i : Fin n) :
+    Codeword.xor (Codeword.xor a b) c i = a i + b i + c i := rfl
+
+/-- *Pointwise XOR with zero on the right.*  `(a xor 0) i = a i`.
+    Combines `xor_apply` with `Codeword.zero_apply` and `add_zero`.
+    Captures the identity-on-the-right behavior at a single bit. -/
+theorem Codeword.xor_zero_apply {n : Nat} (a : Codeword n) (i : Fin n) :
+    Codeword.xor a 0 i = a i :=
+  (Codeword.xor_apply a 0 i).trans
+    ((congrArg (a i + ·) (Codeword.zero_apply i)).trans (add_zero (a i)))
+
 /-- The syndrome `H * (Y xor N_g)` for a candidate noise vector. -/
 def syndrome
     {n k : Nat} (H : ParityCheck n k) (Y N_g : Codeword n) :
