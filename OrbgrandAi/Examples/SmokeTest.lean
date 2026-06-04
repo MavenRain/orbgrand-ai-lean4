@@ -726,6 +726,23 @@ example {n : Nat} (e : Fin (n + 1) -> Bool) :
     ∃ b : Bool, ∃ e' : Fin n -> Bool, e = landslideExtend b e' :=
   landslideExtend_exists e
 
+/-- `entropyRate1` at `n_s = b.toNat` coincides with the block form. -/
+example (sigma : NoisePower) (rho : CorrelationCoefficient) (b : BlockSize) :
+    entropyRate1 sigma rho b.toNat = entropyRate1_block sigma rho b :=
+  entropyRate1_eq_block sigma rho b
+
+/-- Second-order entropy rate closed-form unfolding. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient) (n_s : Nat) :
+    entropyRate2 sigma rho1 rho2 n_s
+      = (1 / 2 : Real)
+          * Real.log (2 * Real.pi * Real.exp 1 * sigma.val)
+        + (1 / (2 * (n_s : Real)))
+            * Real.log
+                (- (rho2.val - 1) ^ (n_s - 2)
+                    * (1 - 2 * rho1.val ^ 2 + rho2.val) ^ (n_s - 2)
+                  / (rho1.val ^ 2 - 1) ^ (n_s - 3)) :=
+  entropyRate2_eq sigma rho1 rho2 n_s
+
 /-- Asymptotic entropy rate unfolding. -/
 example (sigma : NoisePower) (rho : CorrelationCoefficient) :
     entropyRate1_asymp sigma rho
