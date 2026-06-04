@@ -975,6 +975,10 @@ example (phi1 phi2 : Complex) (n : Nat) :
     ar2 phi1 phi2 0 0 n = 0 :=
   ar2_const_zero phi1 phi2 n
 
+/-- AR(2) with both coefficients zero: recurrence vanishes from index 2. -/
+example (z1 z2 : Complex) (n : Nat) : ar2 0 0 z1 z2 (n + 2) = 0 :=
+  ar2_phi_zero z1 z2 n
+
 /-- AR(2) with `phi_1 = phi_2 = 1` is the Fibonacci recurrence. -/
 example (z1 z2 : Complex) (n : Nat) :
     ar2 1 1 z1 z2 (n + 2)
