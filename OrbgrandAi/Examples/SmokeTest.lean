@@ -53,6 +53,20 @@ example {n_s : Nat} (sigma : NoisePower) (rho : CorrelationCoefficient)
     (gaussMarkovCov n_s sigma rho) i i = (sigma.val : Complex) :=
   gaussMarkovCov_diag sigma rho i
 
+/-- Off-diagonal entry with `j.val < i.val`. -/
+example {n_s : Nat} (sigma : NoisePower) (rho : CorrelationCoefficient)
+    (i j : Fin n_s) (h : j.val < i.val) :
+    (gaussMarkovCov n_s sigma rho) i j
+      = (sigma.val : Complex) * (rho.val : Complex) ^ (i.val - j.val) :=
+  gaussMarkovCov_entry_of_ge sigma rho i j h
+
+/-- Gauss-Markov covariance is symmetric: `(gaussMarkovCov ...) i j = (...) j i`. -/
+example {n_s : Nat} (sigma : NoisePower) (rho : CorrelationCoefficient)
+    (i j : Fin n_s) :
+    (gaussMarkovCov n_s sigma rho) i j
+      = (gaussMarkovCov n_s sigma rho) j i :=
+  gaussMarkovCov_sym sigma rho i j
+
 /-- An off-diagonal entry with `i.val < j.val`. -/
 example {n_s : Nat} (sigma : NoisePower) (rho : CorrelationCoefficient)
     (i j : Fin n_s) (h : i.val ≤ j.val) :
