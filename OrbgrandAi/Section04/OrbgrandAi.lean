@@ -756,6 +756,20 @@ theorem orbgrandAi_nil
   (orbgrandAi_unfolds_to_loop Y Phi budget []).trans
     (orbgrandAiLoop_nil Y Phi budget.toNat)
 
+/-- *Public-API cons-conflict.*  Wrapper around `orbgrandAiLoop_cons_conflict`:
+    with budget `⟨m + 1⟩`, a head pattern that has a substitution
+    conflict is skipped, advancing to the rest with budget `⟨m⟩`. -/
+theorem orbgrandAi_cons_conflict
+    {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s) (m : Nat)
+    (e : Fin (n_s / b) -> Fin numCandidates)
+    (rest : List (Fin (n_s / b) -> Fin numCandidates))
+    (h : ¬ noSubstitutionConflict e) :
+    orbgrandAi (b := b) (numCandidates := numCandidates)
+      Y Phi ⟨m + 1⟩ (e :: rest)
+      = orbgrandAi Y Phi ⟨m⟩ rest :=
+  orbgrandAiLoop_cons_conflict Y Phi m e rest h
+
 /-- *Public-API cons-reject.*  Wrapper around `orbgrandAiLoop_cons_reject`
     threaded through the `AbandonmentBudget` structure: with budget
     `⟨m + 1⟩`, a non-conflicting head whose substitution is rejected

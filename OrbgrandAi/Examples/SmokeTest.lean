@@ -1267,6 +1267,17 @@ example {n_s b numCandidates : Nat}
       Y Phi budget [] = none :=
   orbgrandAi_nil Y Phi budget
 
+/-- `orbgrandAi` cons-conflict: conflicting head skipped, advance to rest. -/
+example {n_s b numCandidates : Nat} (Y : Codeword n_s) (Phi : CodebookMembership n_s)
+    (m : Nat)
+    (e : Fin (n_s / b) -> Fin numCandidates)
+    (rest : List (Fin (n_s / b) -> Fin numCandidates))
+    (h : ¬ noSubstitutionConflict e) :
+    orbgrandAi (b := b) (numCandidates := numCandidates)
+      Y Phi ⟨m + 1⟩ (e :: rest)
+      = orbgrandAi Y Phi ⟨m⟩ rest :=
+  orbgrandAi_cons_conflict Y Phi m e rest h
+
 /-- `orbgrandAi` cons-reject: head rejected, advance to rest with `m` budget. -/
 example {n_s b numCandidates : Nat} (Y : Codeword n_s) (Phi : CodebookMembership n_s)
     (m : Nat)
