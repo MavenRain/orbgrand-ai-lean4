@@ -82,6 +82,13 @@ theorem Codeword.xor_apply {n : Nat} (a b : Codeword n) (i : Fin n) :
 theorem Codeword.zero_apply {n : Nat} (i : Fin n) :
     (0 : Codeword n) i = 0 := rfl
 
+/-- *Pointwise application of `+` on `Codeword`.*  Direct rfl via the
+    `Pi.instAdd` instance: `(a + b) i = a i + b i`.  Companion of
+    `xor_apply`; useful as a named API surface when reasoning about
+    individual bit positions under the `+` form. -/
+theorem Codeword.add_apply {n : Nat} (a b : Codeword n) (i : Fin n) :
+    (a + b) i = a i + b i := rfl
+
 /-- The syndrome `H * (Y xor N_g)` for a candidate noise vector. -/
 def syndrome
     {n k : Nat} (H : ParityCheck n k) (Y N_g : Codeword n) :
