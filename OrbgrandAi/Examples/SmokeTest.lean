@@ -1535,6 +1535,16 @@ example {chi : Type} (cs : Constellation chi) (s s_hat : chi) :
 /-- `sinc(1) = 0`. -/
 example : sinc 1 = 0 := sinc_one
 
+/-- `sinc(0) = 1`. -/
+example : sinc 0 = 1 := sinc_zero
+
+/-- Delay-tap impulse response with zero attenuations everywhere is 0. -/
+example {p : Nat} (paths : Fin p -> DelayTapPath)
+    (h_zero : forall d, (paths d).attenuation = 0)
+    (f_s : SamplingFreq) (k' : SymbolIndex) :
+    delayTapImpulseResponse paths f_s k' = 0 :=
+  delayTapImpulseResponse_zero_attenuations paths h_zero f_s k'
+
 /-- Delay-tap matrix lower-triangular branch: entry = impulse at `i - j`. -/
 example {n_s p : Nat} (paths : Fin p -> DelayTapPath) (f_s : SamplingFreq)
     (i j : Fin n_s) (h : j.val ≤ i.val) :
