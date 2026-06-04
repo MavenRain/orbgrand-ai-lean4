@@ -1205,6 +1205,31 @@ theorem logisticWeight_eq_const_true_iff_all_true
       bw_iff.mpr h
     (bridge.trans h2).trans max_eq.symm⟩
 
+/-- *Function-equality form of the restrict-extend identity.*  The
+    composition `landslideExtend false ∘ (·∘ Fin.castSucc)` recovers
+    `e` exactly when the top bit was already `false`.  Forward uses
+    `landslideExtend_last`; backward uses `Fin.lastCases` to do a
+    funext on the top vs castSucc branches. -/
+theorem landslideExtend_false_castSucc_eq_iff_last_false
+    {n : Nat} (e : Fin (n + 1) -> Bool) :
+    landslideExtend false (e ∘ Fin.castSucc) = e
+      <-> e (Fin.last n) = false :=
+  ⟨fun h =>
+    let s_last : landslideExtend false (e ∘ Fin.castSucc) (Fin.last n)
+               = false :=
+      landslideExtend_last false (e ∘ Fin.castSucc)
+    let s_eval : landslideExtend false (e ∘ Fin.castSucc) (Fin.last n)
+               = e (Fin.last n) :=
+      congrFun h (Fin.last n)
+    s_eval.symm.trans s_last,
+   fun h_last => funext fun i =>
+     Fin.lastCases
+       (motive :=
+         fun i => landslideExtend false (e ∘ Fin.castSucc) i = e i)
+       ((landslideExtend_last false (e ∘ Fin.castSucc)).trans h_last.symm)
+       (fun j => landslideExtend_castSucc false (e ∘ Fin.castSucc) j)
+       i⟩
+
 /-- *Restriction-then-extend by `true`.*  Symmetric to the `false`
     version: extending the restriction by `true` adds zero (if the
     original top bit was already `true`) or `n + 1` (if the top was
