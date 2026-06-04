@@ -214,6 +214,10 @@ theorem landslide_two_zero :
     landslide 2 0
       = [landslideExtend false (landslideExtend false Fin.elim0)] := rfl
 
+/-- `landslide 1 1` has length 1.  Direct `rfl` from `landslide_one_one`. -/
+theorem landslide_one_one_length :
+    (landslide 1 1).length = 1 := rfl
+
 /-- `landslide 2 1` contains a single pattern: bit 0 set, bit 1 unset
     (extended with `false` from the length-1 weight-1 enumeration). -/
 theorem landslide_two_one :

@@ -1002,6 +1002,9 @@ example {n : Nat} (e : Fin n -> Bool) :
     bitWeight (landslideExtend true e) = bitWeight e + (n + 1) :=
   bitWeight_extend_true e
 
+/-- `landslide 1 1` has length 1. -/
+example : (landslide 1 1).length = 1 := landslide_one_one_length
+
 /-- `landslide 2 0` is the singleton all-false (twice-extended) pattern. -/
 example :
     landslide 2 0
