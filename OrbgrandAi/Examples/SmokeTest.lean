@@ -795,6 +795,28 @@ example {n : Nat} (pi : ReliabilityRank n) (e : Fin n -> Bool) :
     logisticWeight pi e = bitWeight (e ∘ pi.perm) :=
   logisticWeight_eq_bitWeight_comp pi e
 
+/-- 2x2 Gauss-Markov covariance: `(0, 0)` entry equals `sigma`. -/
+example (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    (gaussMarkovCov 2 sigma rho) 0 0 = (sigma.val : Complex) :=
+  gaussMarkovCov_two_00 sigma rho
+
+/-- 2x2 Gauss-Markov covariance: `(1, 1)` entry equals `sigma`. -/
+example (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    (gaussMarkovCov 2 sigma rho) 1 1 = (sigma.val : Complex) :=
+  gaussMarkovCov_two_11 sigma rho
+
+/-- 2x2 Gauss-Markov covariance: `(0, 1)` entry equals `sigma * rho`. -/
+example (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    (gaussMarkovCov 2 sigma rho) 0 1
+      = (sigma.val : Complex) * (rho.val : Complex) :=
+  gaussMarkovCov_two_01 sigma rho
+
+/-- 2x2 Gauss-Markov covariance: `(1, 0)` entry equals `sigma * rho`. -/
+example (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    (gaussMarkovCov 2 sigma rho) 1 0
+      = (sigma.val : Complex) * (rho.val : Complex) :=
+  gaussMarkovCov_two_10 sigma rho
+
 /-- 2x2 Gauss-Markov covariance: explicit off-diagonal symmetry. -/
 example (sigma : NoisePower) (rho : CorrelationCoefficient) :
     (gaussMarkovCov 2 sigma rho) 0 1 = (gaussMarkovCov 2 sigma rho) 1 0 :=
