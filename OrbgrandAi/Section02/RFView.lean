@@ -468,6 +468,18 @@ theorem rfViewMatrix_outside_band
   | Or.inl h_lt => rfViewMatrix_is_lower_triangular rowTaps i j h_lt
   | Or.inr h_ge => rfViewMatrix_below_6band rowTaps i j h_ge
 
+/-- *Lower-triangular branch of `rfViewMatrix`.*  Whenever
+    `j.val ≤ i.val`, the matrix entry is the `getD`-extracted tap
+    at delay `i.val - j.val + 1`.  Direct `if_pos` exposure,
+    parallel to `delayTapMatrix_apply_le`.  Useful when the
+    in-band lookup needs to be reasoned about explicitly. -/
+theorem rfViewMatrix_apply_le
+    {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps)
+    (i j : Fin n_s) (h : j.val ≤ i.val) :
+    rfViewMatrix n_s rowTaps i j
+      = ((rowTaps i).tap? (i.val - j.val + 1)).getD (0 : Complex) :=
+  if_pos h
+
 /-! ## Definitional projections of `rfView` -/
 
 /-- *Channel of `rfView` is `rfViewMatrix`.*  Direct projection of the
