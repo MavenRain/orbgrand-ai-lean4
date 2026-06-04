@@ -1134,6 +1134,23 @@ example {n : Nat} (a : Codeword n) :
     Codeword.xor a 0 = a :=
   Codeword.xor_zero a
 
+/-- `CorrelationCoefficient.mk?` in `[0, 1]` returns `Except.ok`. -/
+example (v : Real) (h0 : 0 <= v) (h1 : v <= 1) :
+    CorrelationCoefficient.mk? v = Except.ok ⟨v, h0, h1⟩ :=
+  CorrelationCoefficient.mk?_of_mem v h0 h1
+
+/-- `CorrelationCoefficient.mk?` on negative input errors. -/
+example (v : Real) (h0 : ¬ 0 <= v) :
+    CorrelationCoefficient.mk? v
+      = Except.error (ChannelError.correlationOutOfRange v) :=
+  CorrelationCoefficient.mk?_of_neg v h0
+
+/-- `CorrelationCoefficient.mk?` on input above 1 errors. -/
+example (v : Real) (h0 : 0 <= v) (h1 : ¬ v <= 1) :
+    CorrelationCoefficient.mk? v
+      = Except.error (ChannelError.correlationOutOfRange v) :=
+  CorrelationCoefficient.mk?_of_gt_one v h0 h1
+
 /-- `SamplingFreq.mk?` on strictly positive input returns `Except.ok`. -/
 example (v : Real) (h : 0 < v) :
     SamplingFreq.mk? v = Except.ok ⟨v, h⟩ :=

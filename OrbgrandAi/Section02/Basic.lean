@@ -272,6 +272,29 @@ noncomputable def mk? (v : Real) : Except ChannelError CorrelationCoefficient :=
   else
     Except.error (ChannelError.correlationOutOfRange v)
 
+/-- *Both preconditions met: input in `[0, 1]` gives `ok`.*  Composes
+    the outer `dif_pos h0` (non-negative) with the inner `dif_pos h1`
+    (≤ 1). -/
+theorem mk?_of_mem (v : Real) (h0 : 0 <= v) (h1 : v <= 1) :
+    CorrelationCoefficient.mk? v
+      = Except.ok ⟨v, h0, h1⟩ :=
+  (dif_pos h0).trans (dif_pos h1)
+
+/-- *Negative input gives `error`.*  Outer `dif_neg` short-circuits
+    the entire chain. -/
+theorem mk?_of_neg (v : Real) (h0 : ¬ 0 <= v) :
+    CorrelationCoefficient.mk? v
+      = Except.error (ChannelError.correlationOutOfRange v) :=
+  dif_neg h0
+
+/-- *Input above one gives `error`.*  Non-negative but `> 1`: outer
+    `dif_pos h0` reduces to the inner `if`, which `dif_neg h1` then
+    routes to the error branch. -/
+theorem mk?_of_gt_one (v : Real) (h0 : 0 <= v) (h1 : ¬ v <= 1) :
+    CorrelationCoefficient.mk? v
+      = Except.error (ChannelError.correlationOutOfRange v) :=
+  (dif_pos h0).trans (dif_neg h1)
+
 end CorrelationCoefficient
 
 namespace SamplingFreq
