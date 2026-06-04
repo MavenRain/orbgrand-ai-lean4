@@ -744,6 +744,24 @@ example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
     rfViewMatrix n_s rowTaps i j = (rowTaps i).tap2 :=
   rfViewMatrix_first_subdiag rowTaps i j h
 
+/-- RFView matrix second sub-diagonal entry is `tap3`. -/
+example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
+    (h : i.val = j.val + 2) :
+    rfViewMatrix n_s rowTaps i j = (rowTaps i).tap3 :=
+  rfViewMatrix_second_subdiag rowTaps i j h
+
+/-- RFView matrix third sub-diagonal entry is `tap4`. -/
+example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
+    (h : i.val = j.val + 3) :
+    rfViewMatrix n_s rowTaps i j = (rowTaps i).tap4 :=
+  rfViewMatrix_third_subdiag rowTaps i j h
+
+/-- RFView matrix fourth sub-diagonal entry is `tap5`. -/
+example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
+    (h : i.val = j.val + 4) :
+    rfViewMatrix n_s rowTaps i j = (rowTaps i).tap5 :=
+  rfViewMatrix_fourth_subdiag rowTaps i j h
+
 /-- RFView matrix fifth sub-diagonal entry is `tap6`. -/
 example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
     (h : i.val = j.val + 5) :
