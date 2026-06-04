@@ -100,6 +100,14 @@ example (sigma : NoisePower) (rho : CorrelationCoefficient) (b : BlockSize) :
             * Real.log (1 - rho.val ^ 2) :=
   entropyRate1_block_eq sigma rho b
 
+/-- The 2x2 first-order Gauss-Markov determinant: unfactored form. -/
+example (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    (gaussMarkovCov 2 sigma rho).det
+      = (sigma.val : Complex) * (sigma.val : Complex)
+        - ((sigma.val : Complex) * (rho.val : Complex))
+          * ((sigma.val : Complex) * (rho.val : Complex)) :=
+  cov1_det_fin_two sigma rho
+
 /-- The 2x2 first-order Gauss-Markov determinant has the factored form
     `sigma^2 * (1 - rho^2)`. -/
 example (sigma : NoisePower) (rho : CorrelationCoefficient) :
