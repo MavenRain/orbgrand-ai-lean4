@@ -1107,6 +1107,16 @@ example {n : Nat} (a b c d : Codeword n) :
       <-> (Codeword.xor a c = Codeword.xor b d) :=
   Codeword.xor_eq_xor_iff_xor_eq_xor a b c d
 
+/-- Codeword left self-XOR cancellation: `(a xor a) xor b = b`. -/
+example {n : Nat} (a b : Codeword n) :
+    Codeword.xor (Codeword.xor a a) b = b :=
+  Codeword.xor_self_left_eq a b
+
+/-- Codeword right self-XOR cancellation: `a xor (b xor b) = a`. -/
+example {n : Nat} (a b : Codeword n) :
+    Codeword.xor a (Codeword.xor b b) = a :=
+  Codeword.xor_self_right_eq a b
+
 /-- Codeword XOR common-suffix cancellation: `(a xor b) xor (c xor b) = a xor c`. -/
 example {n : Nat} (a b c : Codeword n) :
     Codeword.xor (Codeword.xor a b) (Codeword.xor c b)

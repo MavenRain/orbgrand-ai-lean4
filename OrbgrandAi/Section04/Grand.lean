@@ -394,6 +394,22 @@ theorem Codeword.xor_xor_comm {n : Nat} (a b c d : Codeword n) :
       = Codeword.xor (Codeword.xor a c) (Codeword.xor b d) :=
   funext fun i => add_add_add_comm (a i) (b i) (c i) (d i)
 
+/-- *Left self-XOR cancels.*  `(a xor a) xor b = b`: a self-XOR
+    prefix is the identity.  Direct composition of `xor_self` and
+    `zero_xor`. -/
+theorem Codeword.xor_self_left_eq {n : Nat} (a b : Codeword n) :
+    Codeword.xor (Codeword.xor a a) b = b :=
+  (congrArg (fun z => Codeword.xor z b) (Codeword.xor_self a)).trans
+    (Codeword.zero_xor b)
+
+/-- *Right self-XOR cancels.*  `a xor (b xor b) = a`: a self-XOR
+    suffix is the identity.  Direct composition of `xor_self` and
+    `xor_zero`. -/
+theorem Codeword.xor_self_right_eq {n : Nat} (a b : Codeword n) :
+    Codeword.xor a (Codeword.xor b b) = a :=
+  (congrArg (Codeword.xor a) (Codeword.xor_self b)).trans
+    (Codeword.xor_zero a)
+
 /-- *Common-suffix cancellation.*  `(a xor b) xor (c xor b) = a xor c`:
     a shared last argument on both sides drops out under XOR.  Dual
     of `xor_xor_xor_self`; derived from `xor_xor_comm` (regrouping
