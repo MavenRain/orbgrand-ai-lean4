@@ -1178,6 +1178,11 @@ example {n : Nat} (a b c : Codeword n) :
       = Codeword.xor b c :=
   Codeword.xor_xor_xor_self a b c
 
+/-- Codeword XOR pointwise application: `(a xor b) i = a i + b i`. -/
+example {n : Nat} (a b : Codeword n) (i : Fin n) :
+    Codeword.xor a b i = a i + b i :=
+  Codeword.xor_apply a b i
+
 /-- Codeword XOR is commutative. -/
 example {n : Nat} (a b : Codeword n) :
     Codeword.xor a b = Codeword.xor b a :=

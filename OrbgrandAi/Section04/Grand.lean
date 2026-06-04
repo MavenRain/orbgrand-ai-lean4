@@ -70,6 +70,12 @@ structure ParityCheck (n k : Nat) where
 def Codeword.xor {n : Nat} (a b : Codeword n) : Codeword n :=
   fun i => a i + b i
 
+/-- *Pointwise application of `Codeword.xor`.*  Direct rfl unfolding:
+    `(a xor b) i = a i + b i`.  Useful when reasoning about specific
+    bit positions. -/
+theorem Codeword.xor_apply {n : Nat} (a b : Codeword n) (i : Fin n) :
+    Codeword.xor a b i = a i + b i := rfl
+
 /-- The syndrome `H * (Y xor N_g)` for a candidate noise vector. -/
 def syndrome
     {n k : Nat} (H : ParityCheck n k) (Y N_g : Codeword n) :
