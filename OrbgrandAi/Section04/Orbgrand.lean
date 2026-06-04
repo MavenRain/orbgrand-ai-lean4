@@ -206,6 +206,14 @@ theorem landslide_one_zero :
 theorem landslide_one_one :
     landslide 1 1 = [landslideExtend true Fin.elim0] := rfl
 
+/-- `landslide 2 0` contains a single pattern: both bits unset
+    (extending all-false twice).  Direct rfl from the structural
+    recursion: `withoutTop = (landslide 1 0).map (extend false)` and
+    the `withTop` branch is skipped since `n + 1 > w`. -/
+theorem landslide_two_zero :
+    landslide 2 0
+      = [landslideExtend false (landslideExtend false Fin.elim0)] := rfl
+
 /-- `landslide 2 1` contains a single pattern: bit 0 set, bit 1 unset
     (extended with `false` from the length-1 weight-1 enumeration). -/
 theorem landslide_two_one :

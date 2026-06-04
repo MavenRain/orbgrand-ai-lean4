@@ -940,6 +940,12 @@ example {n : Nat} (e : Fin n -> Bool) :
     bitWeight (landslideExtend true e) = bitWeight e + (n + 1) :=
   bitWeight_extend_true e
 
+/-- `landslide 2 0` is the singleton all-false (twice-extended) pattern. -/
+example :
+    landslide 2 0
+      = [landslideExtend false (landslideExtend false Fin.elim0)] :=
+  landslide_two_zero
+
 /-- At length 2, the bucket for weight 4 is empty. -/
 example : landslide 2 4 = [] :=
   landslide_two_four_eq_nil
