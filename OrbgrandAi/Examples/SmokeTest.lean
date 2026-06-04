@@ -1565,6 +1565,12 @@ example {n_s p : Nat} (paths : Fin p -> DelayTapPath)
     delayTapMatrix n_s paths f_s i j = (0 : Complex) :=
   delayTapMatrix_zero_attenuations paths h_zero f_s i j
 
+/-- Identity-channel zero-signal receive is the noise itself. -/
+example {n_s : Nat} (N : SymbolVector n_s) (noiseCov : CovMatrix n_s) :
+    ({ channel := 1, noiseCov := noiseCov } : LinearIsi n_s).receive 0 N
+      = N :=
+  LinearIsi.receive_one_zero_signal N noiseCov
+
 /-- Identity-channel zero-noise receive is the signal itself. -/
 example {n_s : Nat} (X : SymbolVector n_s) (noiseCov : CovMatrix n_s) :
     ({ channel := 1, noiseCov := noiseCov } : LinearIsi n_s).receive X 0
