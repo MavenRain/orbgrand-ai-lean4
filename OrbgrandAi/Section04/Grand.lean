@@ -616,6 +616,7 @@ theorem Codeword.xor_xor_self_apply
     Codeword.xor Y (Codeword.xor Y Ng) i = Ng i :=
   congrFun (Codeword.xor_xor_self Y Ng) i
 
+
 /-- *Involution variant: outer-left matches inner-right.*
     `a xor (b xor a) = b`.  Complements `xor_xor_self` (outer-left
     matches inner-left) and `xor_xor_right` (outer-right matches
@@ -638,6 +639,13 @@ theorem Codeword.xor_xor_right {n : Nat} (a b : Codeword n) :
   let s2 : Codeword.xor a (Codeword.xor b b) = Codeword.xor a 0 :=
     congrArg (Codeword.xor a) (Codeword.xor_self b)
   s1.trans (s2.trans (Codeword.xor_zero a))
+
+/-- *Pointwise XOR right cancellation.*  `((a xor b) xor b) i = a i`.
+    One-liner via `congrFun` on `xor_xor_right`. -/
+theorem Codeword.xor_xor_right_apply
+    {n : Nat} (a b : Codeword n) (i : Fin n) :
+    Codeword.xor (Codeword.xor a b) b i = a i :=
+  congrFun (Codeword.xor_xor_right a b) i
 
 /-- *XOR transposition.*  `a xor b = c` iff `a = c xor b`.  The
     fundamental "move XOR to the other side" rule for ZMod 2. -/
