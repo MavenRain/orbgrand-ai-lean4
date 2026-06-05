@@ -610,6 +610,16 @@ example {n : Nat} (a b c : Codeword n) :
     Codeword.xor a b = c <-> a = Codeword.xor c b :=
   Codeword.xor_eq_iff_eq_xor a b c
 
+/-- `landslideExtend b` is injective in its restriction argument. -/
+example {n : Nat} (b : Bool) {e1 e2 : Fin n -> Bool}
+    (h : landslideExtend b e1 = landslideExtend b e2) : e1 = e2 :=
+  landslideExtend_inj b h
+
+/-- `landslideExtend` injectivity at the top bit (with fixed restriction). -/
+example {n : Nat} (e : Fin n -> Bool) {b1 b2 : Bool}
+    (h : landslideExtend b1 e = landslideExtend b2 e) : b1 = b2 :=
+  landslideExtend_inj_top e h
+
 /-- `landslideExtend` is injective in both top bit and restriction. -/
 example {n : Nat} {b1 b2 : Bool} {e1 e2 : Fin n -> Bool} :
     landslideExtend b1 e1 = landslideExtend b2 e2
