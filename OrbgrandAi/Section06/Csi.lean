@@ -112,6 +112,20 @@ theorem perturbChannel_diag
     (epsilon : Matrix (Fin n_s) (Fin n_s) Complex) (i : Fin n_s) :
     perturbChannel h epsilon i i = h i i * (1 + epsilon i i) := rfl
 
+/-- *Pointwise identity at zero perturbation.*  When `epsilon i j = 0`,
+    the perturbed entry equals `h i j`.  Pointwise dual of
+    `perturbChannel_zero` and counterpart of
+    `perturbChannel_neg_one_attenuation_eq_zero`.  Three-step via
+    `congrArg` + `add_zero` + `mul_one`. -/
+theorem perturbChannel_eps_zero_apply
+    {n_s : Nat} (h : ChannelMatrix n_s)
+    (epsilon : Matrix (Fin n_s) (Fin n_s) Complex)
+    {i j : Fin n_s} (h_eps : epsilon i j = 0) :
+    perturbChannel h epsilon i j = h i j :=
+  let h_factor : (1 : Complex) + epsilon i j = 1 :=
+    (congrArg (1 + ·) h_eps).trans (add_zero 1)
+  (congrArg (h i j * ·) h_factor).trans (mul_one (h i j))
+
 /-- *Pure cancellation: `epsilon = -1` zeroes the entry.*  When the
     error term at `(i, j)` exactly cancels the unit, the perturbed
     entry vanishes regardless of `h i j`.  Composes `congrArg` on

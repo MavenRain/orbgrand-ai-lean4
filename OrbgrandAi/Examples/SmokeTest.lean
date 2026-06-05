@@ -1205,6 +1205,13 @@ example {n : Nat} {a b c : Codeword n}
     (h : Codeword.xor a c = Codeword.xor b c) : a = b :=
   Codeword.xor_right_cancel h
 
+/-- Perturbed channel is identity when `epsilon i j = 0` (pointwise). -/
+example {n_s : Nat} (h : ChannelMatrix n_s)
+    (epsilon : Matrix (Fin n_s) (Fin n_s) Complex)
+    {i j : Fin n_s} (h_eps : epsilon i j = 0) :
+    perturbChannel h epsilon i j = h i j :=
+  perturbChannel_eps_zero_apply h epsilon h_eps
+
 /-- Perturbed channel vanishes when `epsilon i j = -1` (pure cancellation). -/
 example {n_s : Nat} (h : ChannelMatrix n_s)
     (epsilon : Matrix (Fin n_s) (Fin n_s) Complex)
