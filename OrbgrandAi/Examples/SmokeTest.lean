@@ -1384,6 +1384,12 @@ example {n : Nat} (a : Codeword n) (i : Fin n) :
     Codeword.xor a 0 i = a i :=
   Codeword.xor_zero_apply a i
 
+/-- Pointwise XOR associativity at index `i`. -/
+example {n : Nat} (a b c : Codeword n) (i : Fin n) :
+    Codeword.xor (Codeword.xor a b) c i
+      = Codeword.xor a (Codeword.xor b c) i :=
+  Codeword.xor_assoc_apply a b c i
+
 /-- Pointwise application of double XOR: `((a xor b) xor c) i = a i + b i + c i`. -/
 example {n : Nat} (a b c : Codeword n) (i : Fin n) :
     Codeword.xor (Codeword.xor a b) c i = a i + b i + c i :=

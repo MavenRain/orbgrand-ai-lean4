@@ -483,6 +483,14 @@ theorem Codeword.xor_assoc {n : Nat} (a b c : Codeword n) :
     Codeword.xor (Codeword.xor a b) c = Codeword.xor a (Codeword.xor b c) :=
   funext fun i => add_assoc (a i) (b i) (c i)
 
+/-- *Pointwise XOR associativity.*  One-liner via `congrFun` on
+    `xor_assoc`: at each index, the associativity holds. -/
+theorem Codeword.xor_assoc_apply
+    {n : Nat} (a b c : Codeword n) (i : Fin n) :
+    Codeword.xor (Codeword.xor a b) c i
+      = Codeword.xor a (Codeword.xor b c) i :=
+  congrFun (Codeword.xor_assoc a b c) i
+
 /-- *Four-argument XOR shuffle.*  `(a xor b) xor (c xor d)
     = (a xor c) xor (b xor d)`: the abelian-group rearrangement
     swapping the inner-pair partition.  Pointwise `add_add_add_comm`. -/
