@@ -114,6 +114,11 @@ example (sigma : NoisePower) (rho : CorrelationCoefficient) (b : BlockSize) :
             * Real.log (1 - rho.val ^ 2) :=
   entropyRate1_block_eq sigma rho b
 
+/-- Second-order determinant formula vanishes at zero noise power (for `0 < n_s`). -/
+example (rho1 rho2 : CorrelationCoefficient) {n_s : Nat} (h_pos : 0 < n_s) :
+    cov2DetFormula ⟨0, le_refl 0⟩ rho1 rho2 n_s = 0 :=
+  cov2DetFormula_zero_sigma rho1 rho2 h_pos
+
 /-- The 2x2 first-order Gauss-Markov determinant: unfactored form. -/
 example (sigma : NoisePower) (rho : CorrelationCoefficient) :
     (gaussMarkovCov 2 sigma rho).det

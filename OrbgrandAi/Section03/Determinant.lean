@@ -94,6 +94,36 @@ noncomputable def gaussMarkov2
     let d : Nat := if i.val <= j.val then j.val - i.val else i.val - j.val
     cov2_lag sigma rho1 rho2 beta1 beta2 d
 
+/-- *Determinant vanishes at zero noise power.*  When `sigma.val = 0`
+    and `0 < n_s`, the entire closed-form `cov2DetFormula` evaluates
+    to `0`.  Reason: the factor `sigmaSq^n_s = (0^2)^n_s = 0` zeroes
+    out the numerator, dividing gives `0`, and negating leaves `0`.
+    The `0 < n_s` precondition is required because at `n_s = 0` the
+    Nat-subtractions and `0^0 = 1` collapse the formula to `-1`. -/
+theorem cov2DetFormula_zero_sigma
+    (rho1 rho2 : CorrelationCoefficient) {n_s : Nat} (h_pos : 0 < n_s) :
+    cov2DetFormula ⟨0, le_refl 0⟩ rho1 rho2 n_s = 0 :=
+  let h_zsq : (0 : Real) ^ 2 = 0 :=
+    (pow_two (0 : Real)).trans (mul_zero 0)
+  let h_zsq_pow : ((0 : Real) ^ 2) ^ n_s = 0 :=
+    (congrArg (· ^ n_s) h_zsq).trans (zero_pow h_pos.ne')
+  let core_zero :
+      (rho2.val - 1) ^ (n_s - 2)
+        * (1 - 2 * rho1.val ^ 2 + rho2.val) ^ (n_s - 2)
+        * ((0 : Real) ^ 2) ^ n_s = 0 :=
+    (congrArg (fun x =>
+       (rho2.val - 1) ^ (n_s - 2)
+         * (1 - 2 * rho1.val ^ 2 + rho2.val) ^ (n_s - 2) * x)
+       h_zsq_pow).trans (mul_zero _)
+  let div_zero :
+      (rho2.val - 1) ^ (n_s - 2)
+        * (1 - 2 * rho1.val ^ 2 + rho2.val) ^ (n_s - 2)
+        * ((0 : Real) ^ 2) ^ n_s
+        / (rho1.val ^ 2 - 1) ^ (n_s - 3) = 0 :=
+    (congrArg (· / (rho1.val ^ 2 - 1) ^ (n_s - 3)) core_zero).trans
+      (zero_div _)
+  (congrArg Neg.neg div_zero).trans neg_zero
+
 /-! ## The determinant theorem (placeholder) -/
 
 /-- The auto-covariance matrix has determinant equal to
