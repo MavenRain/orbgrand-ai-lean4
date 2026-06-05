@@ -498,6 +498,7 @@ theorem Codeword.xor_comm_apply
     Codeword.xor a b i = Codeword.xor b a i :=
   congrFun (Codeword.xor_comm a b) i
 
+
 /-- *Four-argument XOR shuffle.*  `(a xor b) xor (c xor d)
     = (a xor c) xor (b xor d)`: the abelian-group rearrangement
     swapping the inner-pair partition.  Pointwise `add_add_add_comm`. -/
@@ -607,6 +608,13 @@ theorem Codeword.xor_xor_self {n : Nat} (Y Ng : Codeword n) :
     congrArg (fun z => Codeword.xor z Ng) (Codeword.xor_self Y)
   let h3 : Codeword.xor 0 Ng = Ng := Codeword.zero_xor Ng
   h1.trans (h2.trans h3)
+
+/-- *Pointwise XOR involution.*  `(Y xor (Y xor Ng)) i = Ng i`.
+    One-liner via `congrFun` on `xor_xor_self`. -/
+theorem Codeword.xor_xor_self_apply
+    {n : Nat} (Y Ng : Codeword n) (i : Fin n) :
+    Codeword.xor Y (Codeword.xor Y Ng) i = Ng i :=
+  congrFun (Codeword.xor_xor_self Y Ng) i
 
 /-- *Involution variant: outer-left matches inner-right.*
     `a xor (b xor a) = b`.  Complements `xor_xor_self` (outer-left
