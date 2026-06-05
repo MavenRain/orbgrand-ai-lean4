@@ -1328,5 +1328,29 @@ theorem landslideExtend_false_castSucc_bitWeight
         bitWeight_extend_false (e ∘ Fin.castSucc)
       h_extend.trans h_split.symm
 
+/-- *Strict logistic-weight bound when some rank position is false.*
+    The strict-inequality companion of `logisticWeight_eq_const_true_iff_all_true`:
+    if any bit at any rank position is `false`, the logistic weight
+    strictly undershoots the maximum.  Composes
+    `logisticWeight_eq_bitWeight_comp`, `bitWeight_lt_const_true_of_exists_false`,
+    and `logisticWeight_const_true_eq_bitWeight_const_true`. -/
+theorem logisticWeight_lt_const_true_of_exists_false_at_perm
+    {n : Nat} (pi : ReliabilityRank n) (e : Fin n -> Bool)
+    (h : ∃ i, e (pi.perm i) = false) :
+    logisticWeight pi e
+      < logisticWeight pi (fun _ : Fin n => true) :=
+  let bridge : logisticWeight pi e = bitWeight (e ∘ pi.perm) :=
+    logisticWeight_eq_bitWeight_comp pi e
+  let max_bridge : logisticWeight pi (fun _ : Fin n => true)
+                 = bitWeight (fun _ : Fin n => true) :=
+    logisticWeight_const_true_eq_bitWeight_const_true pi
+  let h_ex : ∃ j : Fin n, (e ∘ pi.perm) j = false :=
+    let ⟨i, h_i⟩ := h
+    ⟨i, h_i⟩
+  let h_lt : bitWeight (e ∘ pi.perm)
+           < bitWeight (fun _ : Fin n => true) :=
+    bitWeight_lt_const_true_of_exists_false (e ∘ pi.perm) h_ex
+  (bridge.trans_lt h_lt).trans_eq max_bridge.symm
+
 end Section04
 end OrbgrandAi
