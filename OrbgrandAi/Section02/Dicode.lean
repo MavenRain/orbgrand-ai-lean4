@@ -379,6 +379,23 @@ theorem gaussMarkovCov_two_10
     congrArg ((sigma.val : Complex) * ·) (pow_one (rho.val : Complex))
   h0.trans h1
 
+/-- *Zero noise power gives zero covariance matrix.*  Every entry of
+    `gaussMarkovCov n_s ⟨0, _⟩ rho` is zero.  The Complex coercion of
+    `(0 : Real)` is `0` via `Complex.ofReal_zero`, then `zero_mul`
+    finishes.  Parallel to `cov1_lag_zero_sigma`. -/
+theorem gaussMarkovCov_zero_sigma
+    {n_s : Nat} (rho : CorrelationCoefficient) (i j : Fin n_s) :
+    (gaussMarkovCov n_s ⟨0, le_refl 0⟩ rho) i j = 0 :=
+  let d : Nat :=
+    if i.val <= j.val then j.val - i.val else i.val - j.val
+  let step1 : (gaussMarkovCov n_s ⟨0, le_refl 0⟩ rho) i j
+            = (((0 : Real)) : Complex) * ((rho.val : Complex) ^ d) := rfl
+  let step2 : (((0 : Real)) : Complex) * ((rho.val : Complex) ^ d)
+            = (0 : Complex) * ((rho.val : Complex) ^ d) :=
+    congrArg (fun z => z * ((rho.val : Complex) ^ d))
+      Complex.ofReal_zero
+  step1.trans (step2.trans (zero_mul _))
+
 /-- *2x2 Gauss-Markov off-diagonal symmetry.*  Specialisation of
     `gaussMarkovCov_sym` to the `n_s = 2` case; both off-diagonal
     entries collapse to `sigma * rho` via the explicit closed forms,

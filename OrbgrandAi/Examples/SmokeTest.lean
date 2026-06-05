@@ -942,6 +942,11 @@ example (sigma : NoisePower) (rho : CorrelationCoefficient) :
       = (sigma.val : Complex) * (rho.val : Complex) :=
   gaussMarkovCov_two_10 sigma rho
 
+/-- Gauss-Markov covariance vanishes at zero noise power. -/
+example {n_s : Nat} (rho : CorrelationCoefficient) (i j : Fin n_s) :
+    (gaussMarkovCov n_s ⟨0, le_refl 0⟩ rho) i j = 0 :=
+  gaussMarkovCov_zero_sigma rho i j
+
 /-- 2x2 Gauss-Markov covariance: explicit off-diagonal symmetry. -/
 example (sigma : NoisePower) (rho : CorrelationCoefficient) :
     (gaussMarkovCov 2 sigma rho) 0 1 = (gaussMarkovCov 2 sigma rho) 1 0 :=
