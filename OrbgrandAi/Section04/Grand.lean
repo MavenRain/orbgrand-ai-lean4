@@ -1275,5 +1275,29 @@ theorem grandFind_append_eq
   | some c => grandFind_append_left H Y order1 c h order2
   | none   => grandFind_append_none H Y order1 h order2
 
+/-- *GRAND output syndrome decomposition.*  When `grandFind` returns
+    `some c`, there exists a noise candidate `Ng` in the order list
+    such that `c = Y xor Ng` AND the per-coordinate sum
+    `H * Y i + H * Ng i = 0`.  Composes three theorems:
+    `grandFind_returns_xor`, `grandFind_syndromeZero`, and
+    `Codeword.mulVec_xor` (linearity of the parity-check map). -/
+theorem grandFind_output_syndrome_decomp
+    {n k : Nat} (H : ParityCheck n k) (Y : Codeword n)
+    (order : List (Codeword n)) (c : Codeword n)
+    (hfind : grandFind H Y order = some c) :
+    exists Ng, Ng ∈ order /\ c = Codeword.xor Y Ng /\
+      forall (i : Fin (n - k)),
+        H.matrix.mulVec Y i + H.matrix.mulVec Ng i = 0 :=
+  let ⟨Ng, hmem, heq⟩ := grandFind_returns_xor H Y order c hfind
+  let hsyn := grandFind_syndromeZero H Y order c hfind
+  ⟨Ng, hmem, heq, fun i =>
+    let step1 : H.matrix.mulVec c i = 0 := hsyn i
+    let step3 : H.matrix.mulVec (Codeword.xor Y Ng) i = 0 :=
+      heq ▸ step1
+    let step4 : H.matrix.mulVec Y i + H.matrix.mulVec Ng i
+              = H.matrix.mulVec (Codeword.xor Y Ng) i :=
+      (congrFun (Codeword.mulVec_xor H Y Ng) i).symm
+    step4.trans step3⟩
+
 end Section04
 end OrbgrandAi

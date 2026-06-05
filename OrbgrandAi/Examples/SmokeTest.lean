@@ -276,6 +276,15 @@ example {n_s b numCandidates : Nat}
     Phi c = true /\ (exists e, e ∈ patterns /\ c = substitute Y e) :=
   orbgrandAi_sound Y Phi budget patterns c h
 
+/-- GRAND output syndrome decomposition: `H * Y i + H * Ng i = 0` componentwise. -/
+example {n k : Nat} (H : ParityCheck n k) (Y : Codeword n)
+    (order : List (Codeword n)) (c : Codeword n)
+    (hfind : grandFind H Y order = some c) :
+    exists Ng, Ng ∈ order /\ c = Codeword.xor Y Ng /\
+      forall (i : Fin (n - k)),
+        H.matrix.mulVec Y i + H.matrix.mulVec Ng i = 0 :=
+  grandFind_output_syndrome_decomp H Y order c hfind
+
 /-- GRAND output with noise recovery: `Y xor c = Ng` extracted from soundness. -/
 example {n k : Nat} (H : ParityCheck n k) (Y : Codeword n)
     (order : List (Codeword n)) (c : Codeword n)
