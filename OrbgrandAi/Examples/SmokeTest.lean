@@ -1375,6 +1375,11 @@ example {n : Nat} (a b : Codeword n) (i : Fin n) :
 example {n : Nat} (i : Fin n) : (0 : Codeword n) i = 0 :=
   Codeword.zero_apply i
 
+/-- XOR-zero pointwise form: `xor a b = 0 ↔ ∀ i, a i + b i = 0`. -/
+example {n : Nat} (a b : Codeword n) :
+    Codeword.xor a b = 0 <-> forall i, a i + b i = 0 :=
+  Codeword.xor_eq_zero_iff_apply_zero a b
+
 /-- One-XOR equality is pointwise addition: `xor a b = c ↔ ∀ i, a i + b i = c i`. -/
 example {n : Nat} (a b c : Codeword n) :
     Codeword.xor a b = c <-> forall i, a i + b i = c i :=

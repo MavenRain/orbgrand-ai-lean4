@@ -115,6 +115,13 @@ theorem Codeword.xor_eq_iff_apply_eq
    fun h => funext fun i =>
     (Codeword.xor_apply a b i).trans (h i)⟩
 
+/-- *XOR-zero pointwise form.*  `xor a b = 0` iff `∀ i, a i + b i = 0`.
+    Specialisation of `xor_eq_iff_apply_eq` at `c = 0`; relies on
+    `Codeword.zero_apply` (rfl) for the RHS reduction. -/
+theorem Codeword.xor_eq_zero_iff_apply_zero {n : Nat} (a b : Codeword n) :
+    Codeword.xor a b = 0 <-> forall i, a i + b i = 0 :=
+  Codeword.xor_eq_iff_apply_eq a b 0
+
 /-- *Two-XOR equality via pointwise addition.*  `xor a b = xor c d`
     iff `∀ i, a i + b i = c i + d i`.  Lifts function equality to
     pointwise comparison after `xor_apply` unfolds both sides. -/
