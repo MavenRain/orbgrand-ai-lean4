@@ -104,6 +104,17 @@ theorem Codeword.xor_eq_add_apply
     Codeword.xor a b i = (a + b) i :=
   (Codeword.xor_apply a b i).trans (Codeword.add_apply a b i).symm
 
+/-- *One-XOR equality via pointwise addition.*  `xor a b = c` iff
+    `∀ i, a i + b i = c i`.  Simpler than the two-XOR version: only
+    one side has the `xor` form. -/
+theorem Codeword.xor_eq_iff_apply_eq
+    {n : Nat} (a b c : Codeword n) :
+    Codeword.xor a b = c <-> forall i, a i + b i = c i :=
+  ⟨fun h i =>
+    (Codeword.xor_apply a b i).symm.trans (congrFun h i),
+   fun h => funext fun i =>
+    (Codeword.xor_apply a b i).trans (h i)⟩
+
 /-- *Two-XOR equality via pointwise addition.*  `xor a b = xor c d`
     iff `∀ i, a i + b i = c i + d i`.  Lifts function equality to
     pointwise comparison after `xor_apply` unfolds both sides. -/
