@@ -1702,6 +1702,11 @@ example (sigma : NoisePower) (rho : CorrelationCoefficient) (n : Nat) :
     cov1_lag sigma rho (-(n : Int)) = sigma.val * rho.val ^ n :=
   cov1_lag_of_neg_nat sigma rho n
 
+/-- `cov2_lag` at zero noise power: identically zero (at every lag). -/
+example (rho1 rho2 : CorrelationCoefficient) (beta1 beta2 : Real) (n : Nat) :
+    cov2_lag ⟨0, le_refl 0⟩ rho1 rho2 beta1 beta2 n = 0 :=
+  cov2_lag_zero_sigma rho1 rho2 beta1 beta2 n
+
 /-- `cov1_lag` at zero noise power: identically zero. -/
 example (rho : CorrelationCoefficient) (i : Int) :
     cov1_lag ⟨0, le_refl 0⟩ rho i = 0 :=

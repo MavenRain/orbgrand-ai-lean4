@@ -419,5 +419,45 @@ theorem cov2_lag_beta_zero
     congrArg₂ (· + ·) (zero_mul _) (zero_mul _)
   step1.trans (step2.trans (add_zero 0))
 
+/-- *Second-order covariance vanishes at zero noise power.*  Parallel
+    to `cov1_lag_zero_sigma`: when `sigma.val = 0`, `cov2_lag`
+    vanishes at every lag.  Structural recursion: base cases at
+    `0, 1, 2` collapse `sigma.val` to `0` (with `zero_mul` for the
+    `* rho` factor at lags 1 and 2); the `n + 3` step combines IH
+    at `n + 2` and `n + 1` with `mul_zero` on both summands. -/
+theorem cov2_lag_zero_sigma
+    (rho1 rho2 : CorrelationCoefficient) (beta1 beta2 : Real) :
+    forall (n : Nat),
+      cov2_lag ⟨0, le_refl 0⟩ rho1 rho2 beta1 beta2 n = 0
+  | 0     => rfl
+  | 1     => zero_mul rho1.val
+  | 2     => zero_mul rho2.val
+  | n + 3 =>
+      let ih1 :
+          cov2_lag ⟨0, le_refl 0⟩ rho1 rho2 beta1 beta2 (n + 2) = 0 :=
+        cov2_lag_zero_sigma rho1 rho2 beta1 beta2 (n + 2)
+      let ih2 :
+          cov2_lag ⟨0, le_refl 0⟩ rho1 rho2 beta1 beta2 (n + 1) = 0 :=
+        cov2_lag_zero_sigma rho1 rho2 beta1 beta2 (n + 1)
+      let step1 :
+          cov2_lag ⟨0, le_refl 0⟩ rho1 rho2 beta1 beta2 (n + 3)
+            = beta1
+                * cov2_lag ⟨0, le_refl 0⟩ rho1 rho2 beta1 beta2 (n + 2)
+              + beta2
+                * cov2_lag ⟨0, le_refl 0⟩ rho1 rho2 beta1 beta2 (n + 1) :=
+        rfl
+      let step2 :
+          beta1 * cov2_lag ⟨0, le_refl 0⟩ rho1 rho2 beta1 beta2 (n + 2)
+            + beta2
+              * cov2_lag ⟨0, le_refl 0⟩ rho1 rho2 beta1 beta2 (n + 1)
+            = beta1 * 0 + beta2 * 0 :=
+        congrArg₂ (· + ·)
+          (congrArg (beta1 * ·) ih1)
+          (congrArg (beta2 * ·) ih2)
+      let step3 : beta1 * 0 + beta2 * 0 = 0 :=
+        (congrArg₂ (· + ·) (mul_zero beta1) (mul_zero beta2)).trans
+          (add_zero 0)
+      step1.trans (step2.trans step3)
+
 end Section03
 end OrbgrandAi
