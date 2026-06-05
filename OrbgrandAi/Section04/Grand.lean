@@ -491,6 +491,13 @@ theorem Codeword.xor_assoc_apply
       = Codeword.xor a (Codeword.xor b c) i :=
   congrFun (Codeword.xor_assoc a b c) i
 
+/-- *Pointwise XOR commutativity.*  One-liner via `congrFun` on
+    `xor_comm`. -/
+theorem Codeword.xor_comm_apply
+    {n : Nat} (a b : Codeword n) (i : Fin n) :
+    Codeword.xor a b i = Codeword.xor b a i :=
+  congrFun (Codeword.xor_comm a b) i
+
 /-- *Four-argument XOR shuffle.*  `(a xor b) xor (c xor d)
     = (a xor c) xor (b xor d)`: the abelian-group rearrangement
     swapping the inner-pair partition.  Pointwise `add_add_add_comm`. -/
