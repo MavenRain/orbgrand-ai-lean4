@@ -157,6 +157,16 @@ theorem Constellation.exceed_eq_of_eq {chi : Type}
     cs.exceed s s_hat = cs.exceed s' s_hat' :=
   h_s ▸ h_hat ▸ rfl
 
+/-- *Exceedance dichotomy.*  Any exceedance value is either the
+    minimal `0` (when symbols agree) or strictly positive (when they
+    disagree).  Term-mode `match` on `cs.decEq` decides which arm. -/
+theorem Constellation.exceed_zero_or_pos
+    {chi : Type} (cs : Constellation chi) (s s_hat : chi) :
+    cs.exceed s s_hat = 0 \/ 0 < cs.exceed s s_hat :=
+  match cs.decEq s s_hat with
+  | isTrue h_eq  => Or.inl ((cs.exceed_zero_iff s s_hat).mpr h_eq)
+  | isFalse h_ne => Or.inr ((cs.exceed_pos_iff_ne s s_hat).mpr h_ne)
+
 /-! ## Concrete constellation instances -/
 
 /-- *BPSK* (binary phase-shift keying): a 2-symbol constellation with

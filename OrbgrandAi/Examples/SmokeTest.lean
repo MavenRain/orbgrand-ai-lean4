@@ -1603,6 +1603,11 @@ example {n : Nat} (a b c d : Codeword n) :
       = Codeword.xor (Codeword.xor a c) (Codeword.xor b d) :=
   Codeword.xor_xor_comm a b c d
 
+/-- Constellation exceedance dichotomy: zero (on equality) or positive. -/
+example {chi : Type} (cs : Constellation chi) (s s_hat : chi) :
+    cs.exceed s s_hat = 0 \/ 0 < cs.exceed s s_hat :=
+  cs.exceed_zero_or_pos s s_hat
+
 /-- Two-argument congruence for Constellation exceed. -/
 example {chi : Type} (cs : Constellation chi) {s s' s_hat s_hat' : chi}
     (h_s : s = s') (h_hat : s_hat = s_hat') :
