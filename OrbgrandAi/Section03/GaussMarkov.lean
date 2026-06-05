@@ -121,6 +121,14 @@ theorem cov1_lag_of_nat
     (sigma : NoisePower) (rho : CorrelationCoefficient) (n : Nat) :
     cov1_lag sigma rho (n : Int) = sigma.val * rho.val ^ n := rfl
 
+/-- *Zero noise power gives zero covariance.*  When `sigma.val = 0`,
+    `cov1_lag` vanishes at every lag (positive or negative).  Direct
+    `zero_mul` on the `sigma.val * (rho.val ^ |i|)` form. -/
+theorem cov1_lag_zero_sigma
+    (rho : CorrelationCoefficient) (i : Int) :
+    cov1_lag ⟨0, le_refl 0⟩ rho i = 0 :=
+  zero_mul (rho.val ^ i.natAbs)
+
 /-- *General negative-lag formula.*  Composes the sign-symmetry
     `cov1_lag_neg` with `cov1_lag_of_nat` to give the closed form at
     `(-(n : Int))` for any `n : Nat`.  Captures stationarity of the
