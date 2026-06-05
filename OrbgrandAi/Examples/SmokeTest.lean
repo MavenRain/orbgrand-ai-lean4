@@ -1415,6 +1415,11 @@ example {n : Nat} (a b : Codeword n) (i : Fin n) :
     (a + b) i = a i + b i :=
   Codeword.add_apply a b i
 
+/-- Codeword equals zero iff every bit is zero. -/
+example {n : Nat} (a : Codeword n) :
+    a = 0 <-> forall i, a i = 0 :=
+  Codeword.eq_zero_iff_apply_zero a
+
 /-- Pointwise value of the zero codeword: `(0 : Codeword n) i = 0`. -/
 example {n : Nat} (i : Fin n) : (0 : Codeword n) i = 0 :=
   Codeword.zero_apply i

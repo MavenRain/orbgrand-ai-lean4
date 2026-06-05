@@ -82,6 +82,13 @@ theorem Codeword.xor_apply {n : Nat} (a b : Codeword n) (i : Fin n) :
 theorem Codeword.zero_apply {n : Nat} (i : Fin n) :
     (0 : Codeword n) i = 0 := rfl
 
+/-- *Codeword equals zero iff every bit is zero.*  Composes
+    `funext` with `Codeword.zero_apply` (the rfl that aligns
+    `(0 : Codeword n) i` with `0`). -/
+theorem Codeword.eq_zero_iff_apply_zero {n : Nat} (a : Codeword n) :
+    a = 0 <-> forall i, a i = 0 :=
+  ⟨fun h i => congrFun h i, fun h => funext h⟩
+
 /-- *Pointwise application of `+` on `Codeword`.*  Direct rfl via the
     `Pi.instAdd` instance: `(a + b) i = a i + b i`.  Companion of
     `xor_apply`; useful as a named API surface when reasoning about
