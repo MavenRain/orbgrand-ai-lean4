@@ -1375,6 +1375,12 @@ example {n : Nat} (a b : Codeword n) (i : Fin n) :
 example {n : Nat} (i : Fin n) : (0 : Codeword n) i = 0 :=
   Codeword.zero_apply i
 
+/-- Two-XOR equality is pointwise addition equality. -/
+example {n : Nat} (a b c d : Codeword n) :
+    Codeword.xor a b = Codeword.xor c d
+      <-> forall i, a i + b i = c i + d i :=
+  Codeword.xor_eq_iff_apply_eq_apply a b c d
+
 /-- Codeword XOR pointwise application: `(a xor b) i = a i + b i`. -/
 example {n : Nat} (a b : Codeword n) (i : Fin n) :
     Codeword.xor a b i = a i + b i :=

@@ -104,6 +104,28 @@ theorem Codeword.xor_eq_add_apply
     Codeword.xor a b i = (a + b) i :=
   (Codeword.xor_apply a b i).trans (Codeword.add_apply a b i).symm
 
+/-- *Two-XOR equality via pointwise addition.*  `xor a b = xor c d`
+    iff `∀ i, a i + b i = c i + d i`.  Lifts function equality to
+    pointwise comparison after `xor_apply` unfolds both sides. -/
+theorem Codeword.xor_eq_iff_apply_eq_apply
+    {n : Nat} (a b c d : Codeword n) :
+    Codeword.xor a b = Codeword.xor c d
+      <-> forall i, a i + b i = c i + d i :=
+  ⟨fun h i =>
+    let s1 : Codeword.xor a b i = a i + b i :=
+      Codeword.xor_apply a b i
+    let s2 : Codeword.xor a b i = Codeword.xor c d i := congrFun h i
+    let s3 : Codeword.xor c d i = c i + d i :=
+      Codeword.xor_apply c d i
+    s1.symm.trans (s2.trans s3),
+   fun h => funext fun i =>
+    let s1 : Codeword.xor a b i = a i + b i :=
+      Codeword.xor_apply a b i
+    let s2 : a i + b i = c i + d i := h i
+    let s3 : c i + d i = Codeword.xor c d i :=
+      (Codeword.xor_apply c d i).symm
+    s1.trans (s2.trans s3)⟩
+
 /-- *Pointwise XOR with zero on the right.*  `(a xor 0) i = a i`.
     Combines `xor_apply` with `Codeword.zero_apply` and `add_zero`.
     Captures the identity-on-the-right behavior at a single bit. -/
