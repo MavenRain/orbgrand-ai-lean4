@@ -244,6 +244,12 @@ example {n_s : Nat} (ch : LinearIsi n_s) (X1 X2 N1 N2 : SymbolVector n_s) :
     ch.receive (X1 + X2) (N1 + N2) = ch.receive X1 N1 + ch.receive X2 N2 :=
   LinearIsi.receive_add ch X1 X2 N1 N2
 
+/-- Landslide bucket uniqueness: each pattern has at most one bucket. -/
+example {n : Nat} (pi : ReliabilityRank n) {w1 w2 : Nat} {e : Fin n -> Bool}
+    (h1 : landslideBucket pi w1 e) (h2 : landslideBucket pi w2 e) :
+    w1 = w2 :=
+  landslideBucket_unique pi h1 h2
+
 /-- ORBGRAND ordering soundness: lower logistic weight => earlier bucket. -/
 example {n : Nat} (pi : ReliabilityRank n) (e1 e2 : Fin n -> Bool)
     (h : logisticWeight pi e1 < logisticWeight pi e2) :

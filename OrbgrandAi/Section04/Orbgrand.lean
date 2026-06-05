@@ -1165,6 +1165,17 @@ theorem landslideBucket_self
     landslideBucket pi (logisticWeight pi e) e :=
   rfl
 
+/-- *Bucket uniqueness.*  Each pattern belongs to at most one bucket:
+    if `e` is in buckets `w1` and `w2`, then `w1 = w2`.  Direct
+    consequence of `landslideBucket pi w e` being `logisticWeight pi
+    e = w` definitionally; `h1.symm.trans h2` chains the two
+    equalities. -/
+theorem landslideBucket_unique
+    {n : Nat} (pi : ReliabilityRank n) {w1 w2 : Nat} {e : Fin n -> Bool}
+    (h1 : landslideBucket pi w1 e) (h2 : landslideBucket pi w2 e) :
+    w1 = w2 :=
+  h1.symm.trans h2
+
 /-! ## Ordering soundness -/
 
 /-- *Logistic-weight ordering is consistent with the bucket ordering.*
