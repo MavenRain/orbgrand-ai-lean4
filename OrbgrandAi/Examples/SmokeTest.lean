@@ -1205,6 +1205,13 @@ example {n : Nat} {a b c : Codeword n}
     (h : Codeword.xor a c = Codeword.xor b c) : a = b :=
   Codeword.xor_right_cancel h
 
+/-- Perturbed channel vanishes when `epsilon i j = -1` (pure cancellation). -/
+example {n_s : Nat} (h : ChannelMatrix n_s)
+    (epsilon : Matrix (Fin n_s) (Fin n_s) Complex)
+    {i j : Fin n_s} (h_eps : epsilon i j = -1) :
+    perturbChannel h epsilon i j = 0 :=
+  perturbChannel_neg_one_attenuation_eq_zero h epsilon h_eps
+
 /-- Perturbed channel entry is zero iff the underlying entry is zero
     or the `1 + epsilon` factor cancels. -/
 example {n_s : Nat} (h : ChannelMatrix n_s)

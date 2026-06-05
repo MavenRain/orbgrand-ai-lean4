@@ -112,6 +112,21 @@ theorem perturbChannel_diag
     (epsilon : Matrix (Fin n_s) (Fin n_s) Complex) (i : Fin n_s) :
     perturbChannel h epsilon i i = h i i * (1 + epsilon i i) := rfl
 
+/-- *Pure cancellation: `epsilon = -1` zeroes the entry.*  When the
+    error term at `(i, j)` exactly cancels the unit, the perturbed
+    entry vanishes regardless of `h i j`.  Composes `congrArg` on
+    `epsilon i j → -1` with `add_neg_cancel 1 : 1 + (-1) = 0` and
+    `mul_zero`.  Concrete instance of the right disjunct in
+    `perturbChannel_eq_zero_iff`. -/
+theorem perturbChannel_neg_one_attenuation_eq_zero
+    {n_s : Nat} (h : ChannelMatrix n_s)
+    (epsilon : Matrix (Fin n_s) (Fin n_s) Complex)
+    {i j : Fin n_s} (h_eps : epsilon i j = -1) :
+    perturbChannel h epsilon i j = 0 :=
+  let h_factor : (1 : Complex) + epsilon i j = 0 :=
+    (congrArg (1 + ·) h_eps).trans (add_neg_cancel 1)
+  (congrArg (h i j * ·) h_factor).trans (mul_zero _)
+
 /-- *Pointwise zero characterisation.*  A perturbed entry vanishes
     iff either the underlying entry vanishes or the multiplicative
     factor `1 + epsilon i j` is zero.  Since `Complex` is an
