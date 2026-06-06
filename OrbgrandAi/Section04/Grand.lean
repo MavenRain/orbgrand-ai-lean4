@@ -89,6 +89,13 @@ theorem Codeword.eq_zero_iff_apply_zero {n : Nat} (a : Codeword n) :
     a = 0 <-> forall i, a i = 0 :=
   ⟨fun h i => congrFun h i, fun h => funext h⟩
 
+/-- *Codeword equality iff pointwise equality.*  Standard
+    `funext`/`congrFun` wrapper at the `Codeword` type.  Useful as a
+    named API surface when downstream code dispatches on the iff. -/
+theorem Codeword.eq_iff_apply_eq {n : Nat} (a b : Codeword n) :
+    a = b <-> forall i, a i = b i :=
+  ⟨congrFun, funext⟩
+
 /-- *Pointwise application of `+` on `Codeword`.*  Direct rfl via the
     `Pi.instAdd` instance: `(a + b) i = a i + b i`.  Companion of
     `xor_apply`; useful as a named API surface when reasoning about
