@@ -1489,6 +1489,11 @@ example (v : Real) (h0 : 0 <= v) (h1 : ¬ v <= 1) :
       = Except.error (ChannelError.correlationOutOfRange v) :=
   CorrelationCoefficient.mk?_of_gt_one v h0 h1
 
+/-- `SamplingFreq.mk?` round-trip identity through `.val`. -/
+example (v : Real) (h : 0 < v) :
+    (SamplingFreq.mk? v).map (·.val) = Except.ok v :=
+  SamplingFreq.mk?_val_eq v h
+
 /-- `SamplingFreq.mk?` on strictly positive input returns `Except.ok`. -/
 example (v : Real) (h : 0 < v) :
     SamplingFreq.mk? v = Except.ok ⟨v, h⟩ :=

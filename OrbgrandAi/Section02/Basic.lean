@@ -336,6 +336,13 @@ theorem mk?_of_not_pos (v : Real) (h : ¬ 0 < v) :
       = Except.error (ChannelError.nonPositiveSamplingFreq v) :=
   dif_neg h
 
+/-- *Round-trip identity through the `.val` accessor.*  Parallel of
+    `NoisePower.mk?_val_eq` for `SamplingFreq` (which uses the
+    strict-positivity precondition). -/
+theorem mk?_val_eq (v : Real) (h : 0 < v) :
+    (SamplingFreq.mk? v).map (·.val) = Except.ok v :=
+  (mk?_of_pos v h).symm ▸ rfl
+
 end SamplingFreq
 
 end Section02
