@@ -1503,6 +1503,11 @@ example (v : Real) (h : ¬ 0 <= v) :
     SignalPower.mk? v = Except.error (ChannelError.negativeVariance v) :=
   SignalPower.mk?_of_neg v h
 
+/-- `NoisePower.mk?` round-trip identity through `.val`. -/
+example (v : Real) (h : 0 <= v) :
+    (NoisePower.mk? v).map (·.val) = Except.ok v :=
+  NoisePower.mk?_val_eq v h
+
 /-- `NoisePower.mk?` on non-negative input returns `Except.ok`. -/
 example (v : Real) (h : 0 <= v) :
     NoisePower.mk? v = Except.ok ⟨v, h⟩ :=

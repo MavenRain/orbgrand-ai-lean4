@@ -232,6 +232,15 @@ theorem mk?_of_neg (v : Real) (h : ¬ 0 <= v) :
     NoisePower.mk? v = Except.error (ChannelError.negativeVariance v) :=
   dif_neg h
 
+/-- *Round-trip identity through the `.val` accessor.*  Building a
+    `NoisePower` from a non-negative `v` and then extracting its
+    `.val` field recovers `v`.  `Except.map (·.val)` lifts through
+    the `Except.ok` constructor; the underlying `dif_pos` rewriting
+    is delegated to `mk?_of_nonneg`. -/
+theorem mk?_val_eq (v : Real) (h : 0 <= v) :
+    (NoisePower.mk? v).map (·.val) = Except.ok v :=
+  (mk?_of_nonneg v h).symm ▸ rfl
+
 end NoisePower
 
 namespace SignalPower
