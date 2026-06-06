@@ -1500,6 +1500,11 @@ example (v : Real) (h : ¬ 0 < v) :
       = Except.error (ChannelError.nonPositiveSamplingFreq v) :=
   SamplingFreq.mk?_of_not_pos v h
 
+/-- `SignalPower.mk?` round-trip identity through `.val`. -/
+example (v : Real) (h : 0 <= v) :
+    (SignalPower.mk? v).map (·.val) = Except.ok v :=
+  SignalPower.mk?_val_eq v h
+
 /-- `SignalPower.mk?` on non-negative input returns `Except.ok`. -/
 example (v : Real) (h : 0 <= v) :
     SignalPower.mk? v = Except.ok ⟨v, h⟩ :=

@@ -265,6 +265,12 @@ theorem mk?_of_neg (v : Real) (h : ¬ 0 <= v) :
     SignalPower.mk? v = Except.error (ChannelError.negativeVariance v) :=
   dif_neg h
 
+/-- *Round-trip identity through the `.val` accessor.*  Parallel of
+    `NoisePower.mk?_val_eq`. -/
+theorem mk?_val_eq (v : Real) (h : 0 <= v) :
+    (SignalPower.mk? v).map (·.val) = Except.ok v :=
+  (mk?_of_nonneg v h).symm ▸ rfl
+
 end SignalPower
 
 namespace CorrelationCoefficient
