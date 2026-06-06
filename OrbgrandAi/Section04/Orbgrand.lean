@@ -1176,6 +1176,16 @@ theorem landslideBucket_unique
     w1 = w2 :=
   h1.symm.trans h2
 
+/-- *Same bucket ⇒ equal weight.*  If `e1` and `e2` both inhabit
+    bucket `w`, their logistic weights coincide.  Bridges bucket
+    membership to weight equality; chains `h1.trans h2.symm`. -/
+theorem landslideBucket_eq_of_same_bucket
+    {n : Nat} (pi : ReliabilityRank n) {w : Nat}
+    {e1 e2 : Fin n -> Bool}
+    (h1 : landslideBucket pi w e1) (h2 : landslideBucket pi w e2) :
+    logisticWeight pi e1 = logisticWeight pi e2 :=
+  h1.trans h2.symm
+
 /-! ## Ordering soundness -/
 
 /-- *Logistic-weight ordering is consistent with the bucket ordering.*

@@ -244,6 +244,13 @@ example {n_s : Nat} (ch : LinearIsi n_s) (X1 X2 N1 N2 : SymbolVector n_s) :
     ch.receive (X1 + X2) (N1 + N2) = ch.receive X1 N1 + ch.receive X2 N2 :=
   LinearIsi.receive_add ch X1 X2 N1 N2
 
+/-- Same bucket implies equal logistic weight. -/
+example {n : Nat} (pi : ReliabilityRank n) {w : Nat}
+    {e1 e2 : Fin n -> Bool}
+    (h1 : landslideBucket pi w e1) (h2 : landslideBucket pi w e2) :
+    logisticWeight pi e1 = logisticWeight pi e2 :=
+  landslideBucket_eq_of_same_bucket pi h1 h2
+
 /-- Landslide bucket uniqueness: each pattern has at most one bucket. -/
 example {n : Nat} (pi : ReliabilityRank n) {w1 w2 : Nat} {e : Fin n -> Bool}
     (h1 : landslideBucket pi w1 e) (h2 : landslideBucket pi w2 e) :
