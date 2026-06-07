@@ -592,6 +592,14 @@ theorem Codeword.xor_xor_xor_self_apply
       = Codeword.xor b c i :=
   congrFun (Codeword.xor_xor_xor_self a b c) i
 
+/-- *Pointwise common-suffix cancellation.*  `congrFun` on
+    `xor_xor_xor_self_right` gives `((a xor b) xor (c xor b)) i = (a xor c) i`. -/
+theorem Codeword.xor_xor_xor_self_right_apply
+    {n : Nat} (a b c : Codeword n) (i : Fin n) :
+    Codeword.xor (Codeword.xor a b) (Codeword.xor c b) i
+      = Codeword.xor a c i :=
+  congrFun (Codeword.xor_xor_xor_self_right a b c) i
+
 /-- *Left transposition of XOR.*  `a xor (b xor c) = b xor (a xor c)`:
     the outer left arg swaps with the inner left arg.  Dual of
     `xor_right_comm`; derived from `xor_assoc.symm` + `xor_comm` on
