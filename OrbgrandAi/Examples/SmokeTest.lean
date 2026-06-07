@@ -460,6 +460,13 @@ example (c : Real) :
     limsupEntropyRate (fun _ => c) = c :=
   limsupEntropyRate_const c
 
+/-- AR(2) recurrence step at index 5. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 5
+      = phi1 * ar2 phi1 phi2 z1 z2 4
+        + phi2 * ar2 phi1 phi2 z1 z2 3 :=
+  ar2_five phi1 phi2 z1 z2
+
 /-- AR(2) closed-form at index 2. -/
 example (phi1 phi2 z1 z2 : Complex) :
     ar2 phi1 phi2 z1 z2 2 = phi1 * z2 + phi2 * z1 :=

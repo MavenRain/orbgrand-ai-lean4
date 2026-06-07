@@ -114,6 +114,14 @@ theorem ar2_four (phi1 phi2 z1 z2 : Complex) :
       = phi1 * (phi1 * (phi1 * z2 + phi2 * z1) + phi2 * z2)
         + phi2 * (phi1 * z2 + phi2 * z1) := rfl
 
+/-- Recurrence step at index 5: `phi_1 * ar2 4 + phi_2 * ar2 3`.
+    Direct `rfl` via `ar2_succ_succ` at `n = 3`.  Extends the
+    `ar2_two`/`_three`/`_four` named-form series. -/
+theorem ar2_five (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 5
+      = phi1 * ar2 phi1 phi2 z1 z2 4
+        + phi2 * ar2 phi1 phi2 z1 z2 3 := rfl
+
 /-- *Trivial coefficients.*  When both AR(2) coefficients are zero,
     every recurrence step (index `n + 2`) vanishes regardless of
     the initial conditions.  The initial conditions at indices 0 and
