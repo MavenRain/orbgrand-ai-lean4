@@ -1715,6 +1715,13 @@ example {n_s b numCandidates : Nat}
       = orbgrandAiLoop Y Phi budget.toNat patterns :=
   orbgrandAi_unfolds_to_loop Y Phi budget patterns
 
+/-- `orbgrandAiLoop` with zero steps returns `none` for any patterns. -/
+example {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s)
+    (patterns : List (Fin (n_s / b) -> Fin numCandidates)) :
+    orbgrandAiLoop Y Phi 0 patterns = none :=
+  orbgrandAiLoop_zero_steps Y Phi patterns
+
 /-- `orbgrandAiLoop` with zero steps and a non-empty list returns `none`. -/
 example {n_s b numCandidates : Nat}
     (Y : Codeword n_s) (Phi : CodebookMembership n_s)
