@@ -1772,6 +1772,12 @@ example {n_s : Nat} (h : ChannelMatrix n_s)
     perturbChannel h epsilon i j = 0 :=
   perturbChannel_zero_entry h epsilon hzero
 
+/-- Pointwise four-argument XOR shuffle at index `i`. -/
+example {n : Nat} (a b c d : Codeword n) (i : Fin n) :
+    Codeword.xor (Codeword.xor a b) (Codeword.xor c d) i
+      = Codeword.xor (Codeword.xor a c) (Codeword.xor b d) i :=
+  Codeword.xor_xor_comm_apply a b c d i
+
 /-- Four-argument XOR shuffle: `(a xor b) xor (c xor d) = (a xor c) xor (b xor d)`. -/
 example {n : Nat} (a b c d : Codeword n) :
     Codeword.xor (Codeword.xor a b) (Codeword.xor c d)

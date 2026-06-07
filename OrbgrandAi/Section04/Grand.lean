@@ -533,6 +533,14 @@ theorem Codeword.xor_xor_comm {n : Nat} (a b c d : Codeword n) :
       = Codeword.xor (Codeword.xor a c) (Codeword.xor b d) :=
   funext fun i => add_add_add_comm (a i) (b i) (c i) (d i)
 
+/-- *Pointwise four-argument XOR shuffle.*  `congrFun` on
+    `xor_xor_comm`: at each index, the four-arg rearrangement holds. -/
+theorem Codeword.xor_xor_comm_apply
+    {n : Nat} (a b c d : Codeword n) (i : Fin n) :
+    Codeword.xor (Codeword.xor a b) (Codeword.xor c d) i
+      = Codeword.xor (Codeword.xor a c) (Codeword.xor b d) i :=
+  congrFun (Codeword.xor_xor_comm a b c d) i
+
 /-- *Left self-XOR cancels.*  `(a xor a) xor b = b`: a self-XOR
     prefix is the identity.  Direct composition of `xor_self` and
     `zero_xor`. -/
