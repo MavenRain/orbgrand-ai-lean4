@@ -1472,6 +1472,11 @@ example {n : Nat} (a : Codeword n) :
     Codeword.xor a 0 = a :=
   Codeword.xor_zero a
 
+/-- `CorrelationCoefficient.mk?` round-trip identity through `.val`. -/
+example (v : Real) (h0 : 0 <= v) (h1 : v <= 1) :
+    (CorrelationCoefficient.mk? v).map (·.val) = Except.ok v :=
+  CorrelationCoefficient.mk?_val_eq v h0 h1
+
 /-- `CorrelationCoefficient.mk?` in `[0, 1]` returns `Except.ok`. -/
 example (v : Real) (h0 : 0 <= v) (h1 : v <= 1) :
     CorrelationCoefficient.mk? v = Except.ok ⟨v, h0, h1⟩ :=

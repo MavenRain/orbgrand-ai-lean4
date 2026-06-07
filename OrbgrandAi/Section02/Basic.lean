@@ -317,6 +317,13 @@ theorem mk?_of_gt_one (v : Real) (h0 : 0 <= v) (h1 : ¬ v <= 1) :
       = Except.error (ChannelError.correlationOutOfRange v) :=
   (dif_pos h0).trans (dif_neg h1)
 
+/-- *Round-trip identity through the `.val` accessor.*  Both
+    preconditions (non-negative and ≤ 1) must hold; with both met
+    `mk?_of_mem` produces the `Except.ok` whose mapped `.val` is `v`. -/
+theorem mk?_val_eq (v : Real) (h0 : 0 <= v) (h1 : v <= 1) :
+    (CorrelationCoefficient.mk? v).map (·.val) = Except.ok v :=
+  (mk?_of_mem v h0 h1).symm ▸ rfl
+
 end CorrelationCoefficient
 
 namespace SamplingFreq
