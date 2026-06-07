@@ -1713,6 +1713,13 @@ example {n_s : Nat} (ch : LinearIsi n_s) (X : SymbolVector n_s) :
     ch.receive X 0 = 0 <-> ch.channel.mulVec X = 0 :=
   LinearIsi.receive_zero_noise_eq_zero_iff ch X
 
+/-- Double perturbation entry: `h i j * ((1 + ε₁) * (1 + ε₂))`. -/
+example {n_s : Nat} (h : ChannelMatrix n_s)
+    (ε₁ ε₂ : Matrix (Fin n_s) (Fin n_s) Complex) (i j : Fin n_s) :
+    perturbChannel (perturbChannel h ε₁) ε₂ i j
+      = h i j * ((1 + ε₁ i j) * (1 + ε₂ i j)) :=
+  perturbChannel_perturbChannel_apply h ε₁ ε₂ i j
+
 /-- Perturbed channel general entry: `h i j * (1 + epsilon i j)`. -/
 example {n_s : Nat} (h : ChannelMatrix n_s)
     (epsilon : Matrix (Fin n_s) (Fin n_s) Complex) (i j : Fin n_s) :

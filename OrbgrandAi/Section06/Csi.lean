@@ -96,6 +96,18 @@ theorem perturbChannel_zero_channel
     perturbChannel 0 epsilon = 0 :=
   funext fun i => funext fun j => zero_mul (1 + epsilon i j)
 
+/-- *Composition of two perturbations.*  Applying `perturbChannel`
+    twice (first by `ε₁`, then by `ε₂`) at entry `(i, j)` yields
+    `h i j * ((1 + ε₁ i j) * (1 + ε₂ i j))`.  Direct `mul_assoc`
+    on the chained definitional unfolding. -/
+theorem perturbChannel_perturbChannel_apply
+    {n_s : Nat} (h : ChannelMatrix n_s)
+    (ε₁ ε₂ : Matrix (Fin n_s) (Fin n_s) Complex)
+    (i j : Fin n_s) :
+    perturbChannel (perturbChannel h ε₁) ε₂ i j
+      = h i j * ((1 + ε₁ i j) * (1 + ε₂ i j)) :=
+  mul_assoc (h i j) (1 + ε₁ i j) (1 + ε₂ i j)
+
 /-- *General entry of `perturbChannel`.*  Direct definitional
     unfolding: `perturbChannel h epsilon i j = h i j * (1 + epsilon i j)`.
     Useful as a named API surface, subsumes `perturbChannel_diag`. -/
