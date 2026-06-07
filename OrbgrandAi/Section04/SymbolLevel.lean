@@ -319,6 +319,14 @@ def trivialConstellation : Constellation Unit :=
 theorem trivialConstellation_exceed (s s_hat : Unit) :
     trivialConstellation.exceed s s_hat = 0 := rfl
 
+/-- *Trivial constellation symbols are all equal.*  `Unit` is a
+    `Subsingleton`, so any two symbols of the trivial constellation
+    coincide.  Complements `trivialConstellation_exceed` at the
+    symbol-identity level. -/
+theorem trivialConstellation_all_eq (s s_hat : Unit) :
+    s = s_hat :=
+  Subsingleton.elim s s_hat
+
 /-! ## Per-symbol candidate list -/
 
 /-- For a fixed hard-decision `s_hat`, enumerate all candidate

@@ -721,6 +721,10 @@ example {n : Nat} (a b : Codeword n) : a + b = 0 <-> a = b :=
 example {n : Nat} (a b : Codeword n) : Codeword.xor a b = a <-> b = 0 :=
   Codeword.xor_eq_self_iff a b
 
+/-- Trivial constellation symbols are all equal (Subsingleton Unit). -/
+example (s s_hat : Unit) : s = s_hat :=
+  trivialConstellation_all_eq s s_hat
+
 /-- Trivial constellation exceedance is zero. -/
 example (s s_hat : Unit) : trivialConstellation.exceed s s_hat = 0 :=
   trivialConstellation_exceed s s_hat
