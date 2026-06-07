@@ -1338,6 +1338,13 @@ example {n k : Nat} (H : ParityCheck n k) {a b : Codeword n}
     H.matrix.mulVec (Codeword.xor a b) i = H.matrix.mulVec b i :=
   Codeword.mulVec_xor_codeword_left H ha i
 
+/-- Pointwise XOR linearity: `H * (a xor b) i = H * a i + H * b i`. -/
+example {n k : Nat} (H : ParityCheck n k) (a b : Codeword n)
+    (i : Fin (n - k)) :
+    H.matrix.mulVec (Codeword.xor a b) i
+      = H.matrix.mulVec a i + H.matrix.mulVec b i :=
+  Codeword.mulVec_xor_apply H a b i
+
 /-- Parity-check map is XOR-linear: `H * (a xor b) = H * a + H * b`. -/
 example {n k : Nat} (H : ParityCheck n k) (a b : Codeword n) :
     H.matrix.mulVec (Codeword.xor a b)

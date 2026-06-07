@@ -1042,6 +1042,15 @@ theorem Codeword.mulVec_xor {n k : Nat} (H : ParityCheck n k)
     congrArg H.matrix.mulVec (Codeword.xor_eq_add a b)
   h_add.trans (H.matrix.mulVec_add a b)
 
+/-- *Pointwise XOR linearity of the parity-check map.*  `congrFun` on
+    `mulVec_xor` gives the per-coordinate form
+    `H * (a xor b) i = H * a i + H * b i`. -/
+theorem Codeword.mulVec_xor_apply {n k : Nat} (H : ParityCheck n k)
+    (a b : Codeword n) (i : Fin (n - k)) :
+    H.matrix.mulVec (Codeword.xor a b) i
+      = H.matrix.mulVec a i + H.matrix.mulVec b i :=
+  congrFun (Codeword.mulVec_xor H a b) i
+
 /-- *Codeword-left shift is invisible under the parity-check map.*
     If `a` is a codeword (zero parity-check image), then
     `H * (a xor b) = H * b` for any `b`.  Derived from `mulVec_xor`
