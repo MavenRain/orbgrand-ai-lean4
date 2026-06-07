@@ -557,6 +557,18 @@ theorem Codeword.xor_self_right_eq {n : Nat} (a b : Codeword n) :
   (congrArg (Codeword.xor a) (Codeword.xor_self b)).trans
     (Codeword.xor_zero a)
 
+/-- *Pointwise left self-XOR cancellation.*  `((a xor a) xor b) i = b i`. -/
+theorem Codeword.xor_self_left_eq_apply
+    {n : Nat} (a b : Codeword n) (i : Fin n) :
+    Codeword.xor (Codeword.xor a a) b i = b i :=
+  congrFun (Codeword.xor_self_left_eq a b) i
+
+/-- *Pointwise right self-XOR cancellation.*  `(a xor (b xor b)) i = a i`. -/
+theorem Codeword.xor_self_right_eq_apply
+    {n : Nat} (a b : Codeword n) (i : Fin n) :
+    Codeword.xor a (Codeword.xor b b) i = a i :=
+  congrFun (Codeword.xor_self_right_eq a b) i
+
 /-- *Common-suffix cancellation.*  `(a xor b) xor (c xor b) = a xor c`:
     a shared last argument on both sides drops out under XOR.  Dual
     of `xor_xor_xor_self`; derived from `xor_xor_comm` (regrouping
