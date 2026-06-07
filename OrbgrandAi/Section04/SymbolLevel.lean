@@ -178,6 +178,14 @@ theorem Constellation.exceed_pos_of_ne_zero
     (fun h_eq => absurd h_eq h)
     id
 
+/-- *Positive iff non-zero.*  Combines `ne_of_gt` (forward, trivial)
+    with `exceed_pos_of_ne_zero` (backward).  Packages the standard
+    "nonneg + nonzero = positive" identity at the `cs.exceed` level. -/
+theorem Constellation.exceed_pos_iff_ne_zero
+    {chi : Type} (cs : Constellation chi) (s s_hat : chi) :
+    0 < cs.exceed s s_hat <-> cs.exceed s s_hat ≠ 0 :=
+  ⟨ne_of_gt, cs.exceed_pos_of_ne_zero⟩
+
 /-! ## Concrete constellation instances -/
 
 /-- *BPSK* (binary phase-shift keying): a 2-symbol constellation with

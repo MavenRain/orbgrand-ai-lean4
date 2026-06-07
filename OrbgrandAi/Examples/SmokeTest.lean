@@ -1721,6 +1721,11 @@ example {n : Nat} (a b c d : Codeword n) :
       = Codeword.xor (Codeword.xor a c) (Codeword.xor b d) :=
   Codeword.xor_xor_comm a b c d
 
+/-- Constellation exceedance: positive iff non-zero. -/
+example {chi : Type} (cs : Constellation chi) (s s_hat : chi) :
+    0 < cs.exceed s s_hat <-> cs.exceed s s_hat ≠ 0 :=
+  cs.exceed_pos_iff_ne_zero s s_hat
+
 /-- Non-zero Constellation exceedance is strictly positive. -/
 example {chi : Type} (cs : Constellation chi)
     {s s_hat : chi} (h : cs.exceed s s_hat ≠ 0) :
