@@ -89,6 +89,17 @@ theorem Codeword.eq_zero_iff_apply_zero {n : Nat} (a : Codeword n) :
     a = 0 <-> forall i, a i = 0 :=
   ⟨fun h i => congrFun h i, fun h => funext h⟩
 
+/-- *Pointwise `add_zero` on `Codeword`.*  One-liner via `congrFun`
+    on the additive-monoid `add_zero` identity. -/
+theorem Codeword.add_zero_apply {n : Nat} (a : Codeword n) (i : Fin n) :
+    (a + 0) i = a i :=
+  congrFun (add_zero a) i
+
+/-- *Pointwise `zero_add` on `Codeword`.*  Dual of `add_zero_apply`. -/
+theorem Codeword.zero_add_apply {n : Nat} (a : Codeword n) (i : Fin n) :
+    (0 + a) i = a i :=
+  congrFun (zero_add a) i
+
 /-- *Codeword equality iff pointwise equality.*  Standard
     `funext`/`congrFun` wrapper at the `Codeword` type.  Useful as a
     named API surface when downstream code dispatches on the iff. -/
