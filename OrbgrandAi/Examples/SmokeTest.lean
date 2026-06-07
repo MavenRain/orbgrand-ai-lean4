@@ -1415,6 +1415,18 @@ example {n : Nat} (Y Ng : Codeword n) (i : Fin n) :
     Codeword.xor Y (Codeword.xor Y Ng) i = Ng i :=
   Codeword.xor_xor_self_apply Y Ng i
 
+/-- Pointwise XOR right-commutativity: `(a xor b) xor c i = (a xor c) xor b i`. -/
+example {n : Nat} (a b c : Codeword n) (i : Fin n) :
+    Codeword.xor (Codeword.xor a b) c i
+      = Codeword.xor (Codeword.xor a c) b i :=
+  Codeword.xor_right_comm_apply a b c i
+
+/-- Pointwise XOR left-commutativity: `a xor (b xor c) i = b xor (a xor c) i`. -/
+example {n : Nat} (a b c : Codeword n) (i : Fin n) :
+    Codeword.xor a (Codeword.xor b c) i
+      = Codeword.xor b (Codeword.xor a c) i :=
+  Codeword.xor_left_comm_apply a b c i
+
 /-- Pointwise XOR commutativity at index `i`. -/
 example {n : Nat} (a b : Codeword n) (i : Fin n) :
     Codeword.xor a b i = Codeword.xor b a i :=

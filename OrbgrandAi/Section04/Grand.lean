@@ -524,6 +524,7 @@ theorem Codeword.xor_comm_apply
   congrFun (Codeword.xor_comm a b) i
 
 
+
 /-- *Four-argument XOR shuffle.*  `(a xor b) xor (c xor d)
     = (a xor c) xor (b xor d)`: the abelian-group rearrangement
     swapping the inner-pair partition.  Pointwise `add_add_add_comm`. -/
@@ -601,6 +602,14 @@ theorem Codeword.xor_left_comm {n : Nat} (a b c : Codeword n) :
     Codeword.xor_assoc b a c
   s1.trans (s2.trans s3)
 
+/-- *Pointwise XOR left-commutativity.*  One-liner via `congrFun`
+    on `xor_left_comm`. -/
+theorem Codeword.xor_left_comm_apply
+    {n : Nat} (a b c : Codeword n) (i : Fin n) :
+    Codeword.xor a (Codeword.xor b c) i
+      = Codeword.xor b (Codeword.xor a c) i :=
+  congrFun (Codeword.xor_left_comm a b c) i
+
 /-- *Right transposition of XOR.*  `(a xor b) xor c = (a xor c) xor b`:
     the right-hand two arguments swap freely, the classic
     commutative-monoid `right_comm` law.  Derived from `xor_assoc`
@@ -618,6 +627,14 @@ theorem Codeword.xor_right_comm {n : Nat} (a b c : Codeword n) :
          = Codeword.xor (Codeword.xor a c) b :=
     (Codeword.xor_assoc a c b).symm
   s1.trans (s2.trans s3)
+
+/-- *Pointwise XOR right-commutativity.*  One-liner via `congrFun`
+    on `xor_right_comm`.  Companion of `xor_left_comm_apply`. -/
+theorem Codeword.xor_right_comm_apply
+    {n : Nat} (a b c : Codeword n) (i : Fin n) :
+    Codeword.xor (Codeword.xor a b) c i
+      = Codeword.xor (Codeword.xor a c) b i :=
+  congrFun (Codeword.xor_right_comm a b c) i
 
 /-- XOR involution: `Y xor (Y xor Ng) = Ng` in `ZMod 2`.
 
