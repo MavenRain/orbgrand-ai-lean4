@@ -1545,6 +1545,22 @@ example (n : Nat) (h : ¬ 0 < n) :
     BlockSize.mk? n = Except.error (ChannelError.nonPositive "BlockSize") :=
   BlockSize.mk?_of_not_pos n h
 
+/-- `CodewordLength.mk?` on a positive input returns `Except.ok`. -/
+example (n : Nat) (h : 0 < n) :
+    CodewordLength.mk? n = Except.ok ⟨n, h⟩ :=
+  CodewordLength.mk?_of_pos n h
+
+/-- `CodewordLength.mk?` on a non-positive input returns `Except.error`. -/
+example (n : Nat) (h : ¬ 0 < n) :
+    CodewordLength.mk? n
+      = Except.error (ChannelError.nonPositive "CodewordLength") :=
+  CodewordLength.mk?_of_not_pos n h
+
+/-- `CodewordLength.mk?` round-trip identity through `.toNat`. -/
+example (n : Nat) (h : 0 < n) :
+    (CodewordLength.mk? n).map (·.toNat) = Except.ok n :=
+  CodewordLength.mk?_toNat_eq n h
+
 /-- `BlockSize.mk?` round-trip identity through `.toNat`. -/
 example (n : Nat) (h : 0 < n) :
     (BlockSize.mk? n).map (·.toNat) = Except.ok n :=

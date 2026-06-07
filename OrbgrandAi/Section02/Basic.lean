@@ -200,6 +200,23 @@ def mk? (n : Nat) : Except ChannelError CodewordLength :=
   else
     Except.error (ChannelError.nonPositive "CodewordLength")
 
+/-- *Positive input gives `ok`.*  Parallel of `BlockSize.mk?_of_pos`. -/
+theorem mk?_of_pos (n : Nat) (h : 0 < n) :
+    CodewordLength.mk? n = Except.ok ⟨n, h⟩ :=
+  dif_pos h
+
+/-- *Non-positive input gives `error`.*  Parallel of
+    `BlockSize.mk?_of_not_pos`. -/
+theorem mk?_of_not_pos (n : Nat) (h : ¬ 0 < n) :
+    CodewordLength.mk? n
+      = Except.error (ChannelError.nonPositive "CodewordLength") :=
+  dif_neg h
+
+/-- *Round-trip identity through the `.toNat` accessor.* -/
+theorem mk?_toNat_eq (n : Nat) (h : 0 < n) :
+    (CodewordLength.mk? n).map (·.toNat) = Except.ok n :=
+  (mk?_of_pos n h).symm ▸ rfl
+
 end CodewordLength
 
 namespace BitsPerSymbol
