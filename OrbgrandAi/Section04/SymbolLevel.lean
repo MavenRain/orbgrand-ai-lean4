@@ -167,6 +167,17 @@ theorem Constellation.exceed_zero_or_pos
   | isTrue h_eq  => Or.inl ((cs.exceed_zero_iff s s_hat).mpr h_eq)
   | isFalse h_ne => Or.inr ((cs.exceed_pos_iff_ne s s_hat).mpr h_ne)
 
+/-- *Non-zero exceedance is positive.*  Direct consequence of the
+    dichotomy: if `cs.exceed s s_hat ≠ 0`, then by elimination on
+    `exceed_zero_or_pos` only the positive arm survives. -/
+theorem Constellation.exceed_pos_of_ne_zero
+    {chi : Type} (cs : Constellation chi)
+    {s s_hat : chi} (h : cs.exceed s s_hat ≠ 0) :
+    0 < cs.exceed s s_hat :=
+  (cs.exceed_zero_or_pos s s_hat).elim
+    (fun h_eq => absurd h_eq h)
+    id
+
 /-! ## Concrete constellation instances -/
 
 /-- *BPSK* (binary phase-shift keying): a 2-symbol constellation with
