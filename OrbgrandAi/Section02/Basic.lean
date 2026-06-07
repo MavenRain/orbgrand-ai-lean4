@@ -182,6 +182,13 @@ theorem mk?_of_not_pos (n : Nat) (h : ¬ 0 < n) :
     BlockSize.mk? n = Except.error (ChannelError.nonPositive "BlockSize") :=
   dif_neg h
 
+/-- *Round-trip identity through the `.toNat` accessor.*  Parallel
+    of `NoisePower.mk?_val_eq` for `BlockSize` (whose carrier field
+    is `toNat`). -/
+theorem mk?_toNat_eq (n : Nat) (h : 0 < n) :
+    (BlockSize.mk? n).map (·.toNat) = Except.ok n :=
+  (mk?_of_pos n h).symm ▸ rfl
+
 end BlockSize
 
 namespace CodewordLength

@@ -1540,6 +1540,11 @@ example (n : Nat) (h : ¬ 0 < n) :
     BlockSize.mk? n = Except.error (ChannelError.nonPositive "BlockSize") :=
   BlockSize.mk?_of_not_pos n h
 
+/-- `BlockSize.mk?` round-trip identity through `.toNat`. -/
+example (n : Nat) (h : 0 < n) :
+    (BlockSize.mk? n).map (·.toNat) = Except.ok n :=
+  BlockSize.mk?_toNat_eq n h
+
 /-- `BlockSize.mk?` on a positive input returns `Except.ok`. -/
 example (n : Nat) (h : 0 < n) :
     BlockSize.mk? n = Except.ok ⟨n, h⟩ :=
