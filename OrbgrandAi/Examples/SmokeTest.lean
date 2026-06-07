@@ -1383,6 +1383,12 @@ example {n : Nat} (a b c : Codeword n) :
       = Codeword.xor a c :=
   Codeword.xor_xor_xor_self_right a b c
 
+/-- Pointwise common-prefix cancellation: `((a xor b) xor (a xor c)) i = (b xor c) i`. -/
+example {n : Nat} (a b c : Codeword n) (i : Fin n) :
+    Codeword.xor (Codeword.xor a b) (Codeword.xor a c) i
+      = Codeword.xor b c i :=
+  Codeword.xor_xor_xor_self_apply a b c i
+
 /-- Codeword XOR common-prefix cancellation: `(a xor b) xor (a xor c) = b xor c`. -/
 example {n : Nat} (a b c : Codeword n) :
     Codeword.xor (Codeword.xor a b) (Codeword.xor a c)
