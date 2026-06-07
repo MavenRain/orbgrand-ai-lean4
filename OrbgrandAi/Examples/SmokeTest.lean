@@ -1409,6 +1409,11 @@ example {n : Nat} (a : Codeword n) (i : Fin n) :
     Codeword.xor a 0 i = a i :=
   Codeword.xor_zero_apply a i
 
+/-- Pointwise variant-left involution: `(a xor (b xor a)) i = b i`. -/
+example {n : Nat} (a b : Codeword n) (i : Fin n) :
+    Codeword.xor a (Codeword.xor b a) i = b i :=
+  Codeword.xor_xor_left_apply a b i
+
 /-- Pointwise XOR right cancellation at index `i`. -/
 example {n : Nat} (a b : Codeword n) (i : Fin n) :
     Codeword.xor (Codeword.xor a b) b i = a i :=

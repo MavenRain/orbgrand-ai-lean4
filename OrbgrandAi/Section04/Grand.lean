@@ -671,6 +671,13 @@ theorem Codeword.xor_xor_left {n : Nat} (a b : Codeword n) :
     congrArg (Codeword.xor a) (Codeword.xor_comm b a)
   s1.trans (Codeword.xor_xor_self a b)
 
+/-- *Pointwise variant-left involution.*  `(a xor (b xor a)) i = b i`.
+    One-liner via `congrFun` on `xor_xor_left`. -/
+theorem Codeword.xor_xor_left_apply
+    {n : Nat} (a b : Codeword n) (i : Fin n) :
+    Codeword.xor a (Codeword.xor b a) i = b i :=
+  congrFun (Codeword.xor_xor_left a b) i
+
 /-- Right-cancel form: `(a xor b) xor b = a` in `ZMod 2`.  XOR is its
     own right inverse.  Proof: `xor_assoc` + `xor_self` + `xor_zero`. -/
 theorem Codeword.xor_xor_right {n : Nat} (a b : Codeword n) :
