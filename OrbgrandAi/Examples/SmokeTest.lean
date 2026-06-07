@@ -1545,6 +1545,22 @@ example (n : Nat) (h : ¬ 0 < n) :
     BlockSize.mk? n = Except.error (ChannelError.nonPositive "BlockSize") :=
   BlockSize.mk?_of_not_pos n h
 
+/-- `BitsPerSymbol.mk?` on a positive input returns `Except.ok`. -/
+example (n : Nat) (h : 0 < n) :
+    BitsPerSymbol.mk? n = Except.ok ⟨n, h⟩ :=
+  BitsPerSymbol.mk?_of_pos n h
+
+/-- `BitsPerSymbol.mk?` on a non-positive input returns `Except.error`. -/
+example (n : Nat) (h : ¬ 0 < n) :
+    BitsPerSymbol.mk? n
+      = Except.error (ChannelError.nonPositive "BitsPerSymbol") :=
+  BitsPerSymbol.mk?_of_not_pos n h
+
+/-- `BitsPerSymbol.mk?` round-trip identity through `.toNat`. -/
+example (n : Nat) (h : 0 < n) :
+    (BitsPerSymbol.mk? n).map (·.toNat) = Except.ok n :=
+  BitsPerSymbol.mk?_toNat_eq n h
+
 /-- `CodewordLength.mk?` on a positive input returns `Except.ok`. -/
 example (n : Nat) (h : 0 < n) :
     CodewordLength.mk? n = Except.ok ⟨n, h⟩ :=

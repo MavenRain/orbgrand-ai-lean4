@@ -228,6 +228,23 @@ def mk? (n : Nat) : Except ChannelError BitsPerSymbol :=
   else
     Except.error (ChannelError.nonPositive "BitsPerSymbol")
 
+/-- *Positive input gives `ok`.*  Parallel of `BlockSize.mk?_of_pos`. -/
+theorem mk?_of_pos (n : Nat) (h : 0 < n) :
+    BitsPerSymbol.mk? n = Except.ok ⟨n, h⟩ :=
+  dif_pos h
+
+/-- *Non-positive input gives `error`.*  Parallel of
+    `BlockSize.mk?_of_not_pos`. -/
+theorem mk?_of_not_pos (n : Nat) (h : ¬ 0 < n) :
+    BitsPerSymbol.mk? n
+      = Except.error (ChannelError.nonPositive "BitsPerSymbol") :=
+  dif_neg h
+
+/-- *Round-trip identity through the `.toNat` accessor.* -/
+theorem mk?_toNat_eq (n : Nat) (h : 0 < n) :
+    (BitsPerSymbol.mk? n).map (·.toNat) = Except.ok n :=
+  (mk?_of_pos n h).symm ▸ rfl
+
 end BitsPerSymbol
 
 namespace NoisePower
