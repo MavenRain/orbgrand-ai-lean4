@@ -281,6 +281,16 @@ theorem delayTapMatrix_second_subdiag
       = delayTapImpulseResponse paths f_s { toNat := 2 } :=
   delayTapMatrix_at_subdiag paths f_s i j h
 
+/-- *Third sub-diagonal of `delayTapMatrix`.*  When `i.val = j.val
+    + 3`, the entry is the impulse response at delay 3.  Same
+    pattern via `delayTapMatrix_at_subdiag`. -/
+theorem delayTapMatrix_third_subdiag
+    {n_s : Nat} {p : Nat} (paths : Fin p -> DelayTapPath)
+    (f_s : SamplingFreq) (i j : Fin n_s) (h : i.val = j.val + 3) :
+    delayTapMatrix n_s paths f_s i j
+      = delayTapImpulseResponse paths f_s { toNat := 3 } :=
+  delayTapMatrix_at_subdiag paths f_s i j h
+
 /-- *Delay-tap matrix entry above diagonal is zero.*  This is the
     same statement as `delayTap_causal` (which packages the result
     into `LinearIsi.causal`), restated as a direct matrix-entry
