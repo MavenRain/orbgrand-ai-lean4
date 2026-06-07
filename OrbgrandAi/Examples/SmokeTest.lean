@@ -2008,6 +2008,13 @@ example {chi : Type} (cs : Constellation chi) (s : chi) :
     cs.exceed s s = 0 :=
   cs.exceed_self s
 
+/-- All-zero-taps lookup yields zero after `getD` at any delay. -/
+example (t : RFViewTaps)
+    (h1 : t.tap1 = 0) (h2 : t.tap2 = 0) (h3 : t.tap3 = 0)
+    (h4 : t.tap4 = 0) (h5 : t.tap5 = 0) (h6 : t.tap6 = 0) (d : Nat) :
+    (t.tap? d).getD (0 : Complex) = (0 : Complex) :=
+  RFViewTaps.tap?_getD_zero_of_all_zero t h1 h2 h3 h4 h5 h6 d
+
 /-- A row of `rfViewMatrix` is zero when all six of its taps are zero. -/
 example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i : Fin n_s)
     (h1 : (rowTaps i).tap1 = 0) (h2 : (rowTaps i).tap2 = 0)
