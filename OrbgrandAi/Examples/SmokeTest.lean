@@ -1715,6 +1715,15 @@ example {n_s b numCandidates : Nat}
       = orbgrandAiLoop Y Phi budget.toNat patterns :=
   orbgrandAi_unfolds_to_loop Y Phi budget patterns
 
+/-- `orbgrandAiLoop` accept-sound: any `some c` output satisfies `Phi c = true`. -/
+example {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s) (c : Codeword n_s)
+    (steps : Nat)
+    (patterns : List (Fin (n_s / b) -> Fin numCandidates))
+    (h : orbgrandAiLoop Y Phi steps patterns = some c) :
+    Phi c = true :=
+  orbgrandAiLoop_accept_sound Y Phi c steps patterns h
+
 /-- `orbgrandAiLoop` with empty pattern list returns `none` at any step count. -/
 example {n_s b numCandidates : Nat}
     (Y : Codeword n_s) (Phi : CodebookMembership n_s) (steps : Nat) :
