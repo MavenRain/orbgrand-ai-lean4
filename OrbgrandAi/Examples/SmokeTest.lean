@@ -1715,6 +1715,16 @@ example {n_s b numCandidates : Nat}
       = orbgrandAiLoop Y Phi budget.toNat patterns :=
   orbgrandAi_unfolds_to_loop Y Phi budget patterns
 
+/-- `orbgrandAiLoop` append-left: a successful prefix stays successful after appending. -/
+example {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s) (c : Codeword n_s)
+    (steps : Nat)
+    (p1 : List (Fin (n_s / b) -> Fin numCandidates))
+    (h : orbgrandAiLoop Y Phi steps p1 = some c)
+    (p2 : List (Fin (n_s / b) -> Fin numCandidates)) :
+    orbgrandAiLoop Y Phi steps (p1 ++ p2) = some c :=
+  orbgrandAiLoop_append_left Y Phi c steps p1 h p2
+
 /-- `orbgrandAiLoop` returns strong: existential witness with both conflict + Phi checks. -/
 example {n_s b numCandidates : Nat}
     (Y : Codeword n_s) (Phi : CodebookMembership n_s) (c : Codeword n_s)
