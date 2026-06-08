@@ -474,6 +474,23 @@ example (phi1 phi2 z1 z2 : Complex) :
         + phi2 * ar2 phi1 phi2 z1 z2 3 :=
   ar2_five phi1 phi2 z1 z2
 
+/-- AR(2) at index 0: initial condition `z1`. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 0 = z1 :=
+  ar2_zero phi1 phi2 z1 z2
+
+/-- AR(2) at index 1: initial condition `z2`. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 1 = z2 :=
+  ar2_one phi1 phi2 z1 z2
+
+/-- AR(2) recurrence at index `n + 2`. -/
+example (phi1 phi2 z1 z2 : Complex) (n : Nat) :
+    ar2 phi1 phi2 z1 z2 (n + 2)
+      = phi1 * ar2 phi1 phi2 z1 z2 (n + 1)
+        + phi2 * ar2 phi1 phi2 z1 z2 n :=
+  ar2_succ_succ phi1 phi2 z1 z2 n
+
 /-- AR(2) closed-form at index 2. -/
 example (phi1 phi2 z1 z2 : Complex) :
     ar2 phi1 phi2 z1 z2 2 = phi1 * z2 + phi2 * z1 :=
