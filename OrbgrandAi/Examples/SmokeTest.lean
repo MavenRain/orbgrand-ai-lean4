@@ -2100,6 +2100,14 @@ example (sigma : NoisePower) (rho : CorrelationCoefficient) :
     cov1_lag sigma rho 2 = sigma.val * rho.val ^ 2 :=
   cov1_lag_two sigma rho
 
+/-- `cov2_lag` at lag 6: recurrence step from lag 5 and lag 4. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta1 beta2 : Real) :
+    cov2_lag sigma rho1 rho2 beta1 beta2 6
+      = beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 5
+        + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 4 :=
+  cov2_lag_six sigma rho1 rho2 beta1 beta2
+
 /-- `cov2_lag` at lag 5: recurrence step from lag 4 and lag 3. -/
 example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
     (beta1 beta2 : Real) :

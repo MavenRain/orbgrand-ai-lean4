@@ -407,6 +407,15 @@ theorem cov2_lag_five
       = beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 4
         + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 3 := rfl
 
+/-- *Recurrence step at lag `6`.*  Same `rfl` pattern as
+    `cov2_lag_five`, one step further. -/
+theorem cov2_lag_six
+    (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta1 beta2 : Real) :
+    cov2_lag sigma rho1 rho2 beta1 beta2 6
+      = beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 5
+        + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 4 := rfl
+
 /-- The AR(2)-style recurrence for `cov2_lag` at lag `n + 3`. -/
 theorem cov2_lag_succ_succ_succ
     (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
