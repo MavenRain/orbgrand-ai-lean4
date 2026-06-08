@@ -2123,6 +2123,31 @@ example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
         + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 3 :=
   cov2_lag_five sigma rho1 rho2 beta1 beta2
 
+/-- `cov2_lag` at lag 0: stationary variance `sigma`. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta1 beta2 : Real) :
+    cov2_lag sigma rho1 rho2 beta1 beta2 0 = sigma.val :=
+  cov2_lag_zero sigma rho1 rho2 beta1 beta2
+
+/-- `cov2_lag` at lag 1: `sigma * rho_1`. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta1 beta2 : Real) :
+    cov2_lag sigma rho1 rho2 beta1 beta2 1 = sigma.val * rho1.val :=
+  cov2_lag_one sigma rho1 rho2 beta1 beta2
+
+/-- `cov2_lag` at lag 2: `sigma * rho_2`. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta1 beta2 : Real) :
+    cov2_lag sigma rho1 rho2 beta1 beta2 2 = sigma.val * rho2.val :=
+  cov2_lag_two sigma rho1 rho2 beta1 beta2
+
+/-- `cov2_lag` at lag 3: first recurrence step. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta1 beta2 : Real) :
+    cov2_lag sigma rho1 rho2 beta1 beta2 3
+      = beta1 * (sigma.val * rho2.val) + beta2 * (sigma.val * rho1.val) :=
+  cov2_lag_three sigma rho1 rho2 beta1 beta2
+
 /-- `cov2_lag` at lag 4: two-step recurrence expansion. -/
 example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
     (beta1 beta2 : Real) :
