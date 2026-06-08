@@ -758,6 +758,16 @@ example {n : Nat} :
       landslideExtend p.1 p.2) :=
   landslideExtend_bijective
 
+/-- Every length-`(n + 1)` pattern is the `landslideExtend` of its top-bit + restriction. -/
+example {n : Nat} (e : Fin (n + 1) -> Bool) :
+    landslideExtend (e (Fin.last n)) (e ∘ Fin.castSucc) = e :=
+  landslideExtend_split e
+
+/-- `landslideExtend` is a right inverse for `landslideExtend_inv`. -/
+example {n : Nat} (e : Fin (n + 1) -> Bool) :
+    landslideExtend (landslideExtend_inv e).1 (landslideExtend_inv e).2 = e :=
+  landslideExtend_landslideExtend_inv e
+
 /-- The inverse `landslideExtend_inv` is a left inverse. -/
 example {n : Nat} (b : Bool) (e : Fin n -> Bool) :
     landslideExtend_inv (landslideExtend b e) = (b, e) :=
