@@ -1715,6 +1715,15 @@ example {n_s b numCandidates : Nat}
       = orbgrandAiLoop Y Phi budget.toNat patterns :=
   orbgrandAi_unfolds_to_loop Y Phi budget patterns
 
+/-- `orbgrandAiLoop` none-of-all-fail: every pattern fails => loop returns `none`. -/
+example {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s) (steps : Nat)
+    (patterns : List (Fin (n_s / b) -> Fin numCandidates))
+    (hfail : forall e, e ∈ patterns ->
+      ¬ noSubstitutionConflict e ∨ ¬ Phi (substitute Y e)) :
+    orbgrandAiLoop Y Phi steps patterns = none :=
+  orbgrandAiLoop_none_of_all_fail Y Phi steps patterns hfail
+
 /-- `orbgrandAiLoop` append-left: a successful prefix stays successful after appending. -/
 example {n_s b numCandidates : Nat}
     (Y : Codeword n_s) (Phi : CodebookMembership n_s) (c : Codeword n_s)
