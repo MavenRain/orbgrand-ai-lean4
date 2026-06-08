@@ -2092,6 +2092,29 @@ example (rho : CorrelationCoefficient) (i : Int) :
     cov1_lag ⟨0, le_refl 0⟩ rho i = 0 :=
   cov1_lag_zero_sigma rho i
 
+/-- `cov1_lag` at lag 0: stationary variance. -/
+example (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    cov1_lag sigma rho 0 = sigma.val :=
+  cov1_lag_zero sigma rho
+
+/-- `cov1_lag` at lag 1: `sigma * rho`. -/
+example (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    cov1_lag sigma rho 1 = sigma.val * rho.val :=
+  cov1_lag_one sigma rho
+
+/-- `cov1_lag` is sign-symmetric: `cov1_lag (-i) = cov1_lag i`. -/
+example (sigma : NoisePower) (rho : CorrelationCoefficient) (i : Int) :
+    cov1_lag sigma rho (-i) = cov1_lag sigma rho i :=
+  cov1_lag_neg sigma rho i
+
+/-- `cov2_lag` recurrence at lag `n + 3`. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta1 beta2 : Real) (n : Nat) :
+    cov2_lag sigma rho1 rho2 beta1 beta2 (n + 3)
+      = beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 (n + 2)
+        + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 (n + 1) :=
+  cov2_lag_succ_succ_succ sigma rho1 rho2 beta1 beta2 n
+
 /-- `cov1_lag` at any natural lag: general closed form. -/
 example (sigma : NoisePower) (rho : CorrelationCoefficient) (n : Nat) :
     cov1_lag sigma rho (n : Int) = sigma.val * rho.val ^ n :=
