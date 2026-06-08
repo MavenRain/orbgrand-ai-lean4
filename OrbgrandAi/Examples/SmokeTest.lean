@@ -830,6 +830,11 @@ example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s)
       = ((rowTaps i).tap? (i.val - j.val + 1)).getD (0 : Complex) :=
   rfViewMatrix_apply_le rowTaps i j h
 
+/-- Dicode matrix diagonal entry is `1`. -/
+example {n_s : Nat} (rho : CorrelationCoefficient) (i : Fin n_s) :
+    dicodeMatrix n_s rho i i = (1 : Complex) :=
+  dicodeMatrix_diag rho i
+
 /-- Dicode matrix sub-diagonal entry is `-rho`. -/
 example {n_s : Nat} (rho : CorrelationCoefficient) (i j : Fin n_s)
     (h : i.val = j.val + 1) :
