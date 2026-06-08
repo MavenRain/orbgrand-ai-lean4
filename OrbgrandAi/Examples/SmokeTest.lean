@@ -467,6 +467,19 @@ example (phi1 phi2 z1 z2 : Complex) :
         + phi2 * ar2 phi1 phi2 z1 z2 4 :=
   ar2_six phi1 phi2 z1 z2
 
+/-- AR(2) closed form at index 3. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 3
+      = phi1 * (phi1 * z2 + phi2 * z1) + phi2 * z2 :=
+  ar2_three phi1 phi2 z1 z2
+
+/-- AR(2) closed form at index 4. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 4
+      = phi1 * (phi1 * (phi1 * z2 + phi2 * z1) + phi2 * z2)
+        + phi2 * (phi1 * z2 + phi2 * z1) :=
+  ar2_four phi1 phi2 z1 z2
+
 /-- AR(2) recurrence step at index 5. -/
 example (phi1 phi2 z1 z2 : Complex) :
     ar2 phi1 phi2 z1 z2 5
