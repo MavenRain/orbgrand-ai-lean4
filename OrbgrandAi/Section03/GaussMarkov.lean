@@ -396,6 +396,17 @@ theorem cov2_lag_four
                   + beta2 * (sigma.val * rho1.val))
         + beta2 * (sigma.val * rho2.val) := rfl
 
+/-- *Recurrence step at lag `5`.*  By def of `cov2_lag` (which uses
+    structural recursion at `n + 3`), index `5` unfolds to
+    `beta_1 * cov2_lag _ _ _ _ 4 + beta_2 * cov2_lag _ _ _ _ 3`.
+    Extends the `cov2_lag_two/three/four` named-form series. -/
+theorem cov2_lag_five
+    (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta1 beta2 : Real) :
+    cov2_lag sigma rho1 rho2 beta1 beta2 5
+      = beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 4
+        + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 3 := rfl
+
 /-- The AR(2)-style recurrence for `cov2_lag` at lag `n + 3`. -/
 theorem cov2_lag_succ_succ_succ
     (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
