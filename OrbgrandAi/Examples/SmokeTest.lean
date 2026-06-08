@@ -1143,6 +1143,18 @@ example {n : Nat} (b : Bool) (e : Fin n -> Bool) (i : Fin n) :
     landslideExtend b e i.castSucc = e i :=
   landslideExtend_castSucc b e i
 
+/-- `bitWeight` split when the top bit is `false`: same weight as restriction. -/
+example {n : Nat} (e : Fin (n + 1) -> Bool)
+    (h : e (Fin.last n) = false) :
+    bitWeight e = bitWeight (e ∘ Fin.castSucc) :=
+  bitWeight_split_false e h
+
+/-- `bitWeight` split when the top bit is `true`: restriction's weight + `(n + 1)`. -/
+example {n : Nat} (e : Fin (n + 1) -> Bool)
+    (h : e (Fin.last n) = true) :
+    bitWeight e = bitWeight (e ∘ Fin.castSucc) + (n + 1) :=
+  bitWeight_split_true e h
+
 /-- Extending by `false` leaves the bit-weight unchanged. -/
 example {n : Nat} (e : Fin n -> Bool) :
     bitWeight (landslideExtend false e) = bitWeight e :=
