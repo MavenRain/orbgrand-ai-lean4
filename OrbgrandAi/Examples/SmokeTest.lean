@@ -266,6 +266,19 @@ example {n : Nat} (pi : ReliabilityRank n) (e1 e2 : Fin n -> Bool)
       landslideBucket pi j e2 :=
   orbgrand_ordering_sound pi e1 e2 h
 
+/-- Yule-Walker bound: `rho_1^2 < 1` (the squared form). -/
+example (rho1 rho2 : CorrelationCoefficient)
+    (h : yuleWalker_variance_bound rho1 rho2) :
+    rho1.val ^ 2 < 1 :=
+  yuleWalker_rho1_sq_lt_one rho1 rho2 h
+
+/-- Yule-Walker bound: numerator strictly less than denominator. -/
+example (rho1 rho2 : CorrelationCoefficient)
+    (h : yuleWalker_variance_bound rho1 rho2) :
+    rho1.val ^ 2 + rho2.val ^ 2 - 2 * rho1.val ^ 2 * rho2.val
+      < 1 - rho1.val ^ 2 :=
+  yuleWalker_num_lt_denom rho1 rho2 h
+
 /-- Yule-Walker variance bound forces `rho_1 < 1`. -/
 example (rho1 rho2 : CorrelationCoefficient)
     (h : yuleWalker_variance_bound rho1 rho2) :
