@@ -1715,6 +1715,47 @@ example {n_s b numCandidates : Nat}
       = orbgrandAiLoop Y Phi budget.toNat patterns :=
   orbgrandAi_unfolds_to_loop Y Phi budget patterns
 
+/-- `orbgrandAiLoop` returns substituted form: any output `c` is `substitute Y e`. -/
+example {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s) (c : Codeword n_s)
+    (steps : Nat)
+    (patterns : List (Fin (n_s / b) -> Fin numCandidates))
+    (h : orbgrandAiLoop Y Phi steps patterns = some c) :
+    exists e, e ∈ patterns /\ c = substitute Y e :=
+  orbgrandAiLoop_returns_substituted Y Phi c steps patterns h
+
+/-- `orbgrandAiLoop` cons-accept: non-conflicting accepted head returns immediately. -/
+example {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s) (m : Nat)
+    (e : Fin (n_s / b) -> Fin numCandidates)
+    (rest : List (Fin (n_s / b) -> Fin numCandidates))
+    (hnc : noSubstitutionConflict e)
+    (hp : Phi (substitute Y e)) :
+    orbgrandAiLoop Y Phi (m + 1) (e :: rest)
+      = some (substitute Y e) :=
+  orbgrandAiLoop_cons_accept Y Phi m e rest hnc hp
+
+/-- `orbgrandAiLoop` cons-reject: rejected non-conflicting head advances to rest. -/
+example {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s) (m : Nat)
+    (e : Fin (n_s / b) -> Fin numCandidates)
+    (rest : List (Fin (n_s / b) -> Fin numCandidates))
+    (hnc : noSubstitutionConflict e)
+    (hp : ¬ Phi (substitute Y e)) :
+    orbgrandAiLoop Y Phi (m + 1) (e :: rest)
+      = orbgrandAiLoop Y Phi m rest :=
+  orbgrandAiLoop_cons_reject Y Phi m e rest hnc hp
+
+/-- `orbgrandAiLoop` cons-conflict: conflicting head skipped, advance to rest. -/
+example {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s) (m : Nat)
+    (e : Fin (n_s / b) -> Fin numCandidates)
+    (rest : List (Fin (n_s / b) -> Fin numCandidates))
+    (h : ¬ noSubstitutionConflict e) :
+    orbgrandAiLoop Y Phi (m + 1) (e :: rest)
+      = orbgrandAiLoop Y Phi m rest :=
+  orbgrandAiLoop_cons_conflict Y Phi m e rest h
+
 /-- `orbgrandAiLoop` accept-sound: any `some c` output satisfies `Phi c = true`. -/
 example {n_s b numCandidates : Nat}
     (Y : Codeword n_s) (Phi : CodebookMembership n_s) (c : Codeword n_s)
