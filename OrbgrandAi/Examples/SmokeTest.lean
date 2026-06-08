@@ -1715,6 +1715,18 @@ example {n_s b numCandidates : Nat}
       = orbgrandAiLoop Y Phi budget.toNat patterns :=
   orbgrandAi_unfolds_to_loop Y Phi budget patterns
 
+/-- `orbgrandAiLoop` returns strong: existential witness with both conflict + Phi checks. -/
+example {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s) (c : Codeword n_s)
+    (steps : Nat)
+    (patterns : List (Fin (n_s / b) -> Fin numCandidates))
+    (h : orbgrandAiLoop Y Phi steps patterns = some c) :
+    exists e, e ∈ patterns
+              /\ noSubstitutionConflict e
+              /\ Phi (substitute Y e)
+              /\ c = substitute Y e :=
+  orbgrandAiLoop_returns_strong Y Phi c steps patterns h
+
 /-- `orbgrandAiLoop` returns substituted form: any output `c` is `substitute Y e`. -/
 example {n_s b numCandidates : Nat}
     (Y : Codeword n_s) (Phi : CodebookMembership n_s) (c : Codeword n_s)
