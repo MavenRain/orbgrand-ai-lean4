@@ -1715,6 +1715,16 @@ example {n_s b numCandidates : Nat}
       = orbgrandAiLoop Y Phi budget.toNat patterns :=
   orbgrandAi_unfolds_to_loop Y Phi budget patterns
 
+/-- `orbgrandAiLoop` none-iff under sufficient budget: full failure characterisation. -/
+example {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s) (steps : Nat)
+    (patterns : List (Fin (n_s / b) -> Fin numCandidates))
+    (hbudget : patterns.length <= steps) :
+    orbgrandAiLoop Y Phi steps patterns = none <->
+      forall e, e ∈ patterns ->
+        ¬ noSubstitutionConflict e ∨ ¬ Phi (substitute Y e) :=
+  orbgrandAiLoop_none_iff_of_budget Y Phi steps patterns hbudget
+
 /-- `orbgrandAiLoop` none-of-all-fail: every pattern fails => loop returns `none`. -/
 example {n_s b numCandidates : Nat}
     (Y : Codeword n_s) (Phi : CodebookMembership n_s) (steps : Nat)
