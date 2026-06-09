@@ -1215,6 +1215,25 @@ example {n_s b numCandidates : Nat}
     orbgrandAi (b := b) (numCandidates := numCandidates) Y Phi budget patterns
       = orbgrandAiLoop Y Phi budget.toNat patterns := rfl
 
+/-- `dicodeMatrix` definitional unfold: nested-if `1` / `-rho` / `0` body. -/
+example {n_s : Nat} (rho : CorrelationCoefficient) (i j : Fin n_s) :
+    dicodeMatrix n_s rho i j
+      = (if i.val = j.val then (1 : Complex)
+         else if i.val = j.val + 1 then -(rho.val : Complex)
+         else (0 : Complex)) := rfl
+
+/-- `perturbChannel` definitional unfold: pointwise `h * (1 + epsilon)`. -/
+example {n_s : Nat} (h : ChannelMatrix n_s)
+    (epsilon : Matrix (Fin n_s) (Fin n_s) Complex) (i j : Fin n_s) :
+    perturbChannel h epsilon i j = h i j * (1 + epsilon i j) := rfl
+
+/-- `dicode` definitional unfold: a `LinearIsi` with `dicodeMatrix` channel
+    and `gaussMarkovCov` noise covariance. -/
+example (n_s : Nat) (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    dicode n_s sigma rho
+      = { channel := dicodeMatrix n_s rho,
+          noiseCov := gaussMarkovCov n_s sigma rho } := rfl
+
 /-- Zero perturbation is the identity on the channel. -/
 example {n_s : Nat} (h : ChannelMatrix n_s) :
     perturbChannel h 0 = h :=
