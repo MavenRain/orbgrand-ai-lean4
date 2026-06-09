@@ -134,6 +134,12 @@ example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
 example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient) :
     gaussMarkov2 sigma rho1 rho2 3 0 2 = sigma.val * rho2.val := rfl
 
+/-- `gaussMarkov2` at size 3 and off-diagonal `(2, 1)` fires the ELSE branch of
+    `if i.val <= j.val` (`i.val - j.val = 1`), then the `cov2_lag` lag-1 base
+    case `sigma.val * rho1.val`.  Complements the `(0, 2)` THEN-branch lock. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient) :
+    gaussMarkov2 sigma rho1 rho2 3 2 1 = sigma.val * rho1.val := rfl
+
 /-- Section III Hadamard log-det bound statement: locks
     `(1 / n_s) * log (cov2DetFormula ...) <= log (sigma^2)`. -/
 example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
@@ -904,6 +910,16 @@ example : landslide 3 2
     = [landslideExtend false
         (landslideExtend true (landslideExtend false Fin.elim0))] := rfl
 
+/-- `landslide 3 3` is the two-element bucket where both `withTop` and
+    `withoutTop` halves are non-empty: top bit alone (weight 3) plus bits 0+1
+    set together (1 + 2 = 3).  Locks the `withTop ++ withoutTop` concat order
+    with both halves non-empty (more-bits-set-at-top first). -/
+example : landslide 3 3
+    = [landslideExtend true
+        (landslideExtend false (landslideExtend false Fin.elim0)),
+       landslideExtend false
+        (landslideExtend true (landslideExtend true Fin.elim0))] := rfl
+
 /-- `landslide 0 (w + 1)` is empty: no length-0 patterns of positive weight. -/
 example (w : Nat) : landslide 0 (w + 1) = [] :=
   landslide_zero_succ w
@@ -1093,6 +1109,20 @@ example (v : Real) (h : 0 <= v) :
     non-negativity proof; pairing with `val` pins the field order. -/
 example (v : Real) (h : 0 <= v) :
     ({ val := v, nonneg := h } : NMSE).nonneg = h := rfl
+
+/-- `CorrelationCoefficient.nonneg` projection through anonymous constructor
+    returns the supplied non-negativity proof.  Three-field carrier
+    (`val`, `nonneg`, `le_one`); pairs with `le_one` projection to pin order. -/
+example (v : Real) (h0 : 0 <= v) (h1 : v <= 1) :
+    ({ val := v, nonneg := h0, le_one := h1 } : CorrelationCoefficient).nonneg
+      = h0 := rfl
+
+/-- `CorrelationCoefficient.le_one` projection through anonymous constructor
+    returns the supplied upper-bound proof; catches a silent swap of
+    `nonneg` and `le_one`. -/
+example (v : Real) (h0 : 0 <= v) (h1 : v <= 1) :
+    ({ val := v, nonneg := h0, le_one := h1 } : CorrelationCoefficient).le_one
+      = h1 := rfl
 
 /-- Zero perturbation is the identity on the channel. -/
 example {n_s : Nat} (h : ChannelMatrix n_s) :
@@ -1662,6 +1692,14 @@ example (z1 z2 : Complex) (n : Nat) :
     ar2 1 1 z1 z2 (n + 2)
       = ar2 1 1 z1 z2 (n + 1) + ar2 1 1 z1 z2 n :=
   ar2_phi1_one_phi2_one_succ z1 z2 n
+
+/-- `ar2 1 1 z1 z2 4` pre-`one_mul` pattern-match unfolding: four levels of
+    `n + 2` reduction.  Locks the raw shape that the algebraic-collapse lemma
+    `ar2_phi1_one_phi2_one_succ` (using `one_mul`) cannot capture by `rfl`. -/
+example (z1 z2 : Complex) :
+    ar2 1 1 z1 z2 4
+      = 1 * (1 * (1 * z2 + 1 * z1) + 1 * z2)
+        + 1 * (1 * z2 + 1 * z1) := rfl
 
 /-- AR(2) with `phi_1 = 0` skips the immediate predecessor. -/
 example (phi2 z1 z2 : Complex) (n : Nat) :
