@@ -119,6 +119,16 @@ example (rho1 rho2 : CorrelationCoefficient) {n_s : Nat} (h_pos : 0 < n_s) :
     cov2DetFormula ⟨0, le_refl 0⟩ rho1 rho2 n_s = 0 :=
   cov2DetFormula_zero_sigma rho1 rho2 h_pos
 
+/-- Section III closed-form determinant statement: locks the quantifier shape
+    (`sigma`, `rho1`, `rho2`, `4 <= n_s`) and the equation `det (gaussMarkov2 ...)
+      = cov2DetFormula ...`. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (n_s : Nat) (h4 : 4 <= n_s)
+    (h : (gaussMarkov2 sigma rho1 rho2 n_s).det
+          = cov2DetFormula sigma rho1 rho2 n_s) :
+    True :=
+  cov2_det_formula_statement sigma rho1 rho2 n_s h4 h
+
 /-- The 2x2 first-order Gauss-Markov determinant: unfactored form. -/
 example (sigma : NoisePower) (rho : CorrelationCoefficient) :
     (gaussMarkovCov 2 sigma rho).det
@@ -560,6 +570,14 @@ example {n_s : Nat} {h : ChannelMatrix n_s}
     perturbChannel h epsilon i j = 0 :=
   perturbChannel_causal_of_causal hcausal i j hij
 
+/-- Imperfect-CSI perturbation preserves bandwidth at width `b`. -/
+example {n_s : Nat} {h : ChannelMatrix n_s}
+    {epsilon : Matrix (Fin n_s) (Fin n_s) Complex} {b : Nat}
+    (hb : forall (i j : Fin n_s), j.val + b < i.val -> h i j = 0)
+    (i j : Fin n_s) (hij : j.val + b < i.val) :
+    perturbChannel h epsilon i j = 0 :=
+  perturbChannel_bandwidth_of_bandwidth hb i j hij
+
 /-- BPSK is a concrete `Constellation Bool`. -/
 example : Constellation Bool := bpsk
 
@@ -570,6 +588,12 @@ example (s : Bool) : bpsk.exceed s s = 0 :=
 /-- BPSK exceedance is 1 on disagreement. -/
 example {s s_hat : Bool} (h : s ≠ s_hat) : bpsk.exceed s s_hat = 1 :=
   bpsk_exceed_diff h
+
+/-- `orbgrandEnumeration n w` exactly enumerates length-`n` patterns of bit-weight `w`;
+    the public-facing wrapper around `landslide_correct`. -/
+example (n w : Nat) (e : Fin n -> Bool) :
+    e ∈ orbgrandEnumeration n w <-> bitWeight e = w :=
+  orbgrandEnumeration_correct n w e
 
 /-- `landslide n w` exactly enumerates length-`n` patterns of bit-weight `w`. -/
 example (n w : Nat) (e : Fin n -> Bool) :
