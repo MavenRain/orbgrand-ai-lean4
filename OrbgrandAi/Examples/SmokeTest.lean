@@ -732,6 +732,71 @@ example (s : Bool) : bpsk.exceed s s = 0 :=
 example {s s_hat : Bool} (h : s ≠ s_hat) : bpsk.exceed s s_hat = 1 :=
   bpsk_exceed_diff h
 
+/-- Generic exceedance vanishes on the diagonal. -/
+example {chi : Type} (cs : Constellation chi) (s : chi) :
+    cs.exceed s s = 0 :=
+  cs.exceed_self s
+
+/-- Zero exceedance implies symbol equality. -/
+example {chi : Type} (cs : Constellation chi) {s s_hat : chi}
+    (h : cs.exceed s s_hat = 0) :
+    s = s_hat :=
+  cs.eq_of_exceed_zero h
+
+/-- Symbol equality implies zero exceedance. -/
+example {chi : Type} (cs : Constellation chi) {s s_hat : chi}
+    (h : s = s_hat) :
+    cs.exceed s s_hat = 0 :=
+  cs.exceed_zero_of_eq h
+
+/-- Diagonal exceedance lower-bounds any exceedance from `s`. -/
+example {chi : Type} (cs : Constellation chi) (s s_hat : chi) :
+    cs.exceed s s <= cs.exceed s s_hat :=
+  cs.exceed_self_le_exceed s s_hat
+
+/-- Diagonal exceedance at `s_hat` lower-bounds any exceedance landing at `s_hat`. -/
+example {chi : Type} (cs : Constellation chi) (s s_hat : chi) :
+    cs.exceed s_hat s_hat <= cs.exceed s s_hat :=
+  cs.exceed_self_le_exceed_right s s_hat
+
+/-- Exceedance is nonzero iff symbols differ. -/
+example {chi : Type} (cs : Constellation chi) (s s_hat : chi) :
+    cs.exceed s s_hat ≠ 0 <-> s ≠ s_hat :=
+  cs.exceed_ne_zero_iff_ne s s_hat
+
+/-- Exceedance is strictly positive iff symbols differ. -/
+example {chi : Type} (cs : Constellation chi) (s s_hat : chi) :
+    0 < cs.exceed s s_hat <-> s ≠ s_hat :=
+  cs.exceed_pos_iff_ne s s_hat
+
+/-- Symbol inequality implies strictly positive exceedance. -/
+example {chi : Type} (cs : Constellation chi) {s s_hat : chi}
+    (h : s ≠ s_hat) :
+    0 < cs.exceed s s_hat :=
+  cs.exceed_pos_of_ne h
+
+/-- Two-argument congruence for `exceed` under separate symbol equalities. -/
+example {chi : Type} (cs : Constellation chi) {s s' s_hat s_hat' : chi}
+    (h_s : s = s') (h_hat : s_hat = s_hat') :
+    cs.exceed s s_hat = cs.exceed s' s_hat' :=
+  cs.exceed_eq_of_eq h_s h_hat
+
+/-- Exceedance dichotomy: either zero (agreement) or strictly positive (disagreement). -/
+example {chi : Type} (cs : Constellation chi) (s s_hat : chi) :
+    cs.exceed s s_hat = 0 \/ 0 < cs.exceed s s_hat :=
+  cs.exceed_zero_or_pos s s_hat
+
+/-- Nonzero exceedance is strictly positive. -/
+example {chi : Type} (cs : Constellation chi) {s s_hat : chi}
+    (h : cs.exceed s s_hat ≠ 0) :
+    0 < cs.exceed s s_hat :=
+  cs.exceed_pos_of_ne_zero h
+
+/-- Exceedance is strictly positive iff nonzero. -/
+example {chi : Type} (cs : Constellation chi) (s s_hat : chi) :
+    0 < cs.exceed s s_hat <-> cs.exceed s s_hat ≠ 0 :=
+  cs.exceed_pos_iff_ne_zero s s_hat
+
 /-- `orbgrandEnumeration n w` exactly enumerates length-`n` patterns of bit-weight `w`;
     the public-facing wrapper around `landslide_correct`. -/
 example (n w : Nat) (e : Fin n -> Bool) :
