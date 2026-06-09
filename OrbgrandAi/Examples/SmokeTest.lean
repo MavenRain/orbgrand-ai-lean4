@@ -1234,6 +1234,14 @@ example (n_s : Nat) (sigma : NoisePower) (rho : CorrelationCoefficient) :
       = { channel := dicodeMatrix n_s rho,
           noiseCov := gaussMarkovCov n_s sigma rho } := rfl
 
+/-- `LinearIsi.receive` definitional unfold: pointwise `ch.channel * X + N`. -/
+example {n_s : Nat} (ch : LinearIsi n_s) (X N : SymbolVector n_s) (k : Fin n_s) :
+    ch.receive X N k = ch.channel.mulVec X k + N k := rfl
+
+/-- `BlockPosterior numCandidates` abbreviates `Fin numCandidates -> Real`. -/
+example (numCandidates : Nat) :
+    BlockPosterior numCandidates = (Fin numCandidates -> Real) := rfl
+
 /-- Zero perturbation is the identity on the channel. -/
 example {n_s : Nat} (h : ChannelMatrix n_s) :
     perturbChannel h 0 = h :=
