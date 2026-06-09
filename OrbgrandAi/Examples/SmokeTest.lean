@@ -1038,6 +1038,16 @@ example (s s_hat : Bool) : bpsk.exceed s s_hat = bpsk.exceed s_hat s :=
 example (s s_hat : Fin 4) : qpsk.exceed s s_hat = qpsk.exceed s_hat s :=
   qpsk_exceed_symm s s_hat
 
+/-- Section IV symbol-level BLER equivalence placeholder: locks the implication shape
+    `(forall bit-level / symbol-level patterns, True) -> True` pending the
+    probabilistic-equivalence statement that requires a noise-distribution layer. -/
+example {chi : Type} (cs : Constellation chi) (n_s : Nat)
+    (h : forall (_bitLevelPatterns : List (Fin n_s -> Bool))
+        (_symbolLevelPatterns : List (Fin n_s -> Option chi)),
+        True) :
+    True :=
+  symbol_level_bler_equivalence_statement cs n_s h
+
 /-- Zero channel stays zero under any perturbation. -/
 example {n_s : Nat} (epsilon : Matrix (Fin n_s) (Fin n_s) Complex) :
     perturbChannel 0 epsilon = 0 :=
