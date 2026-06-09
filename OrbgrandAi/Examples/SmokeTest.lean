@@ -1148,6 +1148,38 @@ example (n : Nat) (h : 0 < n) :
 example (n : Nat) :
     ({ toNat := n } : AbandonmentBudget).toNat = n := rfl
 
+/-- `Ar2Coefficient.val` projection through anonymous constructor. -/
+example (v : Real) : ({ val := v } : Ar2Coefficient).val = v := rfl
+
+/-- `ConstellationSize.toNat` projection through anonymous constructor. -/
+example (n : Nat) (h : 0 < n) :
+    ({ toNat := n, pos := h } : ConstellationSize).toNat = n := rfl
+
+/-- `CodewordLength.toNat` projection through anonymous constructor. -/
+example (n : Nat) (h : 0 < n) :
+    ({ toNat := n, pos := h } : CodewordLength).toNat = n := rfl
+
+/-- `BitsPerSymbol.toNat` projection through anonymous constructor. -/
+example (n : Nat) (h : 0 < n) :
+    ({ toNat := n, pos := h } : BitsPerSymbol).toNat = n := rfl
+
+/-- Concrete BPSK eval: `exceed true false = 1` (closed Bool values reduce). -/
+example : bpsk.exceed true false = 1 := rfl
+
+/-- Concrete QPSK eval: `exceed 0 1 = 1` (closed `Fin 4` values reduce
+    through `Fin.decEq`). -/
+example : qpsk.exceed (0 : Fin 4) (1 : Fin 4) = 1 := rfl
+
+/-- `landslide 2 1` is the singleton with bit 0 set, bit 1 unset. -/
+example : landslide 2 1
+    = [landslideExtend false (landslideExtend true Fin.elim0)] := rfl
+
+/-- `landslide 4 1` is the four-deep singleton: bit 0 set, all higher bits unset. -/
+example : landslide 4 1
+    = [landslideExtend false
+        (landslideExtend false
+          (landslideExtend false (landslideExtend true Fin.elim0)))] := rfl
+
 /-- Zero perturbation is the identity on the channel. -/
 example {n_s : Nat} (h : ChannelMatrix n_s) :
     perturbChannel h 0 = h :=
