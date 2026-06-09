@@ -246,6 +246,14 @@ example {n_s b numCandidates : Nat}
       Y (fun _ => false) budget patterns = none :=
   orbgrandAi_empty_codebook Y budget patterns
 
+/-- `substitutionPenalty?` definitional unfold: `Option.map` of the
+    `log p(t*) - log p(t)` log-ratio over the hard-decision block. -/
+example {numCandidates : Nat} (post : BlockPosterior numCandidates)
+    (t : Fin numCandidates) :
+    substitutionPenalty? post t
+      = (hardDecisionBlock? post).map (fun tStar =>
+          Real.log (post tStar) - Real.log (post t)) := rfl
+
 /-- ORBGRAND-AI returns `none` on the empty pattern list at the public entry point. -/
 example {n_s b numCandidates : Nat}
     (Y : Codeword n_s) (Phi : CodebookMembership n_s)
@@ -1057,6 +1065,14 @@ example {n_s : Nat} (epsilon : Matrix (Fin n_s) (Fin n_s) Complex) :
     perturbChannel 0 epsilon = 0 :=
   perturbChannel_zero_channel epsilon
 
+/-- `NMSE.mk?` on a non-negative real lands in `ok`. -/
+example (v : Real) (h : 0 <= v) :
+    NMSE.mk? v = Except.ok ⟨v, h⟩ := dif_pos h
+
+/-- `NMSE.mk?` on a negative real lands in `error` with `negativeVariance v`. -/
+example (v : Real) (h : ¬ 0 <= v) :
+    NMSE.mk? v = Except.error (ChannelError.negativeVariance v) := dif_neg h
+
 /-- Zero perturbation is the identity on the channel. -/
 example {n_s : Nat} (h : ChannelMatrix n_s) :
     perturbChannel h 0 = h :=
@@ -1145,6 +1161,11 @@ example {n : Nat} (e : Fin (n + 1) -> Bool) :
 example {n : Nat} (b : Bool) (e : Fin n -> Bool) :
     landslideExtend_inv (landslideExtend b e) = (b, e) :=
   landslideExtend_inv_landslideExtend b e
+
+/-- `landslideExtend_inv` definitional unfold: tuple of top bit and restriction.
+    Roundtrip theorems alone would tolerate a component swap; this catches it. -/
+example {n : Nat} (e : Fin (n + 1) -> Bool) :
+    landslideExtend_inv e = (e (Fin.last n), e ∘ Fin.castSucc) := rfl
 
 /-- Codeword `+`-form equality characterisation. -/
 example {n : Nat} (a b : Codeword n) : a + b = 0 <-> a = b :=
@@ -2602,6 +2623,13 @@ example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
     (beta1 beta2 : Real) :
     cov2_lag sigma rho1 rho2 beta1 beta2 0 = sigma.val :=
   cov2_lag_zero sigma rho1 rho2 beta1 beta2
+
+/-- `beta1?` definitional unfold: zeta-reduces the `let denom` and pins the
+    if-then-else branches to their Yule-Walker AR(1) coefficient form. -/
+example (rho1 rho2 : CorrelationCoefficient) :
+    beta1? rho1 rho2
+      = (if (1 - rho1.val ^ 2) = 0 then none
+         else some (rho1.val * (1 - rho2.val) / (1 - rho1.val ^ 2))) := rfl
 
 /-- `cov2_lag` at lag 1: `sigma * rho_1`. -/
 example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
