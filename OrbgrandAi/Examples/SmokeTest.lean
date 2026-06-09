@@ -129,6 +129,11 @@ example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
     True :=
   cov2_det_formula_statement sigma rho1 rho2 n_s h4 h
 
+/-- `gaussMarkov2` at size 3 and off-diagonal `(0, 2)` collapses to
+    `sigma.val * rho2.val` via the `cov2_lag` lag-2 base case. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient) :
+    gaussMarkov2 sigma rho1 rho2 3 0 2 = sigma.val * rho2.val := rfl
+
 /-- Section III Hadamard log-det bound statement: locks
     `(1 / n_s) * log (cov2DetFormula ...) <= log (sigma^2)`. -/
 example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
@@ -892,6 +897,13 @@ example {pi : ReliabilityRank 0} :
 example : landslide 0 0 = [Fin.elim0] :=
   landslide_zero_zero
 
+/-- Concrete three-level evaluation: `landslide 3 2` is a singleton with the
+    `withTop` branch firing at depth 1 (weight `2 - 2 = 0`) and the outer and
+    innermost `withTop`s both suppressed. -/
+example : landslide 3 2
+    = [landslideExtend false
+        (landslideExtend true (landslideExtend false Fin.elim0))] := rfl
+
 /-- `landslide 0 (w + 1)` is empty: no length-0 patterns of positive weight. -/
 example (w : Nat) : landslide 0 (w + 1) = [] :=
   landslide_zero_succ w
@@ -1072,6 +1084,15 @@ example (v : Real) (h : 0 <= v) :
 /-- `NMSE.mk?` on a negative real lands in `error` with `negativeVariance v`. -/
 example (v : Real) (h : ¬ 0 <= v) :
     NMSE.mk? v = Except.error (ChannelError.negativeVariance v) := dif_neg h
+
+/-- `NMSE.val` projection through anonymous constructor returns the supplied real. -/
+example (v : Real) (h : 0 <= v) :
+    ({ val := v, nonneg := h } : NMSE).val = v := rfl
+
+/-- `NMSE.nonneg` projection through anonymous constructor returns the supplied
+    non-negativity proof; pairing with `val` pins the field order. -/
+example (v : Real) (h : 0 <= v) :
+    ({ val := v, nonneg := h } : NMSE).nonneg = h := rfl
 
 /-- Zero perturbation is the identity on the channel. -/
 example {n_s : Nat} (h : ChannelMatrix n_s) :
