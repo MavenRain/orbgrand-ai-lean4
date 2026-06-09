@@ -1285,6 +1285,23 @@ example {n k : Nat} (M : Matrix (Fin (n - k)) (Fin n) (ZMod 2)) (h : k <= n) :
 example {n k : Nat} (M : Matrix (Fin (n - k)) (Fin n) (ZMod 2)) (h : k <= n) :
     ({ matrix := M, kLeN := h } : ParityCheck n k).kLeN = h := rfl
 
+/-- `RFViewTaps.tap1` projection through anonymous constructor. -/
+example (t1 t2 t3 t4 t5 t6 : Complex) :
+    ({ tap1 := t1, tap2 := t2, tap3 := t3,
+       tap4 := t4, tap5 := t5, tap6 := t6 } : RFViewTaps).tap1 = t1 := rfl
+
+/-- `RFViewTaps.tap6` projection through anonymous constructor;
+    paired with `tap1` lock pins the six-field carrier order at the extremes. -/
+example (t1 t2 t3 t4 t5 t6 : Complex) :
+    ({ tap1 := t1, tap2 := t2, tap3 := t3,
+       tap4 := t4, tap5 := t5, tap6 := t6 } : RFViewTaps).tap6 = t6 := rfl
+
+/-- `RFViewTaps.tap?` at index 7 falls into the catch-all `none` branch. -/
+example (t : RFViewTaps) : t.tap? 7 = none := rfl
+
+/-- `RFViewTaps.tap?` at index 3 returns `some t.tap3` (pattern-match body). -/
+example (t : RFViewTaps) : t.tap? 3 = some t.tap3 := rfl
+
 /-- Zero perturbation is the identity on the channel. -/
 example {n_s : Nat} (h : ChannelMatrix n_s) :
     perturbChannel h 0 = h :=
