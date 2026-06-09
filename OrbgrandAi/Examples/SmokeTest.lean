@@ -777,6 +777,32 @@ example {n : Nat} (e : Fin n -> Bool) :
     bitWeight e = 0 <-> forall i, e i = false :=
   bitWeight_zero_iff_all_false e
 
+/-- Empty pattern has bit-weight zero (vacuous sum over `Fin 0`). -/
+example : bitWeight (Fin.elim0 : Fin 0 -> Bool) = 0 :=
+  bitWeight_elim0
+
+/-- The constant-false pattern has bit-weight zero. -/
+example {n : Nat} : bitWeight (fun _ : Fin n => false) = 0 :=
+  bitWeight_const_false
+
+/-- Empty pattern has logistic weight zero under any reliability rank. -/
+example {pi : ReliabilityRank 0} :
+    logisticWeight pi Fin.elim0 = 0 :=
+  logisticWeight_elim0
+
+/-- `landslide 0 0` is exactly the singleton list containing the empty pattern. -/
+example : landslide 0 0 = [Fin.elim0] :=
+  landslide_zero_zero
+
+/-- `landslide 0 (w + 1)` is empty: no length-0 patterns of positive weight. -/
+example (w : Nat) : landslide 0 (w + 1) = [] :=
+  landslide_zero_succ w
+
+/-- Every pattern is in its own logistic-weight bucket. -/
+example {n : Nat} (pi : ReliabilityRank n) (e : Fin n -> Bool) :
+    landslideBucket pi (logisticWeight pi e) e :=
+  landslideBucket_self pi e
+
 /-- The constant-false pattern is in bucket 0. -/
 example {n : Nat} : (fun _ : Fin n => false) ∈ landslide n 0 :=
   const_false_mem_landslide_zero
