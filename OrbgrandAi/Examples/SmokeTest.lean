@@ -1257,6 +1257,34 @@ example (n_s : Nat) :
 /-- `CodebookMembership n` abbreviates `Codeword n -> Bool`. -/
 example (n : Nat) : CodebookMembership n = (Codeword n -> Bool) := rfl
 
+/-- `Codeword n` abbreviates `Fin n -> ZMod 2`. -/
+example (n : Nat) : Codeword n = (Fin n -> ZMod 2) := rfl
+
+/-- `BitReliability n` abbreviates `Fin n -> Real`. -/
+example (n : Nat) : BitReliability n = (Fin n -> Real) := rfl
+
+/-- `QueryOrder numPatterns` abbreviates `List (Fin numPatterns)`. -/
+example (numPatterns : Nat) :
+    QueryOrder numPatterns = List (Fin numPatterns) := rfl
+
+/-- `LinearIsi.channel` projection through anonymous constructor. -/
+example {n_s : Nat} (h : ChannelMatrix n_s) (C : CovMatrix n_s) :
+    ({ channel := h, noiseCov := C } : LinearIsi n_s).channel = h := rfl
+
+/-- `LinearIsi.noiseCov` projection through anonymous constructor;
+    pairing with `channel` pins the field order. -/
+example {n_s : Nat} (h : ChannelMatrix n_s) (C : CovMatrix n_s) :
+    ({ channel := h, noiseCov := C } : LinearIsi n_s).noiseCov = C := rfl
+
+/-- `ParityCheck.matrix` projection through anonymous constructor. -/
+example {n k : Nat} (M : Matrix (Fin (n - k)) (Fin n) (ZMod 2)) (h : k <= n) :
+    ({ matrix := M, kLeN := h } : ParityCheck n k).matrix = M := rfl
+
+/-- `ParityCheck.kLeN` projection through anonymous constructor;
+    pairing with `matrix` pins the field order. -/
+example {n k : Nat} (M : Matrix (Fin (n - k)) (Fin n) (ZMod 2)) (h : k <= n) :
+    ({ matrix := M, kLeN := h } : ParityCheck n k).kLeN = h := rfl
+
 /-- Zero perturbation is the identity on the channel. -/
 example {n_s : Nat} (h : ChannelMatrix n_s) :
     perturbChannel h 0 = h :=
