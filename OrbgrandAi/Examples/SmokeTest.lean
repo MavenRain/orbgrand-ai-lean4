@@ -289,6 +289,20 @@ example {n k : Nat} (H : ParityCheck n k) (Y Ng : Codeword n)
     grandFind H Y (Ng :: rest) = grandFind H Y rest :=
   grandFind_cons_nonzero_syndrome H Y Ng rest h
 
+/-- GRAND is ML-optimal: when the candidate list is sorted by non-increasing
+    posterior, the returned codeword's posterior beats any zero-syndrome candidate. -/
+example {n k : Nat} (p : Codeword n -> Real) (H : ParityCheck n k)
+    (Y : Codeword n) (order : List (Codeword n))
+    (sorted_dec : forall (Ng Ng' : Codeword n) (i j : Nat),
+        order[i]? = some Ng -> order[j]? = some Ng' ->
+        i <= j -> p Ng' <= p Ng)
+    (c : Codeword n) (hfind : grandFind H Y order = some c)
+    (Ng' : Codeword n) (hin : Ng' ∈ order)
+    (hsyn : forall (j : Fin (n - k)),
+        H.matrix.mulVec (Codeword.xor Y Ng') j = 0) :
+    p Ng' <= p (Codeword.xor Y c) :=
+  grand_ml_optimal p H Y order sorted_dec c hfind Ng' hin hsyn
+
 /-- When `Y` is a codeword, the syndrome-zero predicate holds iff `Ng` is a codeword. -/
 example {n k : Nat} (H : ParityCheck n k) (Y N_g : Codeword n)
     (h : forall i, H.matrix.mulVec Y i = 0) :
@@ -547,6 +561,20 @@ example {n_s b numCandidates : Nat}
         ¬ noSubstitutionConflict e ∨ ¬ Phi (substitute Y e) :=
   orbgrandAi_none_iff_of_budget Y Phi budget patterns hbudget
 
+/-- ORBGRAND-AI loop `none` (with sufficient budget) implies every enumerated
+    pattern fails an acceptance gate: either a substitution conflict, or
+    `Phi` rejects the substituted candidate. -/
+example {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s)
+    (steps : Nat)
+    (patterns : List (Fin (n_s / b) -> Fin numCandidates))
+    (hbudget : patterns.length <= steps)
+    (hnone : orbgrandAiLoop Y Phi steps patterns = none)
+    (e : Fin (n_s / b) -> Fin numCandidates) (hmem : e ∈ patterns) :
+    ¬ noSubstitutionConflict e ∨ ¬ Phi (substitute Y e) :=
+  orbgrandAiLoop_none_imp_all_fail_of_budget
+    Y Phi steps patterns hbudget hnone e hmem
+
 /-- Codeword.xor and `+` coincide as pointwise ZMod 2 addition. -/
 example {n : Nat} (a b : Codeword n) :
     Codeword.xor a b = a + b :=
@@ -687,6 +715,19 @@ example (n w : Nat) (e : Fin n -> Bool) :
 example (n w : Nat) (e : Fin n -> Bool) :
     e ∈ landslide n w <-> bitWeight e = w :=
   landslide_correct n w e
+
+/-- Length-0 base case: landslide membership iff bit-weight equality. -/
+example (e : Fin 0 -> Bool) (w : Nat) :
+    e ∈ landslide 0 w <-> bitWeight e = w :=
+  landslide_zero_iff e w
+
+/-- Inductive step: membership in a `landslideExtend`-mapped list iff
+    top bit matches and the restriction is in the list. -/
+example {n : Nat} (list : List (Fin n -> Bool)) (b : Bool)
+    (e : Fin (n + 1) -> Bool) :
+    e ∈ list.map (landslideExtend b) <->
+      e (Fin.last n) = b /\ (e ∘ Fin.castSucc) ∈ list :=
+  mem_map_extend_iff list b e
 
 /-- Every pattern is in its own bit-weight bucket. -/
 example {n : Nat} (e : Fin n -> Bool) :
