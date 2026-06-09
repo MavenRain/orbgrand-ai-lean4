@@ -206,6 +206,14 @@ example {n k : Nat} (H : ParityCheck n k) (Y : Codeword n)
     grandFind H Y (0 :: rest) = some Y :=
   grandFind_zero_first H Y rest h_cw
 
+/-- GRAND accepts the head candidate when its syndrome is zero, ignoring the tail. -/
+example {n k : Nat} (H : ParityCheck n k) (Y Ng : Codeword n)
+    (rest : List (Codeword n))
+    (h : forall (i : Fin (n - k)),
+          H.matrix.mulVec (Codeword.xor Y Ng) i = 0) :
+    grandFind H Y (Ng :: rest) = some (Codeword.xor Y Ng) :=
+  grandFind_cons_zero_syndrome H Y Ng rest h
+
 /-- Syndrome decomposes as `H * Y + H * N_g`. -/
 example {n k : Nat} (H : ParityCheck n k) (Y N_g : Codeword n)
     (i : Fin (n - k)) :
@@ -278,6 +286,13 @@ example (rho1 rho2 : CorrelationCoefficient)
     rho1.val ^ 2 + rho2.val ^ 2 - 2 * rho1.val ^ 2 * rho2.val
       < 1 - rho1.val ^ 2 :=
   yuleWalker_num_lt_denom rho1 rho2 h
+
+/-- Yule-Walker bound after clearing the denominator and reorganising:
+    `2 rho_1^2 + rho_2^2 - 2 rho_1^2 rho_2 < 1`. -/
+example (rho1 rho2 : CorrelationCoefficient)
+    (h : yuleWalker_variance_bound rho1 rho2) :
+    2 * rho1.val ^ 2 + rho2.val ^ 2 - 2 * rho1.val ^ 2 * rho2.val < 1 :=
+  yuleWalker_step3 rho1 rho2 h
 
 /-- Yule-Walker variance bound forces `rho_1 < 1`. -/
 example (rho1 rho2 : CorrelationCoefficient)
@@ -479,6 +494,21 @@ example (phi1 phi2 z1 z2 : Complex) :
       = phi1 * ar2 phi1 phi2 z1 z2 5
         + phi2 * ar2 phi1 phi2 z1 z2 4 :=
   ar2_six phi1 phi2 z1 z2
+
+/-- Section VI.B AR(2) approximation-error statement: the per-pulse
+    `normSq <= delta^2` implication shape (`delta in [0, 1)`) is well-formed
+    and reducible to `True`, locking the quantifier order and bound form. -/
+example (n_s : Nat) (rowTaps : Fin n_s -> RFViewTaps)
+    (h : forall (z : Fin 6 -> Complex),
+        exists (delta : Real),
+          0 <= delta /\ delta < 1 /\
+          forall (j' : Fin 6),
+            let (phi1, phi2) := ar2LeastSquaresFit z
+            Complex.normSq (z j' -
+              ar2 phi1 phi2 (z (0 : Fin 6)) (z (1 : Fin 6)) j'.val)
+              <= delta * delta) :
+    True :=
+  ar2_approximation_error_statement n_s rowTaps h
 
 /-- AR(2) closed form at index 3. -/
 example (phi1 phi2 z1 z2 : Complex) :
