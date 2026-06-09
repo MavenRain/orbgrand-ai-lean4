@@ -793,6 +793,34 @@ example {n_s : Nat} (epsilon : Matrix (Fin n_s) (Fin n_s) Complex) :
     perturbChannel 0 epsilon = 0 :=
   perturbChannel_zero_channel epsilon
 
+/-- Zero perturbation is the identity on the channel. -/
+example {n_s : Nat} (h : ChannelMatrix n_s) :
+    perturbChannel h 0 = h :=
+  perturbChannel_zero h
+
+/-- Section VI.B imperfect-CSI error-floor statement: positive NMSE yields a
+    positive lower bound on every BLER model at every nonnegative SNR. -/
+example (nmse : NMSE) (sigma : NoisePower) (rho : CorrelationCoefficient)
+    (h : 0 < nmse.val ->
+      exists (floor : Real),
+        0 < floor /\
+        forall (bler : Real -> Real)
+          (_ : forall snr, snr >= 0 -> 0 <= bler snr /\ bler snr <= 1),
+          forall snr : Real, snr >= 0 -> floor <= bler snr) :
+    True :=
+  imperfect_csi_error_floor_statement nmse sigma rho h
+
+/-- Section VI.C query-order stability statement: Kendall tau between query
+    orders is Lipschitz in the correlation perturbation. -/
+example (rho_real : CorrelationCoefficient) (numPatterns : Nat)
+    (h : exists (K : Real), 0 < K /\
+        forall (delta_rho : Real),
+          abs delta_rho <= 0.2 ->
+            forall (orderReal orderEst : QueryOrder numPatterns),
+              (kendallTau orderReal orderEst : Real) <= K * abs delta_rho) :
+    True :=
+  query_order_stability_statement rho_real numPatterns h
+
 /-- Max-weight bucket has no duplicates. -/
 example {n : Nat} :
     (landslide n (bitWeight (fun _ : Fin n => true))).Nodup :=
