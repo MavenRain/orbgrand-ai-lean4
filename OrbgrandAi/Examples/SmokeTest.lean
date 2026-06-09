@@ -1180,6 +1180,25 @@ example : landslide 4 1
         (landslideExtend false
           (landslideExtend false (landslideExtend true Fin.elim0)))] := rfl
 
+/-- `syndrome` definitional unfold: `H * (Y xor N_g)` as a function. -/
+example {n k : Nat} (H : ParityCheck n k) (Y N_g : Codeword n) :
+    syndrome H Y N_g = H.matrix.mulVec (Codeword.xor Y N_g) := rfl
+
+/-- `syndromeZero` definitional unfold: every row of `syndrome` vanishes. -/
+example {n k : Nat} (H : ParityCheck n k) (Y N_g : Codeword n) :
+    syndromeZero H Y N_g
+      = forall (i : Fin (n - k)), syndrome H Y N_g i = 0 := rfl
+
+/-- `bitWeight` definitional unfold: `Finset.univ.sum` of position-weighted bits. -/
+example {n : Nat} (e : Fin n -> Bool) :
+    bitWeight e = Finset.univ.sum fun i : Fin n => if e i then i.val + 1 else 0 := rfl
+
+/-- `logisticWeight` definitional unfold: sum of rank-weighted bits under `pi.perm`. -/
+example {n : Nat} (pi : ReliabilityRank n) (e : Fin n -> Bool) :
+    logisticWeight pi e
+      = Finset.univ.sum fun i : Fin n =>
+          if e (pi.perm i) then i.val + 1 else 0 := rfl
+
 /-- Zero perturbation is the identity on the channel. -/
 example {n_s : Nat} (h : ChannelMatrix n_s) :
     perturbChannel h 0 = h :=
