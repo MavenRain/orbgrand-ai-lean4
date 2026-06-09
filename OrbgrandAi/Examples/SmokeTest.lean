@@ -616,6 +616,31 @@ example {n_s : Nat} (ch : LinearIsi n_s) (b b' : Nat) (hb : b <= b')
     (h : ch.bandwidth b) : ch.bandwidth b' :=
   LinearIsi.bandwidth_le hb h
 
+/-- The zero channel is causal (vacuously: every entry is zero). -/
+example {n_s : Nat} (noiseCov : CovMatrix n_s) :
+    ({ channel := 0, noiseCov := noiseCov } : LinearIsi n_s).causal :=
+  LinearIsi.zero_causal noiseCov
+
+/-- The identity channel is causal (off-diagonals vanish). -/
+example {n_s : Nat} (noiseCov : CovMatrix n_s) :
+    ({ channel := 1, noiseCov := noiseCov } : LinearIsi n_s).causal :=
+  LinearIsi.one_causal noiseCov
+
+/-- The zero channel has any bandwidth. -/
+example {n_s : Nat} (noiseCov : CovMatrix n_s) (b : Nat) :
+    ({ channel := 0, noiseCov := noiseCov } : LinearIsi n_s).bandwidth b :=
+  LinearIsi.zero_bandwidth noiseCov b
+
+/-- The identity channel has any bandwidth. -/
+example {n_s : Nat} (noiseCov : CovMatrix n_s) (b : Nat) :
+    ({ channel := 1, noiseCov := noiseCov } : LinearIsi n_s).bandwidth b :=
+  LinearIsi.one_bandwidth noiseCov b
+
+/-- Receiving through the zero channel delivers only the noise: `receive X N = N`. -/
+example {n_s : Nat} (noiseCov : CovMatrix n_s) (X N : SymbolVector n_s) :
+    ({ channel := 0, noiseCov := noiseCov } : LinearIsi n_s).receive X N = N :=
+  LinearIsi.zero_channel_receive noiseCov X N
+
 /-- Capacity upper-bound definitional unfolding. -/
 example (sigmaX : SignalPower) (sigmaN : NoisePower)
     (rho1 rho2 : CorrelationCoefficient) (n_s : Nat) :
