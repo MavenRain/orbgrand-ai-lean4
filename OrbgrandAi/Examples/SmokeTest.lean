@@ -148,6 +148,31 @@ example (sigmaX : SignalPower) (sigmaN : NoisePower)
     True :=
   capacity_upper_bound_statement sigmaX sigmaN rho1 rho2 C h
 
+/-- Section III second-order noise entropy-rate bound: `H_bar(N') <=
+    log(2 pi e sigma^2)`, the Gaussian maximum-entropy upper bound. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (n_s : Nat) (h4 : 4 <= n_s)
+    (h : entropyRate2 sigma rho1 rho2 n_s
+          <= Real.log (2 * Real.pi * Real.exp 1 * sigma.val ^ 2)) :
+    True :=
+  second_order_noise_entropy_rate_bound_statement sigma rho1 rho2 n_s h4 h
+
+/-- Section III determinant positivity under the Yule-Walker variance bound:
+    the closed-form determinant is strictly positive on the stability region. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (n_s : Nat) (h4 : 4 <= n_s)
+    (hyw : yuleWalker_variance_bound rho1 rho2)
+    (hpos : 0 < cov2DetFormula sigma rho1 rho2 n_s) :
+    True :=
+  cov2_det_pos_under_yule_walker_statement sigma rho1 rho2 n_s h4 hyw hpos
+
+/-- Section III Yule-Walker implies the `rho1^2` bound `rho1^2 < (rho2 + 1)/2`. -/
+example (rho1 rho2 : CorrelationCoefficient)
+    (h : yuleWalker_variance_bound rho1 rho2 ->
+          yuleWalker_rho1_sq_bound rho1 rho2) :
+    True :=
+  yuleWalker_implies_rho1_sq_bound_statement rho1 rho2 h
+
 /-- The 2x2 first-order Gauss-Markov determinant: unfactored form. -/
 example (sigma : NoisePower) (rho : CorrelationCoefficient) :
     (gaussMarkovCov 2 sigma rho).det
