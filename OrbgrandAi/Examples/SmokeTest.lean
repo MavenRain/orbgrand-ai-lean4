@@ -893,6 +893,10 @@ example {n : Nat} (pi : ReliabilityRank n) (e : Fin n -> Bool) :
     landslideBucket pi (logisticWeight pi e) e :=
   landslideBucket_self pi e
 
+/-- `landslideBucket pi w e` definitionally unfolds to `logisticWeight pi e = w`. -/
+example {n : Nat} (pi : ReliabilityRank n) (w : Nat) (e : Fin n -> Bool) :
+    landslideBucket pi w e = (logisticWeight pi e = w) := rfl
+
 /-- The constant-false pattern is in bucket 0. -/
 example {n : Nat} : (fun _ : Fin n => false) ∈ landslide n 0 :=
   const_false_mem_landslide_zero
@@ -2058,6 +2062,10 @@ example (n : Nat) (h : ¬ 0 < n) :
     BlockSize.mk? n = Except.error (ChannelError.nonPositive "BlockSize") :=
   BlockSize.mk?_of_not_pos n h
 
+/-- Concrete-input evaluation: `BlockSize.mk? 0` reduces by computation to the
+    `nonPositive "BlockSize"` error tag. -/
+example : BlockSize.mk? 0 = Except.error (ChannelError.nonPositive "BlockSize") := rfl
+
 /-- `BitsPerSymbol.mk?` on a positive input returns `Except.ok`. -/
 example (n : Nat) (h : 0 < n) :
     BitsPerSymbol.mk? n = Except.ok ⟨n, h⟩ :=
@@ -2477,6 +2485,15 @@ example {n_s : Nat} (N : SymbolVector n_s) (noiseCov : CovMatrix n_s) :
     ({ channel := 1, noiseCov := noiseCov } : LinearIsi n_s).receive 0 N
       = N :=
   LinearIsi.receive_one_zero_signal N noiseCov
+
+/-- `LinearIsi.tap?` definitional unfold: dependent `if` on `j.val <= k'.val`
+    selecting the channel column at index `k'.val - j.val`, else `none`. -/
+example {n_s : Nat} (ch : LinearIsi n_s) (k' j : Fin n_s) :
+    ch.tap? k' j =
+      (if h : j.val <= k'.val then
+        some (ch.channel k' ⟨k'.val - j.val,
+          Nat.lt_of_le_of_lt (Nat.sub_le _ _) k'.isLt⟩)
+      else none) := rfl
 
 /-- Identity-channel zero-noise receive is the signal itself. -/
 example {n_s : Nat} (X : SymbolVector n_s) (noiseCov : CovMatrix n_s) :
