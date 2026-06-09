@@ -289,6 +289,33 @@ example {n k : Nat} (H : ParityCheck n k) (Y Ng : Codeword n)
     grandFind H Y (Ng :: rest) = grandFind H Y rest :=
   grandFind_cons_nonzero_syndrome H Y Ng rest h
 
+/-- GRAND soundness in `syndromeZero` form: a returned `c` has zero parity-check image. -/
+example {n k : Nat} (H : ParityCheck n k) (Y : Codeword n)
+    (order : List (Codeword n)) (c : Codeword n)
+    (hfind : grandFind H Y order = some c) :
+    forall (i : Fin (n - k)), H.matrix.mulVec c i = 0 :=
+  grandFind_syndromeZero H Y order c hfind
+
+/-- Forward direction of GRAND failure: `grandFind = none` implies every
+    candidate noise has nonzero syndrome. -/
+example {n k : Nat} (H : ParityCheck n k) (Y : Codeword n)
+    (order : List (Codeword n))
+    (hnone : grandFind H Y order = none)
+    (Ng : Codeword n) (hmem : Ng ∈ order) :
+    ¬ (forall (i : Fin (n - k)),
+        H.matrix.mulVec (Codeword.xor Y Ng) i = 0) :=
+  grandFind_none_imp H Y order hnone Ng hmem
+
+/-- Backward direction of GRAND failure: if every candidate has nonzero
+    syndrome, `grandFind` returns `none`. -/
+example {n k : Nat} (H : ParityCheck n k) (Y : Codeword n)
+    (order : List (Codeword n))
+    (hnone : forall Ng, Ng ∈ order ->
+      ¬ (forall (i : Fin (n - k)),
+          H.matrix.mulVec (Codeword.xor Y Ng) i = 0)) :
+    grandFind H Y order = none :=
+  grandFind_none_mpr H Y order hnone
+
 /-- GRAND is ML-optimal: when the candidate list is sorted by non-increasing
     posterior, the returned codeword's posterior beats any zero-syndrome candidate. -/
 example {n k : Nat} (p : Codeword n -> Real) (H : ParityCheck n k)
@@ -733,6 +760,11 @@ example {n : Nat} (list : List (Fin n -> Bool)) (b : Bool)
 example {n : Nat} (e : Fin n -> Bool) :
     e ∈ landslide n (bitWeight e) :=
   landslide_self_mem e
+
+/-- `bitWeight` is bounded above by the rank-sum over `Fin n`. -/
+example {n : Nat} (e : Fin n -> Bool) :
+    bitWeight e ≤ Finset.univ.sum (fun i : Fin n => i.val + 1) :=
+  bitWeight_le_sum e
 
 /-- A pattern's bucket is uniquely determined. -/
 example {n w1 w2 : Nat} {e : Fin n -> Bool}
