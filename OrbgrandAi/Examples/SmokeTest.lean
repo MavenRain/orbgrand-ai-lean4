@@ -251,6 +251,26 @@ example {n k : Nat} (H : ParityCheck n k) (Y Ng : Codeword n)
     grandFind H Y (Ng :: rest) = some (Codeword.xor Y Ng) :=
   grandFind_cons_zero_syndrome H Y Ng rest h
 
+/-- GRAND on the empty candidate list returns `none`. -/
+example {n k : Nat} (H : ParityCheck n k) (Y : Codeword n) :
+    grandFind H Y [] = none :=
+  grandFind_nil H Y
+
+/-- GRAND discards the head when its syndrome is nonzero, recursing on the tail. -/
+example {n k : Nat} (H : ParityCheck n k) (Y Ng : Codeword n)
+    (rest : List (Codeword n))
+    (h : ¬ (forall (i : Fin (n - k)),
+            H.matrix.mulVec (Codeword.xor Y Ng) i = 0)) :
+    grandFind H Y (Ng :: rest) = grandFind H Y rest :=
+  grandFind_cons_nonzero_syndrome H Y Ng rest h
+
+/-- When `Y` is a codeword, the syndrome-zero predicate holds iff `Ng` is a codeword. -/
+example {n k : Nat} (H : ParityCheck n k) (Y N_g : Codeword n)
+    (h : forall i, H.matrix.mulVec Y i = 0) :
+    syndromeZero H Y N_g <->
+      forall (i : Fin (n - k)), H.matrix.mulVec N_g i = 0 :=
+  syndromeZero_iff_noise_codeword H Y N_g h
+
 /-- Syndrome decomposes as `H * Y + H * N_g`. -/
 example {n k : Nat} (H : ParityCheck n k) (Y N_g : Codeword n)
     (i : Fin (n - k)) :
