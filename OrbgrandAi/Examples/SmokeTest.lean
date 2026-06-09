@@ -1242,6 +1242,21 @@ example {n_s : Nat} (ch : LinearIsi n_s) (X N : SymbolVector n_s) (k : Fin n_s) 
 example (numCandidates : Nat) :
     BlockPosterior numCandidates = (Fin numCandidates -> Real) := rfl
 
+/-- `SymbolVector n_s` abbreviates `Fin n_s -> Complex`. -/
+example (n_s : Nat) : SymbolVector n_s = (Fin n_s -> Complex) := rfl
+
+/-- `ChannelMatrix n_s` abbreviates `Matrix (Fin n_s) (Fin n_s) Complex`. -/
+example (n_s : Nat) :
+    ChannelMatrix n_s = Matrix (Fin n_s) (Fin n_s) Complex := rfl
+
+/-- `CovMatrix n_s` abbreviates `Matrix (Fin n_s) (Fin n_s) Complex`; same
+    carrier as `ChannelMatrix` but used for noise auto-covariance. -/
+example (n_s : Nat) :
+    CovMatrix n_s = Matrix (Fin n_s) (Fin n_s) Complex := rfl
+
+/-- `CodebookMembership n` abbreviates `Codeword n -> Bool`. -/
+example (n : Nat) : CodebookMembership n = (Codeword n -> Bool) := rfl
+
 /-- Zero perturbation is the identity on the channel. -/
 example {n_s : Nat} (h : ChannelMatrix n_s) :
     perturbChannel h 0 = h :=
