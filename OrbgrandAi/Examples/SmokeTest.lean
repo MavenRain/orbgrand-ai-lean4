@@ -1199,6 +1199,22 @@ example {n : Nat} (pi : ReliabilityRank n) (e : Fin n -> Bool) :
       = Finset.univ.sum fun i : Fin n =>
           if e (pi.perm i) then i.val + 1 else 0 := rfl
 
+/-- `landslideExtend b e` is exactly `Fin.lastCases b e`. -/
+example {n : Nat} (b : Bool) (e : Fin n -> Bool) :
+    landslideExtend b e = Fin.lastCases b e := rfl
+
+/-- `cov1_lag` definitional unfold: `sigma * rho^|i|`. -/
+example (sigma : NoisePower) (rho : CorrelationCoefficient) (i : Int) :
+    cov1_lag sigma rho i = sigma.val * (rho.val ^ i.natAbs) := rfl
+
+/-- `orbgrandAi` is exactly `orbgrandAiLoop` at the budget `budget.toNat`. -/
+example {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s)
+    (budget : AbandonmentBudget)
+    (patterns : List (Fin (n_s / b) -> Fin numCandidates)) :
+    orbgrandAi (b := b) (numCandidates := numCandidates) Y Phi budget patterns
+      = orbgrandAiLoop Y Phi budget.toNat patterns := rfl
+
 /-- Zero perturbation is the identity on the channel. -/
 example {n_s : Nat} (h : ChannelMatrix n_s) :
     perturbChannel h 0 = h :=
