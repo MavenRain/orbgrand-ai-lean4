@@ -277,6 +277,22 @@ example {n k : Nat} (H : ParityCheck n k) (Y N_g : Codeword n)
     syndrome H Y N_g i = H.matrix.mulVec Y i + H.matrix.mulVec N_g i :=
   syndrome_decomp H Y N_g i
 
+/-- Syndrome with zero noise reduces to `H * Y`. -/
+example {n k : Nat} (H : ParityCheck n k) (Y : Codeword n) (i : Fin (n - k)) :
+    syndrome H Y 0 i = H.matrix.mulVec Y i :=
+  syndrome_zero_noise H Y i
+
+/-- Syndrome with zero received vector reduces to `H * N_g`. -/
+example {n k : Nat} (H : ParityCheck n k) (N_g : Codeword n) (i : Fin (n - k)) :
+    syndrome H 0 N_g i = H.matrix.mulVec N_g i :=
+  syndrome_zero_received H N_g i
+
+/-- Syndrome is symmetric in `Y` and `N_g`. -/
+example {n k : Nat} (H : ParityCheck n k) (Y N_g : Codeword n)
+    (i : Fin (n - k)) :
+    syndrome H Y N_g i = syndrome H N_g Y i :=
+  syndrome_comm H Y N_g i
+
 /-- On a codeword receiver, the syndrome reduces to `H * N_g`. -/
 example {n k : Nat} (H : ParityCheck n k) (Y N_g : Codeword n)
     (h : forall i, H.matrix.mulVec Y i = 0) (i : Fin (n - k)) :
