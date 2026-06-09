@@ -1124,6 +1124,30 @@ example (v : Real) (h0 : 0 <= v) (h1 : v <= 1) :
     ({ val := v, nonneg := h0, le_one := h1 } : CorrelationCoefficient).le_one
       = h1 := rfl
 
+/-- `NoisePower.val` projection through anonymous constructor. -/
+example (v : Real) (h : 0 <= v) :
+    ({ val := v, nonneg := h } : NoisePower).val = v := rfl
+
+/-- `NoisePower.nonneg` projection through anonymous constructor. -/
+example (v : Real) (h : 0 <= v) :
+    ({ val := v, nonneg := h } : NoisePower).nonneg = h := rfl
+
+/-- `SignalPower.val` projection through anonymous constructor. -/
+example (v : Real) (h : 0 <= v) :
+    ({ val := v, nonneg := h } : SignalPower).val = v := rfl
+
+/-- `SamplingFreq.val` projection through anonymous constructor. -/
+example (v : Real) (h : 0 < v) :
+    ({ val := v, pos := h } : SamplingFreq).val = v := rfl
+
+/-- `BlockSize.toNat` projection through anonymous constructor. -/
+example (n : Nat) (h : 0 < n) :
+    ({ toNat := n, pos := h } : BlockSize).toNat = n := rfl
+
+/-- `AbandonmentBudget.toNat` projection through anonymous constructor. -/
+example (n : Nat) :
+    ({ toNat := n } : AbandonmentBudget).toNat = n := rfl
+
 /-- Zero perturbation is the identity on the channel. -/
 example {n_s : Nat} (h : ChannelMatrix n_s) :
     perturbChannel h 0 = h :=
