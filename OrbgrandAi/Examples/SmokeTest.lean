@@ -129,6 +129,25 @@ example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
     True :=
   cov2_det_formula_statement sigma rho1 rho2 n_s h4 h
 
+/-- Section III Hadamard log-det bound statement: locks
+    `(1 / n_s) * log (cov2DetFormula ...) <= log (sigma^2)`. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (n_s : Nat) (h4 : 4 <= n_s)
+    (h : (1 / (n_s : Real))
+            * Real.log (cov2DetFormula sigma rho1 rho2 n_s)
+          <= Real.log (sigma.val ^ 2)) :
+    True :=
+  hadamard_log_det_bound_statement sigma rho1 rho2 n_s h4 h
+
+/-- Section III capacity upper bound statement: any abstract capacity `C`
+    bounded above by `capacityUpperBound` uniformly over `4 <= n_s`. -/
+example (sigmaX : SignalPower) (sigmaN : NoisePower)
+    (rho1 rho2 : CorrelationCoefficient) (C : Real)
+    (h : forall (n_s : Nat), 4 <= n_s ->
+          C <= capacityUpperBound sigmaX sigmaN rho1 rho2 n_s) :
+    True :=
+  capacity_upper_bound_statement sigmaX sigmaN rho1 rho2 C h
+
 /-- The 2x2 first-order Gauss-Markov determinant: unfactored form. -/
 example (sigma : NoisePower) (rho : CorrelationCoefficient) :
     (gaussMarkovCov 2 sigma rho).det
@@ -201,6 +220,14 @@ example {n_s b numCandidates : Nat}
     orbgrandAi (b := b) (numCandidates := numCandidates)
       Y (fun _ => false) budget patterns = none :=
   orbgrandAi_empty_codebook Y budget patterns
+
+/-- ORBGRAND-AI returns `none` on the empty pattern list at the public entry point. -/
+example {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s)
+    (budget : AbandonmentBudget) :
+    orbgrandAi (b := b) (numCandidates := numCandidates)
+      Y Phi budget [] = none :=
+  orbgrandAi_empty_patterns Y Phi budget
 
 /-- GRAND output equals `Y xor Ng` for some `Ng` from the candidate list. -/
 example {n k : Nat} (H : ParityCheck n k) (Y : Codeword n)
