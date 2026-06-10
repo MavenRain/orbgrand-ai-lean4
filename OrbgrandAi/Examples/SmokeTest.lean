@@ -1575,6 +1575,32 @@ example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
       = beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 11
         + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 10 := rfl
 
+/-- `orbgrandEnumeration n w` is exactly `landslide n w` (def unfold). -/
+example (n w : Nat) :
+    orbgrandEnumeration n w = landslide n w := rfl
+
+/-- `noSymbolConflict` body unfold: the `(i ≠ j -> ... -> True)` implication structure. -/
+example {n_s : Nat} {chi : Type} (e : Fin n_s -> Option chi) :
+    noSymbolConflict e
+      = forall (i j : Fin n_s),
+          i ≠ j -> e i ≠ none -> e j ≠ none -> True := rfl
+
+/-- `trivialConstellation.exceed` is the constant-zero function (field projection). -/
+example : trivialConstellation.exceed = fun _ _ => (0 : Real) := rfl
+
+/-- `ar2` at concrete index 12: `(n + 2)` pattern at `n = 10`. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 12
+      = phi1 * ar2 phi1 phi2 z1 z2 11
+        + phi2 * ar2 phi1 phi2 z1 z2 10 := rfl
+
+/-- `cov2_lag` at lag 13: `(n + 3)` recurrence step at lags 12 and 11. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta1 beta2 : Real) :
+    cov2_lag sigma rho1 rho2 beta1 beta2 13
+      = beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 12
+        + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 11 := rfl
+
 /-- Zero perturbation is the identity on the channel. -/
 example {n_s : Nat} (h : ChannelMatrix n_s) :
     perturbChannel h 0 = h :=
