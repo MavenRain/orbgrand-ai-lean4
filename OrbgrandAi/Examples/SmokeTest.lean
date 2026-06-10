@@ -1332,6 +1332,18 @@ example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient) (n_s : Nat) :
             * (sigma.val ^ 2) ^ n_s
           / (rho1.val ^ 2 - 1) ^ (n_s - 3)) := rfl
 
+/-- `qpsk.exceed` field unfold: `if s = s_hat then 0 else 1`. -/
+example :
+    qpsk.exceed = fun s s_hat => if s = s_hat then (0 : Real) else 1 := rfl
+
+/-- `ChannelError.dimensionMismatch` carries expected/got pair verbatim. -/
+example (expected got : Nat) :
+    (ChannelError.dimensionMismatch expected got : ChannelError)
+      = ChannelError.dimensionMismatch expected got := rfl
+
+/-- Concrete `AbandonmentBudget` literal `{ toNat := 42 }` projects to `42`. -/
+example : ({ toNat := 42 } : AbandonmentBudget).toNat = 42 := rfl
+
 /-- Zero perturbation is the identity on the channel. -/
 example {n_s : Nat} (h : ChannelMatrix n_s) :
     perturbChannel h 0 = h :=
