@@ -1302,6 +1302,36 @@ example (t : RFViewTaps) : t.tap? 7 = none := rfl
 /-- `RFViewTaps.tap?` at index 3 returns `some t.tap3` (pattern-match body). -/
 example (t : RFViewTaps) : t.tap? 3 = some t.tap3 := rfl
 
+/-- `ChannelError.nonPositive` constructor reduces with a concrete tag. -/
+example : (ChannelError.nonPositive "BlockSize" : ChannelError)
+    = ChannelError.nonPositive "BlockSize" := rfl
+
+/-- `ChannelError.negativeVariance` carries the offending real verbatim. -/
+example (v : Real) : (ChannelError.negativeVariance v : ChannelError)
+    = ChannelError.negativeVariance v := rfl
+
+/-- `ReliabilityRank.perm` projection through anonymous constructor. -/
+example {n : Nat} (p : Fin n -> Fin n)
+    (hb : Function.Bijective p)
+    (hm : forall (rel : BitReliability n) (i j : Fin n),
+      i.val <= j.val -> rel (p i) <= rel (p j)) :
+    ({ perm := p, bijective := hb, monotone := hm } : ReliabilityRank n).perm
+      = p := rfl
+
+/-- `bpsk.exceed` is the `if s = s_hat then 0 else 1` body verbatim
+    (structure-projection rfl-lock on the `exceed` field). -/
+example :
+    bpsk.exceed = fun s s_hat => if s = s_hat then (0 : Real) else 1 := rfl
+
+/-- `cov2DetFormula` definitional unfold: zeta-reduces the `let r1`, `let r2`,
+    `let sigmaSq` bindings to expose the closed-form expression. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient) (n_s : Nat) :
+    cov2DetFormula sigma rho1 rho2 n_s
+      = - ((rho2.val - 1) ^ (n_s - 2)
+            * (1 - 2 * rho1.val ^ 2 + rho2.val) ^ (n_s - 2)
+            * (sigma.val ^ 2) ^ n_s
+          / (rho1.val ^ 2 - 1) ^ (n_s - 3)) := rfl
+
 /-- Zero perturbation is the identity on the channel. -/
 example {n_s : Nat} (h : ChannelMatrix n_s) :
     perturbChannel h 0 = h :=
