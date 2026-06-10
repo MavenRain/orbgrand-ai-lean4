@@ -1488,6 +1488,38 @@ example : landslide 4 3
 example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient) :
     gaussMarkov2 sigma rho1 rho2 5 3 3 = sigma.val := rfl
 
+/-- `cov2_lag` at lag 10 unfolds via the `(n + 3)` recurrence to a weighted sum
+    at lags 9 and 8. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta1 beta2 : Real) :
+    cov2_lag sigma rho1 rho2 beta1 beta2 10
+      = beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 9
+        + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 8 := rfl
+
+/-- `ar2` at concrete index 9: the `(n + 2)` pattern at `n = 7` unfolds. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 9
+      = phi1 * ar2 phi1 phi2 z1 z2 8
+        + phi2 * ar2 phi1 phi2 z1 z2 7 := rfl
+
+/-- BPSK exceedance on `(false, true)` is `1`. -/
+example : bpsk.exceed false true = 1 := rfl
+
+/-- BPSK exceedance on `(false, false)` is `0`. -/
+example : bpsk.exceed false false = 0 := rfl
+
+/-- QPSK exceedance on `(3, 0)` is `1`; complements the existing `(0, 1)`
+    direction lock at the reversed Fin pair. -/
+example : qpsk.exceed (3 : Fin 4) (0 : Fin 4) = 1 := rfl
+
+/-- `cov2_lag` at lag 3 with concrete `beta1 = 0` fires the `(n + 3)`
+    recurrence with the first term collapsed to `0`. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta2 : Real) :
+    cov2_lag sigma rho1 rho2 0 beta2 3
+      = 0 * cov2_lag sigma rho1 rho2 0 beta2 2
+        + beta2 * cov2_lag sigma rho1 rho2 0 beta2 1 := rfl
+
 /-- Zero perturbation is the identity on the channel. -/
 example {n_s : Nat} (h : ChannelMatrix n_s) :
     perturbChannel h 0 = h :=
