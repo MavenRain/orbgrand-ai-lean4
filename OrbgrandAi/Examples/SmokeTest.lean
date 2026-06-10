@@ -1449,6 +1449,45 @@ example (phi1 phi2 z1 z2 : Complex) :
       = phi1 * ar2 phi1 phi2 z1 z2 6
         + phi2 * ar2 phi1 phi2 z1 z2 5 := rfl
 
+/-- `cov2_lag` at lag 9 unfolds via the `(n + 3)` recurrence to a weighted sum
+    at lags 8 and 7. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta1 beta2 : Real) :
+    cov2_lag sigma rho1 rho2 beta1 beta2 9
+      = beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 8
+        + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 7 := rfl
+
+/-- `ar2` at concrete index 8: the `(n + 2)` pattern at `n = 6` unfolds to
+    a `(phi1, phi2)`-weighted sum at indices 7 and 6. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 8
+      = phi1 * ar2 phi1 phi2 z1 z2 7
+        + phi2 * ar2 phi1 phi2 z1 z2 6 := rfl
+
+/-- `landslide 4 2` is the four-deep singleton: bit 1 set, all other bits
+    unset.  The two outer `withTop` branches are suppressed; the innermost
+    `landslide 2 2` fires its `withTop` branch with weight residue 0. -/
+example : landslide 4 2
+    = [landslideExtend false
+        (landslideExtend false
+          (landslideExtend true (landslideExtend false Fin.elim0)))] := rfl
+
+/-- `landslide 4 3` is the two-element bucket: only `withoutTop` fires at the
+    outer level, passing the two `landslide 3 3` patterns through
+    `landslideExtend false`. -/
+example : landslide 4 3
+    = [landslideExtend false
+        (landslideExtend true
+          (landslideExtend false (landslideExtend false Fin.elim0))),
+       landslideExtend false
+        (landslideExtend false
+          (landslideExtend true (landslideExtend true Fin.elim0)))] := rfl
+
+/-- `gaussMarkov2` at size 5 on the diagonal `(3, 3)` reduces to `sigma.val`
+    via the `cov2_lag` lag-0 base case. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient) :
+    gaussMarkov2 sigma rho1 rho2 5 3 3 = sigma.val := rfl
+
 /-- Zero perturbation is the identity on the channel. -/
 example {n_s : Nat} (h : ChannelMatrix n_s) :
     perturbChannel h 0 = h :=
