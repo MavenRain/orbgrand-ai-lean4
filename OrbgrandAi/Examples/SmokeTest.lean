@@ -1601,6 +1601,36 @@ example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
       = beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 12
         + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 11 := rfl
 
+/-- `sinc` body unfold: if-then-else on `x = 0`. -/
+example (x : Real) :
+    sinc x = if x = 0 then 1 else Real.sin (Real.pi * x) / (Real.pi * x) := rfl
+
+/-- `rfViewMatrix` body unfold: dependent if on `j.val <= i.val`, falling back to
+    `(rowTaps i).tap? (i.val - j.val + 1)` lifted through `Option.getD 0`. -/
+example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (i j : Fin n_s) :
+    rfViewMatrix n_s rowTaps i j
+      = (if j.val <= i.val then
+          ((rowTaps i).tap? (i.val - j.val + 1)).getD (0 : Complex)
+        else
+          (0 : Complex)) := rfl
+
+/-- `rfView` body unfold: `LinearIsi` with `rfViewMatrix` channel and white-noise
+    covariance `if i = j then sigma else 0`. -/
+example (n_s : Nat) (rowTaps : Fin n_s -> RFViewTaps) (sigma : NoisePower) :
+    rfView n_s rowTaps sigma
+      = { channel := rfViewMatrix n_s rowTaps,
+          noiseCov := fun i j =>
+            if i.val = j.val then (sigma.val : Complex) else (0 : Complex) } := rfl
+
+/-- `DelayTapPath.attenuation` projection through anonymous constructor. -/
+example (a : Complex) (tau : Real) :
+    ({ attenuation := a, delay := tau } : DelayTapPath).attenuation = a := rfl
+
+/-- `DelayTapPath.delay` projection through anonymous constructor;
+    pairs with `attenuation` to pin the two-field carrier order. -/
+example (a : Complex) (tau : Real) :
+    ({ attenuation := a, delay := tau } : DelayTapPath).delay = tau := rfl
+
 /-- Zero perturbation is the identity on the channel. -/
 example {n_s : Nat} (h : ChannelMatrix n_s) :
     perturbChannel h 0 = h :=
