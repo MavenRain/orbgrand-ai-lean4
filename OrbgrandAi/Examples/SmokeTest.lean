@@ -1426,6 +1426,29 @@ example (z1 z2 : Complex) :
       = 1 * (1 * (1 * (1 * z2 + 0 * z1) + 0 * z2) + 0 * (1 * z2 + 0 * z1))
         + 0 * (1 * (1 * z2 + 0 * z1) + 0 * z2) := rfl
 
+/-- `cov2_lag` at lag 7 unfolds via the `(n + 3)` recurrence to a weighted sum
+    at lags 6 and 5. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta1 beta2 : Real) :
+    cov2_lag sigma rho1 rho2 beta1 beta2 7
+      = beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 6
+        + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 5 := rfl
+
+/-- `cov2_lag` at lag 8 unfolds via the `(n + 3)` recurrence to a weighted sum
+    at lags 7 and 6. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta1 beta2 : Real) :
+    cov2_lag sigma rho1 rho2 beta1 beta2 8
+      = beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 7
+        + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 6 := rfl
+
+/-- `ar2` at concrete index 7: the `(n + 2)` pattern at `n = 5` unfolds to
+    a `(phi1, phi2)`-weighted sum at indices 6 and 5. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 7
+      = phi1 * ar2 phi1 phi2 z1 z2 6
+        + phi2 * ar2 phi1 phi2 z1 z2 5 := rfl
+
 /-- Zero perturbation is the identity on the channel. -/
 example {n_s : Nat} (h : ChannelMatrix n_s) :
     perturbChannel h 0 = h :=
