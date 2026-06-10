@@ -1541,6 +1541,17 @@ example : landslide 5 1
           (landslideExtend false
             (landslideExtend false (landslideExtend true Fin.elim0))))] := rfl
 
+/-- `LinearIsi.causal` unfolds to: every entry strictly above the diagonal vanishes. -/
+example {n_s : Nat} (ch : LinearIsi n_s) :
+    ch.causal
+      = forall (i j : Fin n_s), i.val < j.val -> ch.channel i j = 0 := rfl
+
+/-- `LinearIsi.bandwidth b` unfolds to: every entry below the `b`-th sub-diagonal
+    vanishes. -/
+example {n_s : Nat} (ch : LinearIsi n_s) (b : Nat) :
+    ch.bandwidth b
+      = forall (i j : Fin n_s), j.val + b < i.val -> ch.channel i j = 0 := rfl
+
 /-- Zero perturbation is the identity on the channel. -/
 example {n_s : Nat} (h : ChannelMatrix n_s) :
     perturbChannel h 0 = h :=
