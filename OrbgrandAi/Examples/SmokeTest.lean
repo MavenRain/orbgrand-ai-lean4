@@ -1369,6 +1369,30 @@ example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient) :
 example (phi1 phi2 z : Complex) :
     ar2 phi1 phi2 z z 0 = z := rfl
 
+/-- `ChannelError.noPaths` is a nullary constructor. -/
+example : (ChannelError.noPaths : ChannelError) = ChannelError.noPaths := rfl
+
+/-- `ChannelError.nonPositiveSamplingFreq` carries the offending real verbatim. -/
+example (v : Real) :
+    (ChannelError.nonPositiveSamplingFreq v : ChannelError)
+      = ChannelError.nonPositiveSamplingFreq v := rfl
+
+/-- QPSK exceedance is non-negative (projection of `Constellation.exceed_nonneg`
+    at `qpsk`). -/
+example (s s_hat : Fin 4) : (0 : Real) <= qpsk.exceed s s_hat :=
+  qpsk.exceed_nonneg s s_hat
+
+/-- QPSK `exceed_zero_iff` projection: exceedance vanishes iff symbols agree. -/
+example (s s_hat : Fin 4) :
+    qpsk.exceed s s_hat = 0 <-> s = s_hat :=
+  qpsk.exceed_zero_iff s s_hat
+
+/-- `landslide 3 1` is the three-deep singleton with bit 0 set
+    (`withTop` suppressed at every level). -/
+example : landslide 3 1
+    = [landslideExtend false
+        (landslideExtend false (landslideExtend true Fin.elim0))] := rfl
+
 /-- Zero perturbation is the identity on the channel. -/
 example {n_s : Nat} (h : ChannelMatrix n_s) :
     perturbChannel h 0 = h :=
