@@ -1344,6 +1344,31 @@ example (expected got : Nat) :
 /-- Concrete `AbandonmentBudget` literal `{ toNat := 42 }` projects to `42`. -/
 example : ({ toNat := 42 } : AbandonmentBudget).toNat = 42 := rfl
 
+/-- BPSK exceedance is non-negative (projection of `Constellation.exceed_nonneg`
+    at `bpsk`). -/
+example (s s_hat : Bool) : (0 : Real) <= bpsk.exceed s s_hat :=
+  bpsk.exceed_nonneg s s_hat
+
+/-- `ChannelError.correlationOutOfRange` carries the offending real verbatim. -/
+example (v : Real) :
+    (ChannelError.correlationOutOfRange v : ChannelError)
+      = ChannelError.correlationOutOfRange v := rfl
+
+/-- QPSK exceedance on distinct `Fin 4` values `(1, 3)` reduces to `1`. -/
+example : qpsk.exceed (1 : Fin 4) (3 : Fin 4) = 1 := rfl
+
+/-- QPSK exceedance on the diagonal at `(2, 2)` reduces to `0`. -/
+example : qpsk.exceed (2 : Fin 4) (2 : Fin 4) = 0 := rfl
+
+/-- `gaussMarkov2` at size 4 on the diagonal `(1, 1)` reduces to `sigma.val`
+    via the `cov2_lag` lag-0 base case. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient) :
+    gaussMarkov2 sigma rho1 rho2 4 1 1 = sigma.val := rfl
+
+/-- `ar2` base case at index 0 with `z1 = z2 = z` reduces to `z`. -/
+example (phi1 phi2 z : Complex) :
+    ar2 phi1 phi2 z z 0 = z := rfl
+
 /-- Zero perturbation is the identity on the channel. -/
 example {n_s : Nat} (h : ChannelMatrix n_s) :
     perturbChannel h 0 = h :=
