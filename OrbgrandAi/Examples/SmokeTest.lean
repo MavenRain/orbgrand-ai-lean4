@@ -1631,6 +1631,22 @@ example (a : Complex) (tau : Real) :
 example (a : Complex) (tau : Real) :
     ({ attenuation := a, delay := tau } : DelayTapPath).delay = tau := rfl
 
+/-- `SymbolIndex.toNat` projection through anonymous constructor. -/
+example (n : Nat) : ({ toNat := n } : SymbolIndex).toNat = n := rfl
+
+/-- `SequenceLength.toNat` projection through anonymous constructor. -/
+example (n : Nat) : ({ toNat := n } : SequenceLength).toNat = n := rfl
+
+/-- `delayTapMatrix` body unfold: dependent if on `j.val <= i.val`, then
+    `delayTapImpulseResponse` at delay `i.val - j.val`, else `0`. -/
+example {p : Nat} (n_s : Nat) (paths : Fin p -> DelayTapPath)
+    (f_s : SamplingFreq) (i j : Fin n_s) :
+    delayTapMatrix n_s paths f_s i j
+      = (if h : j.val <= i.val then
+          delayTapImpulseResponse paths f_s { toNat := i.val - j.val }
+        else
+          (0 : Complex)) := rfl
+
 /-- Zero perturbation is the identity on the channel. -/
 example {n_s : Nat} (h : ChannelMatrix n_s) :
     perturbChannel h 0 = h :=
