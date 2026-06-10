@@ -1647,6 +1647,38 @@ example {p : Nat} (n_s : Nat) (paths : Fin p -> DelayTapPath)
         else
           (0 : Complex)) := rfl
 
+/-- `delayTapImpulseResponse` body: `Finset.univ.sum` of `attenuation` times
+    Complex-coerced `sinc(tau * f_s - k')` over paths. -/
+example {p : Nat} (paths : Fin p -> DelayTapPath)
+    (f_s : SamplingFreq) (k' : SymbolIndex) :
+    delayTapImpulseResponse paths f_s k'
+      = Finset.univ.sum fun d =>
+          let path := paths d
+          path.attenuation *
+            ((sinc (path.delay * f_s.val - (k'.toNat : Real)) : Real) : Complex) := rfl
+
+/-- `RFViewTaps.tap?` at index 1 returns `some t.tap1`. -/
+example (t : RFViewTaps) : t.tap? 1 = some t.tap1 := rfl
+
+/-- `RFViewTaps.tap?` at index 2 returns `some t.tap2`. -/
+example (t : RFViewTaps) : t.tap? 2 = some t.tap2 := rfl
+
+/-- `RFViewTaps.tap?` at index 6 returns `some t.tap6` (last valid branch). -/
+example (t : RFViewTaps) : t.tap? 6 = some t.tap6 := rfl
+
+/-- `ar2` at concrete index 13: `(n + 2)` pattern at `n = 11`. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 13
+      = phi1 * ar2 phi1 phi2 z1 z2 12
+        + phi2 * ar2 phi1 phi2 z1 z2 11 := rfl
+
+/-- `cov2_lag` at lag 14: `(n + 3)` recurrence step at lags 13 and 12. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta1 beta2 : Real) :
+    cov2_lag sigma rho1 rho2 beta1 beta2 14
+      = beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 13
+        + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 12 := rfl
+
 /-- Zero perturbation is the identity on the channel. -/
 example {n_s : Nat} (h : ChannelMatrix n_s) :
     perturbChannel h 0 = h :=
