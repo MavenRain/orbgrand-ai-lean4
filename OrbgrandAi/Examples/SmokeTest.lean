@@ -1393,6 +1393,39 @@ example : landslide 3 1
     = [landslideExtend false
         (landslideExtend false (landslideExtend true Fin.elim0))] := rfl
 
+/-- BPSK `exceed_zero_iff` projection: exceedance vanishes iff symbols agree. -/
+example (s s_hat : Bool) :
+    bpsk.exceed s s_hat = 0 <-> s = s_hat :=
+  bpsk.exceed_zero_iff s s_hat
+
+/-- `landslide 4 0` is the singleton all-false pattern at length 4. -/
+example : landslide 4 0
+    = [landslideExtend false
+        (landslideExtend false
+          (landslideExtend false (landslideExtend false Fin.elim0)))] := rfl
+
+/-- `gaussMarkov2` at size 2 and off-diagonal `(0, 1)` reduces to
+    `sigma.val * rho1.val` via `cov2_lag` lag-1 base case. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient) :
+    gaussMarkov2 sigma rho1 rho2 2 0 1 = sigma.val * rho1.val := rfl
+
+/-- `gaussMarkov2` at size 2 and the diagonal `(0, 0)` reduces to `sigma.val`
+    via `cov2_lag` lag-0 base case. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient) :
+    gaussMarkov2 sigma rho1 rho2 2 0 0 = sigma.val := rfl
+
+/-- `ar2` with zero coefficients at depth 2 collapses to `0 * z2 + 0 * z1`
+    (pre-multiplication-collapse pattern-match unfold). -/
+example (z1 z2 : Complex) :
+    ar2 0 0 z1 z2 2 = 0 * z2 + 0 * z1 := rfl
+
+/-- `ar2` with `phi1 = 1`, `phi2 = 0` at depth 5 fires the `(n + 2)` pattern
+    three times; each `phi2` contribution collapses to `0`. -/
+example (z1 z2 : Complex) :
+    ar2 1 0 z1 z2 5
+      = 1 * (1 * (1 * (1 * z2 + 0 * z1) + 0 * z2) + 0 * (1 * z2 + 0 * z1))
+        + 0 * (1 * (1 * z2 + 0 * z1) + 0 * z2) := rfl
+
 /-- Zero perturbation is the identity on the channel. -/
 example {n_s : Nat} (h : ChannelMatrix n_s) :
     perturbChannel h 0 = h :=
