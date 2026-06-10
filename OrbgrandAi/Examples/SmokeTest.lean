@@ -1520,6 +1520,27 @@ example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
       = 0 * cov2_lag sigma rho1 rho2 0 beta2 2
         + beta2 * cov2_lag sigma rho1 rho2 0 beta2 1 := rfl
 
+/-- `cov2_lag` at lag 11 unfolds via the `(n + 3)` recurrence to a weighted sum
+    at lags 10 and 9. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta1 beta2 : Real) :
+    cov2_lag sigma rho1 rho2 beta1 beta2 11
+      = beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 10
+        + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 9 := rfl
+
+/-- `ar2` at concrete index 10: `(n + 2)` pattern at `n = 8`. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 10
+      = phi1 * ar2 phi1 phi2 z1 z2 9
+        + phi2 * ar2 phi1 phi2 z1 z2 8 := rfl
+
+/-- `landslide 5 1` is the five-deep singleton with bit 0 set. -/
+example : landslide 5 1
+    = [landslideExtend false
+        (landslideExtend false
+          (landslideExtend false
+            (landslideExtend false (landslideExtend true Fin.elim0))))] := rfl
+
 /-- Zero perturbation is the identity on the channel. -/
 example {n_s : Nat} (h : ChannelMatrix n_s) :
     perturbChannel h 0 = h :=
