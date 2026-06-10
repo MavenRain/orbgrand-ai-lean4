@@ -1552,6 +1552,29 @@ example {n_s : Nat} (ch : LinearIsi n_s) (b : Nat) :
     ch.bandwidth b
       = forall (i j : Fin n_s), j.val + b < i.val -> ch.channel i j = 0 := rfl
 
+/-- `CarrierFreq.val` projection through anonymous constructor. -/
+example (v : Real) (h : 0 < v) :
+    ({ val := v, pos := h } : CarrierFreq).val = v := rfl
+
+/-- `CarrierFreq.pos` projection through anonymous constructor;
+    pairs with `val` to pin the two-field carrier order. -/
+example (v : Real) (h : 0 < v) :
+    ({ val := v, pos := h } : CarrierFreq).pos = h := rfl
+
+/-- `ar2` at concrete index 11: `(n + 2)` pattern at `n = 9`. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 11
+      = phi1 * ar2 phi1 phi2 z1 z2 10
+        + phi2 * ar2 phi1 phi2 z1 z2 9 := rfl
+
+/-- `cov2_lag` at lag 12 unfolds via the `(n + 3)` recurrence to a weighted sum
+    at lags 11 and 10. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta1 beta2 : Real) :
+    cov2_lag sigma rho1 rho2 beta1 beta2 12
+      = beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 11
+        + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 10 := rfl
+
 /-- Zero perturbation is the identity on the channel. -/
 example {n_s : Nat} (h : ChannelMatrix n_s) :
     perturbChannel h 0 = h :=
