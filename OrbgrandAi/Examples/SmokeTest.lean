@@ -1707,6 +1707,39 @@ example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient) :
 example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient) :
     gaussMarkov2 sigma rho1 rho2 6 5 5 = sigma.val := rfl
 
+/-- `ar2` with `phi2 = 0` at depth 3: each `phi2` contribution collapses to `0`. -/
+example (phi1 z1 z2 : Complex) :
+    ar2 phi1 0 z1 z2 3 = phi1 * (phi1 * z2 + 0 * z1) + 0 * z2 := rfl
+
+/-- `ar2` base case at index 0 with `z1 = 0` reduces to `0`. -/
+example (phi1 phi2 z2 : Complex) :
+    ar2 phi1 phi2 0 z2 0 = 0 := rfl
+
+/-- `cov2_lag` at lag 4: `(n + 3)` recurrence step at lags 3 and 2. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta1 beta2 : Real) :
+    cov2_lag sigma rho1 rho2 beta1 beta2 4
+      = beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 3
+        + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 2 := rfl
+
+/-- `cov2_lag` at lag 16: `(n + 3)` recurrence step at lags 15 and 14. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta1 beta2 : Real) :
+    cov2_lag sigma rho1 rho2 beta1 beta2 16
+      = beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 15
+        + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 14 := rfl
+
+/-- `ar2` at concrete index 15: `(n + 2)` pattern at `n = 13`. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 15
+      = phi1 * ar2 phi1 phi2 z1 z2 14
+        + phi2 * ar2 phi1 phi2 z1 z2 13 := rfl
+
+/-- `gaussMarkov2` size 4 off-diagonal `(1, 3)`: THEN branch with `d = 2`,
+    `cov2_lag` lag-2 base case yields `sigma.val * rho2.val`. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient) :
+    gaussMarkov2 sigma rho1 rho2 4 1 3 = sigma.val * rho2.val := rfl
+
 /-- Zero perturbation is the identity on the channel. -/
 example {n_s : Nat} (h : ChannelMatrix n_s) :
     perturbChannel h 0 = h :=
