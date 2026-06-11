@@ -1740,6 +1740,32 @@ example (phi1 phi2 z1 z2 : Complex) :
 example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient) :
     gaussMarkov2 sigma rho1 rho2 4 1 3 = sigma.val * rho2.val := rfl
 
+/-- `CorrelationCoefficient.val` projection through anonymous constructor;
+    pairs with the existing `.nonneg` / `.le_one` projections to lock all three fields. -/
+example (v : Real) (h0 : 0 <= v) (h1 : v <= 1) :
+    ({ val := v, nonneg := h0, le_one := h1 } : CorrelationCoefficient).val = v := rfl
+
+/-- `SignalPower.nonneg` projection through anonymous constructor;
+    pairs with the existing `.val` projection to pin the two-field carrier order. -/
+example (v : Real) (h : 0 <= v) :
+    ({ val := v, nonneg := h } : SignalPower).nonneg = h := rfl
+
+/-- `BlockSize.pos` projection through anonymous constructor (pairs with `toNat`). -/
+example (n : Nat) (h : 0 < n) :
+    ({ toNat := n, pos := h } : BlockSize).pos = h := rfl
+
+/-- `CodewordLength.pos` projection through anonymous constructor (pairs with `toNat`). -/
+example (n : Nat) (h : 0 < n) :
+    ({ toNat := n, pos := h } : CodewordLength).pos = h := rfl
+
+/-- `BitsPerSymbol.pos` projection through anonymous constructor (pairs with `toNat`). -/
+example (n : Nat) (h : 0 < n) :
+    ({ toNat := n, pos := h } : BitsPerSymbol).pos = h := rfl
+
+/-- `SamplingFreq.pos` projection through anonymous constructor (pairs with `val`). -/
+example (v : Real) (h : 0 < v) :
+    ({ val := v, pos := h } : SamplingFreq).pos = h := rfl
+
 /-- Zero perturbation is the identity on the channel. -/
 example {n_s : Nat} (h : ChannelMatrix n_s) :
     perturbChannel h 0 = h :=
