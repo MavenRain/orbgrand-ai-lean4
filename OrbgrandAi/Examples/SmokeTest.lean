@@ -1823,6 +1823,32 @@ example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
       = beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 17
         + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 16 := rfl
 
+/-- `gaussMarkov2` body zeta-unfold: spells out the let-bound `beta1` / `beta2`
+    via if-then-else on `(1 - rho1.val^2) = 0`, returning `cov2_lag` at the
+    symmetric `|i.val - j.val|`. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient) (n_s : Nat) :
+    gaussMarkov2 sigma rho1 rho2 n_s
+      = fun i j =>
+          cov2_lag sigma rho1 rho2
+            (if (1 - rho1.val ^ 2) = 0 then 0
+             else rho1.val * (1 - rho2.val) / (1 - rho1.val ^ 2))
+            (if (1 - rho1.val ^ 2) = 0 then 0
+             else (rho2.val - rho1.val ^ 2) / (1 - rho1.val ^ 2))
+            (if i.val <= j.val then j.val - i.val else i.val - j.val) := rfl
+
+/-- `ar2` at concrete index 18: `(n + 2)` pattern at `n = 16`. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 18
+      = phi1 * ar2 phi1 phi2 z1 z2 17
+        + phi2 * ar2 phi1 phi2 z1 z2 16 := rfl
+
+/-- `cov2_lag` at lag 19: `(n + 3)` recurrence step at lags 18 and 17. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta1 beta2 : Real) :
+    cov2_lag sigma rho1 rho2 beta1 beta2 19
+      = beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 18
+        + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 17 := rfl
+
 /-- Zero perturbation is the identity on the channel. -/
 example {n_s : Nat} (h : ChannelMatrix n_s) :
     perturbChannel h 0 = h :=
