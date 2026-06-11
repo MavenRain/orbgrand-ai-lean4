@@ -1902,6 +1902,31 @@ example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient) :
                else (rho2.val - rho1.val ^ 2) / (1 - rho1.val ^ 2))
               3 := rfl
 
+/-- `landslide 5 3` is a two-element bucket: outer level suppresses `withTop`
+    (`5 > 3`), so the result is `(landslide 4 3).map (landslideExtend false)`. -/
+example : landslide 5 3
+    = [landslideExtend false
+        (landslideExtend false
+          (landslideExtend true
+            (landslideExtend false (landslideExtend false Fin.elim0)))),
+       landslideExtend false
+        (landslideExtend false
+          (landslideExtend false
+            (landslideExtend true (landslideExtend true Fin.elim0))))] := rfl
+
+/-- `ar2` at concrete index 20: `(n + 2)` pattern at `n = 18`. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 20
+      = phi1 * ar2 phi1 phi2 z1 z2 19
+        + phi2 * ar2 phi1 phi2 z1 z2 18 := rfl
+
+/-- `cov2_lag` at lag 21: `(n + 3)` recurrence step at lags 20 and 19. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta1 beta2 : Real) :
+    cov2_lag sigma rho1 rho2 beta1 beta2 21
+      = beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 20
+        + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 19 := rfl
+
 /-- Zero perturbation is the identity on the channel. -/
 example {n_s : Nat} (h : ChannelMatrix n_s) :
     perturbChannel h 0 = h :=
