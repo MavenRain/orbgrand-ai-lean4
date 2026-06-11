@@ -1766,6 +1766,44 @@ example (n : Nat) (h : 0 < n) :
 example (v : Real) (h : 0 < v) :
     ({ val := v, pos := h } : SamplingFreq).pos = h := rfl
 
+/-- `ConstellationSize.pos` projection through anonymous constructor (pairs with `toNat`). -/
+example (n : Nat) (h : 0 < n) :
+    ({ toNat := n, pos := h } : ConstellationSize).pos = h := rfl
+
+/-- `ReliabilityRank.bijective` projection through anonymous constructor. -/
+example {n : Nat} (p : Fin n -> Fin n)
+    (hb : Function.Bijective p)
+    (hm : forall (rel : BitReliability n) (i j : Fin n),
+      i.val <= j.val -> rel (p i) <= rel (p j)) :
+    ({ perm := p, bijective := hb, monotone := hm } : ReliabilityRank n).bijective
+      = hb := rfl
+
+/-- `ReliabilityRank.monotone` projection through anonymous constructor;
+    completes the 3-field carrier projection set. -/
+example {n : Nat} (p : Fin n -> Fin n)
+    (hb : Function.Bijective p)
+    (hm : forall (rel : BitReliability n) (i j : Fin n),
+      i.val <= j.val -> rel (p i) <= rel (p j)) :
+    ({ perm := p, bijective := hb, monotone := hm } : ReliabilityRank n).monotone
+      = hm := rfl
+
+/-- `ar2` at concrete index 16: `(n + 2)` pattern at `n = 14`. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 16
+      = phi1 * ar2 phi1 phi2 z1 z2 15
+        + phi2 * ar2 phi1 phi2 z1 z2 14 := rfl
+
+/-- `cov2_lag` at lag 17: `(n + 3)` recurrence step at lags 16 and 15. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta1 beta2 : Real) :
+    cov2_lag sigma rho1 rho2 beta1 beta2 17
+      = beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 16
+        + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 15 := rfl
+
+/-- `gaussMarkov2` size 7 diagonal `(4, 4)` reduces to `sigma.val`. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient) :
+    gaussMarkov2 sigma rho1 rho2 7 4 4 = sigma.val := rfl
+
 /-- Zero perturbation is the identity on the channel. -/
 example {n_s : Nat} (h : ChannelMatrix n_s) :
     perturbChannel h 0 = h :=
