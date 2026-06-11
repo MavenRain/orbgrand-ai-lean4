@@ -1986,6 +1986,44 @@ example (z1 z2 : Complex) :
 example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient) :
     gaussMarkov2 sigma rho1 rho2 4 2 0 = sigma.val * rho2.val := rfl
 
+/-- `ar2` at concrete index 22: `(n + 2)` pattern at `n = 20`. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 22
+      = phi1 * ar2 phi1 phi2 z1 z2 21
+        + phi2 * ar2 phi1 phi2 z1 z2 20 := rfl
+
+/-- `cov2_lag` at lag 23: `(n + 3)` recurrence step at lags 22 and 21. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta1 beta2 : Real) :
+    cov2_lag sigma rho1 rho2 beta1 beta2 23
+      = beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 22
+        + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 21 := rfl
+
+/-- `gaussMarkov2` size 8 diagonal `(7, 7)` reduces to `sigma.val`. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient) :
+    gaussMarkov2 sigma rho1 rho2 8 7 7 = sigma.val := rfl
+
+/-- `gaussMarkov2` size 8 off-diagonal `(7, 6)`: ELSE branch with `d = 1`,
+    `cov2_lag` lag-1 base case `sigma.val * rho1.val`. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient) :
+    gaussMarkov2 sigma rho1 rho2 8 7 6 = sigma.val * rho1.val := rfl
+
+/-- `landslide 6 0` is the singleton all-false pattern at length 6. -/
+example : landslide 6 0
+    = [landslideExtend false
+        (landslideExtend false
+          (landslideExtend false
+            (landslideExtend false
+              (landslideExtend false (landslideExtend false Fin.elim0)))))] := rfl
+
+/-- `landslide 6 1` is the six-deep singleton with bit 0 set. -/
+example : landslide 6 1
+    = [landslideExtend false
+        (landslideExtend false
+          (landslideExtend false
+            (landslideExtend false
+              (landslideExtend false (landslideExtend true Fin.elim0)))))] := rfl
+
 /-- Zero perturbation is the identity on the channel. -/
 example {n_s : Nat} (h : ChannelMatrix n_s) :
     perturbChannel h 0 = h :=
