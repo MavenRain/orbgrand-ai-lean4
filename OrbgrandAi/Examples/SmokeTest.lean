@@ -2024,6 +2024,57 @@ example : landslide 6 1
             (landslideExtend false
               (landslideExtend false (landslideExtend true Fin.elim0)))))] := rfl
 
+/-- `landslide 6 6` is the four-element bucket: outer `withTop` fires (`6 <= 6`)
+    yielding the singleton top-bit-only pattern; `withoutTop` enumerates the
+    three length-5 weight-6 patterns under `landslideExtend false`. -/
+example : landslide 6 6
+    = [landslideExtend true
+        (landslideExtend false
+          (landslideExtend false
+            (landslideExtend false
+              (landslideExtend false (landslideExtend false Fin.elim0))))),
+       landslideExtend false
+        (landslideExtend true
+          (landslideExtend false
+            (landslideExtend false
+              (landslideExtend false (landslideExtend true Fin.elim0))))),
+       landslideExtend false
+        (landslideExtend false
+          (landslideExtend true
+            (landslideExtend false
+              (landslideExtend true (landslideExtend false Fin.elim0))))),
+       landslideExtend false
+        (landslideExtend false
+          (landslideExtend false
+            (landslideExtend true
+              (landslideExtend true (landslideExtend true Fin.elim0)))))] := rfl
+
+/-- `ar2` at concrete index 23: `(n + 2)` pattern at `n = 21`. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 23
+      = phi1 * ar2 phi1 phi2 z1 z2 22
+        + phi2 * ar2 phi1 phi2 z1 z2 21 := rfl
+
+/-- `cov2_lag` at lag 24: `(n + 3)` recurrence step at lags 23 and 22. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta1 beta2 : Real) :
+    cov2_lag sigma rho1 rho2 beta1 beta2 24
+      = beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 23
+        + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 22 := rfl
+
+/-- `gaussMarkov2` size 10 diagonal `(5, 5)` reduces to `sigma.val`. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient) :
+    gaussMarkov2 sigma rho1 rho2 10 5 5 = sigma.val := rfl
+
+/-- `gaussMarkov2` size 5 off-diagonal `(0, 2)`: THEN branch with `d = 2`,
+    `cov2_lag` lag-2 base case `sigma.val * rho2.val`. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient) :
+    gaussMarkov2 sigma rho1 rho2 5 0 2 = sigma.val * rho2.val := rfl
+
+/-- `gaussMarkov2` size 5 diagonal `(0, 0)` reduces to `sigma.val`. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient) :
+    gaussMarkov2 sigma rho1 rho2 5 0 0 = sigma.val := rfl
+
 /-- Zero perturbation is the identity on the channel. -/
 example {n_s : Nat} (h : ChannelMatrix n_s) :
     perturbChannel h 0 = h :=
