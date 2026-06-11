@@ -1849,6 +1849,59 @@ example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
       = beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 18
         + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 17 := rfl
 
+/-- `landslide 5 2` is the five-deep singleton: bit 1 set, all other bits unset. -/
+example : landslide 5 2
+    = [landslideExtend false
+        (landslideExtend false
+          (landslideExtend false
+            (landslideExtend true (landslideExtend false Fin.elim0))))] := rfl
+
+/-- `cov2_lag` at lag 3 with concrete `beta2 = 0`: second recurrence term collapses to `0`. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta1 : Real) :
+    cov2_lag sigma rho1 rho2 beta1 0 3
+      = beta1 * cov2_lag sigma rho1 rho2 beta1 0 2
+        + 0 * cov2_lag sigma rho1 rho2 beta1 0 1 := rfl
+
+/-- `ar2` at concrete index 19: `(n + 2)` pattern at `n = 17`. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 19
+      = phi1 * ar2 phi1 phi2 z1 z2 18
+        + phi2 * ar2 phi1 phi2 z1 z2 17 := rfl
+
+/-- `cov2_lag` at lag 20: `(n + 3)` recurrence step at lags 19 and 18. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta1 beta2 : Real) :
+    cov2_lag sigma rho1 rho2 beta1 beta2 20
+      = beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 19
+        + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 18 := rfl
+
+/-- `ar2` with `phi1 = 0`, `phi2 = 1` at depth 3: `phi1` contribution collapses. -/
+example (z1 z2 : Complex) :
+    ar2 0 1 z1 z2 3 = 0 * (0 * z2 + 1 * z1) + 1 * z2 := rfl
+
+/-- `gaussMarkov2` size 6 off-diagonal `(0, 5)`: THEN branch with `d = 5`,
+    `cov2_lag` lag-5 recurrence step (`(n + 3)` at `n = 2`) with concrete
+    beta1 / beta2 if-then-else expansions. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient) :
+    gaussMarkov2 sigma rho1 rho2 6 0 5
+      = (if (1 - rho1.val ^ 2) = 0 then 0
+         else rho1.val * (1 - rho2.val) / (1 - rho1.val ^ 2))
+          * cov2_lag sigma rho1 rho2
+              (if (1 - rho1.val ^ 2) = 0 then 0
+               else rho1.val * (1 - rho2.val) / (1 - rho1.val ^ 2))
+              (if (1 - rho1.val ^ 2) = 0 then 0
+               else (rho2.val - rho1.val ^ 2) / (1 - rho1.val ^ 2))
+              4
+        + (if (1 - rho1.val ^ 2) = 0 then 0
+           else (rho2.val - rho1.val ^ 2) / (1 - rho1.val ^ 2))
+          * cov2_lag sigma rho1 rho2
+              (if (1 - rho1.val ^ 2) = 0 then 0
+               else rho1.val * (1 - rho2.val) / (1 - rho1.val ^ 2))
+              (if (1 - rho1.val ^ 2) = 0 then 0
+               else (rho2.val - rho1.val ^ 2) / (1 - rho1.val ^ 2))
+              3 := rfl
+
 /-- Zero perturbation is the identity on the channel. -/
 example {n_s : Nat} (h : ChannelMatrix n_s) :
     perturbChannel h 0 = h :=
