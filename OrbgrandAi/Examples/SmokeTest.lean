@@ -1804,6 +1804,25 @@ example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
 example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient) :
     gaussMarkov2 sigma rho1 rho2 7 4 4 = sigma.val := rfl
 
+/-- QPSK exceedance at diagonal `(0, 0)` is `0`. -/
+example : qpsk.exceed (0 : Fin 4) (0 : Fin 4) = 0 := rfl
+
+/-- QPSK exceedance at diagonal `(3, 3)` is `0`. -/
+example : qpsk.exceed (3 : Fin 4) (3 : Fin 4) = 0 := rfl
+
+/-- `ar2` at concrete index 17: `(n + 2)` pattern at `n = 15`. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 17
+      = phi1 * ar2 phi1 phi2 z1 z2 16
+        + phi2 * ar2 phi1 phi2 z1 z2 15 := rfl
+
+/-- `cov2_lag` at lag 18: `(n + 3)` recurrence step at lags 17 and 16. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta1 beta2 : Real) :
+    cov2_lag sigma rho1 rho2 beta1 beta2 18
+      = beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 17
+        + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 16 := rfl
+
 /-- Zero perturbation is the identity on the channel. -/
 example {n_s : Nat} (h : ChannelMatrix n_s) :
     perturbChannel h 0 = h :=
