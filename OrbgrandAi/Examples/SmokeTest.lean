@@ -1090,6 +1090,25 @@ example {chi : Type} (cs : Constellation chi) (n_s : Nat)
     True :=
   symbol_level_bler_equivalence_statement cs n_s h
 
+/-- `RealSymbolVector n_s` abbreviates `EuclideanSpace ℝ (Fin n_s)`, the
+    real-valued symbol-vector type the noise model lives on. -/
+example (n_s : Nat) :
+    Section00.RealSymbolVector n_s = EuclideanSpace ℝ (Fin n_s) := rfl
+
+/-- `noiseMeasure` definitional unfold: `multivariateGaussian 0 (sigma * I)`. -/
+example (n_s : Nat) (sigma : NoisePower) :
+    Section00.noiseMeasure n_s sigma
+      = ProbabilityTheory.multivariateGaussian
+          (0 : Section00.RealSymbolVector n_s)
+          (Matrix.diagonal (fun _ : Fin n_s => sigma.val)) := rfl
+
+/-- `bler` definitional unfold: the noise measure of the decoder-failure set,
+    taken `toReal`. -/
+example {n_s : Nat} (sigma : NoisePower)
+    (decode : Section00.RealSymbolVector n_s -> Bool) :
+    Section00.bler sigma decode
+      = (Section00.noiseMeasure n_s sigma { N | decode N = true }).toReal := rfl
+
 /-- Zero channel stays zero under any perturbation. -/
 example {n_s : Nat} (epsilon : Matrix (Fin n_s) (Fin n_s) Complex) :
     perturbChannel 0 epsilon = 0 :=
