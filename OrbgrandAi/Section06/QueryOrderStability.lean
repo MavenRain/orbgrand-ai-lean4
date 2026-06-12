@@ -1,3 +1,4 @@
+import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Data.Real.Basic
 import OrbgrandAi.Section02.Basic
 import OrbgrandAi.Section04.OrbgrandAi
@@ -50,10 +51,39 @@ open OrbgrandAi.Section02
     of this list come from ORBGRAND-AI's pattern enumeration. -/
 abbrev QueryOrder (numPatterns : Nat) := List (Fin numPatterns)
 
-/-- Kendall tau distance between two query orders (abstract).
-    Returns the number of inversions between the two orders, as a
-    `Nat`. -/
-opaque kendallTau {numPatterns : Nat} (a b : QueryOrder numPatterns) : Nat
+/-- Index of `x` within `xs`, or `xs.length` if `x` does not appear.
+    Pure-Lean replacement for `List.idxOf` (which is not in scope at
+    this commit of Mathlib); structurally recursive on the list. -/
+def QueryOrder.positionOf {numPatterns : Nat}
+    (x : Fin numPatterns) : QueryOrder numPatterns -> Nat
+  | []        => 0
+  | (y :: ys) =>
+      if x = y then 0 else QueryOrder.positionOf x ys + 1
+
+/-- Kendall tau distance between two query orders.
+
+    Counts the number of unordered pairs `{i, j} ⊆ Fin numPatterns`
+    with `i.val < j.val` such that `a` and `b` disagree on the
+    relative order of `i` and `j` (one puts `i` before `j`, the
+    other puts `i` after `j`).  For lists that are *permutations* of
+    `Fin numPatterns` this gives the standard Kendall tau distance;
+    for lists that miss some indices the positions of missing
+    indices coincide (both default to `length`), so the missing
+    pairs contribute zero by the same-side check.
+
+    Concretely: iterate `i, j : Fin numPatterns`, restrict to
+    `i.val < j.val`, look up positions in `a` and `b`, and add `1`
+    iff `(pos_a i < pos_a j)` disagrees with `(pos_b i < pos_b j)`. -/
+def kendallTau {numPatterns : Nat} (a b : QueryOrder numPatterns) : Nat :=
+  Finset.univ.sum fun i : Fin numPatterns =>
+    Finset.univ.sum fun j : Fin numPatterns =>
+      if i.val < j.val then
+        let ai := QueryOrder.positionOf i a
+        let aj := QueryOrder.positionOf j a
+        let bi := QueryOrder.positionOf i b
+        let bj := QueryOrder.positionOf j b
+        if decide (ai < aj) = decide (bi < bj) then 0 else 1
+      else 0
 
 /-! ## Query-order stability claim (placeholder) -/
 

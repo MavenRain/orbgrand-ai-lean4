@@ -2142,6 +2142,20 @@ example (rho_real : CorrelationCoefficient) (numPatterns : Nat)
     True :=
   query_order_stability_statement rho_real numPatterns h
 
+/-- `QueryOrder.positionOf` base case: empty list returns 0. -/
+example {numPatterns : Nat} (x : Fin numPatterns) :
+    QueryOrder.positionOf x ([] : QueryOrder numPatterns) = 0 := rfl
+
+/-- `QueryOrder.positionOf` cons-head match returns 0. -/
+example {numPatterns : Nat} (x : Fin numPatterns) (ys : QueryOrder numPatterns) :
+    QueryOrder.positionOf x (x :: ys) = 0 := if_pos rfl
+
+/-- `kendallTau` empty/empty is 0 (no `i.val < j.val` pairs in `Fin 0`). -/
+example : kendallTau ([] : QueryOrder 0) [] = 0 := rfl
+
+/-- `kendallTau` on `Fin 1` lists is 0 (no `i.val < j.val` pairs in `Fin 1`). -/
+example (a b : QueryOrder 1) : kendallTau a b = 0 := rfl
+
 /-- Max-weight bucket has no duplicates. -/
 example {n : Nat} :
     (landslide n (bitWeight (fun _ : Fin n => true))).Nodup :=
