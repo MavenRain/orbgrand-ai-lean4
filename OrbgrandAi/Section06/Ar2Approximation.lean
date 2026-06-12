@@ -269,15 +269,22 @@ theorem ar2_const_zero (phi1 phi2 : Complex) :
       row 2: [z 2, z 3],
       row 3: [z 3, z 4].
 
-    *Placeholder shape.*  Concrete Fin-index bookkeeping is deferred
-    to a follow-up so this file stays focussed on the AR(2)
-    structure. -/
-opaque regressorMatrix4x2 (z : Fin 6 -> Complex) :
-    Matrix (Fin 4) (Fin 2) Complex
+    Concrete: `regressorMatrix4x2 z i j = z (i.val + j.val)`,
+    with the `Fin 6` index witnessed by
+    `i.val + j.val < 4 + 1 < 6`. -/
+def regressorMatrix4x2 (z : Fin 6 -> Complex) :
+    Matrix (Fin 4) (Fin 2) Complex :=
+  fun i j =>
+    z ⟨i.val + j.val,
+       Nat.lt_succ_of_lt
+         (Nat.add_lt_add_of_lt_of_le i.isLt (Nat.le_of_lt_succ j.isLt))⟩
 
 /-- The target vector for the AR(2) least-squares fit:
-    `[z 2, z 3, z 4, z 5]^T`. -/
-opaque regressorTarget4 (z : Fin 6 -> Complex) : Fin 4 -> Complex
+    `[z 2, z 3, z 4, z 5]^T`.  Concrete:
+    `regressorTarget4 z i = z (i.val + 2)`,
+    with the `Fin 6` index witnessed by `i.val + 2 < 4 + 2 = 6`. -/
+def regressorTarget4 (z : Fin 6 -> Complex) : Fin 4 -> Complex :=
+  fun i => z ⟨i.val + 2, Nat.add_lt_add_right i.isLt 2⟩
 
 /-! ## Least-squares fit (abstract) -/
 

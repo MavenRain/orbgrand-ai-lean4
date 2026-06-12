@@ -1109,6 +1109,35 @@ example {n_s : Nat} (sigma : NoisePower)
     Section00.bler sigma decode
       = (Section00.noiseMeasure n_s sigma { N | decode N = true }).toReal := rfl
 
+/-- `regressorMatrix4x2` body unfold: at `(i, j)` returns `z (i.val + j.val)`
+    with the `Fin 6` bound witnessed by `i.val + j.val < 4 + 1 < 6`. -/
+example (z : Fin 6 -> Complex) (i : Fin 4) (j : Fin 2) :
+    regressorMatrix4x2 z i j
+      = z ⟨i.val + j.val,
+           Nat.lt_succ_of_lt
+             (Nat.add_lt_add_of_lt_of_le i.isLt (Nat.le_of_lt_succ j.isLt))⟩ := rfl
+
+/-- `regressorMatrix4x2` at concrete `(0, 0)` returns `z 0`. -/
+example (z : Fin 6 -> Complex) :
+    regressorMatrix4x2 z 0 0 = z 0 := rfl
+
+/-- `regressorMatrix4x2` at concrete `(3, 1)` returns `z 4` (last entry). -/
+example (z : Fin 6 -> Complex) :
+    regressorMatrix4x2 z 3 1 = z 4 := rfl
+
+/-- `regressorTarget4` body unfold: at `i` returns `z (i.val + 2)`. -/
+example (z : Fin 6 -> Complex) (i : Fin 4) :
+    regressorTarget4 z i
+      = z ⟨i.val + 2, Nat.add_lt_add_right i.isLt 2⟩ := rfl
+
+/-- `regressorTarget4` at `0` returns `z 2`. -/
+example (z : Fin 6 -> Complex) :
+    regressorTarget4 z 0 = z 2 := rfl
+
+/-- `regressorTarget4` at `3` returns `z 5` (last entry). -/
+example (z : Fin 6 -> Complex) :
+    regressorTarget4 z 3 = z 5 := rfl
+
 /-- Zero channel stays zero under any perturbation. -/
 example {n_s : Nat} (epsilon : Matrix (Fin n_s) (Fin n_s) Complex) :
     perturbChannel 0 epsilon = 0 :=
