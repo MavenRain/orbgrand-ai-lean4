@@ -85,6 +85,23 @@ def kendallTau {numPatterns : Nat} (a b : QueryOrder numPatterns) : Nat :=
         if decide (ai < aj) = decide (bi < bj) then 0 else 1
       else 0
 
+/-- *Reflexivity.*  `kendallTau a a = 0`: every pair `(i, j)` with
+    `i.val < j.val` finds `decide (positionOf i a < positionOf j a) =
+    decide (positionOf i a < positionOf j a)` (= `rfl`), so the inner
+    `if` returns `0`.  All summands are `0`, and the double sum
+    vanishes by `Finset.sum_const_zero` (twice). -/
+theorem kendallTau_self {numPatterns : Nat} (a : QueryOrder numPatterns) :
+    kendallTau a a = 0 :=
+  Finset.sum_eq_zero fun i _ =>
+    Finset.sum_eq_zero fun j _ =>
+      if h : i.val < j.val then
+        let ai := QueryOrder.positionOf i a
+        let aj := QueryOrder.positionOf j a
+        let h_inner : decide (ai < aj) = decide (ai < aj) := rfl
+        (if_pos h).trans (if_pos h_inner)
+      else
+        if_neg h
+
 /-! ## Query-order stability claim (placeholder) -/
 
 /-- *Stability of the ORBGRAND-AI query order under correlation

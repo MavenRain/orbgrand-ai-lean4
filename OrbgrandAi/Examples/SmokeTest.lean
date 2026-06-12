@@ -2227,6 +2227,15 @@ example : kendallTau ([] : QueryOrder 0) [] = 0 := rfl
 /-- `kendallTau` on `Fin 1` lists is 0 (no `i.val < j.val` pairs in `Fin 1`). -/
 example (a b : QueryOrder 1) : kendallTau a b = 0 := rfl
 
+/-- *Reflexivity of `kendallTau`*: every list disagrees with itself on zero pairs. -/
+example {numPatterns : Nat} (a : QueryOrder numPatterns) :
+    kendallTau a a = 0 :=
+  kendallTau_self a
+
+/-- `kendallTau` on the same `Fin 2` list `[0, 1]` is 0 (concrete reflexivity). -/
+example : kendallTau ([0, 1] : QueryOrder 2) [0, 1] = 0 :=
+  kendallTau_self [0, 1]
+
 /-- Max-weight bucket has no duplicates. -/
 example {n : Nat} :
     (landslide n (bitWeight (fun _ : Fin n => true))).Nodup :=
