@@ -1,3 +1,4 @@
+import OrbgrandAi.Section00
 import OrbgrandAi.Section02
 import OrbgrandAi.Section03
 import OrbgrandAi.Section04
@@ -31,6 +32,11 @@ contributions are:
 
 The Lean library mirrors the paper's section structure:
 
+* `OrbgrandAi.Section00` -- shared probability layer: AWGN noise measure
+  on `EuclideanSpace ℝ (Fin n_s)` and the `bler` operator used by the
+  Section IV / VI.B probabilistic statements.  Not a paper section;
+  promoted to its own module so the Mathlib measure-theory imports
+  are paid exactly once.
 * `OrbgrandAi.Section02` -- ISI channel models (Section II of the paper).
 * `OrbgrandAi.Section03` -- entropy rates, Yule-Walker, capacity bound (Section III).
 * `OrbgrandAi.Section04` -- GRAND, ORBGRAND, ORBGRAND-AI algorithm (Section IV).

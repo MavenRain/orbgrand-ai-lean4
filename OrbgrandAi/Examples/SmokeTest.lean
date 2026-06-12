@@ -18,7 +18,7 @@ set_option autoImplicit false
 
 namespace OrbgrandAi.Examples.SmokeTest
 
-open OrbgrandAi.Section02 OrbgrandAi.Section03 OrbgrandAi.Section04 OrbgrandAi.Section06
+open OrbgrandAi.Section00 OrbgrandAi.Section02 OrbgrandAi.Section03 OrbgrandAi.Section04 OrbgrandAi.Section06
 
 /-! ## Section II.  Channel-model lemmas -/
 
@@ -2115,15 +2115,17 @@ example {n_s : Nat} (h : ChannelMatrix n_s) :
     perturbChannel h 0 = h :=
   perturbChannel_zero h
 
-/-- Section VI.B imperfect-CSI error-floor statement: positive NMSE yields a
-    positive lower bound on every BLER model at every nonnegative SNR. -/
+/-- Section VI.B imperfect-CSI error-floor statement (probabilistic form): positive
+    NMSE yields a positive floor on the actual `Section00.bler` for every decoder
+    family parameterised by per-SNR noise power. -/
 example (nmse : NMSE) (sigma : NoisePower) (rho : CorrelationCoefficient)
     (h : 0 < nmse.val ->
       exists (floor : Real),
         0 < floor /\
-        forall (bler : Real -> Real)
-          (_ : forall snr, snr >= 0 -> 0 <= bler snr /\ bler snr <= 1),
-          forall snr : Real, snr >= 0 -> floor <= bler snr) :
+        forall {n_s : Nat}
+          (decoder : NoisePower -> Section00.RealSymbolVector n_s -> Bool),
+          forall (snrSigma : NoisePower), snrSigma.val <= sigma.val ->
+            floor <= Section00.bler snrSigma (decoder snrSigma)) :
     True :=
   imperfect_csi_error_floor_statement nmse sigma rho h
 

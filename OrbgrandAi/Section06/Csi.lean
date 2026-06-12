@@ -1,5 +1,6 @@
 import Mathlib.Data.Complex.Basic
 import Mathlib.Data.Real.Basic
+import OrbgrandAi.Section00.Probability
 import OrbgrandAi.Section02.Basic
 import OrbgrandAi.Section02.LinearIsi
 import KanTactics
@@ -212,26 +213,36 @@ theorem perturbChannel_bandwidth_of_bandwidth
     constant `floor(nmse) > 0`, i.e., the curve fails to decay to
     zero in the limit of high SNR.
 
-    *Placeholder shape.*  The actual claim quantifies over an
-    abstract `bler : SignalToNoiseRatio -> Real` function that this
-    library does not yet provide, because the BLER definition
-    requires a noise-distribution formalisation that lives outside
-    Section VI.  The placeholder records the intended quantification
-    structure: positive NMSE produces a positive lower bound on the
-    BLER that holds for all sufficiently large SNR. -/
+    *Statement form, probabilistic.*  Now that
+    `OrbgrandAi.Section00.Probability` provides the AWGN noise measure
+    and the `bler` operator, this theorem quantifies over the actual
+    decoder under imperfect CSI, and asks for a positive lower bound
+    on `Section00.bler sigma decode` uniformly in the per-SNR
+    decoder family.
+
+    The decoder family is parameterised by a per-SNR-`sigma`
+    `decoder` function returning a `Bool`-valued failure indicator
+    on `RealSymbolVector n_s`; this is the receiver-side projection
+    of an imperfect-CSI ORBGRAND-AI run with reference codeword
+    fixed.  The probabilistic content lives in `bler`, not the
+    decoder itself.
+
+    *Why deferred to `True`.*  The actual proof of the error-floor
+    inequality requires the analytic apparatus of Section VI.B (the
+    AR(2) residual bound) plus the Gaussian tail estimate; both are
+    out of scope for this statement file, which only locks the
+    quantifier shape.  Once those are in place the closing
+    `True` may be replaced by a real claim. -/
 theorem imperfect_csi_error_floor_statement
     (nmse : NMSE) (sigma : NoisePower)
     (rho : CorrelationCoefficient) :
     (0 < nmse.val ->
       exists (floor : Real),
         0 < floor /\
-        -- The intended claim, abstracted: any model of BLER
-        -- assigned to the imperfect-CSI receiver should be bounded
-        -- below by `floor` at all SNRs.  The concrete `bler` model
-        -- lives in a downstream probability-theory layer.
-        forall (bler : Real -> Real)
-          (_ : forall snr, snr >= 0 -> 0 <= bler snr /\ bler snr <= 1),
-          forall snr : Real, snr >= 0 -> floor <= bler snr) -> True := by
+        forall {n_s : Nat}
+          (decoder : NoisePower -> Section00.RealSymbolVector n_s -> Bool),
+          forall (snrSigma : NoisePower), snrSigma.val <= sigma.val ->
+            floor <= Section00.bler snrSigma (decoder snrSigma)) -> True := by
   kan_intro _h
   kan_constructor
 
