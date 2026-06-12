@@ -95,5 +95,18 @@ noncomputable def bler
     (decode : RealSymbolVector n_s -> Bool) : Real :=
   (noiseMeasure n_s sigma { N | decode N = true }).toReal
 
+/-- *Block error rate is non-negative.*  Immediate from
+    `ENNReal.toReal_nonneg`: every `(_ : ℝ≥0∞).toReal` is `≥ 0`, so
+    the noise-measure of any set, taken via `.toReal`, is non-negative.
+
+    This is the lower half of the `0 ≤ bler ≤ 1` sandwich.  The upper
+    half requires the `IsProbabilityMeasure` instance for the
+    `multivariateGaussian` and is deferred. -/
+theorem bler_nonneg
+    {n_s : Nat} (sigma : NoisePower)
+    (decode : RealSymbolVector n_s -> Bool) :
+    0 ≤ bler sigma decode :=
+  ENNReal.toReal_nonneg
+
 end Section00
 end OrbgrandAi

@@ -1119,6 +1119,12 @@ example {n_s : Nat} (sigma : NoisePower)
     Section00.bler sigma decode
       = (Section00.noiseMeasure n_s sigma { N | decode N = true }).toReal := rfl
 
+/-- `Section00.bler` is non-negative for every decoder and noise power. -/
+example {n_s : Nat} (sigma : NoisePower)
+    (decode : Section00.RealSymbolVector n_s -> Bool) :
+    0 ≤ Section00.bler sigma decode :=
+  Section00.bler_nonneg sigma decode
+
 /-- `regressorMatrix4x2` body unfold: at `(i, j)` returns `z (i.val + j.val)`
     with the `Fin 6` bound witnessed by `i.val + j.val < 4 + 1 < 6`. -/
 example (z : Fin 6 -> Complex) (i : Fin 4) (j : Fin 2) :
