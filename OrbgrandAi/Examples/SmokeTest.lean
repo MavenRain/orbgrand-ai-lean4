@@ -1125,6 +1125,13 @@ example {n_s : Nat} (sigma : NoisePower)
     0 ≤ Section00.bler sigma decode :=
   Section00.bler_nonneg sigma decode
 
+/-- `Section00.bler` is at most one for every decoder and noise power,
+    completing the `0 ≤ bler ≤ 1` sandwich on the new probability layer. -/
+example {n_s : Nat} (sigma : NoisePower)
+    (decode : Section00.RealSymbolVector n_s -> Bool) :
+    Section00.bler sigma decode ≤ 1 :=
+  Section00.bler_le_one sigma decode
+
 /-- `regressorMatrix4x2` body unfold: at `(i, j)` returns `z (i.val + j.val)`
     with the `Fin 6` bound witnessed by `i.val + j.val < 4 + 1 < 6`. -/
 example (z : Fin 6 -> Complex) (i : Fin 4) (j : Fin 2) :

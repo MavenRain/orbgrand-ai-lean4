@@ -97,16 +97,43 @@ noncomputable def bler
 
 /-- *Block error rate is non-negative.*  Immediate from
     `ENNReal.toReal_nonneg`: every `(_ : ℝ≥0∞).toReal` is `≥ 0`, so
-    the noise-measure of any set, taken via `.toReal`, is non-negative.
-
-    This is the lower half of the `0 ≤ bler ≤ 1` sandwich.  The upper
-    half requires the `IsProbabilityMeasure` instance for the
-    `multivariateGaussian` and is deferred. -/
+    the noise-measure of any set, taken via `.toReal`, is non-negative. -/
 theorem bler_nonneg
     {n_s : Nat} (sigma : NoisePower)
     (decode : RealSymbolVector n_s -> Bool) :
     0 ≤ bler sigma decode :=
   ENNReal.toReal_nonneg
+
+/-- *`noiseMeasure` is a Gaussian measure.*  Instance synthesis chain:
+    `multivariateGaussian` is unconditionally `IsGaussian` (from
+    Mathlib's `isGaussian_multivariateGaussian`), and `noiseMeasure` is
+    literally a `multivariateGaussian`.
+
+    Exposed as a named instance so downstream consumers
+    (`bler_le_one`, the error-floor refactor) can pick up the
+    probability-measure typeclass chain by inference. -/
+instance noiseMeasure_isGaussian
+    (n_s : Nat) (sigma : NoisePower) :
+    ProbabilityTheory.IsGaussian (noiseMeasure n_s sigma) :=
+  ProbabilityTheory.isGaussian_multivariateGaussian
+
+/-- *Block error rate is at most one.*  Upper half of the
+    `0 ≤ bler ≤ 1` sandwich.  Chain:
+
+    1. `noiseMeasure_isGaussian` makes `noiseMeasure n_s sigma`
+       a `ProbabilityTheory.IsGaussian`.
+    2. `IsGaussian.toIsProbabilityMeasure` lifts that to
+       `IsProbabilityMeasure (noiseMeasure n_s sigma)`.
+    3. `IsProbabilityMeasure` lifts to `IsZeroOrProbabilityMeasure`
+       via the default-priority instance.
+    4. `MeasureTheory.measureReal_le_one` then gives
+       `(noiseMeasure n_s sigma).real S ≤ 1` for every `S`, and
+       `.real S = (· S).toReal` by definition, matching `bler`. -/
+theorem bler_le_one
+    {n_s : Nat} (sigma : NoisePower)
+    (decode : RealSymbolVector n_s -> Bool) :
+    bler sigma decode ≤ 1 :=
+  MeasureTheory.measureReal_le_one
 
 end Section00
 end OrbgrandAi
