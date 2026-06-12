@@ -1078,13 +1078,15 @@ example (s s_hat : Bool) : bpsk.exceed s s_hat = bpsk.exceed s_hat s :=
 example (s s_hat : Fin 4) : qpsk.exceed s s_hat = qpsk.exceed s_hat s :=
   qpsk_exceed_symm s s_hat
 
-/-- Section IV symbol-level BLER equivalence placeholder: locks the implication shape
-    `(forall bit-level / symbol-level patterns, True) -> True` pending the
-    probabilistic-equivalence statement that requires a noise-distribution layer. -/
+/-- Section IV symbol-level BLER equivalence statement (probabilistic form): every
+    pair of `Bool`-valued failure-indicator decoders on `RealSymbolVector n_s`
+    has matching `Section00.bler` at every noise power, locking the equivalence
+    equation shape pending the concrete ORBGRAND-AI variant wire-up. -/
 example {chi : Type} (cs : Constellation chi) (n_s : Nat)
-    (h : forall (_bitLevelPatterns : List (Fin n_s -> Bool))
-        (_symbolLevelPatterns : List (Fin n_s -> Option chi)),
-        True) :
+    (h : forall (bitDecoder symbolDecoder : Section00.RealSymbolVector n_s -> Bool)
+        (sigma : NoisePower),
+      Section00.bler sigma bitDecoder
+        = Section00.bler sigma symbolDecoder) :
     True :=
   symbol_level_bler_equivalence_statement cs n_s h
 

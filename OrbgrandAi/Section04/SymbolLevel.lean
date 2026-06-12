@@ -1,5 +1,6 @@
 import Mathlib.Data.Real.Basic
 import Mathlib.Data.Finset.Basic
+import OrbgrandAi.Section00.Probability
 import OrbgrandAi.Section02.Basic
 import OrbgrandAi.Section04.Grand
 import OrbgrandAi.Section04.Orbgrand
@@ -367,26 +368,27 @@ def noSymbolConflict
     bit-level variant, with strictly fewer candidate patterns due
     to symbol-conflict de-duplication.
 
-    *Placeholder shape.*  The claim is empirical (BLER is a
-    probabilistic quantity defined on channel-noise distributions
-    that this library has not yet formalised), so the statement is
-    captured at the type level only.  Specifically: the bit-level
-    enumeration `bitLevelPatterns : List (Fin n_s -> Bool)` and the
-    symbol-level enumeration `symbolLevelPatterns : List (Fin n_s -> Option chi)`
-    induce the same set of substituted codewords once the
-    `noSymbolConflict` filter is applied.  Capturing the actual
-    distributional equivalence requires a probability-measure
-    formalisation that lives outside Section IV. -/
+    *Statement form, probabilistic.*  The hypothesis exposes the
+    actual BLER-equation shape via `Section00.bler`:
+    for every pair `(bitDecoder, symbolDecoder)` of decoders viewed
+    as `Bool`-valued failure indicators on `RealSymbolVector n_s`,
+    their `Section00.bler` agrees at every noise power `sigma`.
+    The closing `True` is retained as a deferred-proof marker until
+    a concrete pair `(bitDecoder, symbolDecoder)` derived from the
+    actual ORBGRAND-AI variants is wired up.
+
+    *Constellation context.*  The `cs : Constellation chi`
+    parameter is the symbol-level alphabet under which the
+    symbol-level enumeration is parameterised in the eventual
+    concrete claim; it does not appear in the hypothesis here
+    because the abstract decoder pair quantifies away the
+    constellation choice. -/
 theorem symbol_level_bler_equivalence_statement
     {chi : Type} (cs : Constellation chi) (n_s : Nat) :
-    (forall (bitLevelPatterns : List (Fin n_s -> Bool))
-        (symbolLevelPatterns : List (Fin n_s -> Option chi)),
-        -- The intended claim, restricted to a syntactic equality of
-        -- the substituted-codeword sets under noSymbolConflict.
-        -- TODO: replace with a probabilistic-equivalence statement
-        -- once Section IV is paired with a noise-distribution
-        -- formalisation.
-        True) -> True := by
+    (forall (bitDecoder symbolDecoder : Section00.RealSymbolVector n_s -> Bool)
+        (sigma : NoisePower),
+      Section00.bler sigma bitDecoder
+        = Section00.bler sigma symbolDecoder) -> True := by
   kan_intro _h
   kan_constructor
 
