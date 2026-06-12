@@ -265,6 +265,16 @@ example {numCandidates : Nat} (post : BlockPosterior numCandidates)
       = (hardDecisionBlock? post).map (fun tStar =>
           Real.log (post tStar) - Real.log (post t)) := rfl
 
+/-- `hardDecisionBlock?` definitional unfold: `List.finRange numCandidates |>.argmax post`. -/
+example {numCandidates : Nat} (post : BlockPosterior numCandidates) :
+    hardDecisionBlock? post = (List.finRange numCandidates).argmax post :=
+  hardDecisionBlock?_eq post
+
+/-- `hardDecisionBlock?` on the empty candidate set returns `none`. -/
+example (post : BlockPosterior 0) :
+    hardDecisionBlock? post = none :=
+  hardDecisionBlock?_empty post
+
 /-- ORBGRAND-AI returns `none` on the empty pattern list at the public entry point. -/
 example {n_s b numCandidates : Nat}
     (Y : Codeword n_s) (Phi : CodebookMembership n_s)

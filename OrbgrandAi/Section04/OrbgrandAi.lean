@@ -1,4 +1,6 @@
 import Mathlib.Data.Real.Basic
+import Mathlib.Data.List.FinRange
+import Mathlib.Data.List.MinMax
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import OrbgrandAi.Section02.Basic
 import OrbgrandAi.Section04.Grand
@@ -96,16 +98,32 @@ abbrev BlockPosterior (numCandidates : Nat) := Fin numCandidates -> Real
 
 /-- The hard-decision block argmax `t^{b,*}` is the candidate index
     achieving maximal posterior in `Fin numCandidates`.  Returns
-    `Option (Fin numCandidates)`; `none` only when
-    `numCandidates = 0`.
+    `Option (Fin numCandidates)`; `none` exactly when
+    `numCandidates = 0` (since `List.finRange 0 = []` and
+    `List.argmax _ [] = none`).
 
-    *Placeholder shape.*  The constructive argmax implementation is
-    deferred; for now we expose the signature as opaque so downstream
-    consumers can refer to a hard-decision block even before the
-    concrete algorithm is wired up. -/
-opaque hardDecisionBlock?
+    Concrete: enumerate `Fin numCandidates` via `List.finRange`, then
+    `List.argmax post`.  Tie-breaking matches `List.argmax`: when
+    multiple indices share the maximal posterior, the *earliest*
+    one in `List.finRange numCandidates` order (i.e., the smallest
+    `Fin numCandidates`) is returned.
+
+    Marked `noncomputable` because `Real`'s order is classical. -/
+noncomputable def hardDecisionBlock?
     {numCandidates : Nat} (post : BlockPosterior numCandidates) :
-    Option (Fin numCandidates)
+    Option (Fin numCandidates) :=
+  (List.finRange numCandidates).argmax post
+
+/-- *Empty candidate set yields `none`.*  At `numCandidates = 0`,
+    `List.finRange 0 = []` and `List.argmax _ [] = none`. -/
+theorem hardDecisionBlock?_empty
+    (post : BlockPosterior 0) : hardDecisionBlock? post = none := rfl
+
+/-- *Body unfold.*  `hardDecisionBlock? post` is exactly
+    `(List.finRange numCandidates).argmax post`. -/
+theorem hardDecisionBlock?_eq
+    {numCandidates : Nat} (post : BlockPosterior numCandidates) :
+    hardDecisionBlock? post = (List.finRange numCandidates).argmax post := rfl
 
 /-- The per-block substitution penalty
 
