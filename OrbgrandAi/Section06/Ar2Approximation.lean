@@ -1,6 +1,9 @@
 import Mathlib.Data.Real.Basic
 import Mathlib.Data.Complex.Basic
 import Mathlib.Data.Matrix.Basic
+import Mathlib.Data.Matrix.Mul
+import Mathlib.LinearAlgebra.Matrix.ConjTranspose
+import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 import OrbgrandAi.Section02.Basic
 import OrbgrandAi.Section02.RFView
 import OrbgrandAi.Section03.GaussMarkov
@@ -294,9 +297,34 @@ def regressorTarget4 (z : Fin 6 -> Complex) : Fin 4 -> Complex :=
 
     where `Z = regressorMatrix4x2 z` and `y = regressorTarget4 z`.
 
-    *Placeholder shape.*  The full pseudo-inverse construction is
-    deferred to a follow-up; for now we expose the signature. -/
-opaque ar2LeastSquaresFit (z : Fin 6 -> Complex) : Complex × Complex
+    Concrete via Mathlib's `Matrix.conjTranspose` (`ᴴ`), matrix
+    multiplication, `Matrix.mulVec`, and the noncomputable `Inv`
+    instance on square matrices (which is `M.det⁻¹ • M.adjugate`,
+    yielding `0` at singular `Z^H Z`).  Marked `noncomputable`
+    because the inverse is classical (depends on `0⁻¹ = 0`
+    convention for `Field` inverses). -/
+noncomputable def ar2LeastSquaresFit (z : Fin 6 -> Complex) :
+    Complex × Complex :=
+  let Z : Matrix (Fin 4) (Fin 2) Complex := regressorMatrix4x2 z
+  let y : Fin 4 -> Complex := regressorTarget4 z
+  let ZH := Z.conjTranspose
+  let ZHZ : Matrix (Fin 2) (Fin 2) Complex := ZH * Z
+  let ZHy : Fin 2 -> Complex := ZH.mulVec y
+  let solution : Fin 2 -> Complex := ZHZ⁻¹.mulVec ZHy
+  (solution 0, solution 1)
+
+/-- *Body unfold for `ar2LeastSquaresFit`.*  Spells out the closed-form
+    `((Z^H Z)^{-1} Z^H y)` via the let-stack, exposing the matrix
+    formula directly for downstream reasoning. -/
+theorem ar2LeastSquaresFit_eq (z : Fin 6 -> Complex) :
+    ar2LeastSquaresFit z =
+      let Z : Matrix (Fin 4) (Fin 2) Complex := regressorMatrix4x2 z
+      let y : Fin 4 -> Complex := regressorTarget4 z
+      let ZH := Z.conjTranspose
+      let ZHZ : Matrix (Fin 2) (Fin 2) Complex := ZH * Z
+      let ZHy : Fin 2 -> Complex := ZH.mulVec y
+      let solution : Fin 2 -> Complex := ZHZ⁻¹.mulVec ZHy
+      (solution 0, solution 1) := rfl
 
 /-! ## Approximation error (placeholder) -/
 

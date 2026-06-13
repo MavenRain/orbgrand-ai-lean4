@@ -2326,6 +2326,19 @@ example {chi : Type} (cs : Constellation chi) (s_hat : chi) :
               (Classical.propDecidable _)) :=
   candidateSubstitutes_eq cs s_hat
 
+/-- `ar2LeastSquaresFit` body unfold: `((Z^H Z)^{-1} Z^H y)` for `Z = regressorMatrix4x2 z`
+    and `y = regressorTarget4 z`, projected onto the two components. -/
+example (z : Fin 6 -> Complex) :
+    ar2LeastSquaresFit z =
+      let Z : Matrix (Fin 4) (Fin 2) Complex := regressorMatrix4x2 z
+      let y : Fin 4 -> Complex := regressorTarget4 z
+      let ZH := Z.conjTranspose
+      let ZHZ : Matrix (Fin 2) (Fin 2) Complex := ZH * Z
+      let ZHy : Fin 2 -> Complex := ZH.mulVec y
+      let solution : Fin 2 -> Complex := ZHZ⁻¹.mulVec ZHy
+      (solution 0, solution 1) :=
+  ar2LeastSquaresFit_eq z
+
 /-- Max-weight bucket has no duplicates. -/
 example {n : Nat} :
     (landslide n (bitWeight (fun _ : Fin n => true))).Nodup :=
