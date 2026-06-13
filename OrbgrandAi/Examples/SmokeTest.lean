@@ -1199,6 +1199,12 @@ example {n_s : Nat} (sigma : NoisePower)
       ≤ Section00.bler sigma decode2 :=
   Section00.bler_and_le_right sigma decode1 decode2
 
+/-- `Section00.bler` double-negation invariance: `!!decode` has the same BLER as `decode`. -/
+example {n_s : Nat} (sigma : NoisePower)
+    (decode : Section00.RealSymbolVector n_s -> Bool) :
+    Section00.bler sigma (fun N => !!decode N) = Section00.bler sigma decode :=
+  Section00.bler_double_neg sigma decode
+
 /-- `regressorMatrix4x2` body unfold: at `(i, j)` returns `z (i.val + j.val)`
     with the `Fin 6` bound witnessed by `i.val + j.val < 4 + 1 < 6`. -/
 example (z : Fin 6 -> Complex) (i : Fin 4) (j : Fin 2) :

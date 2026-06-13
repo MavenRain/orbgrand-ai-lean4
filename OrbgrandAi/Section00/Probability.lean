@@ -346,5 +346,14 @@ theorem bler_and_le_right
   bler_monotone sigma _ decode2 fun _ h =>
     (Bool.and_eq_true_iff.mp h).2
 
+/-- *Double negation.*  Boolean double-negation leaves the decoder
+    pointwise-unchanged (`!!b = b`), so `bler` is invariant.  One-line
+    corollary of `bler_pointwise_eq` via `Bool.not_not`. -/
+theorem bler_double_neg
+    {n_s : Nat} (sigma : NoisePower)
+    (decode : RealSymbolVector n_s -> Bool) :
+    bler sigma (fun N => !!decode N) = bler sigma decode :=
+  bler_pointwise_eq sigma _ decode fun N => Bool.not_not (decode N)
+
 end Section00
 end OrbgrandAi
