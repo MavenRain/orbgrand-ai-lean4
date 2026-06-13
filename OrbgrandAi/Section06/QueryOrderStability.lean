@@ -125,6 +125,31 @@ theorem kendallTau_symm {numPatterns : Nat} (a b : QueryOrder numPatterns) :
       else
         (if_neg h).trans (if_neg h).symm
 
+/-- *Per-pair upper bound.*  Each `(i, j)` summand of `kendallTau` is
+    at most `1`: the outer if returns `0` on `¬ i.val < j.val`, and on
+    the positive branch the inner if returns `0` or `1`. -/
+theorem kendallTau_summand_le_one
+    {numPatterns : Nat} (a b : QueryOrder numPatterns) (i j : Fin numPatterns) :
+    (if i.val < j.val then
+        let ai := QueryOrder.positionOf i a
+        let aj := QueryOrder.positionOf j a
+        let bi := QueryOrder.positionOf i b
+        let bj := QueryOrder.positionOf j b
+        if decide (ai < aj) = decide (bi < bj) then (0 : Nat) else 1
+      else 0) ≤ 1 :=
+  if h : i.val < j.val then
+    let ai := QueryOrder.positionOf i a
+    let aj := QueryOrder.positionOf j a
+    let bi := QueryOrder.positionOf i b
+    let bj := QueryOrder.positionOf j b
+    if h2 : decide (ai < aj) = decide (bi < bj) then
+      (if_pos h).trans_le ((if_pos h2).trans_le (Nat.zero_le 1))
+    else
+      (if_pos h).trans_le ((if_neg h2).trans_le (Nat.le_refl 1))
+  else
+    (if_neg h).trans_le (Nat.zero_le 1)
+
+
 /-! ## Query-order stability claim (placeholder) -/
 
 /-- *Stability of the ORBGRAND-AI query order under correlation

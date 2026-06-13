@@ -2246,6 +2246,18 @@ example : kendallTau ([0, 1] : QueryOrder 2) ([1, 0] : QueryOrder 2)
         = kendallTau ([1, 0] : QueryOrder 2) [0, 1] :=
   kendallTau_symm [0, 1] [1, 0]
 
+/-- *Per-summand bound on `kendallTau`*: every `(i, j)` summand is at most `1`. -/
+example {numPatterns : Nat} (a b : QueryOrder numPatterns)
+    (i j : Fin numPatterns) :
+    (if i.val < j.val then
+        let ai := QueryOrder.positionOf i a
+        let aj := QueryOrder.positionOf j a
+        let bi := QueryOrder.positionOf i b
+        let bj := QueryOrder.positionOf j b
+        if decide (ai < aj) = decide (bi < bj) then (0 : Nat) else 1
+      else 0) ≤ 1 :=
+  kendallTau_summand_le_one a b i j
+
 /-- Max-weight bucket has no duplicates. -/
 example {n : Nat} :
     (landslide n (bitWeight (fun _ : Fin n => true))).Nodup :=
