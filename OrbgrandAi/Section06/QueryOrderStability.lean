@@ -233,6 +233,12 @@ theorem kendallTau_eq_zero_iff
   ⟨kendallTau_agreement_of_eq_zero a b,
    kendallTau_eq_zero_of_agreement a b⟩
 
+/-- *Empty domain.*  At `numPatterns = 0` the only `QueryOrder 0` is `[]`,
+    so `kendallTau` is `0` on any pair of inputs (vacuously via
+    `Fin.elim0` — there are no `i, j : Fin 0` to disagree on). -/
+theorem kendallTau_empty (a b : QueryOrder 0) : kendallTau a b = 0 :=
+  Finset.sum_eq_zero fun i _ => Fin.elim0 i
+
 /-- *Per-Bool triangle inequality.*  For three Booleans `X`, `Y`, `Z`,
     the indicator of `X ≠ Z` is at most the indicators of `X ≠ Y` plus
     `Y ≠ Z`.  Eight-case Bool enumeration: in each case both LHS and

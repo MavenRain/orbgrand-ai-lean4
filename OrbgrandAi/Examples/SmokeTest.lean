@@ -2366,6 +2366,11 @@ example : kendallTau ([0, 1, 2] : QueryOrder 3) [2, 1, 0] = 3 := rfl
     flips one pair, giving distance `1`. -/
 example : kendallTau ([0, 1, 2] : QueryOrder 3) [1, 0, 2] = 1 := rfl
 
+/-- *`kendallTau` on the empty domain.*  At `numPatterns = 0` the only
+    `QueryOrder 0` is `[]`, so the distance is `0` for any input pair. -/
+example (a b : QueryOrder 0) : kendallTau a b = 0 :=
+  kendallTau_empty a b
+
 /-- Max-weight bucket has no duplicates. -/
 example {n : Nat} :
     (landslide n (bitWeight (fun _ : Fin n => true))).Nodup :=
