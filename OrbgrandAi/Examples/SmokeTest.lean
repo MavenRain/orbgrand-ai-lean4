@@ -2423,6 +2423,29 @@ example {numPatterns : Nat} (a b c : QueryOrder numPatterns) :
       ∧ kendallTau a c ≤ kendallTau a b + kendallTau b c :=
   ⟨kendallTau_self a, kendallTau_symm a b, kendallTau_triangle a b c⟩
 
+/-- Concrete `kendallTau` eval on Fin 4: swapping the middle pair `[0, 2, 1, 3]`
+    vs `[0, 1, 2, 3]` flips a single pair, distance = 1. -/
+example : kendallTau ([0, 1, 2, 3] : QueryOrder 4) [0, 2, 1, 3] = 1 := rfl
+
+/-- Concrete `kendallTau` eval on Fin 4: two non-overlapping adjacent
+    transpositions `[1, 0, 3, 2]` vs `[0, 1, 2, 3]` flip exactly 2 pairs. -/
+example : kendallTau ([0, 1, 2, 3] : QueryOrder 4) [1, 0, 3, 2] = 2 := rfl
+
+/-- Concrete `kendallTau` eval on Fin 4: cyclic shift `[1, 2, 3, 0]` flips
+    exactly 3 pairs (each pair involving the wrapped-around 0). -/
+example : kendallTau ([0, 1, 2, 3] : QueryOrder 4) [1, 2, 3, 0] = 3 := rfl
+
+/-- `QueryOrder.positionOf` at head-miss / second-element-hit on a two-element list. -/
+example : QueryOrder.positionOf (1 : Fin 2) [0, 1] = 1 := rfl
+
+/-- `noiseMeasure` satisfies the weaker `IsZeroOrProbabilityMeasure` typeclass
+    (via the priority-100 `IsProbabilityMeasure -> IsZeroOrProbabilityMeasure`
+    instance), which is what `bler_le_one` consumes through
+    `MeasureTheory.measureReal_le_one`. -/
+example (n_s : Nat) (sigma : NoisePower) :
+    MeasureTheory.IsZeroOrProbabilityMeasure (Section00.noiseMeasure n_s sigma) :=
+  inferInstance
+
 /-- Max-weight bucket has no duplicates. -/
 example {n : Nat} :
     (landslide n (bitWeight (fun _ : Fin n => true))).Nodup :=
