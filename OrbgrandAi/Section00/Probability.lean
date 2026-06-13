@@ -284,5 +284,46 @@ theorem bler_eq_one_sub_compl
     bler sigma decode = 1 - bler sigma (fun N => !decode N) :=
   eq_sub_of_add_eq (bler_compl_eq sigma decode h_meas)
 
+/-- *Subadditivity under Boolean `||`.*  The BLER of the disjunctive
+    decoder is at most the sum of individual BLERs:
+    `bler (fun N => decode1 N || decode2 N) ≤ bler decode1 + bler decode2`.
+
+    No measurability hypothesis needed — `MeasureTheory.measure_union_le`
+    is subadditivity on outer measures.
+
+    Term-mode chain:
+    1. `Bool.or_eq_true_iff` identifies the failure set of `decode1 || decode2`
+       with the union `{decode1} ∪ {decode2}` via `Set.ext`.
+    2. `MeasureTheory.measure_union_le` gives subadditivity on `ℝ≥0∞`.
+    3. `ENNReal.add_ne_top` (via `IsFiniteMeasure`) provides the
+       finiteness witness for the sum.
+    4. `ENNReal.toReal_mono` + `ENNReal.toReal_add` close the real-valued
+       inequality. -/
+theorem bler_or_le
+    {n_s : Nat} (sigma : NoisePower)
+    (decode1 decode2 : RealSymbolVector n_s -> Bool) :
+    bler sigma (fun N => decode1 N || decode2 N)
+      ≤ bler sigma decode1 + bler sigma decode2 :=
+  let h_set :
+      {N : RealSymbolVector n_s | (fun N => decode1 N || decode2 N) N = true}
+        = {N : RealSymbolVector n_s | decode1 N = true}
+            ∪ {N : RealSymbolVector n_s | decode2 N = true} :=
+    Set.ext fun _ => Bool.or_eq_true_iff
+  let h_meas_le :
+      noiseMeasure n_s sigma
+          {N | (fun N => decode1 N || decode2 N) N = true}
+        ≤ noiseMeasure n_s sigma {N | decode1 N = true}
+            + noiseMeasure n_s sigma {N | decode2 N = true} :=
+    h_set ▸ MeasureTheory.measure_union_le _ _
+  let h_add_ne_top :
+      noiseMeasure n_s sigma {N | decode1 N = true}
+        + noiseMeasure n_s sigma {N | decode2 N = true} ≠ ⊤ :=
+    ENNReal.add_ne_top.mpr
+      ⟨MeasureTheory.measure_ne_top _ _, MeasureTheory.measure_ne_top _ _⟩
+  (ENNReal.toReal_mono h_add_ne_top h_meas_le).trans
+    (le_of_eq
+      (ENNReal.toReal_add (MeasureTheory.measure_ne_top _ _)
+                          (MeasureTheory.measure_ne_top _ _)))
+
 end Section00
 end OrbgrandAi

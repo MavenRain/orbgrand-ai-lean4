@@ -1175,6 +1175,15 @@ example {n_s : Nat} (sigma : NoisePower)
       = 1 - Section00.bler sigma (fun N => !decode N) :=
   Section00.bler_eq_one_sub_compl sigma decode h_meas
 
+/-- `Section00.bler` subadditivity under `||`: BLER of the disjunctive
+    decoder is at most the sum of individual BLERs.  No measurability
+    hypothesis needed. -/
+example {n_s : Nat} (sigma : NoisePower)
+    (decode1 decode2 : Section00.RealSymbolVector n_s -> Bool) :
+    Section00.bler sigma (fun N => decode1 N || decode2 N)
+      ≤ Section00.bler sigma decode1 + Section00.bler sigma decode2 :=
+  Section00.bler_or_le sigma decode1 decode2
+
 /-- `regressorMatrix4x2` body unfold: at `(i, j)` returns `z (i.val + j.val)`
     with the `Fin 6` bound witnessed by `i.val + j.val < 4 + 1 < 6`. -/
 example (z : Fin 6 -> Complex) (i : Fin 4) (j : Fin 2) :
