@@ -2446,6 +2446,27 @@ example (n_s : Nat) (sigma : NoisePower) :
     MeasureTheory.IsZeroOrProbabilityMeasure (Section00.noiseMeasure n_s sigma) :=
   inferInstance
 
+/-- `noiseMeasure` is a finite measure (via the
+    `IsZeroOrProbabilityMeasure -> IsFiniteMeasure` priority-100 instance). -/
+example (n_s : Nat) (sigma : NoisePower) :
+    MeasureTheory.IsFiniteMeasure (Section00.noiseMeasure n_s sigma) :=
+  inferInstance
+
+/-- `noiseMeasure` has total mass `1` (it is a probability measure). -/
+example (n_s : Nat) (sigma : NoisePower) :
+    Section00.noiseMeasure n_s sigma Set.univ = 1 :=
+  MeasureTheory.measure_univ
+
+/-- Concrete kendallTau eval on Fin 6: identical lists have distance 0. -/
+example : kendallTau ([0, 1, 2, 3, 4, 5] : QueryOrder 6) [0, 1, 2, 3, 4, 5] = 0 := rfl
+
+/-- Concrete kendallTau eval on Fin 6: reversal achieves the maximum
+    distance equal to `6.choose 2 = 15`. -/
+example : kendallTau ([0, 1, 2, 3, 4, 5] : QueryOrder 6) [5, 4, 3, 2, 1, 0] = 15 := rfl
+
+/-- Concrete `QueryOrder.positionOf` eval on Fin 5: hit at index 2. -/
+example : QueryOrder.positionOf (2 : Fin 5) [0, 1, 2, 3, 4] = 2 := rfl
+
 /-- Max-weight bucket has no duplicates. -/
 example {n : Nat} :
     (landslide n (bitWeight (fun _ : Fin n => true))).Nodup :=
