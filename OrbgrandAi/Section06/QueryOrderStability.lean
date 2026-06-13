@@ -172,6 +172,67 @@ theorem kendallTau_eq_zero_of_agreement
       else
         if_neg hij
 
+/-- *Zero distance implies agreement.*  Converse of
+    `kendallTau_eq_zero_of_agreement`: if `kendallTau a b = 0`, then
+    `a` and `b` order every pair `i.val < j.val` the same way.
+
+    Proof: strip the double sum via `Finset.sum_eq_zero_iff_of_nonneg`
+    twice (Nat values are unconditionally nonneg).  At a fixed pair
+    `(i, j)` with `i.val < j.val`, the outer `if_pos hij` extracts the
+    inner `if` as `0`.  Case-split on the inner `decide`-equality: the
+    `else` branch yields `1 = 0`, contradicting `Nat.succ_ne_zero 0`. -/
+theorem kendallTau_agreement_of_eq_zero
+    {numPatterns : Nat} (a b : QueryOrder numPatterns)
+    (h : kendallTau a b = 0)
+    (i j : Fin numPatterns) (hij : i.val < j.val) :
+    decide (QueryOrder.positionOf i a < QueryOrder.positionOf j a)
+      = decide (QueryOrder.positionOf i b < QueryOrder.positionOf j b) :=
+  let h_inner_sum_zero :
+      Finset.univ.sum (fun j' : Fin numPatterns =>
+        if i.val < j'.val then
+          let ai := QueryOrder.positionOf i a
+          let aj := QueryOrder.positionOf j' a
+          let bi := QueryOrder.positionOf i b
+          let bj := QueryOrder.positionOf j' b
+          if decide (ai < aj) = decide (bi < bj) then (0 : Nat) else 1
+        else 0) = 0 :=
+    ((Finset.sum_eq_zero_iff_of_nonneg (fun _ _ => Nat.zero_le _)).mp h)
+      i (Finset.mem_univ i)
+  let h_summand_zero :
+      (if i.val < j.val then
+        let ai := QueryOrder.positionOf i a
+        let aj := QueryOrder.positionOf j a
+        let bi := QueryOrder.positionOf i b
+        let bj := QueryOrder.positionOf j b
+        if decide (ai < aj) = decide (bi < bj) then (0 : Nat) else 1
+      else 0) = 0 :=
+    ((Finset.sum_eq_zero_iff_of_nonneg
+        (fun _ _ => Nat.zero_le _)).mp h_inner_sum_zero)
+      j (Finset.mem_univ j)
+  let h_inner_if_zero :
+      (if decide (QueryOrder.positionOf i a < QueryOrder.positionOf j a)
+          = decide (QueryOrder.positionOf i b < QueryOrder.positionOf j b)
+        then (0 : Nat) else 1) = 0 :=
+    (if_pos hij).symm.trans h_summand_zero
+  if h_eq : decide (QueryOrder.positionOf i a < QueryOrder.positionOf j a)
+            = decide (QueryOrder.positionOf i b < QueryOrder.positionOf j b) then
+    h_eq
+  else
+    absurd ((if_neg h_eq).symm.trans h_inner_if_zero) (Nat.succ_ne_zero 0)
+
+/-- *Zero-distance characterization (iff).*  `kendallTau a b = 0` iff
+    `a` and `b` order every pair `i.val < j.val` the same way.
+    Packages `kendallTau_eq_zero_of_agreement` and
+    `kendallTau_agreement_of_eq_zero` into a single iff. -/
+theorem kendallTau_eq_zero_iff
+    {numPatterns : Nat} (a b : QueryOrder numPatterns) :
+    kendallTau a b = 0 ↔
+      forall (i j : Fin numPatterns), i.val < j.val ->
+        decide (QueryOrder.positionOf i a < QueryOrder.positionOf j a)
+          = decide (QueryOrder.positionOf i b < QueryOrder.positionOf j b) :=
+  ⟨kendallTau_agreement_of_eq_zero a b,
+   kendallTau_eq_zero_of_agreement a b⟩
+
 /-- *Upper bound by `numPatterns * numPatterns`.*  Sum of at most
     `Finset.univ.card * Finset.univ.card = numPatterns * numPatterns`
     summands each `≤ 1` by `kendallTau_summand_le_one`.

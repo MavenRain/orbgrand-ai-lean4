@@ -2278,6 +2278,24 @@ example {numPatterns : Nat} (a : QueryOrder numPatterns) :
     kendallTau a a = 0 :=
   kendallTau_eq_zero_of_agreement a a (fun _ _ _ => rfl)
 
+/-- *Zero distance implies agreement* (the converse half of the iff): if
+    `kendallTau a b = 0`, then every pair `i.val < j.val` is ordered the same way. -/
+example {numPatterns : Nat} (a b : QueryOrder numPatterns)
+    (h : kendallTau a b = 0)
+    (i j : Fin numPatterns) (hij : i.val < j.val) :
+    decide (QueryOrder.positionOf i a < QueryOrder.positionOf j a)
+      = decide (QueryOrder.positionOf i b < QueryOrder.positionOf j b) :=
+  kendallTau_agreement_of_eq_zero a b h i j hij
+
+/-- *Zero-distance characterization (iff)*: `kendallTau a b = 0` iff `a` and `b`
+    order every pair `i.val < j.val` the same way.  Both directions packaged. -/
+example {numPatterns : Nat} (a b : QueryOrder numPatterns) :
+    kendallTau a b = 0 ↔
+      forall (i j : Fin numPatterns), i.val < j.val ->
+        decide (QueryOrder.positionOf i a < QueryOrder.positionOf j a)
+          = decide (QueryOrder.positionOf i b < QueryOrder.positionOf j b) :=
+  kendallTau_eq_zero_iff a b
+
 /-- Max-weight bucket has no duplicates. -/
 example {n : Nat} :
     (landslide n (bitWeight (fun _ : Fin n => true))).Nodup :=
