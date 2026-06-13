@@ -274,6 +274,15 @@ theorem bler_compl_eq
   h_toReal.symm.trans
     ((congrArg ENNReal.toReal h_one).trans ENNReal.toReal_one)
 
+/-- *Complement equation.*  `bler decode = 1 - bler !decode` under the
+    measurability hypothesis.  Corollary of `bler_compl_eq` via
+    `eq_sub_of_add_eq`. -/
+theorem bler_eq_one_sub_compl
+    {n_s : Nat} (sigma : NoisePower)
+    (decode : RealSymbolVector n_s -> Bool)
+    (h_meas : MeasurableSet {N : RealSymbolVector n_s | decode N = true}) :
+    bler sigma decode = 1 - bler sigma (fun N => !decode N) :=
+  eq_sub_of_add_eq (bler_compl_eq sigma decode h_meas)
 
 end Section00
 end OrbgrandAi

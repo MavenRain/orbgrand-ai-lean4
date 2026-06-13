@@ -1166,6 +1166,15 @@ example {n_s : Nat} (sigma : NoisePower)
     Section00.bler sigma decode + Section00.bler sigma (fun N => !decode N) = 1 :=
   Section00.bler_compl_eq sigma decode h_meas
 
+/-- `Section00.bler decode = 1 - bler !decode` corollary form. -/
+example {n_s : Nat} (sigma : NoisePower)
+    (decode : Section00.RealSymbolVector n_s -> Bool)
+    (h_meas : MeasurableSet
+      {N : Section00.RealSymbolVector n_s | decode N = true}) :
+    Section00.bler sigma decode
+      = 1 - Section00.bler sigma (fun N => !decode N) :=
+  Section00.bler_eq_one_sub_compl sigma decode h_meas
+
 /-- `regressorMatrix4x2` body unfold: at `(i, j)` returns `z (i.val + j.val)`
     with the `Fin 6` bound witnessed by `i.val + j.val < 4 + 1 < 6`. -/
 example (z : Fin 6 -> Complex) (i : Fin 4) (j : Fin 2) :
