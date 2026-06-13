@@ -2392,6 +2392,16 @@ example : QueryOrder.positionOf (2 : Fin 3) [0, 1] = 2 := rfl
 example : (bpsk.exceed false false = 0) ↔ (false = false) :=
   bpsk.exceed_zero_iff false false
 
+/-- Concrete kendallTau eval on Fin 5: identical lists have distance 0. -/
+example : kendallTau ([0, 1, 2, 3, 4] : QueryOrder 5) [0, 1, 2, 3, 4] = 0 := rfl
+
+/-- Concrete kendallTau eval on Fin 5: reversal achieves the maximum
+    distance equal to `5.choose 2 = 10`. -/
+example : kendallTau ([0, 1, 2, 3, 4] : QueryOrder 5) [4, 3, 2, 1, 0] = 10 := rfl
+
+/-- Concrete `QueryOrder.positionOf` eval: last-element hit returns the trailing index. -/
+example : QueryOrder.positionOf (3 : Fin 4) [0, 1, 2, 3] = 3 := rfl
+
 /-- Max-weight bucket has no duplicates. -/
 example {n : Nat} :
     (landslide n (bitWeight (fun _ : Fin n => true))).Nodup :=
