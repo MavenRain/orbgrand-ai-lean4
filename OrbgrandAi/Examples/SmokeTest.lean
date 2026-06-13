@@ -2371,6 +2371,27 @@ example : kendallTau ([0, 1, 2] : QueryOrder 3) [1, 0, 2] = 1 := rfl
 example (a b : QueryOrder 0) : kendallTau a b = 0 :=
   kendallTau_empty a b
 
+/-- Concrete kendallTau eval on Fin 4: identical lists have distance 0. -/
+example : kendallTau ([0, 1, 2, 3] : QueryOrder 4) [0, 1, 2, 3] = 0 := rfl
+
+/-- Concrete kendallTau eval on Fin 4: reversal achieves the maximum
+    distance equal to `4.choose 2 = 6`. -/
+example : kendallTau ([0, 1, 2, 3] : QueryOrder 4) [3, 2, 1, 0] = 6 := rfl
+
+/-- Concrete kendallTau eval on Fin 3: swapping the last two flips one pair. -/
+example : kendallTau ([0, 1, 2] : QueryOrder 3) [0, 2, 1] = 1 := rfl
+
+/-- Concrete `QueryOrder.positionOf` eval: position of `2` in `[0, 1, 2]` is `2`. -/
+example : QueryOrder.positionOf (2 : Fin 3) [0, 1, 2] = 2 := rfl
+
+/-- Concrete `QueryOrder.positionOf` eval: missing element returns the
+    fall-through-on-miss convention (here `2`, matching the list length). -/
+example : QueryOrder.positionOf (2 : Fin 3) [0, 1] = 2 := rfl
+
+/-- Concrete `bpsk.exceed_zero_iff` instance at the matching pair `(false, false)`. -/
+example : (bpsk.exceed false false = 0) ↔ (false = false) :=
+  bpsk.exceed_zero_iff false false
+
 /-- Max-weight bucket has no duplicates. -/
 example {n : Nat} :
     (landslide n (bitWeight (fun _ : Fin n => true))).Nodup :=
