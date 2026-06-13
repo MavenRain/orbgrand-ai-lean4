@@ -2467,6 +2467,27 @@ example : kendallTau ([0, 1, 2, 3, 4, 5] : QueryOrder 6) [5, 4, 3, 2, 1, 0] = 15
 /-- Concrete `QueryOrder.positionOf` eval on Fin 5: hit at index 2. -/
 example : QueryOrder.positionOf (2 : Fin 5) [0, 1, 2, 3, 4] = 2 := rfl
 
+/-- Concrete `kendallTau_le_sq` at Fin 4: any pair has distance ≤ `4 * 4 = 16`. -/
+example (a b : QueryOrder 4) : kendallTau a b ≤ 16 :=
+  kendallTau_le_sq a b
+
+/-- Concrete triangle inequality on Fin 4: the reflexivity sandwich
+    `kendallTau a a ≤ kendallTau a b + kendallTau b a` instantiated at
+    the reversal pair. -/
+example :
+    kendallTau ([0, 1, 2, 3] : QueryOrder 4) [0, 1, 2, 3]
+      ≤ kendallTau ([0, 1, 2, 3] : QueryOrder 4) [3, 2, 1, 0]
+        + kendallTau ([3, 2, 1, 0] : QueryOrder 4) [0, 1, 2, 3] :=
+  kendallTau_triangle [0, 1, 2, 3] [3, 2, 1, 0] [0, 1, 2, 3]
+
+/-- `RFViewTaps.tap3` anonymous-constructor projection (interior field). -/
+example (t1 t2 t3 t4 t5 t6 : Complex) :
+    ({ tap1 := t1, tap2 := t2, tap3 := t3,
+       tap4 := t4, tap5 := t5, tap6 := t6 } : RFViewTaps).tap3 = t3 := rfl
+
+/-- `QueryOrder.positionOf` at the head returns 0 (immediate equality match). -/
+example : QueryOrder.positionOf (0 : Fin 3) [0, 1, 2] = 0 := rfl
+
 /-- Max-weight bucket has no duplicates. -/
 example {n : Nat} :
     (landslide n (bitWeight (fun _ : Fin n => true))).Nodup :=
