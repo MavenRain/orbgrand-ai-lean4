@@ -355,5 +355,20 @@ theorem bler_double_neg
     bler sigma (fun N => !!decode N) = bler sigma decode :=
   bler_pointwise_eq sigma _ decode fun N => Bool.not_not (decode N)
 
+/-- *XOR vanishes when decoders agree.*  If two decoders agree pointwise,
+    the XOR-failure set is empty and `bler (fun N => xor (decode1 N) (decode2 N)) = 0`.
+    Chain: `Bool.xor_self` makes the XOR vanish, `bler_pointwise_eq`
+    transfers to the constant-false decoder, `bler_const_false` closes. -/
+theorem bler_xor_eq_zero_of_pointwise_eq
+    {n_s : Nat} (sigma : NoisePower)
+    (decode1 decode2 : RealSymbolVector n_s -> Bool)
+    (h : forall N, decode1 N = decode2 N) :
+    bler sigma (fun N => xor (decode1 N) (decode2 N)) = 0 :=
+  let h_xor_zero :
+      forall N, xor (decode1 N) (decode2 N) = false :=
+    fun N => h N ▸ Bool.xor_self (decode1 N)
+  (bler_pointwise_eq sigma _ (fun _ => false) h_xor_zero).trans
+    (bler_const_false sigma)
+
 end Section00
 end OrbgrandAi
