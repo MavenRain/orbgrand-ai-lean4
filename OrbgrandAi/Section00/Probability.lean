@@ -218,5 +218,6 @@ theorem bler_pointwise_eq
     bler sigma decode1 = bler sigma decode2 :=
   congrArg (bler sigma) (funext h)
 
+
 end Section00
 end OrbgrandAi
