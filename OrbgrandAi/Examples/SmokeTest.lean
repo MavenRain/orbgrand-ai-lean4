@@ -2346,6 +2346,14 @@ example {n_s : Nat} (sigma : NoisePower)
     0 ≤ Section00.bler sigma decode ∧ Section00.bler sigma decode ≤ 1 :=
   ⟨Section00.bler_nonneg sigma decode, Section00.bler_le_one sigma decode⟩
 
+/-- Concrete `kendallTau` eval on `Fin 1`: the only list `[0]` is its own
+    reflexive zero-distance instance. -/
+example : kendallTau ([0] : QueryOrder 1) [0] = 0 := rfl
+
+/-- Concrete `kendallTau` eval on `Fin 2`: `[0, 1]` vs `[1, 0]` disagree on
+    the single available pair `(0, 1)`, giving distance `1`. -/
+example : kendallTau ([0, 1] : QueryOrder 2) [1, 0] = 1 := rfl
+
 /-- Max-weight bucket has no duplicates. -/
 example {n : Nat} :
     (landslide n (bitWeight (fun _ : Fin n => true))).Nodup :=
