@@ -149,6 +149,41 @@ theorem kendallTau_summand_le_one
   else
     (if_neg h).trans_le (Nat.zero_le 1)
 
+/-- *Upper bound by `numPatterns * numPatterns`.*  Sum of at most
+    `Finset.univ.card * Finset.univ.card = numPatterns * numPatterns`
+    summands each `≤ 1` by `kendallTau_summand_le_one`.
+
+    Term-mode chain:
+    * `Finset.sum_le_sum` twice to bound by the constant-1 sum.
+    * `Finset.sum_const_nat` to evaluate the inner constant sum to
+      `Finset.univ.card * 1 = Finset.univ.card`.
+    * `Finset.card_univ.trans (Fintype.card_fin numPatterns)` to
+      identify `Finset.univ.card` with `numPatterns`.
+    * `Finset.sum_const_nat` again on the outer sum to get
+      `Finset.univ.card * numPatterns`.
+    * Substitute again via `congrArg`. -/
+theorem kendallTau_le_sq
+    {numPatterns : Nat} (a b : QueryOrder numPatterns) :
+    kendallTau a b ≤ numPatterns * numPatterns :=
+  let h_card : (Finset.univ : Finset (Fin numPatterns)).card = numPatterns :=
+    Finset.card_univ.trans (Fintype.card_fin numPatterns)
+  let h_inner :
+      Finset.univ.sum (fun _ : Fin numPatterns => (1 : Nat)) = numPatterns :=
+    (Finset.sum_const_nat (fun _ _ => rfl)).trans
+      ((Nat.mul_one _).trans h_card)
+  let h_outer :
+      Finset.univ.sum (fun _ : Fin numPatterns =>
+        Finset.univ.sum (fun _ : Fin numPatterns => (1 : Nat)))
+        = numPatterns * numPatterns :=
+    (Finset.sum_const_nat (fun _ _ => h_inner)).trans
+      (congrArg (· * numPatterns) h_card)
+  let h_bound : kendallTau a b ≤
+      Finset.univ.sum (fun _ : Fin numPatterns =>
+        Finset.univ.sum (fun _ : Fin numPatterns => (1 : Nat))) :=
+    Finset.sum_le_sum (fun i _ =>
+      Finset.sum_le_sum (fun j _ => kendallTau_summand_le_one a b i j))
+  h_bound.trans h_outer.le
+
 
 /-! ## Query-order stability claim (placeholder) -/
 

@@ -2258,6 +2258,11 @@ example {numPatterns : Nat} (a b : QueryOrder numPatterns)
       else 0) ≤ 1 :=
   kendallTau_summand_le_one a b i j
 
+/-- *Upper bound on `kendallTau`*: at most `numPatterns * numPatterns`. -/
+example {numPatterns : Nat} (a b : QueryOrder numPatterns) :
+    kendallTau a b ≤ numPatterns * numPatterns :=
+  kendallTau_le_sq a b
+
 /-- Max-weight bucket has no duplicates. -/
 example {n : Nat} :
     (landslide n (bitWeight (fun _ : Fin n => true))).Nodup :=
