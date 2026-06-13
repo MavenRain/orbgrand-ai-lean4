@@ -135,5 +135,29 @@ theorem bler_le_one
     bler sigma decode ≤ 1 :=
   MeasureTheory.measureReal_le_one
 
+/-- *Saturating decoder.*  When the decoder reports failure on every input
+    (`fun _ => true`), the failure set is all of `RealSymbolVector n_s`, so
+    `bler = noiseMeasure(univ).toReal = 1.toReal = 1`.
+
+    Term-mode chain:
+    1. `Set.eq_univ_of_forall (fun _ => rfl)` identifies the failure set
+       `{N | (fun _ => true) N = true}` with `Set.univ`.
+    2. `MeasureTheory.measure_univ` gives `noiseMeasure Set.univ = 1`
+       (via the `IsProbabilityMeasure` instance chain).
+    3. `ENNReal.toReal_one` closes the conversion. -/
+theorem bler_const_true
+    {n_s : Nat} (sigma : NoisePower) :
+    bler sigma (fun _ : RealSymbolVector n_s => true) = 1 :=
+  let h_set :
+      {N : RealSymbolVector n_s | (fun _ : RealSymbolVector n_s => true) N = true}
+        = Set.univ :=
+    Set.eq_univ_of_forall (fun _ => rfl)
+  let h_meas :
+      noiseMeasure n_s sigma
+        {N : RealSymbolVector n_s | (fun _ : RealSymbolVector n_s => true) N = true}
+        = 1 :=
+    (congrArg (noiseMeasure n_s sigma) h_set).trans MeasureTheory.measure_univ
+  (congrArg ENNReal.toReal h_meas).trans ENNReal.toReal_one
+
 end Section00
 end OrbgrandAi
