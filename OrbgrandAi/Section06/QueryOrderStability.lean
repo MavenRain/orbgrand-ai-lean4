@@ -102,6 +102,29 @@ theorem kendallTau_self {numPatterns : Nat} (a : QueryOrder numPatterns) :
       else
         if_neg h
 
+/-- *Symmetry.*  `kendallTau a b = kendallTau b a`: the only
+    structural difference between the two double sums is the order of
+    `decide (... < ...) = decide (... < ...)` on the inner condition,
+    and `Eq` is symmetric.  Use `if_congr` on the inner ite to bridge
+    the `Iff` from `Eq.symm`. -/
+theorem kendallTau_symm {numPatterns : Nat} (a b : QueryOrder numPatterns) :
+    kendallTau a b = kendallTau b a :=
+  Finset.sum_congr rfl fun i _ =>
+    Finset.sum_congr rfl fun j _ =>
+      if h : i.val < j.val then
+        let pa_i := QueryOrder.positionOf i a
+        let pa_j := QueryOrder.positionOf j a
+        let pb_i := QueryOrder.positionOf i b
+        let pb_j := QueryOrder.positionOf j b
+        let h_iff :
+            (decide (pa_i < pa_j) = decide (pb_i < pb_j)) ↔
+              (decide (pb_i < pb_j) = decide (pa_i < pa_j)) :=
+          ⟨Eq.symm, Eq.symm⟩
+        (if_pos h).trans
+          ((if_congr h_iff rfl rfl).trans (if_pos h).symm)
+      else
+        (if_neg h).trans (if_neg h).symm
+
 /-! ## Query-order stability claim (placeholder) -/
 
 /-- *Stability of the ORBGRAND-AI query order under correlation

@@ -2236,6 +2236,16 @@ example {numPatterns : Nat} (a : QueryOrder numPatterns) :
 example : kendallTau ([0, 1] : QueryOrder 2) [0, 1] = 0 :=
   kendallTau_self [0, 1]
 
+/-- *Symmetry of `kendallTau`*: order of arguments does not matter. -/
+example {numPatterns : Nat} (a b : QueryOrder numPatterns) :
+    kendallTau a b = kendallTau b a :=
+  kendallTau_symm a b
+
+/-- Concrete symmetry instance on `QueryOrder 2`. -/
+example : kendallTau ([0, 1] : QueryOrder 2) ([1, 0] : QueryOrder 2)
+        = kendallTau ([1, 0] : QueryOrder 2) [0, 1] :=
+  kendallTau_symm [0, 1] [1, 0]
+
 /-- Max-weight bucket has no duplicates. -/
 example {n : Nat} :
     (landslide n (bitWeight (fun _ : Fin n => true))).Nodup :=
