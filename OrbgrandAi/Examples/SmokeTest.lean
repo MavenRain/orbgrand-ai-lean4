@@ -2354,6 +2354,18 @@ example : kendallTau ([0] : QueryOrder 1) [0] = 0 := rfl
     the single available pair `(0, 1)`, giving distance `1`. -/
 example : kendallTau ([0, 1] : QueryOrder 2) [1, 0] = 1 := rfl
 
+/-- Concrete `kendallTau` eval on `Fin 3`: `[0, 1, 2]` is its own reflexive
+    zero-distance instance. -/
+example : kendallTau ([0, 1, 2] : QueryOrder 3) [0, 1, 2] = 0 := rfl
+
+/-- Concrete `kendallTau` eval on `Fin 3`: reversed-order distance equals the
+    number of `i.val < j.val` pairs (which is `3.choose 2 = 3`). -/
+example : kendallTau ([0, 1, 2] : QueryOrder 3) [2, 1, 0] = 3 := rfl
+
+/-- Concrete `kendallTau` eval on `Fin 3`: a single adjacent transposition
+    flips one pair, giving distance `1`. -/
+example : kendallTau ([0, 1, 2] : QueryOrder 3) [1, 0, 2] = 1 := rfl
+
 /-- Max-weight bucket has no duplicates. -/
 example {n : Nat} :
     (landslide n (bitWeight (fun _ : Fin n => true))).Nodup :=
