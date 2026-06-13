@@ -2339,6 +2339,13 @@ example (z : Fin 6 -> Complex) :
       (solution 0, solution 1) :=
   ar2LeastSquaresFit_eq z
 
+/-- `0 ≤ bler ≤ 1` sandwich packaged: the new probability layer's BLER
+    always lies in the unit interval, irrespective of decoder choice. -/
+example {n_s : Nat} (sigma : NoisePower)
+    (decode : Section00.RealSymbolVector n_s -> Bool) :
+    0 ≤ Section00.bler sigma decode ∧ Section00.bler sigma decode ≤ 1 :=
+  ⟨Section00.bler_nonneg sigma decode, Section00.bler_le_one sigma decode⟩
+
 /-- Max-weight bucket has no duplicates. -/
 example {n : Nat} :
     (landslide n (bitWeight (fun _ : Fin n => true))).Nodup :=

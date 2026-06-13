@@ -326,6 +326,7 @@ theorem ar2LeastSquaresFit_eq (z : Fin 6 -> Complex) :
       let solution : Fin 2 -> Complex := ZHZ⁻¹.mulVec ZHy
       (solution 0, solution 1) := rfl
 
+
 /-! ## Approximation error (placeholder) -/
 
 /-- *AR(2) approximation error bound.*
