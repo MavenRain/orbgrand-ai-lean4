@@ -2313,6 +2313,19 @@ example : kendallTau ([0, 1] : QueryOrder 2) ([0, 1] : QueryOrder 2)
           + kendallTau ([1, 0] : QueryOrder 2) [0, 1] :=
   kendallTau_triangle [0, 1] [1, 0] [0, 1]
 
+/-- `candidateSubstitutes` body unfold: erase `s_hat` from `Finset.univ`,
+    `toList`, then `mergeSort` ascending by `cs.exceed s_hat`. -/
+example {chi : Type} (cs : Constellation chi) (s_hat : chi) :
+    candidateSubstitutes cs s_hat
+      = @List.mergeSort chi
+          (let _ : DecidableEq chi := cs.decEq
+           let _ : Fintype chi := cs.fintype
+           ((Finset.univ : Finset chi).erase s_hat).toList)
+          (fun s1 s2 =>
+            @decide (cs.exceed s_hat s1 ≤ cs.exceed s_hat s2)
+              (Classical.propDecidable _)) :=
+  candidateSubstitutes_eq cs s_hat
+
 /-- Max-weight bucket has no duplicates. -/
 example {n : Nat} :
     (landslide n (bitWeight (fun _ : Fin n => true))).Nodup :=

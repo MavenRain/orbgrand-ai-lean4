@@ -334,10 +334,34 @@ theorem trivialConstellation_all_eq (s s_hat : Unit) :
     substitutes `s in chi \ {s_hat}` in increasing exceedance
     distance.  Returns a `List` (so we can index by the rank).
 
-    *Placeholder shape.*  The construction depends on a constructive
-    sort over `Finset.univ`; the sort itself we leave to a follow-up. -/
-opaque candidateSubstitutes
-    {chi : Type} (cs : Constellation chi) (s_hat : chi) : List chi
+    Concrete: erase `s_hat` from `Finset.univ` (via the
+    `Constellation`'s `decEq` + `fintype` fields), convert to a list,
+    then `List.mergeSort` by `cs.exceed s_hat` ascending.  Marked
+    `noncomputable` because `Real`'s order is classical; the
+    Bool-valued comparator routes through `Classical.propDecidable`. -/
+noncomputable def candidateSubstitutes
+    {chi : Type} (cs : Constellation chi) (s_hat : chi) : List chi :=
+  let _ : DecidableEq chi := cs.decEq
+  let _ : Fintype chi := cs.fintype
+  ((Finset.univ : Finset chi).erase s_hat).toList.mergeSort
+    (fun s1 s2 =>
+      @decide (cs.exceed s_hat s1 ≤ cs.exceed s_hat s2)
+        (Classical.propDecidable _))
+
+/-- *Body unfold for `candidateSubstitutes`.*  The definition is just
+    `(Finset.univ.erase s_hat).toList` sorted ascending by exceedance
+    distance from `s_hat`. -/
+theorem candidateSubstitutes_eq
+    {chi : Type} (cs : Constellation chi) (s_hat : chi) :
+    candidateSubstitutes cs s_hat
+      = @List.mergeSort chi
+          (let _ : DecidableEq chi := cs.decEq
+           let _ : Fintype chi := cs.fintype
+           ((Finset.univ : Finset chi).erase s_hat).toList)
+          (fun s1 s2 =>
+            @decide (cs.exceed s_hat s1 ≤ cs.exceed s_hat s2)
+              (Classical.propDecidable _)) := rfl
+
 
 /-! ## Symbol-conflict filter -/
 
