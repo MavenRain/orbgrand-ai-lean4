@@ -182,5 +182,32 @@ theorem bler_const_false
     (congrArg (noiseMeasure n_s sigma) h_set).trans MeasureTheory.measure_empty
   (congrArg ENNReal.toReal h_meas).trans ENNReal.toReal_zero
 
+/-- *Monotonicity in decoder.*  If `decode1`'s failure set is contained in
+    `decode2`'s (i.e., every `decode1`-failure is also a `decode2`-failure),
+    then `bler sigma decode1 ≤ bler sigma decode2`.
+
+    Term-mode chain:
+    1. The hypothesis lifts to a `Set.subset` of failure sets.
+    2. `MeasureTheory.measure_mono` gives the inequality on `ℝ≥0∞` measures.
+    3. `MeasureTheory.measure_ne_top` (via the `IsFiniteMeasure` instance
+       chain) provides the finiteness witness `noiseMeasure decode2 ≠ ∞`.
+    4. `ENNReal.toReal_mono` closes the real-valued comparison. -/
+theorem bler_monotone
+    {n_s : Nat} (sigma : NoisePower)
+    (decode1 decode2 : RealSymbolVector n_s -> Bool)
+    (h : forall N, decode1 N = true -> decode2 N = true) :
+    bler sigma decode1 ≤ bler sigma decode2 :=
+  let h_subset :
+      {N : RealSymbolVector n_s | decode1 N = true}
+        ⊆ {N : RealSymbolVector n_s | decode2 N = true} :=
+    fun _ hN => h _ hN
+  let h_meas_le :
+      noiseMeasure n_s sigma {N | decode1 N = true}
+        ≤ noiseMeasure n_s sigma {N | decode2 N = true} :=
+    MeasureTheory.measure_mono h_subset
+  let h_finite : noiseMeasure n_s sigma {N | decode2 N = true} ≠ ⊤ :=
+    MeasureTheory.measure_ne_top _ _
+  ENNReal.toReal_mono h_finite h_meas_le
+
 end Section00
 end OrbgrandAi

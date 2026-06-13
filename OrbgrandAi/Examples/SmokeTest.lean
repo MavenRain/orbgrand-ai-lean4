@@ -1142,6 +1142,14 @@ example {n_s : Nat} (sigma : NoisePower) :
     Section00.bler sigma (fun _ : Section00.RealSymbolVector n_s => false) = 0 :=
   Section00.bler_const_false sigma
 
+/-- `Section00.bler` is monotone in decoder set inclusion: if `decode1`'s
+    failures are a subset of `decode2`'s, then `bler decode1 ≤ bler decode2`. -/
+example {n_s : Nat} (sigma : NoisePower)
+    (decode1 decode2 : Section00.RealSymbolVector n_s -> Bool)
+    (h : forall N, decode1 N = true -> decode2 N = true) :
+    Section00.bler sigma decode1 ≤ Section00.bler sigma decode2 :=
+  Section00.bler_monotone sigma decode1 decode2 h
+
 /-- `regressorMatrix4x2` body unfold: at `(i, j)` returns `z (i.val + j.val)`
     with the `Fin 6` bound witnessed by `i.val + j.val < 4 + 1 < 6`. -/
 example (z : Fin 6 -> Complex) (i : Fin 4) (j : Fin 2) :
