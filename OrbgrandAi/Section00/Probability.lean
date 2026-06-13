@@ -209,5 +209,14 @@ theorem bler_monotone
     MeasureTheory.measure_ne_top _ _
   ENNReal.toReal_mono h_finite h_meas_le
 
+/-- *Pointwise equality.*  If two decoders agree on every input, their
+    `bler` values coincide.  Single-line `congrArg (bler sigma) ∘ funext`. -/
+theorem bler_pointwise_eq
+    {n_s : Nat} (sigma : NoisePower)
+    (decode1 decode2 : RealSymbolVector n_s -> Bool)
+    (h : forall N, decode1 N = decode2 N) :
+    bler sigma decode1 = bler sigma decode2 :=
+  congrArg (bler sigma) (funext h)
+
 end Section00
 end OrbgrandAi
