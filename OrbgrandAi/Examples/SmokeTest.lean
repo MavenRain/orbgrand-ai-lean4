@@ -1137,6 +1137,11 @@ example {n_s : Nat} (sigma : NoisePower) :
     Section00.bler sigma (fun _ : Section00.RealSymbolVector n_s => true) = 1 :=
   Section00.bler_const_true sigma
 
+/-- `Section00.bler` on the always-false (non-failing) decoder evaluates to `0`. -/
+example {n_s : Nat} (sigma : NoisePower) :
+    Section00.bler sigma (fun _ : Section00.RealSymbolVector n_s => false) = 0 :=
+  Section00.bler_const_false sigma
+
 /-- `regressorMatrix4x2` body unfold: at `(i, j)` returns `z (i.val + j.val)`
     with the `Fin 6` bound witnessed by `i.val + j.val < 4 + 1 < 6`. -/
 example (z : Fin 6 -> Complex) (i : Fin 4) (j : Fin 2) :

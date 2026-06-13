@@ -159,5 +159,28 @@ theorem bler_const_true
     (congrArg (noiseMeasure n_s sigma) h_set).trans MeasureTheory.measure_univ
   (congrArg ENNReal.toReal h_meas).trans ENNReal.toReal_one
 
+/-- *Non-failing decoder.*  When the decoder reports success on every input
+    (`fun _ => false`), the failure set is empty, so
+    `bler = noiseMeasure(∅).toReal = 0.toReal = 0`.
+
+    Dual of `bler_const_true`.  Term-mode chain:
+    1. `Set.eq_empty_of_forall_notMem` (with `Bool.noConfusion` on
+       `false = true`) identifies the failure set with `∅`.
+    2. `MeasureTheory.measure_empty` gives `noiseMeasure ∅ = 0`.
+    3. `ENNReal.toReal_zero` closes the conversion. -/
+theorem bler_const_false
+    {n_s : Nat} (sigma : NoisePower) :
+    bler sigma (fun _ : RealSymbolVector n_s => false) = 0 :=
+  let h_set :
+      {N : RealSymbolVector n_s | (fun _ : RealSymbolVector n_s => false) N = true}
+        = ∅ :=
+    Set.eq_empty_of_forall_notMem fun _ h => Bool.noConfusion h
+  let h_meas :
+      noiseMeasure n_s sigma
+        {N : RealSymbolVector n_s | (fun _ : RealSymbolVector n_s => false) N = true}
+        = 0 :=
+    (congrArg (noiseMeasure n_s sigma) h_set).trans MeasureTheory.measure_empty
+  (congrArg ENNReal.toReal h_meas).trans ENNReal.toReal_zero
+
 end Section00
 end OrbgrandAi
