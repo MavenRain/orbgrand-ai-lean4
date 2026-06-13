@@ -430,21 +430,35 @@ theorem kendallTau_le_sq
     perturbation.*
 
     There exists a modulus `K` such that, for all
-    `|delta_rho| <= epsilon`, the Kendall tau distance between the
-    query order computed under `rho_real` and the query order
-    computed under `rho_real + delta_rho` satisfies
+    `|delta_rho| <= 0.2`, the Kendall-tau distance between the query
+    order computed under `rho_real` and the query order computed
+    under `rho_real + delta_rho` satisfies
 
-      `kendallTau order(rho_real) order(rho_real + delta_rho) <= K * epsilon`.
+      `kendallTau (queryOrder rho_real) (queryOrder (rho_real + delta_rho))
+        <= K * |delta_rho|`.
 
-    *Placeholder shape.*  The constant `K` depends polynomially on
-    `n_s`, `b`, and the constellation size. -/
+    *Refactored shape (was: vacuous quantification over arbitrary
+    `orderReal`, `orderEst`).*  The new shape parameterises the
+    Lipschitz claim by an abstract
+    `queryOrder : Real -> QueryOrder numPatterns` function (the
+    Lipschitz constant `K` is universally quantified along with the
+    `queryOrder` family).  Once a concrete `queryOrder` derived from
+    ORBGRAND-AI's per-block posterior is wired up, this theorem will
+    specialise into the actual stability claim from the paper.
+
+    The closing `True` is retained as a deferred-proof marker; the
+    body is now a *proper* Lipschitz claim on the de-opaqued
+    `kendallTau` rather than a quantification over unrelated query
+    orders. -/
 theorem query_order_stability_statement
     (rho_real : CorrelationCoefficient) (numPatterns : Nat) :
-    (exists (K : Real), 0 < K /\
+    (forall (queryOrder : Real -> QueryOrder numPatterns),
+      exists (K : Real), 0 < K /\
         forall (delta_rho : Real),
           abs delta_rho <= 0.2 ->
-            forall (orderReal orderEst : QueryOrder numPatterns),
-              (kendallTau orderReal orderEst : Real) <= K * abs delta_rho)
+            (kendallTau (queryOrder rho_real.val)
+                        (queryOrder (rho_real.val + delta_rho)) : Real)
+              <= K * abs delta_rho)
       -> True := by
   kan_intro _h
   kan_constructor

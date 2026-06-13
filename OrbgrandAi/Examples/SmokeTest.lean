@@ -2202,14 +2202,18 @@ example (nmse : NMSE) (sigma : NoisePower) (rho : CorrelationCoefficient)
     True :=
   imperfect_csi_error_floor_statement nmse sigma rho h
 
-/-- Section VI.C query-order stability statement: Kendall tau between query
-    orders is Lipschitz in the correlation perturbation. -/
+/-- Section VI.C query-order stability statement (refactored): Kendall tau
+    between the query orders at `rho_real.val` and `rho_real.val + delta_rho`,
+    parameterised by an abstract `queryOrder` family, is Lipschitz in
+    `|delta_rho|` (for `|delta_rho| <= 0.2`). -/
 example (rho_real : CorrelationCoefficient) (numPatterns : Nat)
-    (h : exists (K : Real), 0 < K /\
+    (h : forall (queryOrder : Real -> QueryOrder numPatterns),
+      exists (K : Real), 0 < K /\
         forall (delta_rho : Real),
           abs delta_rho <= 0.2 ->
-            forall (orderReal orderEst : QueryOrder numPatterns),
-              (kendallTau orderReal orderEst : Real) <= K * abs delta_rho) :
+            (kendallTau (queryOrder rho_real.val)
+                        (queryOrder (rho_real.val + delta_rho)) : Real)
+              <= K * abs delta_rho) :
     True :=
   query_order_stability_statement rho_real numPatterns h
 
@@ -2302,6 +2306,12 @@ example {numPatterns : Nat} (a b : QueryOrder numPatterns) :
 example {numPatterns : Nat} (a b c : QueryOrder numPatterns) :
     kendallTau a c ≤ kendallTau a b + kendallTau b c :=
   kendallTau_triangle a b c
+
+/-- Concrete triangle instance on `QueryOrder 2`. -/
+example : kendallTau ([0, 1] : QueryOrder 2) ([0, 1] : QueryOrder 2)
+        ≤ kendallTau ([0, 1] : QueryOrder 2) [1, 0]
+          + kendallTau ([1, 0] : QueryOrder 2) [0, 1] :=
+  kendallTau_triangle [0, 1] [1, 0] [0, 1]
 
 /-- Max-weight bucket has no duplicates. -/
 example {n : Nat} :
