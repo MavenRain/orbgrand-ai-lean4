@@ -2488,6 +2488,40 @@ example (t1 t2 t3 t4 t5 t6 : Complex) :
 /-- `QueryOrder.positionOf` at the head returns 0 (immediate equality match). -/
 example : QueryOrder.positionOf (0 : Fin 3) [0, 1, 2] = 0 := rfl
 
+/-- Concrete `kendallTau_le_sq` at Fin 5: any pair has distance ≤ 25. -/
+example (a b : QueryOrder 5) : kendallTau a b ≤ 25 :=
+  kendallTau_le_sq a b
+
+/-- Concrete `kendallTau_le_sq` at Fin 6: any pair has distance ≤ 36. -/
+example (a b : QueryOrder 6) : kendallTau a b ≤ 36 :=
+  kendallTau_le_sq a b
+
+/-- `RFViewTaps.tap2` anonymous projection through the explicit constructor. -/
+example (t1 t2 t3 t4 t5 t6 : Complex) :
+    ({ tap1 := t1, tap2 := t2, tap3 := t3,
+       tap4 := t4, tap5 := t5, tap6 := t6 } : RFViewTaps).tap2 = t2 := rfl
+
+/-- `RFViewTaps.tap4` anonymous projection through the explicit constructor. -/
+example (t1 t2 t3 t4 t5 t6 : Complex) :
+    ({ tap1 := t1, tap2 := t2, tap3 := t3,
+       tap4 := t4, tap5 := t5, tap6 := t6 } : RFViewTaps).tap4 = t4 := rfl
+
+/-- `RFViewTaps.tap5` anonymous projection through the explicit constructor. -/
+example (t1 t2 t3 t4 t5 t6 : Complex) :
+    ({ tap1 := t1, tap2 := t2, tap3 := t3,
+       tap4 := t4, tap5 := t5, tap6 := t6 } : RFViewTaps).tap5 = t5 := rfl
+
+/-- Concrete `kendallTau_summand_le_one` instance at Fin 2 with `(i, j) = (0, 1)`. -/
+example (a b : QueryOrder 2) :
+    (if (0 : Fin 2).val < (1 : Fin 2).val then
+        let ai := QueryOrder.positionOf (0 : Fin 2) a
+        let aj := QueryOrder.positionOf (1 : Fin 2) a
+        let bi := QueryOrder.positionOf (0 : Fin 2) b
+        let bj := QueryOrder.positionOf (1 : Fin 2) b
+        if decide (ai < aj) = decide (bi < bj) then (0 : Nat) else 1
+      else 0) ≤ 1 :=
+  kendallTau_summand_le_one a b 0 1
+
 /-- Max-weight bucket has no duplicates. -/
 example {n : Nat} :
     (landslide n (bitWeight (fun _ : Fin n => true))).Nodup :=
