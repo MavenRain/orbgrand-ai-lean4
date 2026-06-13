@@ -325,5 +325,26 @@ theorem bler_or_le
       (ENNReal.toReal_add (MeasureTheory.measure_ne_top _ _)
                           (MeasureTheory.measure_ne_top _ _)))
 
+/-- *Monotonicity under Boolean `&&` (left).*  The BLER of the conjunctive
+    decoder is at most the BLER of the left component:
+    `bler (fun N => decode1 N && decode2 N) ≤ bler decode1`.
+
+    Proof: the conjunctive failure set `{decode1 ∧ decode2}` is contained
+    in `{decode1}`, so `bler_monotone` closes via `Bool.and_eq_true_iff`. -/
+theorem bler_and_le_left
+    {n_s : Nat} (sigma : NoisePower)
+    (decode1 decode2 : RealSymbolVector n_s -> Bool) :
+    bler sigma (fun N => decode1 N && decode2 N) ≤ bler sigma decode1 :=
+  bler_monotone sigma _ decode1 fun _ h =>
+    (Bool.and_eq_true_iff.mp h).1
+
+/-- *Monotonicity under Boolean `&&` (right).*  Dual of `bler_and_le_left`. -/
+theorem bler_and_le_right
+    {n_s : Nat} (sigma : NoisePower)
+    (decode1 decode2 : RealSymbolVector n_s -> Bool) :
+    bler sigma (fun N => decode1 N && decode2 N) ≤ bler sigma decode2 :=
+  bler_monotone sigma _ decode2 fun _ h =>
+    (Bool.and_eq_true_iff.mp h).2
+
 end Section00
 end OrbgrandAi

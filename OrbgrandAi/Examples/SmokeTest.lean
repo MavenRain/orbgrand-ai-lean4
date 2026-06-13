@@ -1184,6 +1184,21 @@ example {n_s : Nat} (sigma : NoisePower)
       ≤ Section00.bler sigma decode1 + Section00.bler sigma decode2 :=
   Section00.bler_or_le sigma decode1 decode2
 
+/-- `Section00.bler` monotonicity under `&&` (left): BLER of the conjunctive
+    decoder is at most the BLER of the left component. -/
+example {n_s : Nat} (sigma : NoisePower)
+    (decode1 decode2 : Section00.RealSymbolVector n_s -> Bool) :
+    Section00.bler sigma (fun N => decode1 N && decode2 N)
+      ≤ Section00.bler sigma decode1 :=
+  Section00.bler_and_le_left sigma decode1 decode2
+
+/-- `Section00.bler` monotonicity under `&&` (right): dual of `bler_and_le_left`. -/
+example {n_s : Nat} (sigma : NoisePower)
+    (decode1 decode2 : Section00.RealSymbolVector n_s -> Bool) :
+    Section00.bler sigma (fun N => decode1 N && decode2 N)
+      ≤ Section00.bler sigma decode2 :=
+  Section00.bler_and_le_right sigma decode1 decode2
+
 /-- `regressorMatrix4x2` body unfold: at `(i, j)` returns `z (i.val + j.val)`
     with the `Fin 6` bound witnessed by `i.val + j.val < 4 + 1 < 6`. -/
 example (z : Fin 6 -> Complex) (i : Fin 4) (j : Fin 2) :
