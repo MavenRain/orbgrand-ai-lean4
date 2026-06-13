@@ -1157,6 +1157,15 @@ example {n_s : Nat} (sigma : NoisePower)
     Section00.bler sigma decode1 = Section00.bler sigma decode2 :=
   Section00.bler_pointwise_eq sigma decode1 decode2 h
 
+/-- `Section00.bler` complement relation: under measurability of the failure
+    set, `bler decode + bler !decode = 1`. -/
+example {n_s : Nat} (sigma : NoisePower)
+    (decode : Section00.RealSymbolVector n_s -> Bool)
+    (h_meas : MeasurableSet
+      {N : Section00.RealSymbolVector n_s | decode N = true}) :
+    Section00.bler sigma decode + Section00.bler sigma (fun N => !decode N) = 1 :=
+  Section00.bler_compl_eq sigma decode h_meas
+
 /-- `regressorMatrix4x2` body unfold: at `(i, j)` returns `z (i.val + j.val)`
     with the `Fin 6` bound witnessed by `i.val + j.val < 4 + 1 < 6`. -/
 example (z : Fin 6 -> Complex) (i : Fin 4) (j : Fin 2) :
@@ -2546,6 +2555,19 @@ example (a b : QueryOrder 2) :
         if decide (ai < aj) = decide (bi < bj) then (0 : Nat) else 1
       else 0) ≤ 1 :=
   kendallTau_summand_le_one a b 0 1
+
+/-- Concrete kendallTau eval on Fin 7: identical lists have distance 0. -/
+example : kendallTau ([0, 1, 2, 3, 4, 5, 6] : QueryOrder 7) [0, 1, 2, 3, 4, 5, 6] = 0 := rfl
+
+/-- Concrete `QueryOrder.positionOf` eval at the middle index on Fin 4. -/
+example : QueryOrder.positionOf (2 : Fin 4) [0, 1, 2, 3] = 2 := rfl
+
+/-- Concrete `QueryOrder.positionOf` eval at the second index on Fin 4. -/
+example : QueryOrder.positionOf (1 : Fin 4) [0, 1, 2, 3] = 1 := rfl
+
+/-- Concrete `kendallTau_le_sq` at Fin 1: any pair has distance ≤ `1 * 1 = 1`. -/
+example (a b : QueryOrder 1) : kendallTau a b ≤ 1 :=
+  kendallTau_le_sq a b
 
 /-- Max-weight bucket has no duplicates. -/
 example {n : Nat} :

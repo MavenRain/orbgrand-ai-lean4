@@ -218,6 +218,62 @@ theorem bler_pointwise_eq
     bler sigma decode1 = bler sigma decode2 :=
   congrArg (bler sigma) (funext h)
 
+/-- *Complement relation.*  Under a measurability hypothesis on the failure
+    set, `bler decode + bler (!decode) = 1`.
+
+    Term-mode chain:
+    1. `Bool.not_eq_true' (decode N) : ((!decode N) = true) = (decode N = false)`
+       and `Bool.not_eq_true (decode N) : ¬(decode N = true) = (decode N = false)`
+       (both Lean-core Prop-level equations).  Chaining via
+       `.trans (.symm)` gives `((!decode N) = true) = ¬(decode N = true)`.
+    2. `Iff.of_eq` lifts to the `Iff` needed by `Set.ext`, identifying
+       `{N | (!decode N) = true}` with `{N | decode N = true}ᶜ`.
+    3. `MeasureTheory.measure_add_measure_compl h_meas` gives the
+       additive partition `μ s + μ sᶜ = μ univ` on the ℝ≥0∞ side.
+    4. `MeasureTheory.measure_univ` (via the `IsProbabilityMeasure`
+       instance chain) gives `μ univ = 1`.
+    5. `ENNReal.toReal_add` distributes `.toReal` over `+`, using
+       finiteness from `MeasureTheory.measure_ne_top` (`IsFiniteMeasure`).
+    6. `ENNReal.toReal_one` closes the final value. -/
+theorem bler_compl_eq
+    {n_s : Nat} (sigma : NoisePower)
+    (decode : RealSymbolVector n_s -> Bool)
+    (h_meas : MeasurableSet {N : RealSymbolVector n_s | decode N = true}) :
+    bler sigma decode + bler sigma (fun N => !decode N) = 1 :=
+  let h_compl_set :
+      {N : RealSymbolVector n_s | (fun N => !decode N) N = true}
+        = {N : RealSymbolVector n_s | decode N = true}ᶜ :=
+    Set.ext fun N =>
+      Iff.of_eq
+        ((Bool.not_eq_true' (decode N)).trans
+          (Bool.not_eq_true (decode N)).symm)
+  let h_meas_add :
+      noiseMeasure n_s sigma {N | decode N = true}
+        + noiseMeasure n_s sigma {N | (fun N => !decode N) N = true}
+        = noiseMeasure n_s sigma Set.univ :=
+    (congrArg (fun S => noiseMeasure n_s sigma {N | decode N = true}
+                          + noiseMeasure n_s sigma S) h_compl_set).trans
+      (MeasureTheory.measure_add_measure_compl h_meas)
+  let h_one :
+      noiseMeasure n_s sigma {N | decode N = true}
+        + noiseMeasure n_s sigma {N | (fun N => !decode N) N = true}
+        = 1 :=
+    h_meas_add.trans MeasureTheory.measure_univ
+  let h_finite1 :
+      noiseMeasure n_s sigma {N : RealSymbolVector n_s | decode N = true} ≠ ⊤ :=
+    MeasureTheory.measure_ne_top _ _
+  let h_finite2 :
+      noiseMeasure n_s sigma
+          {N : RealSymbolVector n_s | (fun N => !decode N) N = true} ≠ ⊤ :=
+    MeasureTheory.measure_ne_top _ _
+  let h_toReal :
+      (noiseMeasure n_s sigma {N | decode N = true}
+        + noiseMeasure n_s sigma {N | (fun N => !decode N) N = true}).toReal
+        = bler sigma decode + bler sigma (fun N => !decode N) :=
+    ENNReal.toReal_add h_finite1 h_finite2
+  h_toReal.symm.trans
+    ((congrArg ENNReal.toReal h_one).trans ENNReal.toReal_one)
+
 
 end Section00
 end OrbgrandAi
