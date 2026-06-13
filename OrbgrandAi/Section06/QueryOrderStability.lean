@@ -149,6 +149,29 @@ theorem kendallTau_summand_le_one
   else
     (if_neg h).trans_le (Nat.zero_le 1)
 
+/-- *Agreement implies zero distance.*  If `a` and `b` agree on the
+    relative order of every pair `i.val < j.val` (i.e., the
+    `decide`-equality holds at every such pair), then
+    `kendallTau a b = 0`.
+
+    Generalizes `kendallTau_self` (which is the `b = a` case where
+    agreement is trivial via `rfl`).  Same proof skeleton:
+    `Finset.sum_eq_zero` twice, then per-pair dispatch on
+    `i.val < j.val` with `if_pos` chaining the agreement-witness
+    through the inner `if`. -/
+theorem kendallTau_eq_zero_of_agreement
+    {numPatterns : Nat} (a b : QueryOrder numPatterns)
+    (h : forall (i j : Fin numPatterns), i.val < j.val ->
+      decide (QueryOrder.positionOf i a < QueryOrder.positionOf j a)
+        = decide (QueryOrder.positionOf i b < QueryOrder.positionOf j b)) :
+    kendallTau a b = 0 :=
+  Finset.sum_eq_zero fun i _ =>
+    Finset.sum_eq_zero fun j _ =>
+      if hij : i.val < j.val then
+        (if_pos hij).trans (if_pos (h i j hij))
+      else
+        if_neg hij
+
 /-- *Upper bound by `numPatterns * numPatterns`.*  Sum of at most
     `Finset.univ.card * Finset.univ.card = numPatterns * numPatterns`
     summands each `≤ 1` by `kendallTau_summand_le_one`.

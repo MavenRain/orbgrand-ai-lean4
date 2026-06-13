@@ -2263,6 +2263,21 @@ example {numPatterns : Nat} (a b : QueryOrder numPatterns) :
     kendallTau a b ≤ numPatterns * numPatterns :=
   kendallTau_le_sq a b
 
+/-- *Agreement implies zero distance*: if `a` and `b` order every pair
+    the same way, their Kendall-tau distance is zero. -/
+example {numPatterns : Nat} (a b : QueryOrder numPatterns)
+    (h : forall (i j : Fin numPatterns), i.val < j.val ->
+      decide (QueryOrder.positionOf i a < QueryOrder.positionOf j a)
+        = decide (QueryOrder.positionOf i b < QueryOrder.positionOf j b)) :
+    kendallTau a b = 0 :=
+  kendallTau_eq_zero_of_agreement a b h
+
+/-- `kendallTau_self` factors through `kendallTau_eq_zero_of_agreement` via
+    the trivial `rfl` agreement witness. -/
+example {numPatterns : Nat} (a : QueryOrder numPatterns) :
+    kendallTau a a = 0 :=
+  kendallTau_eq_zero_of_agreement a a (fun _ _ _ => rfl)
+
 /-- Max-weight bucket has no duplicates. -/
 example {n : Nat} :
     (landslide n (bitWeight (fun _ : Fin n => true))).Nodup :=
