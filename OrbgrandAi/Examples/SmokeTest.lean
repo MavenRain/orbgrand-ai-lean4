@@ -2296,6 +2296,13 @@ example {numPatterns : Nat} (a b : QueryOrder numPatterns) :
           = decide (QueryOrder.positionOf i b < QueryOrder.positionOf j b) :=
   kendallTau_eq_zero_iff a b
 
+/-- *Triangle inequality on `kendallTau`*: for any three query orders,
+    `kendallTau a c ≤ kendallTau a b + kendallTau b c`.  Combined with
+    reflexivity and symmetry, `kendallTau` is a metric on `QueryOrder numPatterns`. -/
+example {numPatterns : Nat} (a b c : QueryOrder numPatterns) :
+    kendallTau a c ≤ kendallTau a b + kendallTau b c :=
+  kendallTau_triangle a b c
+
 /-- Max-weight bucket has no duplicates. -/
 example {n : Nat} :
     (landslide n (bitWeight (fun _ : Fin n => true))).Nodup :=

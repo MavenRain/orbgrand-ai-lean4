@@ -233,6 +233,161 @@ theorem kendallTau_eq_zero_iff
   ⟨kendallTau_agreement_of_eq_zero a b,
    kendallTau_eq_zero_of_agreement a b⟩
 
+/-- *Per-Bool triangle inequality.*  For three Booleans `X`, `Y`, `Z`,
+    the indicator of `X ≠ Z` is at most the indicators of `X ≠ Y` plus
+    `Y ≠ Z`.  Eight-case Bool enumeration: in each case both LHS and
+    RHS reduce to specific `Nat` literals (`0`, `1`, or `2`), and
+    `Nat.le_refl` / `Nat.zero_le` closes each. -/
+private theorem triangle_pointwise : forall (X Y Z : Bool),
+    (if X = Z then (0 : Nat) else 1) ≤
+      (if X = Y then 0 else 1) + (if Y = Z then 0 else 1)
+  | true,  true,  true  => Nat.le_refl 0
+  | true,  true,  false => Nat.le_refl 1
+  | true,  false, true  => Nat.zero_le 2
+  | true,  false, false => Nat.le_refl 1
+  | false, true,  true  => Nat.le_refl 1
+  | false, true,  false => Nat.zero_le 2
+  | false, false, true  => Nat.le_refl 1
+  | false, false, false => Nat.le_refl 0
+
+/-- *Per-summand triangle inequality.*  Lift `triangle_pointwise` to the
+    full kendallTau summand (with the outer `if i.val < j.val`
+    wrapper).  In the true branch the three outer `if`s collapse via
+    `if_pos h` and `triangle_pointwise` closes; in the false branch
+    all three reduce to `0` via `if_neg h` and the trivial `0 ≤ 0 + 0`
+    closes. -/
+private theorem triangle_summand
+    {numPatterns : Nat} (a b c : QueryOrder numPatterns) (i j : Fin numPatterns) :
+    (if i.val < j.val then
+        if decide (QueryOrder.positionOf i a < QueryOrder.positionOf j a)
+            = decide (QueryOrder.positionOf i c < QueryOrder.positionOf j c)
+          then (0 : Nat) else 1
+      else 0) ≤
+      (if i.val < j.val then
+          if decide (QueryOrder.positionOf i a < QueryOrder.positionOf j a)
+              = decide (QueryOrder.positionOf i b < QueryOrder.positionOf j b)
+            then (0 : Nat) else 1
+        else 0) +
+        (if i.val < j.val then
+            if decide (QueryOrder.positionOf i b < QueryOrder.positionOf j b)
+                = decide (QueryOrder.positionOf i c < QueryOrder.positionOf j c)
+              then (0 : Nat) else 1
+          else 0) :=
+  if h : i.val < j.val then
+    let X := decide (QueryOrder.positionOf i a < QueryOrder.positionOf j a)
+    let Y := decide (QueryOrder.positionOf i b < QueryOrder.positionOf j b)
+    let Z := decide (QueryOrder.positionOf i c < QueryOrder.positionOf j c)
+    let key : (if X = Z then (0 : Nat) else 1) ≤
+              (if X = Y then 0 else 1) + (if Y = Z then 0 else 1) :=
+      triangle_pointwise X Y Z
+    (if_pos h).symm ▸ (if_pos h).symm ▸ (if_pos h).symm ▸ key
+  else
+    let h_l :
+        (if i.val < j.val then
+            if decide (QueryOrder.positionOf i a < QueryOrder.positionOf j a)
+                = decide (QueryOrder.positionOf i c < QueryOrder.positionOf j c)
+              then (0 : Nat) else 1
+          else 0) = 0 := if_neg h
+    let h_r1 :
+        (if i.val < j.val then
+            if decide (QueryOrder.positionOf i a < QueryOrder.positionOf j a)
+                = decide (QueryOrder.positionOf i b < QueryOrder.positionOf j b)
+              then (0 : Nat) else 1
+          else 0) = 0 := if_neg h
+    let h_r2 :
+        (if i.val < j.val then
+            if decide (QueryOrder.positionOf i b < QueryOrder.positionOf j b)
+                = decide (QueryOrder.positionOf i c < QueryOrder.positionOf j c)
+              then (0 : Nat) else 1
+          else 0) = 0 := if_neg h
+    Nat.le_of_eq (h_l.trans (congrArg₂ (· + ·) h_r1.symm h_r2.symm))
+
+/-- *Triangle inequality on `kendallTau`.*  For any three query orders
+    `a`, `b`, `c`,
+    `kendallTau a c ≤ kendallTau a b + kendallTau b c`.
+
+    Sum the per-pair `triangle_summand` over `Finset.univ × Finset.univ`,
+    then redistribute the resulting `sum (g + h)` to `sum g + sum h`
+    via `Finset.sum_add_distrib` (twice for the two nested sums). -/
+theorem kendallTau_triangle
+    {numPatterns : Nat} (a b c : QueryOrder numPatterns) :
+    kendallTau a c ≤ kendallTau a b + kendallTau b c :=
+  let h_inner_le : forall (i : Fin numPatterns),
+      Finset.univ.sum (fun j : Fin numPatterns =>
+        if i.val < j.val then
+          if decide (QueryOrder.positionOf i a < QueryOrder.positionOf j a)
+              = decide (QueryOrder.positionOf i c < QueryOrder.positionOf j c)
+            then (0 : Nat) else 1
+        else 0) ≤
+      Finset.univ.sum (fun j : Fin numPatterns =>
+        (if i.val < j.val then
+          if decide (QueryOrder.positionOf i a < QueryOrder.positionOf j a)
+              = decide (QueryOrder.positionOf i b < QueryOrder.positionOf j b)
+            then (0 : Nat) else 1
+        else 0) +
+        (if i.val < j.val then
+          if decide (QueryOrder.positionOf i b < QueryOrder.positionOf j b)
+              = decide (QueryOrder.positionOf i c < QueryOrder.positionOf j c)
+            then (0 : Nat) else 1
+        else 0)) :=
+    fun i => Finset.sum_le_sum (fun j _ => triangle_summand a b c i j)
+  let h_outer_le : kendallTau a c ≤
+      Finset.univ.sum (fun i : Fin numPatterns =>
+        Finset.univ.sum (fun j : Fin numPatterns =>
+          (if i.val < j.val then
+            if decide (QueryOrder.positionOf i a < QueryOrder.positionOf j a)
+                = decide (QueryOrder.positionOf i b < QueryOrder.positionOf j b)
+              then (0 : Nat) else 1
+          else 0) +
+          (if i.val < j.val then
+            if decide (QueryOrder.positionOf i b < QueryOrder.positionOf j b)
+                = decide (QueryOrder.positionOf i c < QueryOrder.positionOf j c)
+              then (0 : Nat) else 1
+          else 0))) :=
+    Finset.sum_le_sum (fun i _ => h_inner_le i)
+  let h_inner_split : forall (i : Fin numPatterns),
+      Finset.univ.sum (fun j : Fin numPatterns =>
+        (if i.val < j.val then
+          if decide (QueryOrder.positionOf i a < QueryOrder.positionOf j a)
+              = decide (QueryOrder.positionOf i b < QueryOrder.positionOf j b)
+            then (0 : Nat) else 1
+        else 0) +
+        (if i.val < j.val then
+          if decide (QueryOrder.positionOf i b < QueryOrder.positionOf j b)
+              = decide (QueryOrder.positionOf i c < QueryOrder.positionOf j c)
+            then (0 : Nat) else 1
+        else 0)) =
+      Finset.univ.sum (fun j : Fin numPatterns =>
+        if i.val < j.val then
+          if decide (QueryOrder.positionOf i a < QueryOrder.positionOf j a)
+              = decide (QueryOrder.positionOf i b < QueryOrder.positionOf j b)
+            then (0 : Nat) else 1
+        else 0) +
+      Finset.univ.sum (fun j : Fin numPatterns =>
+        if i.val < j.val then
+          if decide (QueryOrder.positionOf i b < QueryOrder.positionOf j b)
+              = decide (QueryOrder.positionOf i c < QueryOrder.positionOf j c)
+            then (0 : Nat) else 1
+        else 0) :=
+    fun _ => Finset.sum_add_distrib
+  let h_outer_split :
+      Finset.univ.sum (fun i : Fin numPatterns =>
+        Finset.univ.sum (fun j : Fin numPatterns =>
+          (if i.val < j.val then
+            if decide (QueryOrder.positionOf i a < QueryOrder.positionOf j a)
+                = decide (QueryOrder.positionOf i b < QueryOrder.positionOf j b)
+              then (0 : Nat) else 1
+          else 0) +
+          (if i.val < j.val then
+            if decide (QueryOrder.positionOf i b < QueryOrder.positionOf j b)
+                = decide (QueryOrder.positionOf i c < QueryOrder.positionOf j c)
+              then (0 : Nat) else 1
+          else 0))) =
+      kendallTau a b + kendallTau b c :=
+    (Finset.sum_congr rfl (fun i _ => h_inner_split i)).trans
+      Finset.sum_add_distrib
+  h_outer_le.trans h_outer_split.le
+
 /-- *Upper bound by `numPatterns * numPatterns`.*  Sum of at most
     `Finset.univ.card * Finset.univ.card = numPatterns * numPatterns`
     summands each `≤ 1` by `kendallTau_summand_le_one`.
