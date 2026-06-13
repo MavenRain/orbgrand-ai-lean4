@@ -2402,6 +2402,27 @@ example : kendallTau ([0, 1, 2, 3, 4] : QueryOrder 5) [4, 3, 2, 1, 0] = 10 := rf
 /-- Concrete `QueryOrder.positionOf` eval: last-element hit returns the trailing index. -/
 example : QueryOrder.positionOf (3 : Fin 4) [0, 1, 2, 3] = 3 := rfl
 
+/-- The Section 00 `noiseMeasure` is a Gaussian measure (instance-fired). -/
+example (n_s : Nat) (sigma : NoisePower) :
+    ProbabilityTheory.IsGaussian (Section00.noiseMeasure n_s sigma) :=
+  Section00.noiseMeasure_isGaussian n_s sigma
+
+/-- `noiseMeasure` is a probability measure (chained through `IsGaussian` instance
+    via `inferInstance`). -/
+example (n_s : Nat) (sigma : NoisePower) :
+    MeasureTheory.IsProbabilityMeasure (Section00.noiseMeasure n_s sigma) :=
+  inferInstance
+
+/-- Concrete `kendallTau` eval on Fin 3: a cyclic shift `[1, 2, 0]` vs `[0, 1, 2]`
+    disagrees on 2 pairs. -/
+example : kendallTau ([0, 1, 2] : QueryOrder 3) [1, 2, 0] = 2 := rfl
+
+/-- Full `kendallTau`-as-metric witness: reflexive, symmetric, triangle inequality. -/
+example {numPatterns : Nat} (a b c : QueryOrder numPatterns) :
+    kendallTau a a = 0 ∧ kendallTau a b = kendallTau b a
+      ∧ kendallTau a c ≤ kendallTau a b + kendallTau b c :=
+  ⟨kendallTau_self a, kendallTau_symm a b, kendallTau_triangle a b c⟩
+
 /-- Max-weight bucket has no duplicates. -/
 example {n : Nat} :
     (landslide n (bitWeight (fun _ : Fin n => true))).Nodup :=
