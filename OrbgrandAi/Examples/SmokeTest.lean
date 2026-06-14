@@ -1212,6 +1212,14 @@ example {n_s : Nat} (sigma : NoisePower)
     Section00.bler sigma (fun N => xor (decode1 N) (decode2 N)) = 0 :=
   Section00.bler_xor_eq_zero_of_pointwise_eq sigma decode1 decode2 h
 
+/-- `Section00.bler` XOR sub-additivity: the symmetric-difference BLER
+    is at most the sum of individual BLERs. -/
+example {n_s : Nat} (sigma : NoisePower)
+    (decode1 decode2 : Section00.RealSymbolVector n_s -> Bool) :
+    Section00.bler sigma (fun N => xor (decode1 N) (decode2 N))
+      ≤ Section00.bler sigma decode1 + Section00.bler sigma decode2 :=
+  Section00.bler_xor_le sigma decode1 decode2
+
 /-- `regressorMatrix4x2` body unfold: at `(i, j)` returns `z (i.val + j.val)`
     with the `Fin 6` bound witnessed by `i.val + j.val < 4 + 1 < 6`. -/
 example (z : Fin 6 -> Complex) (i : Fin 4) (j : Fin 2) :

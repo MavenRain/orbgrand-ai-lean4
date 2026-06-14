@@ -370,5 +370,29 @@ theorem bler_xor_eq_zero_of_pointwise_eq
   (bler_pointwise_eq sigma _ (fun _ => false) h_xor_zero).trans
     (bler_const_false sigma)
 
+/-- *Helper: XOR implies OR.*  Four-case Bool match: when `xor a b = true`,
+    `a || b = true`.  Each arm closes by `rfl` or `Bool.noConfusion`. -/
+private theorem xor_imp_or :
+    forall (a b : Bool), (xor a b = true) -> ((a || b) = true)
+  | true,  true,  h => Bool.noConfusion h
+  | true,  false, _ => rfl
+  | false, true,  _ => rfl
+  | false, false, h => Bool.noConfusion h
+
+/-- *Sub-additivity under Boolean XOR.*  The BLER of the symmetric-
+    difference (XOR) decoder is at most the sum of individual BLERs.
+    Chain: `bler_monotone` with the pointwise `xor_imp_or` Bool helper,
+    then `bler_or_le` closes via sub-additivity of `||`. -/
+theorem bler_xor_le
+    {n_s : Nat} (sigma : NoisePower)
+    (decode1 decode2 : RealSymbolVector n_s -> Bool) :
+    bler sigma (fun N => xor (decode1 N) (decode2 N))
+      ≤ bler sigma decode1 + bler sigma decode2 :=
+  let h_xor_le_or :
+      bler sigma (fun N => xor (decode1 N) (decode2 N))
+        ≤ bler sigma (fun N => decode1 N || decode2 N) :=
+    bler_monotone sigma _ _ (fun _N h => xor_imp_or _ _ h)
+  h_xor_le_or.trans (bler_or_le sigma decode1 decode2)
+
 end Section00
 end OrbgrandAi
