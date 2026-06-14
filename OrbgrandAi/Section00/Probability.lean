@@ -704,5 +704,90 @@ theorem bler_not_xor_not
       = bler sigma (fun N => xor (d1 N) (d2 N)) :=
   bler_pointwise_eq sigma _ _ fun N => Bool.not_xor_not (d1 N) (d2 N)
 
+/-- *Distributivity of `&&` over `||` on the left.*  `a && (b || c)
+    = (a && b) || (a && c)` pointwise.  One-line corollary of
+    `bler_pointwise_eq` via `Bool.and_or_distrib_left`. -/
+theorem bler_and_or_distrib_left
+    {n_s : Nat} (sigma : NoisePower)
+    (d1 d2 d3 : RealSymbolVector n_s -> Bool) :
+    bler sigma (fun N => d1 N && (d2 N || d3 N))
+      = bler sigma (fun N => (d1 N && d2 N) || (d1 N && d3 N)) :=
+  bler_pointwise_eq sigma _ _ fun N =>
+    Bool.and_or_distrib_left (d1 N) (d2 N) (d3 N)
+
+/-- *Distributivity of `&&` over `||` on the right.*  `(a || b) && c
+    = (a && c) || (b && c)` pointwise.  One-line corollary of
+    `bler_pointwise_eq` via `Bool.and_or_distrib_right`. -/
+theorem bler_and_or_distrib_right
+    {n_s : Nat} (sigma : NoisePower)
+    (d1 d2 d3 : RealSymbolVector n_s -> Bool) :
+    bler sigma (fun N => (d1 N || d2 N) && d3 N)
+      = bler sigma (fun N => (d1 N && d3 N) || (d2 N && d3 N)) :=
+  bler_pointwise_eq sigma _ _ fun N =>
+    Bool.and_or_distrib_right (d1 N) (d2 N) (d3 N)
+
+/-- *Distributivity of `||` over `&&` on the left.*  `a || (b && c)
+    = (a || b) && (a || c)` pointwise.  One-line corollary of
+    `bler_pointwise_eq` via `Bool.or_and_distrib_left`. -/
+theorem bler_or_and_distrib_left
+    {n_s : Nat} (sigma : NoisePower)
+    (d1 d2 d3 : RealSymbolVector n_s -> Bool) :
+    bler sigma (fun N => d1 N || (d2 N && d3 N))
+      = bler sigma (fun N => (d1 N || d2 N) && (d1 N || d3 N)) :=
+  bler_pointwise_eq sigma _ _ fun N =>
+    Bool.or_and_distrib_left (d1 N) (d2 N) (d3 N)
+
+/-- *Distributivity of `||` over `&&` on the right.*  `(a && b) || c
+    = (a || c) && (b || c)` pointwise.  One-line corollary of
+    `bler_pointwise_eq` via `Bool.or_and_distrib_right`. -/
+theorem bler_or_and_distrib_right
+    {n_s : Nat} (sigma : NoisePower)
+    (d1 d2 d3 : RealSymbolVector n_s -> Bool) :
+    bler sigma (fun N => (d1 N && d2 N) || d3 N)
+      = bler sigma (fun N => (d1 N || d3 N) && (d2 N || d3 N)) :=
+  bler_pointwise_eq sigma _ _ fun N =>
+    Bool.or_and_distrib_right (d1 N) (d2 N) (d3 N)
+
+/-- *Helper: absorption `a || (a && b) = a`.*  Four-case Bool match,
+    each arm closes by `rfl` (the `a = true` case collapses the `||`
+    to `true`; the `a = false` case collapses the `&&` to `false`,
+    then the `||` to `false`). -/
+private theorem or_and_self_bool :
+    forall (a b : Bool), (a || (a && b)) = a
+  | true,  true  => rfl
+  | true,  false => rfl
+  | false, true  => rfl
+  | false, false => rfl
+
+/-- *Helper: absorption `a && (a || b) = a`.*  Four-case Bool match,
+    each arm closes by `rfl`. -/
+private theorem and_or_self_bool :
+    forall (a b : Bool), (a && (a || b)) = a
+  | true,  true  => rfl
+  | true,  false => rfl
+  | false, true  => rfl
+  | false, false => rfl
+
+/-- *Absorption: `a || (a && b)` collapses to `a`.*  Boolean
+    absorption pointwise, so `bler` is invariant.  One-line
+    corollary of `bler_pointwise_eq` via the `or_and_self_bool`
+    helper. -/
+theorem bler_or_and_absorb
+    {n_s : Nat} (sigma : NoisePower)
+    (d1 d2 : RealSymbolVector n_s -> Bool) :
+    bler sigma (fun N => d1 N || (d1 N && d2 N))
+      = bler sigma d1 :=
+  bler_pointwise_eq sigma _ d1 fun N => or_and_self_bool (d1 N) (d2 N)
+
+/-- *Absorption: `a && (a || b)` collapses to `a`.*  Dual to
+    `bler_or_and_absorb`.  One-line corollary of `bler_pointwise_eq`
+    via the `and_or_self_bool` helper. -/
+theorem bler_and_or_absorb
+    {n_s : Nat} (sigma : NoisePower)
+    (d1 d2 : RealSymbolVector n_s -> Bool) :
+    bler sigma (fun N => d1 N && (d1 N || d2 N))
+      = bler sigma d1 :=
+  bler_pointwise_eq sigma _ d1 fun N => and_or_self_bool (d1 N) (d2 N)
+
 end Section00
 end OrbgrandAi

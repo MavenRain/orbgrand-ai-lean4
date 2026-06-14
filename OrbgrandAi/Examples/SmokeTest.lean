@@ -793,6 +793,20 @@ example (phi1 phi2 z1 z2 : Complex) :
         + phi2 * ar2 phi1 phi2 z1 z2 14 :=
   ar2_sixteen phi1 phi2 z1 z2
 
+/-- AR(2) recurrence step at index 17. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 17
+      = phi1 * ar2 phi1 phi2 z1 z2 16
+        + phi2 * ar2 phi1 phi2 z1 z2 15 :=
+  ar2_seventeen phi1 phi2 z1 z2
+
+/-- AR(2) recurrence step at index 18. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 18
+      = phi1 * ar2 phi1 phi2 z1 z2 17
+        + phi2 * ar2 phi1 phi2 z1 z2 16 :=
+  ar2_eighteen phi1 phi2 z1 z2
+
 /-- Section VI.B AR(2) approximation-error statement: the per-pulse
     `normSq <= delta^2` implication shape (`delta in [0, 1)`) is well-formed
     and reducible to `True`, locking the quantifier order and bound form. -/
@@ -1527,6 +1541,48 @@ example {n_s : Nat} (sigma : NoisePower)
     Section00.bler sigma (fun N => xor (!d1 N) (!d2 N))
       = Section00.bler sigma (fun N => xor (d1 N) (d2 N)) :=
   Section00.bler_not_xor_not sigma d1 d2
+
+/-- `Section00.bler` `&&`-over-`||` distributivity (left). -/
+example {n_s : Nat} (sigma : NoisePower)
+    (d1 d2 d3 : Section00.RealSymbolVector n_s -> Bool) :
+    Section00.bler sigma (fun N => d1 N && (d2 N || d3 N))
+      = Section00.bler sigma (fun N => (d1 N && d2 N) || (d1 N && d3 N)) :=
+  Section00.bler_and_or_distrib_left sigma d1 d2 d3
+
+/-- `Section00.bler` `&&`-over-`||` distributivity (right). -/
+example {n_s : Nat} (sigma : NoisePower)
+    (d1 d2 d3 : Section00.RealSymbolVector n_s -> Bool) :
+    Section00.bler sigma (fun N => (d1 N || d2 N) && d3 N)
+      = Section00.bler sigma (fun N => (d1 N && d3 N) || (d2 N && d3 N)) :=
+  Section00.bler_and_or_distrib_right sigma d1 d2 d3
+
+/-- `Section00.bler` `||`-over-`&&` distributivity (left). -/
+example {n_s : Nat} (sigma : NoisePower)
+    (d1 d2 d3 : Section00.RealSymbolVector n_s -> Bool) :
+    Section00.bler sigma (fun N => d1 N || (d2 N && d3 N))
+      = Section00.bler sigma (fun N => (d1 N || d2 N) && (d1 N || d3 N)) :=
+  Section00.bler_or_and_distrib_left sigma d1 d2 d3
+
+/-- `Section00.bler` `||`-over-`&&` distributivity (right). -/
+example {n_s : Nat} (sigma : NoisePower)
+    (d1 d2 d3 : Section00.RealSymbolVector n_s -> Bool) :
+    Section00.bler sigma (fun N => (d1 N && d2 N) || d3 N)
+      = Section00.bler sigma (fun N => (d1 N || d3 N) && (d2 N || d3 N)) :=
+  Section00.bler_or_and_distrib_right sigma d1 d2 d3
+
+/-- `Section00.bler` absorption: `a || (a && b)` collapses to `a`. -/
+example {n_s : Nat} (sigma : NoisePower)
+    (d1 d2 : Section00.RealSymbolVector n_s -> Bool) :
+    Section00.bler sigma (fun N => d1 N || (d1 N && d2 N))
+      = Section00.bler sigma d1 :=
+  Section00.bler_or_and_absorb sigma d1 d2
+
+/-- `Section00.bler` absorption: `a && (a || b)` collapses to `a`. -/
+example {n_s : Nat} (sigma : NoisePower)
+    (d1 d2 : Section00.RealSymbolVector n_s -> Bool) :
+    Section00.bler sigma (fun N => d1 N && (d1 N || d2 N))
+      = Section00.bler sigma d1 :=
+  Section00.bler_and_or_absorb sigma d1 d2
 
 /-- `regressorMatrix4x2` body unfold: at `(i, j)` returns `z (i.val + j.val)`
     with the `Fin 6` bound witnessed by `i.val + j.val < 4 + 1 < 6`. -/
