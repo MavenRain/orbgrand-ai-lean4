@@ -394,5 +394,44 @@ theorem bler_xor_le
     bler_monotone sigma _ _ (fun _N h => xor_imp_or _ _ h)
   h_xor_le_or.trans (bler_or_le sigma decode1 decode2)
 
+/-- *Commutativity of disjunctive decoder.*  Swapping the two
+    decoders inside `(· || ·)` leaves `bler` unchanged.  One-line
+    corollary of `bler_pointwise_eq` via `Bool.or_comm`. -/
+theorem bler_or_comm
+    {n_s : Nat} (sigma : NoisePower)
+    (decode1 decode2 : RealSymbolVector n_s -> Bool) :
+    bler sigma (fun N => decode1 N || decode2 N)
+      = bler sigma (fun N => decode2 N || decode1 N) :=
+  bler_pointwise_eq sigma _ _ fun N => Bool.or_comm (decode1 N) (decode2 N)
+
+/-- *Commutativity of conjunctive decoder.*  Dual of `bler_or_comm`.
+    The conjunctive decoder is symmetric in its arguments, so its
+    `bler` is invariant under swap.  One-line corollary of
+    `bler_pointwise_eq` via `Bool.and_comm`. -/
+theorem bler_and_comm
+    {n_s : Nat} (sigma : NoisePower)
+    (decode1 decode2 : RealSymbolVector n_s -> Bool) :
+    bler sigma (fun N => decode1 N && decode2 N)
+      = bler sigma (fun N => decode2 N && decode1 N) :=
+  bler_pointwise_eq sigma _ _ fun N => Bool.and_comm (decode1 N) (decode2 N)
+
+/-- *Or-idempotence.*  Boolean `||`-idempotence (`b || b = b`) leaves
+    the decoder pointwise-unchanged, so `bler` is invariant.  One-line
+    corollary of `bler_pointwise_eq` via `Bool.or_self`. -/
+theorem bler_or_idem
+    {n_s : Nat} (sigma : NoisePower)
+    (decode : RealSymbolVector n_s -> Bool) :
+    bler sigma (fun N => decode N || decode N) = bler sigma decode :=
+  bler_pointwise_eq sigma _ decode fun N => Bool.or_self (decode N)
+
+/-- *And-idempotence.*  Boolean `&&`-idempotence (`b && b = b`) leaves
+    the decoder pointwise-unchanged, so `bler` is invariant.  One-line
+    corollary of `bler_pointwise_eq` via `Bool.and_self`. -/
+theorem bler_and_idem
+    {n_s : Nat} (sigma : NoisePower)
+    (decode : RealSymbolVector n_s -> Bool) :
+    bler sigma (fun N => decode N && decode N) = bler sigma decode :=
+  bler_pointwise_eq sigma _ decode fun N => Bool.and_self (decode N)
+
 end Section00
 end OrbgrandAi

@@ -702,6 +702,20 @@ example (phi1 phi2 z1 z2 : Complex) :
         + phi2 * ar2 phi1 phi2 z1 z2 4 :=
   ar2_six phi1 phi2 z1 z2
 
+/-- AR(2) recurrence step at index 7. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 7
+      = phi1 * ar2 phi1 phi2 z1 z2 6
+        + phi2 * ar2 phi1 phi2 z1 z2 5 :=
+  ar2_seven phi1 phi2 z1 z2
+
+/-- AR(2) recurrence step at index 8. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 8
+      = phi1 * ar2 phi1 phi2 z1 z2 7
+        + phi2 * ar2 phi1 phi2 z1 z2 6 :=
+  ar2_eight phi1 phi2 z1 z2
+
 /-- Section VI.B AR(2) approximation-error statement: the per-pulse
     `normSq <= delta^2` implication shape (`delta in [0, 1)`) is well-formed
     and reducible to `True`, locking the quantifier order and bound form. -/
@@ -790,6 +804,17 @@ example {s s_hat : Bool} (h : s ≠ s_hat) : bpsk.exceed s s_hat = 1 :=
 example {chi : Type} (cs : Constellation chi) (s : chi) :
     cs.exceed s s = 0 :=
   cs.exceed_self s
+
+/-- Generic diagonal exceedances are all equal (both sides are 0). -/
+example {chi : Type} (cs : Constellation chi) (s s_hat : chi) :
+    cs.exceed s s = cs.exceed s_hat s_hat :=
+  cs.exceed_self_eq_exceed_self s s_hat
+
+/-- Generic symbol inequality implies non-zero exceedance. -/
+example {chi : Type} (cs : Constellation chi) {s s_hat : chi}
+    (h : s ≠ s_hat) :
+    cs.exceed s s_hat ≠ 0 :=
+  cs.exceed_ne_of_ne h
 
 /-- Zero exceedance implies symbol equality. -/
 example {chi : Type} (cs : Constellation chi) {s s_hat : chi}
@@ -1219,6 +1244,32 @@ example {n_s : Nat} (sigma : NoisePower)
     Section00.bler sigma (fun N => xor (decode1 N) (decode2 N))
       ≤ Section00.bler sigma decode1 + Section00.bler sigma decode2 :=
   Section00.bler_xor_le sigma decode1 decode2
+
+/-- `Section00.bler` OR commutativity. -/
+example {n_s : Nat} (sigma : NoisePower)
+    (decode1 decode2 : Section00.RealSymbolVector n_s -> Bool) :
+    Section00.bler sigma (fun N => decode1 N || decode2 N)
+      = Section00.bler sigma (fun N => decode2 N || decode1 N) :=
+  Section00.bler_or_comm sigma decode1 decode2
+
+/-- `Section00.bler` AND commutativity. -/
+example {n_s : Nat} (sigma : NoisePower)
+    (decode1 decode2 : Section00.RealSymbolVector n_s -> Bool) :
+    Section00.bler sigma (fun N => decode1 N && decode2 N)
+      = Section00.bler sigma (fun N => decode2 N && decode1 N) :=
+  Section00.bler_and_comm sigma decode1 decode2
+
+/-- `Section00.bler` OR idempotence: `decode || decode` has the same BLER as `decode`. -/
+example {n_s : Nat} (sigma : NoisePower)
+    (decode : Section00.RealSymbolVector n_s -> Bool) :
+    Section00.bler sigma (fun N => decode N || decode N) = Section00.bler sigma decode :=
+  Section00.bler_or_idem sigma decode
+
+/-- `Section00.bler` AND idempotence: `decode && decode` has the same BLER as `decode`. -/
+example {n_s : Nat} (sigma : NoisePower)
+    (decode : Section00.RealSymbolVector n_s -> Bool) :
+    Section00.bler sigma (fun N => decode N && decode N) = Section00.bler sigma decode :=
+  Section00.bler_and_idem sigma decode
 
 /-- `regressorMatrix4x2` body unfold: at `(i, j)` returns `z (i.val + j.val)`
     with the `Fin 6` bound witnessed by `i.val + j.val < 4 + 1 < 6`. -/

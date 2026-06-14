@@ -75,6 +75,15 @@ theorem Constellation.exceed_self {chi : Type} (cs : Constellation chi)
     cs.exceed s s = 0 :=
   (cs.exceed_zero_iff s s).mpr rfl
 
+/-- *Diagonal exceedance is unique up to symbol.*  Any two diagonal
+    exceedances are equal: `cs.exceed s s = cs.exceed s_hat s_hat`.
+    Both sides are `0` by `exceed_self`, so chaining `.trans` and
+    `.symm` closes the goal in one line. -/
+theorem Constellation.exceed_self_eq_exceed_self {chi : Type}
+    (cs : Constellation chi) (s s_hat : chi) :
+    cs.exceed s s = cs.exceed s_hat s_hat :=
+  (cs.exceed_self s).trans (cs.exceed_self s_hat).symm
+
 /-- *Zero exceedance implies symbol equality.*  Forward extraction
     from the `exceed_zero_iff` axiom: converting an exceedance
     measurement back into an equality between symbols.  Useful for
@@ -146,6 +155,14 @@ theorem Constellation.exceed_pos_of_ne {chi : Type} (cs : Constellation chi)
     {s s_hat : chi} (h : s ≠ s_hat) :
     0 < cs.exceed s s_hat :=
   (cs.exceed_pos_iff_ne s s_hat).mpr h
+
+/-- *Symbol inequality implies non-zero exceedance.*  Forward
+    direction of `exceed_ne_zero_iff_ne`, packaged for direct injection
+    when only the implication direction is needed in a chain. -/
+theorem Constellation.exceed_ne_of_ne {chi : Type} (cs : Constellation chi)
+    {s s_hat : chi} (h : s ≠ s_hat) :
+    cs.exceed s s_hat ≠ 0 :=
+  (cs.exceed_ne_zero_iff_ne s s_hat).mpr h
 
 /-- *Two-argument congruence for `exceed`.*  If both arguments are
     equal under separate hypotheses, so are the exceedances.  Two
