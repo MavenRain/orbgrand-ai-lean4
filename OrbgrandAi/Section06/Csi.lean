@@ -156,6 +156,28 @@ theorem perturbChannel_perturbChannel_zero_zero_apply
     perturbChannel (perturbChannel h 0) 0 i j = h i j :=
   congrFun (congrFun (perturbChannel_perturbChannel_zero_zero h) i) j
 
+/-- *Pointwise right-identity of composed perturbation.*  Entry
+    form of `perturbChannel_perturbChannel_zero_right`: composing a
+    perturbation with the zero perturbation on the right leaves the
+    entry unchanged.  Pure `congrFun` cascade. -/
+theorem perturbChannel_perturbChannel_zero_right_apply
+    {n_s : Nat} (h : ChannelMatrix n_s)
+    (epsilon : Matrix (Fin n_s) (Fin n_s) Complex) (i j : Fin n_s) :
+    perturbChannel (perturbChannel h epsilon) 0 i j
+      = perturbChannel h epsilon i j :=
+  congrFun (congrFun (perturbChannel_perturbChannel_zero_right h epsilon) i) j
+
+/-- *Pointwise left-identity of composed perturbation.*  Entry
+    form of `perturbChannel_perturbChannel_zero_left`: perturbing
+    first by zero and then by `epsilon` agrees with a single
+    `epsilon` perturbation entrywise.  Pure `congrFun` cascade. -/
+theorem perturbChannel_perturbChannel_zero_left_apply
+    {n_s : Nat} (h : ChannelMatrix n_s)
+    (epsilon : Matrix (Fin n_s) (Fin n_s) Complex) (i j : Fin n_s) :
+    perturbChannel (perturbChannel h 0) epsilon i j
+      = perturbChannel h epsilon i j :=
+  congrFun (congrFun (perturbChannel_perturbChannel_zero_left h epsilon) i) j
+
 /-- *General entry of `perturbChannel`.*  Direct definitional
     unfolding: `perturbChannel h epsilon i j = h i j * (1 + epsilon i j)`.
     Useful as a named API surface, subsumes `perturbChannel_diag`. -/
@@ -200,6 +222,18 @@ theorem perturbChannel_neg_one_attenuation_eq_zero
   let h_factor : (1 : Complex) + epsilon i j = 0 :=
     (congrArg (1 + ·) h_eps).trans (add_neg_cancel 1)
   (congrArg (h i j * ·) h_factor).trans (mul_zero _)
+
+/-- *Factor-zero zeroes the entry.*  When the multiplicative factor
+    `1 + epsilon i j` vanishes, the perturbed entry is zero
+    regardless of `h i j`.  Generalisation of
+    `perturbChannel_neg_one_attenuation_eq_zero` that takes the
+    factor-zero hypothesis directly. -/
+theorem perturbChannel_factor_zero_apply
+    {n_s : Nat} (h : ChannelMatrix n_s)
+    (epsilon : Matrix (Fin n_s) (Fin n_s) Complex)
+    {i j : Fin n_s} (h_factor : (1 : Complex) + epsilon i j = 0) :
+    perturbChannel h epsilon i j = 0 :=
+  (congrArg (h i j * ·) h_factor).trans (mul_zero (h i j))
 
 /-- *Pointwise zero characterisation.*  A perturbed entry vanishes
     iff either the underlying entry vanishes or the multiplicative

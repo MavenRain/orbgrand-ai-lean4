@@ -223,6 +223,23 @@ theorem LinearIsi.bandwidth_succ_succ_succ
     ch.bandwidth (b + 3) :=
   LinearIsi.bandwidth_succ (LinearIsi.bandwidth_succ_succ h)
 
+/-- *Bandwidth widens by four.*  Four-step corollary chaining
+    `bandwidth_succ_succ_succ` and `bandwidth_succ`. -/
+theorem LinearIsi.bandwidth_succ_succ_succ_succ
+    {n_s : Nat} {ch : LinearIsi n_s} {b : Nat}
+    (h : ch.bandwidth b) :
+    ch.bandwidth (b + 4) :=
+  LinearIsi.bandwidth_succ (LinearIsi.bandwidth_succ_succ_succ h)
+
+/-- *Bandwidth widens by an offset and one more.*  A channel with
+    bandwidth at most `b` also has bandwidth at most `b + k + 1`.
+    Composes `bandwidth_add` with `bandwidth_succ`. -/
+theorem LinearIsi.bandwidth_add_succ
+    {n_s : Nat} {ch : LinearIsi n_s} {b : Nat} (k : Nat)
+    (h : ch.bandwidth b) :
+    ch.bandwidth (b + k + 1) :=
+  LinearIsi.bandwidth_succ (LinearIsi.bandwidth_add k h)
+
 /-- *Zero-channel receive ignores the signal.*  With `channel := 0`,
     the channel-vector product `(0 : Matrix).mulVec X` vanishes, so
     `receive X N = N` regardless of `X`. -/
@@ -373,6 +390,15 @@ theorem LinearIsi.receive_eq_iff_mulVec_eq
     add_right_cancel hk,
    fun h => funext fun k =>
     congrArg (· + N k) (congrFun h k)⟩
+
+/-- *Symmetric form of `receive_eq_iff_mulVec_eq`.*  Lets callers
+    rewrite a `mulVec`-equality into a `receive`-equality without an
+    extra `Iff.symm`.  Dual to `receive_eq_iff_noise_eq_symm`. -/
+theorem LinearIsi.receive_eq_iff_mulVec_eq_symm
+    {n_s : Nat} (ch : LinearIsi n_s) (X1 X2 N : SymbolVector n_s) :
+    ch.channel.mulVec X1 = ch.channel.mulVec X2
+      <-> ch.receive X1 N = ch.receive X2 N :=
+  Iff.comm.mp (LinearIsi.receive_eq_iff_mulVec_eq ch X1 X2 N)
 
 /-- *Receiver at both-zero inputs is zero.*  Direct instantiation of
     `receive_zero_signal` at `N = 0`: `ch.receive 0 0 = 0`. -/

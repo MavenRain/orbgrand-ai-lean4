@@ -1144,6 +1144,133 @@ example {n_s : Nat} (ch : LinearIsi n_s) (X N1 N2 : SymbolVector n_s) :
     N1 = N2 <-> ch.receive X N1 = ch.receive X N2 :=
   LinearIsi.receive_eq_iff_noise_eq_symm ch X N1 N2
 
+/-- AR(2) recurrence step at index 24. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 24
+      = phi1 * ar2 phi1 phi2 z1 z2 23
+        + phi2 * ar2 phi1 phi2 z1 z2 22 :=
+  ar2_twenty_four phi1 phi2 z1 z2
+
+/-- AR(2) recurrence step at index 25. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 25
+      = phi1 * ar2 phi1 phi2 z1 z2 24
+        + phi2 * ar2 phi1 phi2 z1 z2 23 :=
+  ar2_twenty_five phi1 phi2 z1 z2
+
+/-- AR(2) recurrence step at index 26. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 26
+      = phi1 * ar2 phi1 phi2 z1 z2 25
+        + phi2 * ar2 phi1 phi2 z1 z2 24 :=
+  ar2_twenty_six phi1 phi2 z1 z2
+
+/-- `cov1_lag` at lag `-5`. -/
+example (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    cov1_lag sigma rho (-5) = sigma.val * rho.val ^ 5 :=
+  cov1_lag_neg_five sigma rho
+
+/-- `cov1_lag` at lag `6`. -/
+example (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    cov1_lag sigma rho 6 = sigma.val * rho.val ^ 6 :=
+  cov1_lag_six sigma rho
+
+/-- `cov2_lag` recurrence at lag 11. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta1 beta2 : Real) :
+    cov2_lag sigma rho1 rho2 beta1 beta2 11
+      = beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 10
+        + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 9 :=
+  cov2_lag_eleven sigma rho1 rho2 beta1 beta2
+
+/-- `perturbChannel` right-identity pointwise. -/
+example {n_s : Nat} (h : ChannelMatrix n_s)
+    (epsilon : Matrix (Fin n_s) (Fin n_s) Complex) (i j : Fin n_s) :
+    perturbChannel (perturbChannel h epsilon) 0 i j
+      = perturbChannel h epsilon i j :=
+  perturbChannel_perturbChannel_zero_right_apply h epsilon i j
+
+/-- `perturbChannel` left-identity pointwise. -/
+example {n_s : Nat} (h : ChannelMatrix n_s)
+    (epsilon : Matrix (Fin n_s) (Fin n_s) Complex) (i j : Fin n_s) :
+    perturbChannel (perturbChannel h 0) epsilon i j
+      = perturbChannel h epsilon i j :=
+  perturbChannel_perturbChannel_zero_left_apply h epsilon i j
+
+/-- Factor-zero zeroes the perturbed entry. -/
+example {n_s : Nat} (h : ChannelMatrix n_s)
+    (epsilon : Matrix (Fin n_s) (Fin n_s) Complex)
+    {i j : Fin n_s} (h_factor : (1 : Complex) + epsilon i j = 0) :
+    perturbChannel h epsilon i j = 0 :=
+  perturbChannel_factor_zero_apply h epsilon h_factor
+
+/-- `LinearIsi.bandwidth` widens by four. -/
+example {n_s : Nat} {ch : LinearIsi n_s} {b : Nat}
+    (h : ch.bandwidth b) :
+    ch.bandwidth (b + 4) :=
+  LinearIsi.bandwidth_succ_succ_succ_succ h
+
+/-- `LinearIsi.bandwidth` widens by offset-plus-one. -/
+example {n_s : Nat} {ch : LinearIsi n_s} {b : Nat} (k : Nat)
+    (h : ch.bandwidth b) :
+    ch.bandwidth (b + k + 1) :=
+  LinearIsi.bandwidth_add_succ k h
+
+/-- `LinearIsi.receive_eq_iff_mulVec_eq` reversed reading. -/
+example {n_s : Nat} (ch : LinearIsi n_s) (X1 X2 N : SymbolVector n_s) :
+    ch.channel.mulVec X1 = ch.channel.mulVec X2
+      <-> ch.receive X1 N = ch.receive X2 N :=
+  LinearIsi.receive_eq_iff_mulVec_eq_symm ch X1 X2 N
+
+/-- `syndromeZero` at zero/zero. -/
+example {n k : Nat} (H : ParityCheck n k) :
+    syndromeZero H (0 : Codeword n) (0 : Codeword n) :=
+  syndromeZero_zero_zero H
+
+/-- `syndromeZero` symmetric in (Y, N_g). -/
+example {n k : Nat} (H : ParityCheck n k) (Y N_g : Codeword n) :
+    syndromeZero H Y N_g <-> syndromeZero H N_g Y :=
+  syndromeZero_symm H Y N_g
+
+/-- `syndrome` under XOR-cancel cycle. -/
+example {n k : Nat} (H : ParityCheck n k) (Y c : Codeword n) (i : Fin (n - k)) :
+    syndrome H Y (Codeword.xor Y c) i = H.matrix.mulVec c i :=
+  syndrome_xor_self_noise H Y c i
+
+/-- `orbgrandAi` at empty pattern list (reversed reading). -/
+example {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s)
+    (budget : AbandonmentBudget) :
+    (none : Option (Codeword n_s))
+      = orbgrandAi (b := b) (numCandidates := numCandidates)
+          Y Phi budget [] :=
+  orbgrandAi_nil_symm Y Phi budget
+
+/-- `orbgrandAi` at zero budget on cons (reversed reading). -/
+example {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s)
+    (e : Fin (n_s / b) -> Fin numCandidates)
+    (rest : List (Fin (n_s / b) -> Fin numCandidates)) :
+    (none : Option (Codeword n_s))
+      = orbgrandAi (b := b) (numCandidates := numCandidates)
+          Y Phi (AbandonmentBudget.mk 0) (e :: rest) :=
+  orbgrandAi_zero_steps_cons_symm Y Phi e rest
+
+/-- `orbgrandAi` with empty codebook on empty pattern list. -/
+example {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (budget : AbandonmentBudget) :
+    orbgrandAi (b := b) (numCandidates := numCandidates)
+      Y (fun _ => false) budget [] = none :=
+  orbgrandAi_empty_codebook_nil Y budget
+
+/-- `kendallTau` at singleton domain bounded by `1`. -/
+example (a b : QueryOrder 1) : kendallTau a b <= 1 :=
+  kendallTau_singleton_le_one a b
+
+/-- `kendallTau` at empty domain is constant. -/
+example (a b c d : QueryOrder 0) : kendallTau a b = kendallTau c d :=
+  kendallTau_empty_eq a b c d
+
 /-- `QueryOrder.positionOf` on the empty list is `0`. -/
 example {numPatterns : Nat} (x : Fin numPatterns) :
     QueryOrder.positionOf x ([] : QueryOrder numPatterns) = 0 :=

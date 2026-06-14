@@ -452,6 +452,20 @@ theorem kendallTau_le_sq
       Finset.sum_le_sum (fun j _ => kendallTau_summand_le_one a b i j))
   h_bound.trans h_outer.le
 
+/-- *Singleton domain upper bound by one.*  At `numPatterns = 1`,
+    `kendallTau a b = 0` by `kendallTau_singleton`, hence trivially
+    bounded above by `1`. -/
+theorem kendallTau_singleton_le_one (a b : QueryOrder 1) :
+    kendallTau a b <= 1 :=
+  (kendallTau_singleton a b).le.trans (Nat.zero_le 1)
+
+/-- *Empty domain collapses kendallTau to a single value.*  Any two
+    pairs of `QueryOrder 0` inputs produce the same `kendallTau`,
+    namely `0`. -/
+theorem kendallTau_empty_eq (a b c d : QueryOrder 0) :
+    kendallTau a b = kendallTau c d :=
+  (kendallTau_empty a b).trans (kendallTau_empty c d).symm
+
 
 /-! ## Query-order stability claim (placeholder) -/
 

@@ -426,6 +426,17 @@ theorem orbgrandAi_empty_codebook
       Y (fun _ => false) budget patterns = none :=
   orbgrandAiLoop_empty_codebook Y budget.toNat patterns
 
+/-- *Vacuous codebook on an empty pattern list.*  Degenerate corner:
+    the codebook rejects everything and there are no patterns to
+    try; the decoder returns `none`.  Specialises
+    `orbgrandAi_empty_codebook` at the empty pattern list. -/
+theorem orbgrandAi_empty_codebook_nil
+    {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (budget : AbandonmentBudget) :
+    orbgrandAi (b := b) (numCandidates := numCandidates)
+      Y (fun _ => false) budget [] = none :=
+  orbgrandAi_empty_codebook Y budget []
+
 /-! ## Substitution provenance (soundness of the output) -/
 
 /-- *Returned codewords come from the substitution operator.*  If the
@@ -799,6 +810,19 @@ theorem orbgrandAi_zero_steps_cons
         Y Phi (AbandonmentBudget.mk 0) (e :: rest) = none :=
   orbgrandAiLoop_zero_steps_cons Y Phi e rest
 
+/-- *Reverse of `orbgrandAi_zero_steps_cons`.*  At zero budget on a
+    non-empty pattern list, the decoder returns `none`, expressed
+    with the `none` on the left. -/
+theorem orbgrandAi_zero_steps_cons_symm
+    {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s)
+    (e : Fin (n_s / b) -> Fin numCandidates)
+    (rest : List (Fin (n_s / b) -> Fin numCandidates)) :
+    (none : Option (Codeword n_s))
+      = orbgrandAi (b := b) (numCandidates := numCandidates)
+          Y Phi (AbandonmentBudget.mk 0) (e :: rest) :=
+  (orbgrandAi_zero_steps_cons Y Phi e rest).symm
+
 /-- *Empty pattern list at the public API.*  With no patterns to
     try, the top-level `orbgrandAi` decoder returns `none` for any
     `Y`, `Phi`, `budget`.  Composes `orbgrandAi_unfolds_to_loop`
@@ -811,6 +835,17 @@ theorem orbgrandAi_nil
       Y Phi budget [] = none :=
   (orbgrandAi_unfolds_to_loop Y Phi budget []).trans
     (orbgrandAiLoop_nil Y Phi budget.toNat)
+
+/-- *Reverse of `orbgrandAi_nil`.*  Empty pattern list returns
+    `none`, expressed with the `none` on the left. -/
+theorem orbgrandAi_nil_symm
+    {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s)
+    (budget : AbandonmentBudget) :
+    (none : Option (Codeword n_s))
+      = orbgrandAi (b := b) (numCandidates := numCandidates)
+          Y Phi budget [] :=
+  (orbgrandAi_nil Y Phi budget).symm
 
 /-- *Public-API cons-conflict.*  Wrapper around `orbgrandAiLoop_cons_conflict`:
     with budget `⟨m + 1⟩`, a head pattern that has a substitution
