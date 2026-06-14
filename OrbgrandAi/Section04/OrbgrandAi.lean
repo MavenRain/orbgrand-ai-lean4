@@ -125,6 +125,16 @@ theorem hardDecisionBlock?_eq
     {numCandidates : Nat} (post : BlockPosterior numCandidates) :
     hardDecisionBlock? post = (List.finRange numCandidates).argmax post := rfl
 
+/-- *Reverse definitional bridge for the hard-decision argmax.*  The
+    raw `List.argmax post` over `List.finRange numCandidates` is
+    exactly `hardDecisionBlock? post`.  Useful when rewriting an
+    `argmax` expression into the named ORBGRAND-AI form.  Reverse
+    direction of `hardDecisionBlock?_eq`. -/
+theorem argmax_eq_hardDecisionBlock?
+    {numCandidates : Nat} (post : BlockPosterior numCandidates) :
+    (List.finRange numCandidates).argmax post = hardDecisionBlock? post :=
+  (hardDecisionBlock?_eq post).symm
+
 /-- The per-block substitution penalty
 
       w_i(t) = - log( p(t | Y_i) / p(t* | Y_i) )
@@ -760,6 +770,34 @@ theorem orbgrandAi_unfolds_to_loop
     orbgrandAi (b := b) (numCandidates := numCandidates)
       Y Phi budget patterns
       = orbgrandAiLoop Y Phi budget.toNat patterns := rfl
+
+/-- *Reverse definitional bridge: from `orbgrandAiLoop` back to the
+    public API.*  When the step count `steps` arises as
+    `budget.toNat`, the loop form rewrites to the top-level
+    `orbgrandAi`.  Reverse direction of `orbgrandAi_unfolds_to_loop`. -/
+theorem orbgrandAiLoop_eq_orbgrandAi
+    {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s)
+    (budget : AbandonmentBudget)
+    (patterns : List (Fin (n_s / b) -> Fin numCandidates)) :
+    orbgrandAiLoop Y Phi budget.toNat patterns
+      = orbgrandAi (b := b) (numCandidates := numCandidates)
+          Y Phi budget patterns :=
+  (orbgrandAi_unfolds_to_loop Y Phi budget patterns).symm
+
+/-- *Public API at zero budget on a non-empty pattern list.*  At
+    `budget = AbandonmentBudget.mk 0`, the loop has no steps and
+    returns `none` for any non-empty pattern list.  Direct lift of
+    `orbgrandAiLoop_zero_steps_cons` through the definitional
+    unfolding of `orbgrandAi`. -/
+theorem orbgrandAi_zero_steps_cons
+    {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s)
+    (e : Fin (n_s / b) -> Fin numCandidates)
+    (rest : List (Fin (n_s / b) -> Fin numCandidates)) :
+    orbgrandAi (b := b) (numCandidates := numCandidates)
+        Y Phi (AbandonmentBudget.mk 0) (e :: rest) = none :=
+  orbgrandAiLoop_zero_steps_cons Y Phi e rest
 
 /-- *Empty pattern list at the public API.*  With no patterns to
     try, the top-level `orbgrandAi` decoder returns `none` for any

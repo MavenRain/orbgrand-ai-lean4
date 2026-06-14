@@ -186,6 +186,24 @@ theorem LinearIsi.bandwidth_succ
     ch.bandwidth (b + 1) :=
   LinearIsi.bandwidth_le (Nat.le_succ b) h
 
+/-- *Bandwidth widens by two.*  Two-step corollary of
+    `bandwidth_succ`: lift from `b` to `b + 1` to `b + 2`. -/
+theorem LinearIsi.bandwidth_succ_succ
+    {n_s : Nat} {ch : LinearIsi n_s} {b : Nat}
+    (h : ch.bandwidth b) :
+    ch.bandwidth (b + 2) :=
+  LinearIsi.bandwidth_succ (LinearIsi.bandwidth_succ h)
+
+/-- *Bandwidth widens by any additive offset.*  A channel with
+    bandwidth at most `b` also has bandwidth at most `b + k` for any
+    `k`.  Direct corollary of `bandwidth_le` with the witness
+    `Nat.le_add_right b k`. -/
+theorem LinearIsi.bandwidth_add
+    {n_s : Nat} {ch : LinearIsi n_s} {b : Nat} (k : Nat)
+    (h : ch.bandwidth b) :
+    ch.bandwidth (b + k) :=
+  LinearIsi.bandwidth_le (Nat.le_add_right b k) h
+
 /-- *Zero-channel receive ignores the signal.*  With `channel := 0`,
     the channel-vector product `(0 : Matrix).mulVec X` vanishes, so
     `receive X N = N` regardless of `X`. -/
@@ -386,6 +404,15 @@ theorem LinearIsi.receive_one_zero_signal
       congrFun
         (LinearIsi.receive_one (0 : SymbolVector n_s) N noiseCov) k
     h1.trans (zero_add (N k))
+
+/-- *Identity-channel zero-signal zero-noise receive is zero.*  With
+    `channel := 1`, `X = 0`, and `N = 0`, the receiver returns `0`.
+    Direct instantiation of `receive_one_zero_signal` at `N = 0`. -/
+theorem LinearIsi.receive_one_zero_signal_zero_noise
+    {n_s : Nat} (noiseCov : CovMatrix n_s) :
+    ({ channel := 1, noiseCov := noiseCov } : LinearIsi n_s).receive 0 0
+      = 0 :=
+  LinearIsi.receive_one_zero_signal 0 noiseCov
 
 /-- *Identity-channel zero-noise receive is the signal.*  With
     `channel := 1` and `N = 0`, the receiver is the identity on `X`.

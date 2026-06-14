@@ -1101,6 +1101,34 @@ theorem Codeword.zero_is_codeword {n k : Nat} (H : ParityCheck n k)
     H.matrix.mulVec 0 i = 0 :=
   congrFun H.matrix.mulVec_zero i
 
+/-- *Syndrome of self.*  When the noise candidate equals the received
+    vector, the XOR cancels and the syndrome is zero on every
+    coordinate.  Composes `Codeword.xor_self` (under the parity-check
+    map via `congrArg`) with `Codeword.zero_is_codeword`. -/
+theorem syndrome_self
+    {n k : Nat} (H : ParityCheck n k) (Y : Codeword n) (i : Fin (n - k)) :
+    syndrome H Y Y i = 0 :=
+  (congrArg (fun v => H.matrix.mulVec v i) (Codeword.xor_self Y)).trans
+    (Codeword.zero_is_codeword H i)
+
+/-- *Syndrome at zero/zero.*  With both received vector and noise
+    candidate equal to the zero codeword, the syndrome vanishes
+    pointwise.  Composes `syndrome_zero_noise` (collapses the noise
+    side) with `Codeword.zero_is_codeword`. -/
+theorem syndrome_zero_zero
+    {n k : Nat} (H : ParityCheck n k) (i : Fin (n - k)) :
+    syndrome H 0 0 i = 0 :=
+  (syndrome_zero_noise H 0 i).trans (Codeword.zero_is_codeword H i)
+
+/-- *`syndromeZero` of self.*  Any received vector trivially
+    satisfies the GRAND acceptance condition against itself as
+    noise candidate: `Y xor Y = 0`, and the zero codeword has zero
+    syndrome.  Pointwise lift of `syndrome_self`. -/
+theorem syndromeZero_self
+    {n k : Nat} (H : ParityCheck n k) (Y : Codeword n) :
+    syndromeZero H Y Y :=
+  fun i => syndrome_self H Y i
+
 /-- *Parity-check map is XOR-linear.*  `H * (a xor b) = H * a + H * b`:
     rewrites `xor` to `+` (via `xor_eq_add`) and then applies
     `Matrix.mulVec_add`. -/

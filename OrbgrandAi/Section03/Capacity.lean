@@ -141,6 +141,16 @@ theorem liminfInformationRate_le_limsupEntropyRate_const (c : Real) :
     liminfInformationRate (fun _ => c) <= limsupEntropyRate (fun _ => c) :=
   ((liminfInformationRate_const c).trans (limsupEntropyRate_const c).symm).le
 
+/-- *Monotonicity of the constant-sequence lim-inf information rate.*
+    If `c1 <= c2`, the lim-inf information rate of the constant
+    sequence `c1` is at most that of `c2`.  Both sides reduce to the
+    constant via `liminfInformationRate_const`; the inequality
+    transfers by the `Eq.le` / `Eq.ge` lifting. -/
+theorem liminfInformationRate_const_mono {c1 c2 : Real} (h : c1 <= c2) :
+    liminfInformationRate (fun _ => c1) <= liminfInformationRate (fun _ => c2) :=
+  ((liminfInformationRate_const c1).le.trans h).trans
+    (liminfInformationRate_const c2).ge
+
 /-- *liminf <= limsup, general form.*  Promotes
     `liminfInformationRate_le_limsupEntropyRate_const` from constant
     sequences to any `Real`-valued sequence whose values are bounded
@@ -152,6 +162,28 @@ theorem liminfInformationRate_le_limsupEntropyRate (u : Nat -> Real)
     (h' : Filter.IsBoundedUnder (· >= ·) Filter.atTop u) :
     liminfInformationRate u <= limsupEntropyRate u :=
   Filter.liminf_le_limsup h h'
+
+/-- *Monotonicity under eventual pointwise order.*  If two
+    log-density-ratio sequences satisfy `u n_s <= v n_s` for all
+    sufficiently large `n_s`, the lim-inf information rate of `u` is
+    at most that of `v`.  Direct lift of `Filter.liminf_le_liminf`. -/
+theorem liminfInformationRate_le_liminfInformationRate_of_le_eventually
+    {u v : Nat -> Real} (h : ∀ᶠ n in Filter.atTop, u n <= v n)
+    (hu : Filter.IsBoundedUnder (· >= ·) Filter.atTop u)
+    (hv : Filter.IsCoboundedUnder (· >= ·) Filter.atTop v) :
+    liminfInformationRate u <= liminfInformationRate v :=
+  Filter.liminf_le_liminf h hu hv
+
+/-- *Monotonicity under eventual pointwise order.*  Dual of
+    `liminfInformationRate_le_liminfInformationRate_of_le_eventually`
+    for the lim-sup entropy rate.  Direct lift of
+    `Filter.limsup_le_limsup`. -/
+theorem limsupEntropyRate_le_limsupEntropyRate_of_le_eventually
+    {u v : Nat -> Real} (h : ∀ᶠ n in Filter.atTop, u n <= v n)
+    (hu : Filter.IsCoboundedUnder (· <= ·) Filter.atTop u)
+    (hv : Filter.IsBoundedUnder (· <= ·) Filter.atTop v) :
+    limsupEntropyRate u <= limsupEntropyRate v :=
+  Filter.limsup_le_limsup h hu hv
 
 /-- *Congruence under eventual equality.*  If two log-density-ratio
     sequences agree on all sufficiently large `n_s`, they share the

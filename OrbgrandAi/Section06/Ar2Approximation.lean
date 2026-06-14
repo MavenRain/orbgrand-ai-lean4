@@ -223,6 +223,20 @@ theorem ar2_nineteen (phi1 phi2 z1 z2 : Complex) :
       = phi1 * ar2 phi1 phi2 z1 z2 18
         + phi2 * ar2 phi1 phi2 z1 z2 17 := rfl
 
+/-- Recurrence step at index 20: `phi_1 * ar2 19 + phi_2 * ar2 18`.
+    Pattern-match arm `(18 + 2)` reduces definitionally to the RHS. -/
+theorem ar2_twenty (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 20
+      = phi1 * ar2 phi1 phi2 z1 z2 19
+        + phi2 * ar2 phi1 phi2 z1 z2 18 := rfl
+
+/-- Recurrence step at index 21: `phi_1 * ar2 20 + phi_2 * ar2 19`.
+    Pattern-match arm `(19 + 2)` reduces definitionally to the RHS. -/
+theorem ar2_twenty_one (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 21
+      = phi1 * ar2 phi1 phi2 z1 z2 20
+        + phi2 * ar2 phi1 phi2 z1 z2 19 := rfl
+
 /-- *Trivial coefficients.*  When both AR(2) coefficients are zero,
     every recurrence step (index `n + 2`) vanishes regardless of
     the initial conditions.  The initial conditions at indices 0 and
@@ -291,6 +305,16 @@ theorem ar2_phi1_zero_succ (phi2 z1 z2 : Complex) (n : Nat) :
             = phi2 * ar2 0 phi2 z1 z2 n :=
     zero_add _
   step1.trans (step2.trans step3)
+
+/-- *Lag-skip boundary at index 2.*  Specialises `ar2_phi1_zero_succ`
+    at `n = 0`: when `phi_1 = 0`, the value at index 2 collapses to
+    `phi_2 * z_1` since the `n = 0` predecessor is the initial
+    condition `z_1`.  Built by chaining the lag-skip recurrence with
+    `ar2_zero` under the `phi_2 * ·` congruence. -/
+theorem ar2_phi1_zero_two (phi2 z1 z2 : Complex) :
+    ar2 0 phi2 z1 z2 2 = phi2 * z1 :=
+  (ar2_phi1_zero_succ phi2 z1 z2 0).trans
+    (congrArg (phi2 * ·) (ar2_zero 0 phi2 z1 z2))
 
 /-- *Fibonacci-like recurrence.*  When both AR(2) coefficients are
     `1`, the recurrence collapses to pure addition:

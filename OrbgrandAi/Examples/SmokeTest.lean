@@ -933,6 +933,119 @@ example {n : Nat} (pi : ReliabilityRank n) :
     landslideBucket pi 0 (fun _ : Fin n => false) :=
   landslideBucket_const_false_zero pi
 
+/-- `syndrome` at `(Y, Y)` is zero (XOR cancels). -/
+example {n k : Nat} (H : ParityCheck n k) (Y : Codeword n) (i : Fin (n - k)) :
+    syndrome H Y Y i = 0 :=
+  syndrome_self H Y i
+
+/-- `syndrome` at `(0, 0)` is zero. -/
+example {n k : Nat} (H : ParityCheck n k) (i : Fin (n - k)) :
+    syndrome H 0 0 i = 0 :=
+  syndrome_zero_zero H i
+
+/-- `syndromeZero H Y Y` holds: GRAND accepts the trivial decoder. -/
+example {n k : Nat} (H : ParityCheck n k) (Y : Codeword n) :
+    syndromeZero H Y Y :=
+  syndromeZero_self H Y
+
+/-- `argmax` reverses to `hardDecisionBlock?`. -/
+example {numCandidates : Nat} (post : BlockPosterior numCandidates) :
+    (List.finRange numCandidates).argmax post = hardDecisionBlock? post :=
+  argmax_eq_hardDecisionBlock? post
+
+/-- `orbgrandAiLoop` reverses to `orbgrandAi`. -/
+example {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s)
+    (budget : AbandonmentBudget)
+    (patterns : List (Fin (n_s / b) -> Fin numCandidates)) :
+    orbgrandAiLoop Y Phi budget.toNat patterns
+      = orbgrandAi (b := b) (numCandidates := numCandidates)
+          Y Phi budget patterns :=
+  orbgrandAiLoop_eq_orbgrandAi Y Phi budget patterns
+
+/-- Public `orbgrandAi` at zero-budget on a non-empty pattern list is `none`. -/
+example {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s)
+    (e : Fin (n_s / b) -> Fin numCandidates)
+    (rest : List (Fin (n_s / b) -> Fin numCandidates)) :
+    orbgrandAi (b := b) (numCandidates := numCandidates)
+        Y Phi (AbandonmentBudget.mk 0) (e :: rest) = none :=
+  orbgrandAi_zero_steps_cons Y Phi e rest
+
+/-- AR(2) recurrence step at index 20. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 20
+      = phi1 * ar2 phi1 phi2 z1 z2 19
+        + phi2 * ar2 phi1 phi2 z1 z2 18 :=
+  ar2_twenty phi1 phi2 z1 z2
+
+/-- AR(2) recurrence step at index 21. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 21
+      = phi1 * ar2 phi1 phi2 z1 z2 20
+        + phi2 * ar2 phi1 phi2 z1 z2 19 :=
+  ar2_twenty_one phi1 phi2 z1 z2
+
+/-- AR(2) with `phi_1 = 0` at index 2 collapses to `phi_2 * z_1`. -/
+example (phi2 z1 z2 : Complex) :
+    ar2 0 phi2 z1 z2 2 = phi2 * z1 :=
+  ar2_phi1_zero_two phi2 z1 z2
+
+/-- `cov1_lag` at lag `-3`. -/
+example (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    cov1_lag sigma rho (-3) = sigma.val * rho.val ^ 3 :=
+  cov1_lag_neg_three sigma rho
+
+/-- `cov1_lag` at lag `4`. -/
+example (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    cov1_lag sigma rho 4 = sigma.val * rho.val ^ 4 :=
+  cov1_lag_four sigma rho
+
+/-- `cov2_lag` recurrence at lag 8. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta1 beta2 : Real) :
+    cov2_lag sigma rho1 rho2 beta1 beta2 8
+      = beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 7
+        + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 6 :=
+  cov2_lag_eight sigma rho1 rho2 beta1 beta2
+
+/-- `LinearIsi.bandwidth` widens by two. -/
+example {n_s : Nat} {ch : LinearIsi n_s} {b : Nat}
+    (h : ch.bandwidth b) :
+    ch.bandwidth (b + 2) :=
+  LinearIsi.bandwidth_succ_succ h
+
+/-- `LinearIsi.bandwidth` widens by any `k`. -/
+example {n_s : Nat} {ch : LinearIsi n_s} {b : Nat} (k : Nat)
+    (h : ch.bandwidth b) :
+    ch.bandwidth (b + k) :=
+  LinearIsi.bandwidth_add k h
+
+/-- Identity-channel receive at zero-signal zero-noise is zero. -/
+example {n_s : Nat} (noiseCov : CovMatrix n_s) :
+    ({ channel := 1, noiseCov := noiseCov } : LinearIsi n_s).receive 0 0
+      = 0 :=
+  LinearIsi.receive_one_zero_signal_zero_noise noiseCov
+
+/-- Monotonicity of constant-sequence liminf information rate. -/
+example {c1 c2 : Real} (h : c1 <= c2) :
+    liminfInformationRate (fun _ => c1) <= liminfInformationRate (fun _ => c2) :=
+  liminfInformationRate_const_mono h
+
+/-- Eventually-le liminf monotonicity. -/
+example {u v : Nat -> Real} (h : ∀ᶠ n in Filter.atTop, u n <= v n)
+    (hu : Filter.IsBoundedUnder (· >= ·) Filter.atTop u)
+    (hv : Filter.IsCoboundedUnder (· >= ·) Filter.atTop v) :
+    liminfInformationRate u <= liminfInformationRate v :=
+  liminfInformationRate_le_liminfInformationRate_of_le_eventually h hu hv
+
+/-- Eventually-le limsup monotonicity. -/
+example {u v : Nat -> Real} (h : ∀ᶠ n in Filter.atTop, u n <= v n)
+    (hu : Filter.IsCoboundedUnder (· <= ·) Filter.atTop u)
+    (hv : Filter.IsBoundedUnder (· <= ·) Filter.atTop v) :
+    limsupEntropyRate u <= limsupEntropyRate v :=
+  limsupEntropyRate_le_limsupEntropyRate_of_le_eventually h hu hv
+
 /-- `QueryOrder.positionOf` on the empty list is `0`. -/
 example {numPatterns : Nat} (x : Fin numPatterns) :
     QueryOrder.positionOf x ([] : QueryOrder numPatterns) = 0 :=
