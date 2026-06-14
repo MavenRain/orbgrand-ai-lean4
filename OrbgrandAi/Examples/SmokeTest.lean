@@ -1703,6 +1703,101 @@ example (z1 z2 : Complex) :
     ar2 1 1 z1 z2 2 = z2 + z1 :=
   ar2_phi1_one_phi2_one_two z1 z2
 
+/-- AR(2) recurrence step at index 33. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 33
+      = phi1 * ar2 phi1 phi2 z1 z2 32
+        + phi2 * ar2 phi1 phi2 z1 z2 31 :=
+  ar2_thirty_three phi1 phi2 z1 z2
+
+/-- AR(2) phi1=0 boundary at index 3. -/
+example (phi2 z1 z2 : Complex) :
+    ar2 0 phi2 z1 z2 3 = phi2 * z2 :=
+  ar2_phi1_zero_three phi2 z1 z2
+
+/-- AR(2) phi2=0 boundary at index 3. -/
+example (phi1 z1 z2 : Complex) :
+    ar2 phi1 0 z1 z2 3 = phi1 * (phi1 * z2) :=
+  ar2_phi2_zero_three phi1 z1 z2
+
+/-- `cov1_lag` at lag `-8`. -/
+example (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    cov1_lag sigma rho (-8) = sigma.val * rho.val ^ 8 :=
+  cov1_lag_neg_eight sigma rho
+
+/-- `cov1_lag` at lag `9`. -/
+example (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    cov1_lag sigma rho 9 = sigma.val * rho.val ^ 9 :=
+  cov1_lag_nine sigma rho
+
+/-- `cov2_lag` recurrence at lag 15. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta1 beta2 : Real) :
+    cov2_lag sigma rho1 rho2 beta1 beta2 15
+      = beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 14
+        + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 13 :=
+  cov2_lag_fifteen sigma rho1 rho2 beta1 beta2
+
+/-- `rfView` bandwidth widens to 8. -/
+example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (sigma : NoisePower) :
+    (rfView n_s rowTaps sigma).bandwidth 8 :=
+  rfView_bandwidth_eight rowTaps sigma
+
+/-- `rfView` bandwidth widens to 9. -/
+example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (sigma : NoisePower) :
+    (rfView n_s rowTaps sigma).bandwidth 9 :=
+  rfView_bandwidth_nine rowTaps sigma
+
+/-- `rfView` bandwidth widens by any additive offset. -/
+example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (sigma : NoisePower)
+    (k : Nat) :
+    (rfView n_s rowTaps sigma).bandwidth (6 + k) :=
+  rfView_bandwidth_add rowTaps sigma k
+
+/-- `dicode` bandwidth widens to 3. -/
+example {n_s : Nat} (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    (dicode n_s sigma rho).bandwidth 3 :=
+  dicode_bandwidth_three sigma rho
+
+/-- `dicode_channel` first sub-diagonal entry is `-rho`. -/
+example {n_s : Nat} (sigma : NoisePower) (rho : CorrelationCoefficient)
+    (i j : Fin n_s) (h : i.val = j.val + 1) :
+    (dicode n_s sigma rho).channel i j = -(rho.val : Complex) :=
+  dicode_channel_subdiag sigma rho i j h
+
+/-- `dicode_channel` off-diagonal entry is zero. -/
+example {n_s : Nat} (sigma : NoisePower) (rho : CorrelationCoefficient)
+    (i j : Fin n_s)
+    (h1 : i.val ≠ j.val) (h2 : i.val ≠ j.val + 1) :
+    (dicode n_s sigma rho).channel i j = (0 : Complex) :=
+  dicode_channel_off sigma rho i j h1 h2
+
+/-- `orbgrandAi` empty codebook at zero budget. -/
+example {n_s b numCandidates : Nat}
+    (Y : Codeword n_s)
+    (patterns : List (Fin (n_s / b) -> Fin numCandidates)) :
+    orbgrandAi (b := b) (numCandidates := numCandidates)
+      Y (fun _ => false) (AbandonmentBudget.mk 0) patterns = none :=
+  orbgrandAi_empty_codebook_zero_budget Y patterns
+
+/-- `orbgrandAi` nil bridges to `orbgrandAiLoop` nil. -/
+example {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s)
+    (budget : AbandonmentBudget) :
+    orbgrandAi (b := b) (numCandidates := numCandidates)
+        Y Phi budget []
+      = orbgrandAiLoop (b := b) (numCandidates := numCandidates)
+          Y Phi budget.toNat [] :=
+  orbgrandAi_nil_eq_orbgrandAiLoop_nil Y Phi budget
+
+/-- `substitutionPenalty?` raw-`argmax` unfold. -/
+example {numCandidates : Nat} (post : BlockPosterior numCandidates)
+    (t : Fin numCandidates) :
+    substitutionPenalty? post t
+      = ((List.finRange numCandidates).argmax post).map
+          (fun tStar => Real.log (post tStar) - Real.log (post t)) :=
+  substitutionPenalty?_eq_argmax_map post t
+
 /-- `QueryOrder.positionOf` on the empty list is `0`. -/
 example {numPatterns : Nat} (x : Fin numPatterns) :
     QueryOrder.positionOf x ([] : QueryOrder numPatterns) = 0 :=

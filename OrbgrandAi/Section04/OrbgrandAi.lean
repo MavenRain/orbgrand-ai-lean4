@@ -164,6 +164,17 @@ theorem substitutionPenalty?_empty
     (post : BlockPosterior 0) (t : Fin 0) :
     substitutionPenalty? post t = none := rfl
 
+/-- *Raw-`argmax` unfold of the substitution penalty.*  Chains
+    `substitutionPenalty?_eq` with `hardDecisionBlock?_eq` to
+    express the penalty directly in terms of `List.argmax`. -/
+theorem substitutionPenalty?_eq_argmax_map
+    {numCandidates : Nat} (post : BlockPosterior numCandidates)
+    (t : Fin numCandidates) :
+    substitutionPenalty? post t
+      = ((List.finRange numCandidates).argmax post).map
+          (fun tStar => Real.log (post tStar) - Real.log (post t)) :=
+  rfl
+
 /-- *Definedness bridge for the substitution penalty.*  The
     penalty is `some _` exactly when the hard-decision argmax is
     `some _`, because the penalty is `Option.map` over the
@@ -486,6 +497,18 @@ theorem orbgrandAi_empty_codebook_cons
     orbgrandAi (b := b) (numCandidates := numCandidates)
       Y (fun _ => false) budget (e :: rest) = none :=
   orbgrandAi_empty_codebook Y budget (e :: rest)
+
+/-- *Vacuous codebook at zero budget.*  Degenerate corner combining
+    two failure modes: the codebook rejects every codeword AND the
+    abandonment budget is exhausted from the start.  Specialises
+    `orbgrandAi_empty_codebook` at `AbandonmentBudget.mk 0`. -/
+theorem orbgrandAi_empty_codebook_zero_budget
+    {n_s b numCandidates : Nat}
+    (Y : Codeword n_s)
+    (patterns : List (Fin (n_s / b) -> Fin numCandidates)) :
+    orbgrandAi (b := b) (numCandidates := numCandidates)
+      Y (fun _ => false) (AbandonmentBudget.mk 0) patterns = none :=
+  orbgrandAi_empty_codebook Y (AbandonmentBudget.mk 0) patterns
 
 /-! ## Substitution provenance (soundness of the output) -/
 
@@ -896,6 +919,21 @@ theorem orbgrandAi_nil_symm
       = orbgrandAi (b := b) (numCandidates := numCandidates)
           Y Phi budget [] :=
   (orbgrandAi_nil Y Phi budget).symm
+
+/-- *Bridge between the two `_nil` lemmas.*  The public API on an
+    empty pattern list and the loop on an empty pattern list both
+    return `none`, hence are equal.  Composes `orbgrandAi_nil` with
+    the `.symm` of `orbgrandAiLoop_nil`. -/
+theorem orbgrandAi_nil_eq_orbgrandAiLoop_nil
+    {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s)
+    (budget : AbandonmentBudget) :
+    orbgrandAi (b := b) (numCandidates := numCandidates)
+        Y Phi budget []
+      = orbgrandAiLoop (b := b) (numCandidates := numCandidates)
+          Y Phi budget.toNat [] :=
+  (orbgrandAi_nil Y Phi budget).trans
+    (orbgrandAiLoop_nil Y Phi budget.toNat).symm
 
 /-- *Public API at zero budget on the empty pattern list.*  The
     degenerate corner where both gates of `orbgrandAi` are

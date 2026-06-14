@@ -314,6 +314,13 @@ theorem ar2_thirty_two (phi1 phi2 z1 z2 : Complex) :
       = phi1 * ar2 phi1 phi2 z1 z2 31
         + phi2 * ar2 phi1 phi2 z1 z2 30 := rfl
 
+/-- Recurrence step at index 33: `phi_1 * ar2 32 + phi_2 * ar2 31`.
+    Pattern-match arm `(31 + 2)` reduces definitionally to the RHS. -/
+theorem ar2_thirty_three (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 33
+      = phi1 * ar2 phi1 phi2 z1 z2 32
+        + phi2 * ar2 phi1 phi2 z1 z2 31 := rfl
+
 /-- *Trivial coefficients.*  When both AR(2) coefficients are zero,
     every recurrence step (index `n + 2`) vanishes regardless of
     the initial conditions.  The initial conditions at indices 0 and
@@ -374,6 +381,15 @@ theorem ar2_phi2_zero_two (phi1 z1 z2 : Complex) :
   (ar2_phi2_zero_succ phi1 z1 z2 0).trans
     (congrArg (phi1 * ·) (ar2_one phi1 0 z1 z2))
 
+/-- *Geometric boundary at index 3.*  Specialises
+    `ar2_phi2_zero_succ` at `n = 1`: when `phi_2 = 0`, the value at
+    index 3 collapses to `phi_1 * (phi_1 * z_2)`.  Chains
+    `ar2_phi2_zero_succ` with `ar2_phi2_zero_two` under `phi_1 * ·`. -/
+theorem ar2_phi2_zero_three (phi1 z1 z2 : Complex) :
+    ar2 phi1 0 z1 z2 3 = phi1 * (phi1 * z2) :=
+  (ar2_phi2_zero_succ phi1 z1 z2 1).trans
+    (congrArg (phi1 * ·) (ar2_phi2_zero_two phi1 z1 z2))
+
 /-- *Lag-skip degenerate case.*  When `phi_1 = 0`, the AR(2)
     recurrence skips the immediate predecessor: index `n + 2` is
     `phi_2` times index `n`, with no contribution from index
@@ -402,6 +418,15 @@ theorem ar2_phi1_zero_two (phi2 z1 z2 : Complex) :
     ar2 0 phi2 z1 z2 2 = phi2 * z1 :=
   (ar2_phi1_zero_succ phi2 z1 z2 0).trans
     (congrArg (phi2 * ·) (ar2_zero 0 phi2 z1 z2))
+
+/-- *Lag-skip boundary at index 3.*  Specialises
+    `ar2_phi1_zero_succ` at `n = 1`: when `phi_1 = 0`, the value at
+    index 3 collapses to `phi_2 * z_2` since the `n = 1` predecessor
+    is the initial condition `z_2`.  Dual of `ar2_phi2_zero_three`. -/
+theorem ar2_phi1_zero_three (phi2 z1 z2 : Complex) :
+    ar2 0 phi2 z1 z2 3 = phi2 * z2 :=
+  (ar2_phi1_zero_succ phi2 z1 z2 1).trans
+    (congrArg (phi2 * ·) (ar2_one 0 phi2 z1 z2))
 
 /-- *Fibonacci-like recurrence.*  When both AR(2) coefficients are
     `1`, the recurrence collapses to pure addition:

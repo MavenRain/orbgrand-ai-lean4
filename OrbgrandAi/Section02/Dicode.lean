@@ -171,6 +171,25 @@ theorem dicodeMatrix_off
     if_neg h1
   step1.trans (if_neg h2)
 
+/-- *Sub-diagonal entry of the dicode channel-matrix wrapper.*
+    Wrapper-level companion to `dicodeMatrix_subdiag`. -/
+theorem dicode_channel_subdiag
+    {n_s : Nat} (sigma : NoisePower) (rho : CorrelationCoefficient)
+    (i j : Fin n_s) (h : i.val = j.val + 1) :
+    (dicode n_s sigma rho).channel i j = -(rho.val : Complex) :=
+  (congrFun (congrFun (dicode_channel n_s sigma rho) i) j).trans
+    (dicodeMatrix_subdiag rho i j h)
+
+/-- *Off-diagonal entry of the dicode channel-matrix wrapper.*
+    Wrapper-level companion to `dicodeMatrix_off`. -/
+theorem dicode_channel_off
+    {n_s : Nat} (sigma : NoisePower) (rho : CorrelationCoefficient)
+    (i j : Fin n_s)
+    (h1 : i.val ≠ j.val) (h2 : i.val ≠ j.val + 1) :
+    (dicode n_s sigma rho).channel i j = (0 : Complex) :=
+  (congrFun (congrFun (dicode_channel n_s sigma rho) i) j).trans
+    (dicodeMatrix_off rho i j h1 h2)
+
 /-! ## Structural properties (placeholders) -/
 
 /-- The dicode channel matrix has bandwidth at most `1`: every entry
@@ -200,6 +219,13 @@ theorem dicode_bandwidth_two
     {n_s : Nat} (sigma : NoisePower) (rho : CorrelationCoefficient) :
     (dicode n_s sigma rho).bandwidth 2 :=
   LinearIsi.bandwidth_succ (dicode_bandwidth sigma rho)
+
+/-- *Dicode bandwidth widens to `3`.*  One-line corollary of
+    `dicode_bandwidth` composed with `LinearIsi.bandwidth_succ_succ`. -/
+theorem dicode_bandwidth_three
+    {n_s : Nat} (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    (dicode n_s sigma rho).bandwidth 3 :=
+  LinearIsi.bandwidth_succ_succ (dicode_bandwidth sigma rho)
 
 /-- The dicode channel is causal: all entries strictly above the
     diagonal vanish.
