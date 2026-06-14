@@ -60,6 +60,12 @@ def QueryOrder.positionOf {numPatterns : Nat}
   | (y :: ys) =>
       if x = y then 0 else QueryOrder.positionOf x ys + 1
 
+/-- *Position in the empty order is zero.*  Direct unfolding of the
+    `[]` arm of `QueryOrder.positionOf`. -/
+theorem QueryOrder.positionOf_nil {numPatterns : Nat}
+    (x : Fin numPatterns) :
+    QueryOrder.positionOf x ([] : QueryOrder numPatterns) = 0 := rfl
+
 /-- Kendall tau distance between two query orders.
 
     Counts the number of unordered pairs `{i, j} ⊆ Fin numPatterns`
@@ -245,6 +251,16 @@ theorem kendallTau_eq_zero_iff
     `Fin.elim0` — there are no `i, j : Fin 0` to disagree on). -/
 theorem kendallTau_empty (a b : QueryOrder 0) : kendallTau a b = 0 :=
   Finset.sum_eq_zero fun i _ => Fin.elim0 i
+
+/-- *Singleton domain.*  At `numPatterns = 1` every `i j : Fin 1`
+    has `i.val = j.val = 0`, so `i.val < j.val` is never satisfied
+    and the outer `if` in each summand returns `0`.  Companion to
+    `kendallTau_empty` covering the second trivial-domain case. -/
+theorem kendallTau_singleton (a b : QueryOrder 1) : kendallTau a b = 0 :=
+  Finset.sum_eq_zero fun i _ =>
+    Finset.sum_eq_zero fun j _ =>
+      if_neg fun h =>
+        Nat.not_lt_zero i.val (Nat.lt_of_lt_of_le h (Nat.le_of_lt_succ j.isLt))
 
 /-- *Per-Bool triangle inequality.*  For three Booleans `X`, `Y`, `Z`,
     the indicator of `X ≠ Z` is at most the indicators of `X ≠ Y` plus

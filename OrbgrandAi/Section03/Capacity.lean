@@ -141,6 +141,36 @@ theorem liminfInformationRate_le_limsupEntropyRate_const (c : Real) :
     liminfInformationRate (fun _ => c) <= limsupEntropyRate (fun _ => c) :=
   ((liminfInformationRate_const c).trans (limsupEntropyRate_const c).symm).le
 
+/-- *liminf <= limsup, general form.*  Promotes
+    `liminfInformationRate_le_limsupEntropyRate_const` from constant
+    sequences to any `Real`-valued sequence whose values are bounded
+    above and below along `Filter.atTop`.  Uses
+    `Filter.liminf_le_limsup`; the `NeBot Filter.atTop` instance for
+    `Nat` resolves automatically. -/
+theorem liminfInformationRate_le_limsupEntropyRate (u : Nat -> Real)
+    (h : Filter.IsBoundedUnder (· <= ·) Filter.atTop u)
+    (h' : Filter.IsBoundedUnder (· >= ·) Filter.atTop u) :
+    liminfInformationRate u <= limsupEntropyRate u :=
+  Filter.liminf_le_limsup h h'
+
+/-- *Congruence under eventual equality.*  If two log-density-ratio
+    sequences agree on all sufficiently large `n_s`, they share the
+    same lim-inf information rate.  Tail behaviour is the only thing
+    the lim-inf sees.  Direct lift of `Filter.liminf_congr`. -/
+theorem liminfInformationRate_congr {u v : Nat -> Real}
+    (h : ∀ᶠ n in Filter.atTop, u n = v n) :
+    liminfInformationRate u = liminfInformationRate v :=
+  Filter.liminf_congr h
+
+/-- *Congruence under eventual equality.*  Dual of
+    `liminfInformationRate_congr` for the lim-sup entropy rate.
+    Eventually-equal log-inverse-density sequences share the same
+    lim-sup.  Direct lift of `Filter.limsup_congr`. -/
+theorem limsupEntropyRate_congr {u v : Nat -> Real}
+    (h : ∀ᶠ n in Filter.atTop, u n = v n) :
+    limsupEntropyRate u = limsupEntropyRate v :=
+  Filter.limsup_congr h
+
 /-! ## Hadamard bound on the noise entropy rate -/
 
 /-- *Hadamard inequality* (Section III, page 4, right column).

@@ -92,6 +92,17 @@ theorem Constellation.exceed_self_eq_exceed_self {chi : Type}
     cs.exceed s s = cs.exceed s_hat s_hat :=
   (cs.exceed_self s).trans (cs.exceed_self s_hat).symm
 
+/-- *Exceedance vanishes iff symbols agree.*  Generic-name re-exposure
+    of the `exceed_zero_iff` structure field as a public lemma under
+    the `Constellation` namespace.  Matches the naming convention of
+    `exceed_ne_zero_iff_ne` and `exceed_pos_iff_ne` and lets downstream
+    callers cite `cs.exceed_eq_zero_iff_eq` without reaching into the
+    structure projection. -/
+theorem Constellation.exceed_eq_zero_iff_eq
+    {chi : Type} (cs : Constellation chi) (s s_hat : chi) :
+    cs.exceed s s_hat = 0 ↔ s = s_hat :=
+  cs.exceed_zero_iff s s_hat
+
 /-- *Zero exceedance implies symbol equality.*  Forward extraction
     from the `exceed_zero_iff` axiom: converting an exceedance
     measurement back into an equality between symbols.  Useful for
@@ -211,6 +222,16 @@ theorem Constellation.exceed_pos_iff_ne_zero
     {chi : Type} (cs : Constellation chi) (s s_hat : chi) :
     0 < cs.exceed s s_hat <-> cs.exceed s s_hat ≠ 0 :=
   ⟨ne_of_gt, cs.exceed_pos_of_ne_zero⟩
+
+/-- *Positive exceedance is non-zero.*  Forward direction of
+    `exceed_pos_iff_ne_zero`, packaged for direct injection when
+    only the implication direction is needed in a chain.  One-line
+    application of `ne_of_gt`. -/
+theorem Constellation.exceed_ne_zero_of_pos
+    {chi : Type} (cs : Constellation chi)
+    {s s_hat : chi} (h : 0 < cs.exceed s s_hat) :
+    cs.exceed s s_hat ≠ 0 :=
+  ne_of_gt h
 
 /-! ## Concrete constellation instances -/
 
@@ -372,6 +393,16 @@ theorem trivialConstellation_exceed (s s_hat : Unit) :
 theorem trivialConstellation_all_eq (s s_hat : Unit) :
     s = s_hat :=
   Subsingleton.elim s s_hat
+
+/-- *Trivial constellation exceedance is bounded by `1`.*  Direct
+    consequence of `trivialConstellation_exceed`: every value is
+    exactly `0`, and `0 <= 1` via `zero_le_one`.  Mirrors
+    `bpsk_exceed_le_one` / `qpsk_exceed_le_one` for the degenerate
+    one-symbol case, completing the `_le_one` family across all
+    three concrete constellation instances. -/
+theorem trivialConstellation_le_one (s s_hat : Unit) :
+    trivialConstellation.exceed s s_hat <= 1 :=
+  (trivialConstellation_exceed s s_hat).trans_le zero_le_one
 
 /-! ## Per-symbol candidate list -/
 

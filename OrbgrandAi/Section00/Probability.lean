@@ -638,6 +638,20 @@ theorem bler_xor_true_right
       = bler sigma (fun N => !decode N) :=
   bler_pointwise_eq sigma _ _ fun N => Bool.xor_true (decode N)
 
+/-- *XOR-true on the right equals `1 - bler decode`.*  Chains
+    `bler_xor_true_right` (collapse XOR-true to negation) with
+    `bler_compl_eq` (sum of decoder and complement is `1`,
+    requires measurability) to obtain the closed-form
+    `1 - bler sigma decode`. -/
+theorem bler_xor_true_right_eq_one_sub
+    {n_s : Nat} (sigma : NoisePower)
+    (decode : RealSymbolVector n_s -> Bool)
+    (h_meas :
+      MeasurableSet {N : RealSymbolVector n_s | decode N = true}) :
+    bler sigma (fun N => xor (decode N) true) = 1 - bler sigma decode :=
+  (bler_xor_true_right sigma decode).trans
+    (eq_sub_of_add_eq' (bler_compl_eq sigma decode h_meas))
+
 /-- *XOR with `true` on the left is negation.*  `xor true (decode N)
     = !decode N` pointwise.  Left-handed companion to
     `bler_xor_true_right`.  One-line corollary of `bler_pointwise_eq`

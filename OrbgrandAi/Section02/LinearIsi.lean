@@ -86,6 +86,27 @@ def LinearIsi.tap?
   else
     none
 
+/-- *In-range delay yields the matrix entry.*  When `j.val <= k'.val`,
+    the impulse-response tap reads off the channel matrix entry at
+    row `k'` and column `k' - j`, packaged through `some`.  Direct
+    `dif_pos` form of the `if`-guard inside `tap?`. -/
+theorem LinearIsi.tap?_of_le
+    {n_s : Nat} (ch : LinearIsi n_s) (k' j : Fin n_s)
+    (h : j.val <= k'.val) :
+    ch.tap? k' j
+      = some (ch.channel k'
+          ⟨k'.val - j.val, Nat.lt_of_le_of_lt (Nat.sub_le _ _) k'.isLt⟩) :=
+  dif_pos h
+
+/-- *Out-of-range delay yields none.*  When `j.val > k'.val`, the
+    impulse-response tap is `none`.  Direct `dif_neg` form of the
+    `if`-guard inside `tap?`. -/
+theorem LinearIsi.tap?_of_not_le
+    {n_s : Nat} (ch : LinearIsi n_s) (k' j : Fin n_s)
+    (h : ¬ j.val <= k'.val) :
+    ch.tap? k' j = none :=
+  dif_neg h
+
 /-- A channel matrix is *causal* if all entries strictly above the
     diagonal vanish.  The paper assumes causality throughout
     Section II without naming it. -/
@@ -155,6 +176,15 @@ theorem LinearIsi.bandwidth_le
     ch.bandwidth b' :=
   fun i j hij =>
     h i j (Nat.lt_of_le_of_lt (Nat.add_le_add_left hb j.val) hij)
+
+/-- *Bandwidth widens by one.*  A channel with bandwidth at most
+    `b` also has bandwidth at most `b + 1`.  Direct corollary of
+    `bandwidth_le` with the witness `Nat.le_succ b : b <= b + 1`. -/
+theorem LinearIsi.bandwidth_succ
+    {n_s : Nat} {ch : LinearIsi n_s} {b : Nat}
+    (h : ch.bandwidth b) :
+    ch.bandwidth (b + 1) :=
+  LinearIsi.bandwidth_le (Nat.le_succ b) h
 
 /-- *Zero-channel receive ignores the signal.*  With `channel := 0`,
     the channel-vector product `(0 : Matrix).mulVec X` vanishes, so

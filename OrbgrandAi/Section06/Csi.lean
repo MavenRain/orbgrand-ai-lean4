@@ -109,6 +109,26 @@ theorem perturbChannel_perturbChannel_apply
       = h i j * ((1 + ε₁ i j) * (1 + ε₂ i j)) :=
   mul_assoc (h i j) (1 + ε₁ i j) (1 + ε₂ i j)
 
+/-- *Right-identity of composed perturbation.*  Composing a
+    perturbation with the zero perturbation on the right collapses
+    to the original perturbation.  Direct one-line specialisation
+    of `perturbChannel_zero` to the already-perturbed channel. -/
+theorem perturbChannel_perturbChannel_zero_right
+    {n_s : Nat} (h : ChannelMatrix n_s)
+    (epsilon : Matrix (Fin n_s) (Fin n_s) Complex) :
+    perturbChannel (perturbChannel h epsilon) 0 = perturbChannel h epsilon :=
+  perturbChannel_zero (perturbChannel h epsilon)
+
+/-- *Left-identity of composed perturbation.*  Perturbing first by
+    the zero matrix and then by `epsilon` is equivalent to
+    perturbing once by `epsilon`.  One-line `congrArg` rewriting
+    the inner `perturbChannel h 0` to `h` via `perturbChannel_zero`. -/
+theorem perturbChannel_perturbChannel_zero_left
+    {n_s : Nat} (h : ChannelMatrix n_s)
+    (epsilon : Matrix (Fin n_s) (Fin n_s) Complex) :
+    perturbChannel (perturbChannel h 0) epsilon = perturbChannel h epsilon :=
+  congrArg (fun H => perturbChannel H epsilon) (perturbChannel_zero h)
+
 /-- *General entry of `perturbChannel`.*  Direct definitional
     unfolding: `perturbChannel h epsilon i j = h i j * (1 + epsilon i j)`.
     Useful as a named API surface, subsumes `perturbChannel_diag`. -/

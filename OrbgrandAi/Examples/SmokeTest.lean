@@ -716,6 +716,23 @@ example (c : Real) :
     liminfInformationRate (fun _ => c) <= limsupEntropyRate (fun _ => c) :=
   liminfInformationRate_le_limsupEntropyRate_const c
 
+/-- For bounded sequences, liminf information rate <= limsup entropy rate. -/
+example (u : Nat -> Real)
+    (h : Filter.IsBoundedUnder (· <= ·) Filter.atTop u)
+    (h' : Filter.IsBoundedUnder (· >= ·) Filter.atTop u) :
+    liminfInformationRate u <= limsupEntropyRate u :=
+  liminfInformationRate_le_limsupEntropyRate u h h'
+
+/-- Eventually-equal sequences share the same liminf information rate. -/
+example {u v : Nat -> Real} (h : ∀ᶠ n in Filter.atTop, u n = v n) :
+    liminfInformationRate u = liminfInformationRate v :=
+  liminfInformationRate_congr h
+
+/-- Eventually-equal sequences share the same limsup entropy rate. -/
+example {u v : Nat -> Real} (h : ∀ᶠ n in Filter.atTop, u n = v n) :
+    limsupEntropyRate u = limsupEntropyRate v :=
+  limsupEntropyRate_congr h
+
 /-- AR(2) recurrence step at index 6. -/
 example (phi1 phi2 z1 z2 : Complex) :
     ar2 phi1 phi2 z1 z2 6
@@ -806,6 +823,64 @@ example (phi1 phi2 z1 z2 : Complex) :
       = phi1 * ar2 phi1 phi2 z1 z2 17
         + phi2 * ar2 phi1 phi2 z1 z2 16 :=
   ar2_eighteen phi1 phi2 z1 z2
+
+/-- AR(2) recurrence step at index 19. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 19
+      = phi1 * ar2 phi1 phi2 z1 z2 18
+        + phi2 * ar2 phi1 phi2 z1 z2 17 :=
+  ar2_nineteen phi1 phi2 z1 z2
+
+/-- `QueryOrder.positionOf` on the empty list is `0`. -/
+example {numPatterns : Nat} (x : Fin numPatterns) :
+    QueryOrder.positionOf x ([] : QueryOrder numPatterns) = 0 :=
+  QueryOrder.positionOf_nil x
+
+/-- `kendallTau` on `QueryOrder 1` is `0` for any pair. -/
+example (a b : QueryOrder 1) : kendallTau a b = 0 :=
+  kendallTau_singleton a b
+
+/-- `LinearIsi.tap?` reduces to `some` in the in-range branch. -/
+example {n_s : Nat} (ch : LinearIsi n_s) (k' j : Fin n_s)
+    (h : j.val <= k'.val) :
+    ch.tap? k' j
+      = some (ch.channel k'
+          ⟨k'.val - j.val, Nat.lt_of_le_of_lt (Nat.sub_le _ _) k'.isLt⟩) :=
+  LinearIsi.tap?_of_le ch k' j h
+
+/-- `LinearIsi.tap?` returns `none` in the out-of-range branch. -/
+example {n_s : Nat} (ch : LinearIsi n_s) (k' j : Fin n_s)
+    (h : ¬ j.val <= k'.val) :
+    ch.tap? k' j = none :=
+  LinearIsi.tap?_of_not_le ch k' j h
+
+/-- `LinearIsi.bandwidth` widens by one. -/
+example {n_s : Nat} {ch : LinearIsi n_s} {b : Nat}
+    (h : ch.bandwidth b) :
+    ch.bandwidth (b + 1) :=
+  LinearIsi.bandwidth_succ h
+
+/-- `perturbChannel` right-identity of composition. -/
+example {n_s : Nat} (h : ChannelMatrix n_s)
+    (epsilon : Matrix (Fin n_s) (Fin n_s) Complex) :
+    perturbChannel (perturbChannel h epsilon) 0 = perturbChannel h epsilon :=
+  perturbChannel_perturbChannel_zero_right h epsilon
+
+/-- `perturbChannel` left-identity of composition. -/
+example {n_s : Nat} (h : ChannelMatrix n_s)
+    (epsilon : Matrix (Fin n_s) (Fin n_s) Complex) :
+    perturbChannel (perturbChannel h 0) epsilon = perturbChannel h epsilon :=
+  perturbChannel_perturbChannel_zero_left h epsilon
+
+/-- `Section00.bler` of XOR-true on right equals `1 - bler decode`. -/
+example {n_s : Nat} (sigma : NoisePower)
+    (decode : Section00.RealSymbolVector n_s -> Bool)
+    (h_meas :
+      MeasurableSet
+        {N : Section00.RealSymbolVector n_s | decode N = true}) :
+    Section00.bler sigma (fun N => xor (decode N) true)
+      = 1 - Section00.bler sigma decode :=
+  Section00.bler_xor_true_right_eq_one_sub sigma decode h_meas
 
 /-- Section VI.B AR(2) approximation-error statement: the per-pulse
     `normSq <= delta^2` implication shape (`delta in [0, 1)`) is well-formed
@@ -1216,6 +1291,21 @@ example (s s_hat : Bool) : bpsk.exceed s s_hat = 1 ↔ s ≠ s_hat :=
 /-- QPSK exceedance equals `1` exactly on disagreement. -/
 example (s s_hat : Fin 4) : qpsk.exceed s s_hat = 1 ↔ s ≠ s_hat :=
   qpsk_exceed_eq_one_iff s s_hat
+
+/-- Generic exceedance: vanishes iff symbols agree (re-exposed iff). -/
+example {chi : Type} (cs : Constellation chi) (s s_hat : chi) :
+    cs.exceed s s_hat = 0 ↔ s = s_hat :=
+  cs.exceed_eq_zero_iff_eq s s_hat
+
+/-- Generic positive exceedance is non-zero. -/
+example {chi : Type} (cs : Constellation chi) {s s_hat : chi}
+    (h : 0 < cs.exceed s s_hat) :
+    cs.exceed s s_hat ≠ 0 :=
+  cs.exceed_ne_zero_of_pos h
+
+/-- Trivial constellation exceedance is bounded by `1`. -/
+example (s s_hat : Unit) : trivialConstellation.exceed s s_hat <= 1 :=
+  trivialConstellation_le_one s s_hat
 
 /-- Section IV symbol-level BLER equivalence statement (probabilistic form): every
     pair of `Bool`-valued failure-indicator decoders on `RealSymbolVector n_s`
