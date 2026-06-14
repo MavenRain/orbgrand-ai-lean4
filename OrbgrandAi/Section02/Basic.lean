@@ -189,6 +189,14 @@ theorem mk?_toNat_eq (n : Nat) (h : 0 < n) :
     (BlockSize.mk? n).map (·.toNat) = Except.ok n :=
   (mk?_of_pos n h).symm ▸ rfl
 
+/-- *One is a valid block size.*  Boundary corollary of
+    `mk?_of_pos` at `n = 1`: the smallest strictly-positive
+    neighbourhood (a single candidate flip) sits at the lower
+    endpoint of `N_{>0}` and round-trips through `mk?`. -/
+theorem mk?_one :
+    BlockSize.mk? 1 = Except.ok ⟨1, Nat.one_pos⟩ :=
+  mk?_of_pos 1 Nat.one_pos
+
 end BlockSize
 
 namespace CodewordLength
@@ -320,6 +328,14 @@ theorem mk?_val_eq (v : Real) (h : 0 <= v) :
     (SignalPower.mk? v).map (·.val) = Except.ok v :=
   (mk?_of_nonneg v h).symm ▸ rfl
 
+/-- *Zero is a valid signal power.*  Boundary corollary of
+    `mk?_of_nonneg` at `v = 0`: a silent transmitter sits at the
+    lower endpoint of the `[0, ∞)` range and round-trips through
+    `mk?`.  Parallel of `NoisePower.mk?_zero`. -/
+theorem mk?_zero :
+    SignalPower.mk? 0 = Except.ok ⟨0, le_refl 0⟩ :=
+  mk?_of_nonneg 0 (le_refl 0)
+
 end SignalPower
 
 namespace CorrelationCoefficient
@@ -416,6 +432,14 @@ theorem mk?_of_not_pos (v : Real) (h : ¬ 0 < v) :
 theorem mk?_val_eq (v : Real) (h : 0 < v) :
     (SamplingFreq.mk? v).map (·.val) = Except.ok v :=
   (mk?_of_pos v h).symm ▸ rfl
+
+/-- *One hertz is a valid sampling frequency.*  Boundary corollary
+    of `mk?_of_pos` at `v = 1`: a representative strictly-positive
+    rate witnessing that `mk?` accepts the open `(0, ∞)` range.
+    Strict positivity rules out a `mk?_zero` analogue. -/
+theorem mk?_one :
+    SamplingFreq.mk? 1 = Except.ok ⟨1, Real.zero_lt_one⟩ :=
+  mk?_of_pos 1 Real.zero_lt_one
 
 end SamplingFreq
 

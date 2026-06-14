@@ -1339,6 +1339,92 @@ example {n_s : Nat} {ch : LinearIsi n_s} {b : Nat}
     ch.bandwidth (b + 5) :=
   LinearIsi.bandwidth_succ_succ_succ_succ_succ h
 
+/-- `BlockSize.mk?` at `1` round-trips. -/
+example : BlockSize.mk? 1 = Except.ok ⟨1, Nat.one_pos⟩ :=
+  BlockSize.mk?_one
+
+/-- `SignalPower.mk?` at `0` round-trips. -/
+example : SignalPower.mk? 0 = Except.ok ⟨0, le_refl 0⟩ :=
+  SignalPower.mk?_zero
+
+/-- `SamplingFreq.mk?` at `1` round-trips. -/
+example : SamplingFreq.mk? 1 = Except.ok ⟨1, Real.zero_lt_one⟩ :=
+  SamplingFreq.mk?_one
+
+/-- AR(2) recurrence step at index 29. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 29
+      = phi1 * ar2 phi1 phi2 z1 z2 28
+        + phi2 * ar2 phi1 phi2 z1 z2 27 :=
+  ar2_twenty_nine phi1 phi2 z1 z2
+
+/-- AR(2) recurrence step at index 30. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 30
+      = phi1 * ar2 phi1 phi2 z1 z2 29
+        + phi2 * ar2 phi1 phi2 z1 z2 28 :=
+  ar2_thirty phi1 phi2 z1 z2
+
+/-- AR(2) with `phi_2 = 0` at index 2 collapses to `phi_1 * z_2`. -/
+example (phi1 z1 z2 : Complex) :
+    ar2 phi1 0 z1 z2 2 = phi1 * z2 :=
+  ar2_phi2_zero_two phi1 z1 z2
+
+/-- `cov1_lag` at lag `-7`. -/
+example (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    cov1_lag sigma rho (-7) = sigma.val * rho.val ^ 7 :=
+  cov1_lag_neg_seven sigma rho
+
+/-- `cov1_lag` at lag `8`. -/
+example (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    cov1_lag sigma rho 8 = sigma.val * rho.val ^ 8 :=
+  cov1_lag_eight sigma rho
+
+/-- `cov2_lag` recurrence at lag 14. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta1 beta2 : Real) :
+    cov2_lag sigma rho1 rho2 beta1 beta2 14
+      = beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 13
+        + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 12 :=
+  cov2_lag_fourteen sigma rho1 rho2 beta1 beta2
+
+/-- `perturbChannel_zero` pointwise. -/
+example {n_s : Nat} (h : ChannelMatrix n_s) (i j : Fin n_s) :
+    perturbChannel h 0 i j = h i j :=
+  perturbChannel_zero_apply h i j
+
+/-- `perturbChannel_zero` pointwise reverse-direction. -/
+example {n_s : Nat} (h : ChannelMatrix n_s) (i j : Fin n_s) :
+    h i j = perturbChannel h 0 i j :=
+  perturbChannel_zero_eq_self_apply h i j
+
+/-- `perturbChannel_zero_channel` pointwise. -/
+example {n_s : Nat} (epsilon : Matrix (Fin n_s) (Fin n_s) Complex)
+    (i j : Fin n_s) :
+    perturbChannel 0 epsilon i j = (0 : ChannelMatrix n_s) i j :=
+  perturbChannel_zero_channel_apply epsilon i j
+
+/-- `substitutionPenalty?` is `some` iff `hardDecisionBlock?` is `some`. -/
+example {numCandidates : Nat} (post : BlockPosterior numCandidates)
+    (t : Fin numCandidates) :
+    (substitutionPenalty? post t).isSome
+      = (hardDecisionBlock? post).isSome :=
+  substitutionPenalty?_isSome_iff_hardDecisionBlock?_isSome post t
+
+/-- `substitutionPenalty?` is `none` iff `hardDecisionBlock?` is `none`. -/
+example {numCandidates : Nat} (post : BlockPosterior numCandidates)
+    (t : Fin numCandidates) :
+    (substitutionPenalty? post t).isNone
+      = (hardDecisionBlock? post).isNone :=
+  substitutionPenalty?_isNone_iff_hardDecisionBlock?_isNone post t
+
+/-- `orbgrandAi` at zero budget on empty pattern list. -/
+example {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s) :
+    orbgrandAi (b := b) (numCandidates := numCandidates)
+        Y Phi (AbandonmentBudget.mk 0) [] = none :=
+  orbgrandAi_zero_steps_nil Y Phi
+
 /-- `QueryOrder.positionOf` on the empty list is `0`. -/
 example {numPatterns : Nat} (x : Fin numPatterns) :
     QueryOrder.positionOf x ([] : QueryOrder numPatterns) = 0 :=

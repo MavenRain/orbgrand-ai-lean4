@@ -96,6 +96,22 @@ theorem perturbChannel_zero_eq_self
     h = perturbChannel h 0 :=
   (perturbChannel_zero h).symm
 
+/-- *Pointwise zero perturbation is the identity.*  Entry form of
+    `perturbChannel_zero`: the zero-perturbed channel agrees with
+    `h i j` entrywise.  Pure `congrFun` cascade. -/
+theorem perturbChannel_zero_apply
+    {n_s : Nat} (h : ChannelMatrix n_s) (i j : Fin n_s) :
+    perturbChannel h 0 i j = h i j :=
+  congrFun (congrFun (perturbChannel_zero h) i) j
+
+/-- *Pointwise reverse-direction zero perturbation.*  Entry form
+    of `perturbChannel_zero_eq_self`: the original entry `h i j`
+    equals the zero-perturbed entry.  Pure `congrFun` cascade. -/
+theorem perturbChannel_zero_eq_self_apply
+    {n_s : Nat} (h : ChannelMatrix n_s) (i j : Fin n_s) :
+    h i j = perturbChannel h 0 i j :=
+  congrFun (congrFun (perturbChannel_zero_eq_self h) i) j
+
 /-- *Zero channel stays zero under perturbation.*  When the underlying
     channel matrix is zero, the perturbed channel is also zero
     (regardless of the error matrix).  Each entry becomes
@@ -104,6 +120,15 @@ theorem perturbChannel_zero_channel
     {n_s : Nat} (epsilon : Matrix (Fin n_s) (Fin n_s) Complex) :
     perturbChannel 0 epsilon = 0 :=
   funext fun i => funext fun j => zero_mul (1 + epsilon i j)
+
+/-- *Pointwise zero-channel under perturbation.*  Entry form of
+    `perturbChannel_zero_channel`: each entry of the zero-channel
+    perturbed by any `epsilon` is `0`.  Pure `congrFun` cascade. -/
+theorem perturbChannel_zero_channel_apply
+    {n_s : Nat} (epsilon : Matrix (Fin n_s) (Fin n_s) Complex)
+    (i j : Fin n_s) :
+    perturbChannel 0 epsilon i j = (0 : ChannelMatrix n_s) i j :=
+  congrFun (congrFun (perturbChannel_zero_channel epsilon) i) j
 
 /-- *Composition of two perturbations.*  Applying `perturbChannel`
     twice (first by `ε₁`, then by `ε₂`) at entry `(i, j)` yields

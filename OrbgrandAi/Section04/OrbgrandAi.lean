@@ -164,6 +164,26 @@ theorem substitutionPenalty?_empty
     (post : BlockPosterior 0) (t : Fin 0) :
     substitutionPenalty? post t = none := rfl
 
+/-- *Definedness bridge for the substitution penalty.*  The
+    penalty is `some _` exactly when the hard-decision argmax is
+    `some _`, because the penalty is `Option.map` over the
+    hard-decision and `isSome` is preserved by `map`. -/
+theorem substitutionPenalty?_isSome_iff_hardDecisionBlock?_isSome
+    {numCandidates : Nat} (post : BlockPosterior numCandidates)
+    (t : Fin numCandidates) :
+    (substitutionPenalty? post t).isSome
+      = (hardDecisionBlock? post).isSome :=
+  Option.isSome_map
+
+/-- *Undefinedness bridge for the substitution penalty.*  Dual of
+    the `isSome` form via `Option.isNone_map`. -/
+theorem substitutionPenalty?_isNone_iff_hardDecisionBlock?_isNone
+    {numCandidates : Nat} (post : BlockPosterior numCandidates)
+    (t : Fin numCandidates) :
+    (substitutionPenalty? post t).isNone
+      = (hardDecisionBlock? post).isNone :=
+  Option.isNone_map
+
 /-! ## Codebook membership and abandonment -/
 
 /-- The codebook-membership oracle `Phi : Codeword n -> Bool`. -/
@@ -876,6 +896,18 @@ theorem orbgrandAi_nil_symm
       = orbgrandAi (b := b) (numCandidates := numCandidates)
           Y Phi budget [] :=
   (orbgrandAi_nil Y Phi budget).symm
+
+/-- *Public API at zero budget on the empty pattern list.*  The
+    degenerate corner where both gates of `orbgrandAi` are
+    trivially blocked: the budget is exhausted from the start AND
+    there are no patterns to try.  Direct specialisation of
+    `orbgrandAi_nil` at `AbandonmentBudget.mk 0`. -/
+theorem orbgrandAi_zero_steps_nil
+    {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (Phi : CodebookMembership n_s) :
+    orbgrandAi (b := b) (numCandidates := numCandidates)
+        Y Phi (AbandonmentBudget.mk 0) [] = none :=
+  orbgrandAi_nil Y Phi (AbandonmentBudget.mk 0)
 
 /-- *Public-API cons-conflict.*  Wrapper around `orbgrandAiLoop_cons_conflict`:
     with budget `⟨m + 1⟩`, a head pattern that has a substitution
