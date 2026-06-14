@@ -716,6 +716,20 @@ example (phi1 phi2 z1 z2 : Complex) :
         + phi2 * ar2 phi1 phi2 z1 z2 6 :=
   ar2_eight phi1 phi2 z1 z2
 
+/-- AR(2) recurrence step at index 9. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 9
+      = phi1 * ar2 phi1 phi2 z1 z2 8
+        + phi2 * ar2 phi1 phi2 z1 z2 7 :=
+  ar2_nine phi1 phi2 z1 z2
+
+/-- AR(2) recurrence step at index 10. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 10
+      = phi1 * ar2 phi1 phi2 z1 z2 9
+        + phi2 * ar2 phi1 phi2 z1 z2 8 :=
+  ar2_ten phi1 phi2 z1 z2
+
 /-- Section VI.B AR(2) approximation-error statement: the per-pulse
     `normSq <= delta^2` implication shape (`delta in [0, 1)`) is well-formed
     and reducible to `True`, locking the quantifier order and bound form. -/
@@ -809,6 +823,11 @@ example {chi : Type} (cs : Constellation chi) (s : chi) :
 example {chi : Type} (cs : Constellation chi) (s s_hat : chi) :
     cs.exceed s s = cs.exceed s_hat s_hat :=
   cs.exceed_self_eq_exceed_self s s_hat
+
+/-- Generic diagonal exceedance is non-negative. -/
+example {chi : Type} (cs : Constellation chi) (s : chi) :
+    0 <= cs.exceed s s :=
+  cs.exceed_self_nonneg s
 
 /-- Generic symbol inequality implies non-zero exceedance. -/
 example {chi : Type} (cs : Constellation chi) {s s_hat : chi}
@@ -1270,6 +1289,58 @@ example {n_s : Nat} (sigma : NoisePower)
     (decode : Section00.RealSymbolVector n_s -> Bool) :
     Section00.bler sigma (fun N => decode N && decode N) = Section00.bler sigma decode :=
   Section00.bler_and_idem sigma decode
+
+/-- `Section00.bler` OR associativity. -/
+example {n_s : Nat} (sigma : NoisePower)
+    (d1 d2 d3 : Section00.RealSymbolVector n_s -> Bool) :
+    Section00.bler sigma (fun N => (d1 N || d2 N) || d3 N)
+      = Section00.bler sigma (fun N => d1 N || (d2 N || d3 N)) :=
+  Section00.bler_or_assoc sigma d1 d2 d3
+
+/-- `Section00.bler` AND associativity. -/
+example {n_s : Nat} (sigma : NoisePower)
+    (d1 d2 d3 : Section00.RealSymbolVector n_s -> Bool) :
+    Section00.bler sigma (fun N => (d1 N && d2 N) && d3 N)
+      = Section00.bler sigma (fun N => d1 N && (d2 N && d3 N)) :=
+  Section00.bler_and_assoc sigma d1 d2 d3
+
+/-- `Section00.bler` XOR commutativity. -/
+example {n_s : Nat} (sigma : NoisePower)
+    (decode1 decode2 : Section00.RealSymbolVector n_s -> Bool) :
+    Section00.bler sigma (fun N => xor (decode1 N) (decode2 N))
+      = Section00.bler sigma (fun N => xor (decode2 N) (decode1 N)) :=
+  Section00.bler_xor_comm sigma decode1 decode2
+
+/-- `Section00.bler` XOR associativity. -/
+example {n_s : Nat} (sigma : NoisePower)
+    (d1 d2 d3 : Section00.RealSymbolVector n_s -> Bool) :
+    Section00.bler sigma (fun N => xor (xor (d1 N) (d2 N)) (d3 N))
+      = Section00.bler sigma (fun N => xor (d1 N) (xor (d2 N) (d3 N))) :=
+  Section00.bler_xor_assoc sigma d1 d2 d3
+
+/-- `Section00.bler` excluded-middle: `decode || !decode` is total failure (`bler = 1`). -/
+example {n_s : Nat} (sigma : NoisePower)
+    (decode : Section00.RealSymbolVector n_s -> Bool) :
+    Section00.bler sigma (fun N => decode N || !decode N) = 1 :=
+  Section00.bler_or_not_self sigma decode
+
+/-- `Section00.bler` non-contradiction: `decode && !decode` never fails (`bler = 0`). -/
+example {n_s : Nat} (sigma : NoisePower)
+    (decode : Section00.RealSymbolVector n_s -> Bool) :
+    Section00.bler sigma (fun N => decode N && !decode N) = 0 :=
+  Section00.bler_and_not_self sigma decode
+
+/-- `Section00.bler` OR-true annihilation: `decode || true = true` so `bler = 1`. -/
+example {n_s : Nat} (sigma : NoisePower)
+    (decode : Section00.RealSymbolVector n_s -> Bool) :
+    Section00.bler sigma (fun N => decode N || true) = 1 :=
+  Section00.bler_or_true sigma decode
+
+/-- `Section00.bler` AND-false annihilation: `decode && false = false` so `bler = 0`. -/
+example {n_s : Nat} (sigma : NoisePower)
+    (decode : Section00.RealSymbolVector n_s -> Bool) :
+    Section00.bler sigma (fun N => decode N && false) = 0 :=
+  Section00.bler_and_false sigma decode
 
 /-- `regressorMatrix4x2` body unfold: at `(i, j)` returns `z (i.val + j.val)`
     with the `Fin 6` bound witnessed by `i.val + j.val < 4 + 1 < 6`. -/
@@ -2369,6 +2440,11 @@ example : kendallTau ([] : QueryOrder 0) [] = 0 := rfl
 
 /-- `kendallTau` on `Fin 1` lists is 0 (no `i.val < j.val` pairs in `Fin 1`). -/
 example (a b : QueryOrder 1) : kendallTau a b = 0 := rfl
+
+/-- *Non-negativity of `kendallTau`*: the Nat-valued metric is always >= 0. -/
+example {numPatterns : Nat} (a b : QueryOrder numPatterns) :
+    0 <= kendallTau a b :=
+  kendallTau_nonneg a b
 
 /-- *Reflexivity of `kendallTau`*: every list disagrees with itself on zero pairs. -/
 example {numPatterns : Nat} (a : QueryOrder numPatterns) :

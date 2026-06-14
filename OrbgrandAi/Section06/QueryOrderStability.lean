@@ -85,6 +85,13 @@ def kendallTau {numPatterns : Nat} (a b : QueryOrder numPatterns) : Nat :=
         if decide (ai < aj) = decide (bi < bj) then 0 else 1
       else 0
 
+/-- *Non-negativity.*  `kendallTau` returns a `Nat`, which is
+    universally non-negative.  Trivial via `Nat.zero_le`. -/
+theorem kendallTau_nonneg {numPatterns : Nat}
+    (a b : QueryOrder numPatterns) :
+    0 <= kendallTau a b :=
+  Nat.zero_le _
+
 /-- *Reflexivity.*  `kendallTau a a = 0`: every pair `(i, j)` with
     `i.val < j.val` finds `decide (positionOf i a < positionOf j a) =
     decide (positionOf i a < positionOf j a)` (= `rfl`), so the inner

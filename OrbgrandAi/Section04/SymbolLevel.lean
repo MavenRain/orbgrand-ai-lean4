@@ -75,6 +75,14 @@ theorem Constellation.exceed_self {chi : Type} (cs : Constellation chi)
     cs.exceed s s = 0 :=
   (cs.exceed_zero_iff s s).mpr rfl
 
+/-- *Diagonal exceedance is non-negative.*  Special case of
+    `exceed_nonneg` at `s_hat = s`; the diagonal value is exactly
+    `0`, and `exceed_nonneg` certifies `0 <= cs.exceed s s`. -/
+theorem Constellation.exceed_self_nonneg {chi : Type}
+    (cs : Constellation chi) (s : chi) :
+    0 <= cs.exceed s s :=
+  cs.exceed_nonneg s s
+
 /-- *Diagonal exceedance is unique up to symbol.*  Any two diagonal
     exceedances are equal: `cs.exceed s s = cs.exceed s_hat s_hat`.
     Both sides are `0` by `exceed_self`, so chaining `.trans` and

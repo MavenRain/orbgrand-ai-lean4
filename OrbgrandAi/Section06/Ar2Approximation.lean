@@ -146,6 +146,20 @@ theorem ar2_eight (phi1 phi2 z1 z2 : Complex) :
       = phi1 * ar2 phi1 phi2 z1 z2 7
         + phi2 * ar2 phi1 phi2 z1 z2 6 := rfl
 
+/-- Recurrence step at index 9: `phi_1 * ar2 8 + phi_2 * ar2 7`.
+    Pattern-match arm `(7 + 2)` reduces definitionally to the RHS. -/
+theorem ar2_nine (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 9
+      = phi1 * ar2 phi1 phi2 z1 z2 8
+        + phi2 * ar2 phi1 phi2 z1 z2 7 := rfl
+
+/-- Recurrence step at index 10: `phi_1 * ar2 9 + phi_2 * ar2 8`.
+    Pattern-match arm `(8 + 2)` reduces definitionally to the RHS. -/
+theorem ar2_ten (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 10
+      = phi1 * ar2 phi1 phi2 z1 z2 9
+        + phi2 * ar2 phi1 phi2 z1 z2 8 := rfl
+
 /-- *Trivial coefficients.*  When both AR(2) coefficients are zero,
     every recurrence step (index `n + 2`) vanishes regardless of
     the initial conditions.  The initial conditions at indices 0 and
