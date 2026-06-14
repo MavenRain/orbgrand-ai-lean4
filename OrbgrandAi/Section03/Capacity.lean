@@ -109,6 +109,38 @@ theorem limsupEntropyRate_const (c : Real) :
     limsupEntropyRate (fun _ => c) = c :=
   Filter.limsup_const c
 
+/-- *Zero log-density-ratio.*  Concrete instance of
+    `liminfInformationRate_const` at `c = 0`. -/
+theorem liminfInformationRate_zero :
+    liminfInformationRate (fun _ : Nat => (0 : Real)) = 0 :=
+  liminfInformationRate_const 0
+
+/-- *Zero log-inverse-density.*  Concrete instance of
+    `limsupEntropyRate_const` at `c = 0`. -/
+theorem limsupEntropyRate_zero :
+    limsupEntropyRate (fun _ : Nat => (0 : Real)) = 0 :=
+  limsupEntropyRate_const 0
+
+/-- *Unit log-density-ratio.*  Concrete instance of
+    `liminfInformationRate_const` at `c = 1`. -/
+theorem liminfInformationRate_one :
+    liminfInformationRate (fun _ : Nat => (1 : Real)) = 1 :=
+  liminfInformationRate_const 1
+
+/-- *Unit log-inverse-density.*  Concrete instance of
+    `limsupEntropyRate_const` at `c = 1`. -/
+theorem limsupEntropyRate_one :
+    limsupEntropyRate (fun _ : Nat => (1 : Real)) = 1 :=
+  limsupEntropyRate_const 1
+
+/-- *liminf <= limsup at constants.*  For any constant Real
+    sequence, the lim-inf information rate is at most the lim-sup
+    entropy rate.  Both sides reduce to `c` via the `_const` base
+    cases; equality implies the inequality via `Eq.le`. -/
+theorem liminfInformationRate_le_limsupEntropyRate_const (c : Real) :
+    liminfInformationRate (fun _ => c) <= limsupEntropyRate (fun _ => c) :=
+  ((liminfInformationRate_const c).trans (limsupEntropyRate_const c).symm).le
+
 /-! ## Hadamard bound on the noise entropy rate -/
 
 /-- *Hadamard inequality* (Section III, page 4, right column).

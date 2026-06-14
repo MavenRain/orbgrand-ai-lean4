@@ -274,6 +274,17 @@ theorem bpsk_exceed_symm (s s_hat : Bool) :
   else
     (if_neg h).trans (if_neg (fun heq => h heq.symm)).symm
 
+/-- *BPSK exceedance is `1` exactly on disagreement.*  Combines
+    `bpsk_exceed_diff` (backward) with the forward direction via
+    the `exceed_zero_iff` axiom: if `s = s_hat` then `exceed = 0`,
+    not `1`, contradicting `zero_ne_one`. -/
+theorem bpsk_exceed_eq_one_iff (s s_hat : Bool) :
+    bpsk.exceed s s_hat = 1 ↔ s ≠ s_hat :=
+  ⟨fun h heq =>
+      zero_ne_one
+        (((bpsk.exceed_zero_iff s s_hat).mpr heq).symm.trans h),
+   bpsk_exceed_diff⟩
+
 /-- *QPSK* (quadrature phase-shift keying): a 4-symbol constellation
     over `Fin 4`.  Same uniform exceedance distance as `bpsk` (0 on
     agreement, 1 otherwise); QPSK's actual squared-Euclidean structure
@@ -329,6 +340,15 @@ theorem qpsk_exceed_symm (s s_hat : Fin 4) :
     (if_pos h).trans (if_pos h.symm).symm
   else
     (if_neg h).trans (if_neg (fun heq => h heq.symm)).symm
+
+/-- *QPSK exceedance is `1` exactly on disagreement.*  Dual of
+    `bpsk_exceed_eq_one_iff` for the 4-ary Hamming-style metric. -/
+theorem qpsk_exceed_eq_one_iff (s s_hat : Fin 4) :
+    qpsk.exceed s s_hat = 1 ↔ s ≠ s_hat :=
+  ⟨fun h heq =>
+      zero_ne_one
+        (((qpsk.exceed_zero_iff s s_hat).mpr heq).symm.trans h),
+   qpsk_exceed_diff⟩
 
 /-- *Trivial constellation.*  A 1-symbol constellation over `Unit`.
     All exceedances are zero (degenerate case: only one symbol). -/

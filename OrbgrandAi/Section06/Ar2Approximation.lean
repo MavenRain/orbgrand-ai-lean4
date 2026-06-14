@@ -188,6 +188,20 @@ theorem ar2_fourteen (phi1 phi2 z1 z2 : Complex) :
       = phi1 * ar2 phi1 phi2 z1 z2 13
         + phi2 * ar2 phi1 phi2 z1 z2 12 := rfl
 
+/-- Recurrence step at index 15: `phi_1 * ar2 14 + phi_2 * ar2 13`.
+    Pattern-match arm `(13 + 2)` reduces definitionally to the RHS. -/
+theorem ar2_fifteen (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 15
+      = phi1 * ar2 phi1 phi2 z1 z2 14
+        + phi2 * ar2 phi1 phi2 z1 z2 13 := rfl
+
+/-- Recurrence step at index 16: `phi_1 * ar2 15 + phi_2 * ar2 14`.
+    Pattern-match arm `(14 + 2)` reduces definitionally to the RHS. -/
+theorem ar2_sixteen (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 16
+      = phi1 * ar2 phi1 phi2 z1 z2 15
+        + phi2 * ar2 phi1 phi2 z1 z2 14 := rfl
+
 /-- *Trivial coefficients.*  When both AR(2) coefficients are zero,
     every recurrence step (index `n + 2`) vanishes regardless of
     the initial conditions.  The initial conditions at indices 0 and

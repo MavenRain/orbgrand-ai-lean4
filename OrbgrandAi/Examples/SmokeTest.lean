@@ -695,6 +695,27 @@ example (c : Real) :
     limsupEntropyRate (fun _ => c) = c :=
   limsupEntropyRate_const c
 
+/-- Zero log-density-ratio gives lim-inf information rate `0`. -/
+example : liminfInformationRate (fun _ : Nat => (0 : Real)) = 0 :=
+  liminfInformationRate_zero
+
+/-- Zero log-inverse-density gives lim-sup entropy rate `0`. -/
+example : limsupEntropyRate (fun _ : Nat => (0 : Real)) = 0 :=
+  limsupEntropyRate_zero
+
+/-- Unit log-density-ratio gives lim-inf information rate `1`. -/
+example : liminfInformationRate (fun _ : Nat => (1 : Real)) = 1 :=
+  liminfInformationRate_one
+
+/-- Unit log-inverse-density gives lim-sup entropy rate `1`. -/
+example : limsupEntropyRate (fun _ : Nat => (1 : Real)) = 1 :=
+  limsupEntropyRate_one
+
+/-- At constants, liminf information rate is at most limsup entropy rate. -/
+example (c : Real) :
+    liminfInformationRate (fun _ => c) <= limsupEntropyRate (fun _ => c) :=
+  liminfInformationRate_le_limsupEntropyRate_const c
+
 /-- AR(2) recurrence step at index 6. -/
 example (phi1 phi2 z1 z2 : Complex) :
     ar2 phi1 phi2 z1 z2 6
@@ -757,6 +778,20 @@ example (phi1 phi2 z1 z2 : Complex) :
       = phi1 * ar2 phi1 phi2 z1 z2 13
         + phi2 * ar2 phi1 phi2 z1 z2 12 :=
   ar2_fourteen phi1 phi2 z1 z2
+
+/-- AR(2) recurrence step at index 15. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 15
+      = phi1 * ar2 phi1 phi2 z1 z2 14
+        + phi2 * ar2 phi1 phi2 z1 z2 13 :=
+  ar2_fifteen phi1 phi2 z1 z2
+
+/-- AR(2) recurrence step at index 16. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 16
+      = phi1 * ar2 phi1 phi2 z1 z2 15
+        + phi2 * ar2 phi1 phi2 z1 z2 14 :=
+  ar2_sixteen phi1 phi2 z1 z2
 
 /-- Section VI.B AR(2) approximation-error statement: the per-pulse
     `normSq <= delta^2` implication shape (`delta in [0, 1)`) is well-formed
@@ -1159,6 +1194,14 @@ example (s s_hat : Bool) : bpsk.exceed s s_hat = bpsk.exceed s_hat s :=
 /-- QPSK exceedance is symmetric. -/
 example (s s_hat : Fin 4) : qpsk.exceed s s_hat = qpsk.exceed s_hat s :=
   qpsk_exceed_symm s s_hat
+
+/-- BPSK exceedance equals `1` exactly on disagreement. -/
+example (s s_hat : Bool) : bpsk.exceed s s_hat = 1 ↔ s ≠ s_hat :=
+  bpsk_exceed_eq_one_iff s s_hat
+
+/-- QPSK exceedance equals `1` exactly on disagreement. -/
+example (s s_hat : Fin 4) : qpsk.exceed s s_hat = 1 ↔ s ≠ s_hat :=
+  qpsk_exceed_eq_one_iff s s_hat
 
 /-- Section IV symbol-level BLER equivalence statement (probabilistic form): every
     pair of `Bool`-valued failure-indicator decoders on `RealSymbolVector n_s`
