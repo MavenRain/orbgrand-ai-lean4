@@ -200,6 +200,30 @@ theorem entropyRate1_at_block_eq_log_form
   (entropyRate1_eq_block sigma rho b).trans
     (entropyRate1_block_eq sigma rho b)
 
+/-- *Symmetric form of `entropyRate1_at_block_eq_log_form`.*  The
+    explicit log expression equals `entropyRate1 sigma rho b.toNat`.
+    `.symm`, useful for rewriting from the closed log form back. -/
+theorem entropyRate1_at_block_eq_log_form_symm
+    (sigma : NoisePower) (rho : CorrelationCoefficient) (b : BlockSize) :
+    Real.log (2 * Real.exp 1 * Real.pi * sigma.val)
+      + (1 - (1 : Real) / (b.toNat : Real))
+          * Real.log (1 - rho.val ^ 2)
+      = entropyRate1 sigma rho b.toNat :=
+  (entropyRate1_at_block_eq_log_form sigma rho b).symm
+
+/-- *Closed-form chain via the block route.*  Composes
+    `entropyRate1_block_eq_entropyRate1` with
+    `entropyRate1_at_block_eq_log_form` to unfold
+    `entropyRate1_block` directly to the explicit log form. -/
+theorem entropyRate1_block_at_block_eq_log_form
+    (sigma : NoisePower) (rho : CorrelationCoefficient) (b : BlockSize) :
+    entropyRate1_block sigma rho b
+      = Real.log (2 * Real.exp 1 * Real.pi * sigma.val)
+        + (1 - (1 : Real) / (b.toNat : Real))
+            * Real.log (1 - rho.val ^ 2) :=
+  (entropyRate1_block_eq_entropyRate1 sigma rho b).trans
+    (entropyRate1_at_block_eq_log_form sigma rho b)
+
 /-- The second-order entropy rate matches the substitution of
     `cov2DetFormula` into the Gaussian entropy formula.
 

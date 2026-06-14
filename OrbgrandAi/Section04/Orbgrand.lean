@@ -1409,5 +1409,31 @@ theorem logisticWeight_lt_const_true_of_exists_false_at_perm
     bitWeight_lt_const_true_of_exists_false (e ∘ pi.perm) h_ex
   (bridge.trans_lt h_lt).trans_eq max_bridge.symm
 
+/-- *Bucket membership unfolds to logistic-weight equality.*
+    Direct biconditional form of the `landslideBucket` definition. -/
+theorem landslideBucket_iff
+    {n : Nat} (pi : ReliabilityRank n) (w : Nat) (e : Fin n -> Bool) :
+    landslideBucket pi w e <-> logisticWeight pi e = w :=
+  Iff.rfl
+
+/-- *Bucket characterisation of the all-true pattern.*  Dual of
+    `landslideBucket_const_false_iff`: both directions are just the
+    symmetric form of the definitional equality. -/
+theorem landslideBucket_const_true_iff
+    {n : Nat} (pi : ReliabilityRank n) (w : Nat) :
+    landslideBucket pi w (fun _ : Fin n => true)
+      <-> w = logisticWeight pi (fun _ : Fin n => true) :=
+  ⟨fun h => h.symm, fun h => h.symm⟩
+
+/-- *Bucket-zero characterisation under the rank permutation.*  A
+    pattern is in bucket `0` iff every bit at every rank position is
+    `false`.  Bridges `landslideBucket` to the underlying
+    `logisticWeight = 0` predicate (definitional) and forwards to
+    `logisticWeight_zero_iff_all_false_at_perm`. -/
+theorem landslideBucket_zero_iff_all_false_at_perm
+    {n : Nat} (pi : ReliabilityRank n) (e : Fin n -> Bool) :
+    landslideBucket pi 0 e <-> forall i, e (pi.perm i) = false :=
+  logisticWeight_zero_iff_all_false_at_perm pi e
+
 end Section04
 end OrbgrandAi

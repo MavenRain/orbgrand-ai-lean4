@@ -837,5 +837,39 @@ theorem bler_and_or_absorb
       = bler sigma d1 :=
   bler_pointwise_eq sigma _ d1 fun N => and_or_self_bool (d1 N) (d2 N)
 
+/-- *XOR decoder bounded by OR decoder.*  Boolean `xor a b = true`
+    implies `a || b = true` (the `xor_imp_or` helper), so the XOR-
+    failure set is contained in the OR-failure set.  Exposed as
+    its own named lemma — the intermediate step inside
+    `bler_xor_le`. -/
+theorem bler_xor_le_bler_or
+    {n_s : Nat} (sigma : NoisePower)
+    (decode1 decode2 : RealSymbolVector n_s -> Bool) :
+    bler sigma (fun N => xor (decode1 N) (decode2 N))
+      ≤ bler sigma (fun N => decode1 N || decode2 N) :=
+  bler_monotone sigma _ _ (fun _N h => xor_imp_or _ _ h)
+
+/-- *AND decoder bounded by OR decoder.*  Conjunctive failure set is
+    contained in the left component's failure set via
+    `bler_and_le_left`, which is in turn contained in the disjunctive
+    failure set via `bler_le_bler_or_left`.  Transitivity closes. -/
+theorem bler_and_le_bler_or
+    {n_s : Nat} (sigma : NoisePower)
+    (decode1 decode2 : RealSymbolVector n_s -> Bool) :
+    bler sigma (fun N => decode1 N && decode2 N)
+      ≤ bler sigma (fun N => decode1 N || decode2 N) :=
+  le_trans (bler_and_le_left sigma decode1 decode2)
+           (bler_le_bler_or_left sigma decode1 decode2)
+
+/-- *NOT-left and NOT-right XOR collapse to the same BLER.*  Both
+    `xor (!d1 N) (d2 N)` and `xor (d1 N) (!d2 N)` equal `!(xor (d1 N)
+    (d2 N))` pointwise.  Chain `bler_not_xor` with `(bler_xor_not).symm`. -/
+theorem bler_not_xor_eq_xor_not
+    {n_s : Nat} (sigma : NoisePower)
+    (d1 d2 : RealSymbolVector n_s -> Bool) :
+    bler sigma (fun N => xor (!d1 N) (d2 N))
+      = bler sigma (fun N => xor (d1 N) (!d2 N)) :=
+  (bler_not_xor sigma d1 d2).trans (bler_xor_not sigma d1 d2).symm
+
 end Section00
 end OrbgrandAi

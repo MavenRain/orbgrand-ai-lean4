@@ -1165,6 +1165,13 @@ theorem syndrome_xor_self_noise
     syndrome H Y (Codeword.xor Y c) i = H.matrix.mulVec c i :=
   congrArg (fun v => H.matrix.mulVec v i) (Codeword.xor_xor_self Y c)
 
+/-- *Function-level XOR-cancel cycle on the noise side.*  Function-
+    extensional form of `syndrome_xor_self_noise`. -/
+theorem syndrome_xor_self_noise_funext
+    {n k : Nat} (H : ParityCheck n k) (Y c : Codeword n) :
+    syndrome H Y (Codeword.xor Y c) = fun i => H.matrix.mulVec c i :=
+  funext fun i => syndrome_xor_self_noise H Y c i
+
 /-- *Syndrome under XOR-cancel cycle on the receiver side.*  Dual of
     `syndrome_xor_self_noise`: setting the received vector to
     `N_g xor c` collapses the syndrome to the parity-check image of
@@ -1179,6 +1186,13 @@ theorem syndrome_xor_self_received
       (Codeword.xor_xor_self N_g c)
   congrArg (fun v => H.matrix.mulVec v i) step
 
+/-- *Function-level XOR-cancel cycle on the receiver side.*
+    Function-extensional form of `syndrome_xor_self_received`. -/
+theorem syndrome_xor_self_received_funext
+    {n k : Nat} (H : ParityCheck n k) (N_g c : Codeword n) :
+    syndrome H (Codeword.xor N_g c) N_g = fun i => H.matrix.mulVec c i :=
+  funext fun i => syndrome_xor_self_received H N_g c i
+
 /-- *Acceptance under noise XOR-cancel cycle.*  Lifts
     `syndrome_xor_self_noise` to the `syndromeZero` predicate: the
     GRAND acceptance condition with noise candidate `Y xor c` is
@@ -1190,6 +1204,16 @@ theorem syndromeZero_xor_self_noise_iff
       <-> forall (i : Fin (n - k)), H.matrix.mulVec c i = 0 :=
   ⟨fun h i => (syndrome_xor_self_noise H Y c i).symm.trans (h i),
    fun h i => (syndrome_xor_self_noise H Y c i).trans (h i)⟩
+
+/-- *Acceptance under receiver XOR-cancel cycle.*  Dual of
+    `syndromeZero_xor_self_noise_iff`: lifts
+    `syndrome_xor_self_received` to the `syndromeZero` predicate. -/
+theorem syndromeZero_xor_self_received_iff
+    {n k : Nat} (H : ParityCheck n k) (N_g c : Codeword n) :
+    syndromeZero H (Codeword.xor N_g c) N_g
+      <-> forall (i : Fin (n - k)), H.matrix.mulVec c i = 0 :=
+  ⟨fun h i => (syndrome_xor_self_received H N_g c i).symm.trans (h i),
+   fun h i => (syndrome_xor_self_received H N_g c i).trans (h i)⟩
 
 /-- *Parity-check map is XOR-linear.*  `H * (a xor b) = H * a + H * b`:
     rewrites `xor` to `+` (via `xor_eq_add`) and then applies

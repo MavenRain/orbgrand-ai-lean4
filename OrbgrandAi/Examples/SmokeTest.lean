@@ -1615,6 +1615,94 @@ example {n_s : Nat} (sigma : NoisePower)
       ≤ Section00.bler sigma (fun N => decode1 N || decode2 N) :=
   Section00.bler_le_bler_or_right sigma decode1 decode2
 
+/-- `bler` XOR-decoder bounded by OR-decoder. -/
+example {n_s : Nat} (sigma : NoisePower)
+    (decode1 decode2 : Section00.RealSymbolVector n_s -> Bool) :
+    Section00.bler sigma (fun N => xor (decode1 N) (decode2 N))
+      ≤ Section00.bler sigma (fun N => decode1 N || decode2 N) :=
+  Section00.bler_xor_le_bler_or sigma decode1 decode2
+
+/-- `bler` AND-decoder bounded by OR-decoder. -/
+example {n_s : Nat} (sigma : NoisePower)
+    (decode1 decode2 : Section00.RealSymbolVector n_s -> Bool) :
+    Section00.bler sigma (fun N => decode1 N && decode2 N)
+      ≤ Section00.bler sigma (fun N => decode1 N || decode2 N) :=
+  Section00.bler_and_le_bler_or sigma decode1 decode2
+
+/-- `bler` `xor (!d1) d2 = xor d1 (!d2)` BLER. -/
+example {n_s : Nat} (sigma : NoisePower)
+    (d1 d2 : Section00.RealSymbolVector n_s -> Bool) :
+    Section00.bler sigma (fun N => xor (!d1 N) (d2 N))
+      = Section00.bler sigma (fun N => xor (d1 N) (!d2 N)) :=
+  Section00.bler_not_xor_eq_xor_not sigma d1 d2
+
+/-- `landslideBucket` definitional unfold. -/
+example {n : Nat} (pi : ReliabilityRank n) (w : Nat) (e : Fin n -> Bool) :
+    landslideBucket pi w e <-> logisticWeight pi e = w :=
+  landslideBucket_iff pi w e
+
+/-- `landslideBucket` const-true biconditional. -/
+example {n : Nat} (pi : ReliabilityRank n) (w : Nat) :
+    landslideBucket pi w (fun _ : Fin n => true)
+      <-> w = logisticWeight pi (fun _ : Fin n => true) :=
+  landslideBucket_const_true_iff pi w
+
+/-- `landslideBucket` zero bucket via rank permutation. -/
+example {n : Nat} (pi : ReliabilityRank n) (e : Fin n -> Bool) :
+    landslideBucket pi 0 e <-> forall i, e (pi.perm i) = false :=
+  landslideBucket_zero_iff_all_false_at_perm pi e
+
+/-- `syndrome` XOR-cancel cycle on noise side, function-level. -/
+example {n k : Nat} (H : ParityCheck n k) (Y c : Codeword n) :
+    syndrome H Y (Codeword.xor Y c) = fun i => H.matrix.mulVec c i :=
+  syndrome_xor_self_noise_funext H Y c
+
+/-- `syndrome` XOR-cancel cycle on receiver side, function-level. -/
+example {n k : Nat} (H : ParityCheck n k) (N_g c : Codeword n) :
+    syndrome H (Codeword.xor N_g c) N_g = fun i => H.matrix.mulVec c i :=
+  syndrome_xor_self_received_funext H N_g c
+
+/-- `syndromeZero` under receiver XOR-cancel cycle. -/
+example {n k : Nat} (H : ParityCheck n k) (N_g c : Codeword n) :
+    syndromeZero H (Codeword.xor N_g c) N_g
+      <-> forall (i : Fin (n - k)), H.matrix.mulVec c i = 0 :=
+  syndromeZero_xor_self_received_iff H N_g c
+
+/-- `entropyRate1_at_block_eq_log_form` symmetric form. -/
+example (sigma : NoisePower) (rho : CorrelationCoefficient) (b : BlockSize) :
+    Real.log (2 * Real.exp 1 * Real.pi * sigma.val)
+      + (1 - (1 : Real) / (b.toNat : Real))
+          * Real.log (1 - rho.val ^ 2)
+      = entropyRate1 sigma rho b.toNat :=
+  entropyRate1_at_block_eq_log_form_symm sigma rho b
+
+/-- `entropyRate1_block` direct chain to log form. -/
+example (sigma : NoisePower) (rho : CorrelationCoefficient) (b : BlockSize) :
+    entropyRate1_block sigma rho b
+      = Real.log (2 * Real.exp 1 * Real.pi * sigma.val)
+        + (1 - (1 : Real) / (b.toNat : Real))
+            * Real.log (1 - rho.val ^ 2) :=
+  entropyRate1_block_at_block_eq_log_form sigma rho b
+
+/-- AR(2) recurrence step at index 31. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 31
+      = phi1 * ar2 phi1 phi2 z1 z2 30
+        + phi2 * ar2 phi1 phi2 z1 z2 29 :=
+  ar2_thirty_one phi1 phi2 z1 z2
+
+/-- AR(2) recurrence step at index 32. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 32
+      = phi1 * ar2 phi1 phi2 z1 z2 31
+        + phi2 * ar2 phi1 phi2 z1 z2 30 :=
+  ar2_thirty_two phi1 phi2 z1 z2
+
+/-- AR(2) Fibonacci shape boundary at index 2. -/
+example (z1 z2 : Complex) :
+    ar2 1 1 z1 z2 2 = z2 + z1 :=
+  ar2_phi1_one_phi2_one_two z1 z2
+
 /-- `QueryOrder.positionOf` on the empty list is `0`. -/
 example {numPatterns : Nat} (x : Fin numPatterns) :
     QueryOrder.positionOf x ([] : QueryOrder numPatterns) = 0 :=
