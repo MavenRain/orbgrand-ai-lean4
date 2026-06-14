@@ -1425,6 +1425,95 @@ example {n_s b numCandidates : Nat}
         Y Phi (AbandonmentBudget.mk 0) [] = none :=
   orbgrandAi_zero_steps_nil Y Phi
 
+/-- BPSK exceedance non-zero iff symbols differ. -/
+example (s s_hat : Bool) : bpsk.exceed s s_hat ≠ 0 ↔ s ≠ s_hat :=
+  bpsk_exceed_ne_zero_iff_ne s s_hat
+
+/-- BPSK exceedance non-zero iff exceedance equals one (binary dichotomy). -/
+example (s s_hat : Bool) :
+    bpsk.exceed s s_hat ≠ 0 ↔ bpsk.exceed s s_hat = 1 :=
+  bpsk_exceed_ne_zero_iff_eq_one s s_hat
+
+/-- Trivial constellation exceedance is constant. -/
+example (s1 s_hat1 s2 s_hat2 : Unit) :
+    trivialConstellation.exceed s1 s_hat1
+      = trivialConstellation.exceed s2 s_hat2 :=
+  trivialConstellation_exceed_eq s1 s_hat1 s2 s_hat2
+
+/-- Function-level self-syndrome vanishing. -/
+example {n k : Nat} (H : ParityCheck n k) (Y : Codeword n) :
+    syndrome H Y Y = fun _ => 0 :=
+  syndrome_self_funext H Y
+
+/-- Syndrome XOR-cancel cycle on receiver side. -/
+example {n k : Nat} (H : ParityCheck n k) (N_g c : Codeword n)
+    (i : Fin (n - k)) :
+    syndrome H (Codeword.xor N_g c) N_g i = H.matrix.mulVec c i :=
+  syndrome_xor_self_received H N_g c i
+
+/-- `syndromeZero` under noise XOR-cancel cycle is `c` codeword condition. -/
+example {n k : Nat} (H : ParityCheck n k) (Y c : Codeword n) :
+    syndromeZero H Y (Codeword.xor Y c)
+      <-> forall (i : Fin (n - k)), H.matrix.mulVec c i = 0 :=
+  syndromeZero_xor_self_noise_iff H Y c
+
+/-- `delayTapMatrix` fifth sub-diagonal. -/
+example {n_s : Nat} {p : Nat} (paths : Fin p -> DelayTapPath)
+    (f_s : SamplingFreq) (i j : Fin n_s) (h : i.val = j.val + 5) :
+    delayTapMatrix n_s paths f_s i j
+      = delayTapImpulseResponse paths f_s { toNat := 5 } :=
+  delayTapMatrix_fifth_subdiag paths f_s i j h
+
+/-- `delayTapMatrix` sixth sub-diagonal. -/
+example {n_s : Nat} {p : Nat} (paths : Fin p -> DelayTapPath)
+    (f_s : SamplingFreq) (i j : Fin n_s) (h : i.val = j.val + 6) :
+    delayTapMatrix n_s paths f_s i j
+      = delayTapImpulseResponse paths f_s { toNat := 6 } :=
+  delayTapMatrix_sixth_subdiag paths f_s i j h
+
+/-- `delayTapMatrix` seventh sub-diagonal. -/
+example {n_s : Nat} {p : Nat} (paths : Fin p -> DelayTapPath)
+    (f_s : SamplingFreq) (i j : Fin n_s) (h : i.val = j.val + 7) :
+    delayTapMatrix n_s paths f_s i j
+      = delayTapImpulseResponse paths f_s { toNat := 7 } :=
+  delayTapMatrix_seventh_subdiag paths f_s i j h
+
+/-- `perturbChannel` composition diagonal entry. -/
+example {n_s : Nat} (h : ChannelMatrix n_s)
+    (ε₁ ε₂ : Matrix (Fin n_s) (Fin n_s) Complex) (i : Fin n_s) :
+    perturbChannel (perturbChannel h ε₁) ε₂ i i
+      = h i i * ((1 + ε₁ i i) * (1 + ε₂ i i)) :=
+  perturbChannel_perturbChannel_apply_diag h ε₁ ε₂ i
+
+/-- `perturbChannel` double-zero diagonal entry. -/
+example {n_s : Nat} (h : ChannelMatrix n_s) (i : Fin n_s) :
+    perturbChannel (perturbChannel h 0) 0 i i = h i i :=
+  perturbChannel_perturbChannel_zero_zero_apply_diag h i
+
+/-- `perturbChannel` right-zero diagonal entry. -/
+example {n_s : Nat} (h : ChannelMatrix n_s)
+    (epsilon : Matrix (Fin n_s) (Fin n_s) Complex) (i : Fin n_s) :
+    perturbChannel (perturbChannel h epsilon) 0 i i
+      = perturbChannel h epsilon i i :=
+  perturbChannel_perturbChannel_zero_right_apply_diag h epsilon i
+
+/-- `LinearIsi.bandwidth` from zero is universal. -/
+example {n_s : Nat} {ch : LinearIsi n_s} (b : Nat)
+    (h : ch.bandwidth 0) :
+    ch.bandwidth b :=
+  LinearIsi.bandwidth_of_zero b h
+
+/-- Zero-channel zero-signal zero-noise receive is zero. -/
+example {n_s : Nat} (noiseCov : CovMatrix n_s) :
+    ({ channel := 0, noiseCov := noiseCov } : LinearIsi n_s).receive 0 0
+      = 0 :=
+  LinearIsi.receive_zero_channel_zero_signal_zero_noise noiseCov
+
+/-- Generic zero-signal zero-noise receive is zero. -/
+example {n_s : Nat} (ch : LinearIsi n_s) :
+    ch.receive 0 0 = 0 :=
+  LinearIsi.receive_zero_noise_zero_signal ch
+
 /-- `QueryOrder.positionOf` on the empty list is `0`. -/
 example {numPatterns : Nat} (x : Fin numPatterns) :
     QueryOrder.positionOf x ([] : QueryOrder numPatterns) = 0 :=

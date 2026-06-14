@@ -142,6 +142,16 @@ theorem perturbChannel_perturbChannel_apply
       = h i j * ((1 + ε₁ i j) * (1 + ε₂ i j)) :=
   mul_assoc (h i j) (1 + ε₁ i j) (1 + ε₂ i j)
 
+/-- *Diagonal entry of composed perturbation.*  Specialisation of
+    `perturbChannel_perturbChannel_apply` at `i = j`. -/
+theorem perturbChannel_perturbChannel_apply_diag
+    {n_s : Nat} (h : ChannelMatrix n_s)
+    (ε₁ ε₂ : Matrix (Fin n_s) (Fin n_s) Complex)
+    (i : Fin n_s) :
+    perturbChannel (perturbChannel h ε₁) ε₂ i i
+      = h i i * ((1 + ε₁ i i) * (1 + ε₂ i i)) :=
+  perturbChannel_perturbChannel_apply h ε₁ ε₂ i i
+
 /-- *Right-identity of composed perturbation.*  Composing a
     perturbation with the zero perturbation on the right collapses
     to the original perturbation.  Direct one-line specialisation
@@ -181,6 +191,14 @@ theorem perturbChannel_perturbChannel_zero_zero_apply
     perturbChannel (perturbChannel h 0) 0 i j = h i j :=
   congrFun (congrFun (perturbChannel_perturbChannel_zero_zero h) i) j
 
+/-- *Diagonal entry under double zero-zero composition.*
+    Specialisation of `perturbChannel_perturbChannel_zero_zero_apply`
+    at `i = j`. -/
+theorem perturbChannel_perturbChannel_zero_zero_apply_diag
+    {n_s : Nat} (h : ChannelMatrix n_s) (i : Fin n_s) :
+    perturbChannel (perturbChannel h 0) 0 i i = h i i :=
+  perturbChannel_perturbChannel_zero_zero_apply h i i
+
 /-- *Pointwise right-identity of composed perturbation.*  Entry
     form of `perturbChannel_perturbChannel_zero_right`: composing a
     perturbation with the zero perturbation on the right leaves the
@@ -191,6 +209,16 @@ theorem perturbChannel_perturbChannel_zero_right_apply
     perturbChannel (perturbChannel h epsilon) 0 i j
       = perturbChannel h epsilon i j :=
   congrFun (congrFun (perturbChannel_perturbChannel_zero_right h epsilon) i) j
+
+/-- *Diagonal right-identity of composed perturbation.*
+    Specialisation of `perturbChannel_perturbChannel_zero_right_apply`
+    at `i = j`. -/
+theorem perturbChannel_perturbChannel_zero_right_apply_diag
+    {n_s : Nat} (h : ChannelMatrix n_s)
+    (epsilon : Matrix (Fin n_s) (Fin n_s) Complex) (i : Fin n_s) :
+    perturbChannel (perturbChannel h epsilon) 0 i i
+      = perturbChannel h epsilon i i :=
+  perturbChannel_perturbChannel_zero_right_apply h epsilon i i
 
 /-- *Pointwise left-identity of composed perturbation.*  Entry
     form of `perturbChannel_perturbChannel_zero_left`: perturbing

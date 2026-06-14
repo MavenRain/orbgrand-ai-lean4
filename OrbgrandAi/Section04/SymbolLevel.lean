@@ -316,6 +316,24 @@ theorem bpsk_exceed_eq_one_iff (s s_hat : Bool) :
         (((bpsk.exceed_zero_iff s s_hat).mpr heq).symm.trans h),
    bpsk_exceed_diff⟩
 
+/-- *BPSK exceedance is non-zero iff symbols differ.*  Dual of
+    `bpsk_exceed_eq_one_iff` on the zero side; specialises the
+    generic `Constellation.exceed_ne_zero_iff_ne` to `bpsk`. -/
+theorem bpsk_exceed_ne_zero_iff_ne (s s_hat : Bool) :
+    bpsk.exceed s s_hat ≠ 0 ↔ s ≠ s_hat :=
+  ⟨fun h_ne h_eq => h_ne ((bpsk.exceed_zero_iff s s_hat).mpr h_eq),
+   fun h_ne h_zero => h_ne ((bpsk.exceed_zero_iff s s_hat).mp h_zero)⟩
+
+/-- *BPSK exceedance is non-zero iff it equals one.*  Binary-valued
+    dichotomy from `bpsk_exceed_zero_or_one`: non-zero forces the
+    value to `1`; conversely `1 ≠ 0`. -/
+theorem bpsk_exceed_ne_zero_iff_eq_one (s s_hat : Bool) :
+    bpsk.exceed s s_hat ≠ 0 ↔ bpsk.exceed s s_hat = 1 :=
+  ⟨fun h_ne =>
+      (bpsk_exceed_zero_or_one s s_hat).elim
+        (fun h_zero => absurd h_zero h_ne) id,
+   fun h_one h_zero => one_ne_zero (h_one.symm.trans h_zero)⟩
+
 /-- *QPSK* (quadrature phase-shift keying): a 4-symbol constellation
     over `Fin 4`.  Same uniform exceedance distance as `bpsk` (0 on
     agreement, 1 otherwise); QPSK's actual squared-Euclidean structure
@@ -429,6 +447,17 @@ theorem trivialConstellation_le_one (s s_hat : Unit) :
 theorem trivialConstellation_nonneg (s s_hat : Unit) :
     0 <= trivialConstellation.exceed s s_hat :=
   (trivialConstellation_exceed s s_hat).ge
+
+/-- *Trivial-constellation exceedance is constant.*  Any two
+    exceedance values on the trivial constellation are equal: both
+    sides reduce to `0` via `trivialConstellation_exceed`.  Mirrors
+    `Constellation.exceed_self_eq_exceed_self` at the trivial
+    instance level. -/
+theorem trivialConstellation_exceed_eq (s1 s_hat1 s2 s_hat2 : Unit) :
+    trivialConstellation.exceed s1 s_hat1
+      = trivialConstellation.exceed s2 s_hat2 :=
+  (trivialConstellation_exceed s1 s_hat1).trans
+    (trivialConstellation_exceed s2 s_hat2).symm
 
 /-! ## Per-symbol candidate list -/
 

@@ -1111,6 +1111,15 @@ theorem syndrome_self
   (congrArg (fun v => H.matrix.mulVec v i) (Codeword.xor_self Y)).trans
     (Codeword.zero_is_codeword H i)
 
+/-- *Function-level self-syndrome vanishing.*  Function-extensional
+    form of `syndrome_self`: the entire syndrome map `syndrome H Y Y`
+    is the constantly-zero function.  `funext` lift of
+    `syndrome_self` over the index variable. -/
+theorem syndrome_self_funext
+    {n k : Nat} (H : ParityCheck n k) (Y : Codeword n) :
+    syndrome H Y Y = fun _ => 0 :=
+  funext fun i => syndrome_self H Y i
+
 /-- *Syndrome at zero/zero.*  With both received vector and noise
     candidate equal to the zero codeword, the syndrome vanishes
     pointwise.  Composes `syndrome_zero_noise` (collapses the noise
@@ -1155,6 +1164,32 @@ theorem syndrome_xor_self_noise
     {n k : Nat} (H : ParityCheck n k) (Y c : Codeword n) (i : Fin (n - k)) :
     syndrome H Y (Codeword.xor Y c) i = H.matrix.mulVec c i :=
   congrArg (fun v => H.matrix.mulVec v i) (Codeword.xor_xor_self Y c)
+
+/-- *Syndrome under XOR-cancel cycle on the receiver side.*  Dual of
+    `syndrome_xor_self_noise`: setting the received vector to
+    `N_g xor c` collapses the syndrome to the parity-check image of
+    `c` alone.  Algebraically `(N_g xor c) xor N_g = c` via
+    `xor_comm` followed by `xor_xor_self`. -/
+theorem syndrome_xor_self_received
+    {n k : Nat} (H : ParityCheck n k) (N_g c : Codeword n)
+    (i : Fin (n - k)) :
+    syndrome H (Codeword.xor N_g c) N_g i = H.matrix.mulVec c i :=
+  let step : Codeword.xor (Codeword.xor N_g c) N_g = c :=
+    (Codeword.xor_comm (Codeword.xor N_g c) N_g).trans
+      (Codeword.xor_xor_self N_g c)
+  congrArg (fun v => H.matrix.mulVec v i) step
+
+/-- *Acceptance under noise XOR-cancel cycle.*  Lifts
+    `syndrome_xor_self_noise` to the `syndromeZero` predicate: the
+    GRAND acceptance condition with noise candidate `Y xor c` is
+    equivalent to `c` itself being a codeword.  Both directions
+    chain through the per-coordinate identity. -/
+theorem syndromeZero_xor_self_noise_iff
+    {n k : Nat} (H : ParityCheck n k) (Y c : Codeword n) :
+    syndromeZero H Y (Codeword.xor Y c)
+      <-> forall (i : Fin (n - k)), H.matrix.mulVec c i = 0 :=
+  ⟨fun h i => (syndrome_xor_self_noise H Y c i).symm.trans (h i),
+   fun h i => (syndrome_xor_self_noise H Y c i).trans (h i)⟩
 
 /-- *Parity-check map is XOR-linear.*  `H * (a xor b) = H * a + H * b`:
     rewrites `xor` to `+` (via `xor_eq_add`) and then applies

@@ -186,6 +186,16 @@ theorem LinearIsi.bandwidth_succ
     ch.bandwidth (b + 1) :=
   LinearIsi.bandwidth_le (Nat.le_succ b) h
 
+/-- *Bandwidth zero is the strongest bandwidth bound.*  A channel
+    with bandwidth at most `0` (diagonal-only support) also has
+    bandwidth at most any `b`.  Direct corollary of `bandwidth_le`
+    with the witness `Nat.zero_le b`. -/
+theorem LinearIsi.bandwidth_of_zero
+    {n_s : Nat} {ch : LinearIsi n_s} (b : Nat)
+    (h : ch.bandwidth 0) :
+    ch.bandwidth b :=
+  LinearIsi.bandwidth_le (Nat.zero_le b) h
+
 /-- *Bandwidth widens by two.*  Two-step corollary of
     `bandwidth_succ`: lift from `b` to `b + 1` to `b + 2`. -/
 theorem LinearIsi.bandwidth_succ_succ
@@ -475,6 +485,25 @@ theorem LinearIsi.receive_one_zero_signal_zero_noise
     ({ channel := 1, noiseCov := noiseCov } : LinearIsi n_s).receive 0 0
       = 0 :=
   LinearIsi.receive_one_zero_signal 0 noiseCov
+
+/-- *Zero-channel zero-signal zero-noise receive is zero.*  With
+    `channel := 0`, `X = 0`, and `N = 0`, the receiver returns `0`.
+    Direct instantiation of `zero_channel_receive` at `N = 0`. -/
+theorem LinearIsi.receive_zero_channel_zero_signal_zero_noise
+    {n_s : Nat} (noiseCov : CovMatrix n_s) :
+    ({ channel := 0, noiseCov := noiseCov } : LinearIsi n_s).receive 0 0
+      = 0 :=
+  LinearIsi.zero_channel_receive noiseCov 0 0
+
+/-- *Generic zero-signal zero-noise receive is zero.*  For any
+    channel, with `X = 0` and `N = 0`, the receiver returns `0`.
+    Chains `receive_zero_noise ch 0` with `Matrix.mulVec_zero`. -/
+theorem LinearIsi.receive_zero_noise_zero_signal
+    {n_s : Nat} (ch : LinearIsi n_s) :
+    ch.receive 0 0 = 0 :=
+  let step : ch.receive 0 0 = fun k => ch.channel.mulVec 0 k :=
+    LinearIsi.receive_zero_noise ch 0
+  step.trans (funext fun k => congrFun ch.channel.mulVec_zero k)
 
 /-- *Identity-channel zero-noise receive is the signal.*  With
     `channel := 1` and `N = 0`, the receiver is the identity on `X`.
