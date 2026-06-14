@@ -143,6 +143,19 @@ theorem cov1_lag_neg_three
 theorem cov1_lag_four (sigma : NoisePower) (rho : CorrelationCoefficient) :
     cov1_lag sigma rho 4 = sigma.val * rho.val ^ 4 := rfl
 
+/-- `cov1_lag` at lag `-4` is `sigma * rho^4`.  Compose
+    `cov1_lag_neg` at `i = 4` with `cov1_lag_four`.  Negative-lag
+    companion to `cov1_lag_four`. -/
+theorem cov1_lag_neg_four
+    (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    cov1_lag sigma rho (-4) = sigma.val * rho.val ^ 4 :=
+  (cov1_lag_neg sigma rho 4).trans (cov1_lag_four sigma rho)
+
+/-- `cov1_lag` at lag 5 is `sigma * rho^5`.  Same defeq pattern as
+    `cov1_lag_two`, `_three`, and `_four`. -/
+theorem cov1_lag_five (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    cov1_lag sigma rho 5 = sigma.val * rho.val ^ 5 := rfl
+
 /-- *General positive-lag formula.*  For any natural-number lag `n`
     (coerced to `Int`), `cov1_lag sigma rho ↑n = sigma * rho^n`.
     Subsumes `_zero`, `_one`, `_two`, `_three` as the `n = 0, 1, 2, 3`
@@ -463,6 +476,24 @@ theorem cov2_lag_eight
     cov2_lag sigma rho1 rho2 beta1 beta2 8
       = beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 7
         + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 6 := rfl
+
+/-- *Recurrence step at lag `9`.*  Same `rfl` pattern as
+    `cov2_lag_eight`, one step further. -/
+theorem cov2_lag_nine
+    (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta1 beta2 : Real) :
+    cov2_lag sigma rho1 rho2 beta1 beta2 9
+      = beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 8
+        + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 7 := rfl
+
+/-- *Recurrence step at lag `10`.*  Same `rfl` pattern as
+    `cov2_lag_nine`, one step further. -/
+theorem cov2_lag_ten
+    (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta1 beta2 : Real) :
+    cov2_lag sigma rho1 rho2 beta1 beta2 10
+      = beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 9
+        + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 8 := rfl
 
 /-- The AR(2)-style recurrence for `cov2_lag` at lag `n + 3`. -/
 theorem cov2_lag_succ_succ_succ

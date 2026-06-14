@@ -204,6 +204,25 @@ theorem LinearIsi.bandwidth_add
     ch.bandwidth (b + k) :=
   LinearIsi.bandwidth_le (Nat.le_add_right b k) h
 
+/-- *Bandwidth widens by any left-additive offset.*  Dual of
+    `bandwidth_add`: a channel with bandwidth at most `b` also has
+    bandwidth at most `k + b` for any `k`.  Direct corollary of
+    `bandwidth_le` with the witness `Nat.le_add_left b k`. -/
+theorem LinearIsi.bandwidth_add_left
+    {n_s : Nat} {ch : LinearIsi n_s} {b : Nat} (k : Nat)
+    (h : ch.bandwidth b) :
+    ch.bandwidth (k + b) :=
+  LinearIsi.bandwidth_le (Nat.le_add_left b k) h
+
+/-- *Bandwidth widens by three.*  Three-step corollary chaining
+    `bandwidth_succ_succ` and `bandwidth_succ`: lift from `b` to
+    `b + 2` and then to `b + 3`. -/
+theorem LinearIsi.bandwidth_succ_succ_succ
+    {n_s : Nat} {ch : LinearIsi n_s} {b : Nat}
+    (h : ch.bandwidth b) :
+    ch.bandwidth (b + 3) :=
+  LinearIsi.bandwidth_succ (LinearIsi.bandwidth_succ_succ h)
+
 /-- *Zero-channel receive ignores the signal.*  With `channel := 0`,
     the channel-vector product `(0 : Matrix).mulVec X` vanishes, so
     `receive X N = N` regardless of `X`. -/
@@ -328,6 +347,15 @@ theorem LinearIsi.receive_eq_iff_noise_eq
       congrFun h k
     add_left_cancel hk,
    fun h => congrArg (ch.receive X) h⟩
+
+/-- *Symmetric form of `receive_eq_iff_noise_eq`.*  The biconditional
+    can be read in either direction; this variant lets callers
+    rewrite `N1 = N2` into a `receive`-equality without an extra
+    `Iff.symm`.  Direct `Iff.comm` permutation. -/
+theorem LinearIsi.receive_eq_iff_noise_eq_symm
+    {n_s : Nat} (ch : LinearIsi n_s) (X N1 N2 : SymbolVector n_s) :
+    N1 = N2 <-> ch.receive X N1 = ch.receive X N2 :=
+  Iff.comm.mp (LinearIsi.receive_eq_iff_noise_eq ch X N1 N2)
 
 /-- *Receiver agreement at fixed noise iff channel images agree.*
     Two signals produce equal receiver output (with a common noise

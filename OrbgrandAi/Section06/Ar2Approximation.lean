@@ -237,6 +237,20 @@ theorem ar2_twenty_one (phi1 phi2 z1 z2 : Complex) :
       = phi1 * ar2 phi1 phi2 z1 z2 20
         + phi2 * ar2 phi1 phi2 z1 z2 19 := rfl
 
+/-- Recurrence step at index 22: `phi_1 * ar2 21 + phi_2 * ar2 20`.
+    Pattern-match arm `(20 + 2)` reduces definitionally to the RHS. -/
+theorem ar2_twenty_two (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 22
+      = phi1 * ar2 phi1 phi2 z1 z2 21
+        + phi2 * ar2 phi1 phi2 z1 z2 20 := rfl
+
+/-- Recurrence step at index 23: `phi_1 * ar2 22 + phi_2 * ar2 21`.
+    Pattern-match arm `(21 + 2)` reduces definitionally to the RHS. -/
+theorem ar2_twenty_three (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 23
+      = phi1 * ar2 phi1 phi2 z1 z2 22
+        + phi2 * ar2 phi1 phi2 z1 z2 21 := rfl
+
 /-- *Trivial coefficients.*  When both AR(2) coefficients are zero,
     every recurrence step (index `n + 2`) vanishes regardless of
     the initial conditions.  The initial conditions at indices 0 and

@@ -1046,6 +1046,104 @@ example {u v : Nat -> Real} (h : ∀ᶠ n in Filter.atTop, u n <= v n)
     limsupEntropyRate u <= limsupEntropyRate v :=
   limsupEntropyRate_le_limsupEntropyRate_of_le_eventually h hu hv
 
+/-- AR(2) recurrence step at index 22. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 22
+      = phi1 * ar2 phi1 phi2 z1 z2 21
+        + phi2 * ar2 phi1 phi2 z1 z2 20 :=
+  ar2_twenty_two phi1 phi2 z1 z2
+
+/-- AR(2) recurrence step at index 23. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 23
+      = phi1 * ar2 phi1 phi2 z1 z2 22
+        + phi2 * ar2 phi1 phi2 z1 z2 21 :=
+  ar2_twenty_three phi1 phi2 z1 z2
+
+/-- `cov1_lag` at lag `-4`. -/
+example (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    cov1_lag sigma rho (-4) = sigma.val * rho.val ^ 4 :=
+  cov1_lag_neg_four sigma rho
+
+/-- `cov1_lag` at lag `5`. -/
+example (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    cov1_lag sigma rho 5 = sigma.val * rho.val ^ 5 :=
+  cov1_lag_five sigma rho
+
+/-- `cov2_lag` recurrence at lag 9. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta1 beta2 : Real) :
+    cov2_lag sigma rho1 rho2 beta1 beta2 9
+      = beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 8
+        + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 7 :=
+  cov2_lag_nine sigma rho1 rho2 beta1 beta2
+
+/-- `cov2_lag` recurrence at lag 10. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta1 beta2 : Real) :
+    cov2_lag sigma rho1 rho2 beta1 beta2 10
+      = beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 9
+        + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 8 :=
+  cov2_lag_ten sigma rho1 rho2 beta1 beta2
+
+/-- Constant-sequence limsup is monotone in the constant. -/
+example {c1 c2 : Real} (h : c1 <= c2) :
+    limsupEntropyRate (fun _ => c1) <= limsupEntropyRate (fun _ => c2) :=
+  limsupEntropyRate_const_mono h
+
+/-- Constant liminf is bounded by a larger scalar. -/
+example {c1 c2 : Real} (h : c1 <= c2) :
+    liminfInformationRate (fun _ => c1) <= c2 :=
+  liminfInformationRate_const_le_const h
+
+/-- Scalar bounded by a larger constant limsup. -/
+example {c1 c2 : Real} (h : c1 <= c2) :
+    c1 <= limsupEntropyRate (fun _ => c2) :=
+  const_le_limsupEntropyRate_const h
+
+/-- `perturbChannel_zero` alternate-direction form. -/
+example {n_s : Nat} (h : ChannelMatrix n_s) : h = perturbChannel h 0 :=
+  perturbChannel_zero_eq_self h
+
+/-- Two zero-perturbations collapse to identity. -/
+example {n_s : Nat} (h : ChannelMatrix n_s) :
+    perturbChannel (perturbChannel h 0) 0 = h :=
+  perturbChannel_perturbChannel_zero_zero h
+
+/-- Two zero-perturbations recover the original entry. -/
+example {n_s : Nat} (h : ChannelMatrix n_s) (i j : Fin n_s) :
+    perturbChannel (perturbChannel h 0) 0 i j = h i j :=
+  perturbChannel_perturbChannel_zero_zero_apply h i j
+
+/-- BPSK exceedance is non-negative. -/
+example (s s_hat : Bool) : 0 <= bpsk.exceed s s_hat :=
+  bpsk_exceed_nonneg s s_hat
+
+/-- QPSK exceedance is non-negative. -/
+example (s s_hat : Fin 4) : 0 <= qpsk.exceed s s_hat :=
+  qpsk_exceed_nonneg s s_hat
+
+/-- Trivial constellation exceedance is non-negative. -/
+example (s s_hat : Unit) : 0 <= trivialConstellation.exceed s s_hat :=
+  trivialConstellation_nonneg s s_hat
+
+/-- `LinearIsi.bandwidth` widens by left-additive offset. -/
+example {n_s : Nat} {ch : LinearIsi n_s} {b : Nat} (k : Nat)
+    (h : ch.bandwidth b) :
+    ch.bandwidth (k + b) :=
+  LinearIsi.bandwidth_add_left k h
+
+/-- `LinearIsi.bandwidth` widens by three. -/
+example {n_s : Nat} {ch : LinearIsi n_s} {b : Nat}
+    (h : ch.bandwidth b) :
+    ch.bandwidth (b + 3) :=
+  LinearIsi.bandwidth_succ_succ_succ h
+
+/-- `LinearIsi.receive_eq_iff_noise_eq` reversed reading. -/
+example {n_s : Nat} (ch : LinearIsi n_s) (X N1 N2 : SymbolVector n_s) :
+    N1 = N2 <-> ch.receive X N1 = ch.receive X N2 :=
+  LinearIsi.receive_eq_iff_noise_eq_symm ch X N1 N2
+
 /-- `QueryOrder.positionOf` on the empty list is `0`. -/
 example {numPatterns : Nat} (x : Fin numPatterns) :
     QueryOrder.positionOf x ([] : QueryOrder numPatterns) = 0 :=

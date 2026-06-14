@@ -151,6 +151,26 @@ theorem liminfInformationRate_const_mono {c1 c2 : Real} (h : c1 <= c2) :
   ((liminfInformationRate_const c1).le.trans h).trans
     (liminfInformationRate_const c2).ge
 
+/-- *Monotonicity of the constant-sequence lim-sup entropy rate.*
+    Dual of `liminfInformationRate_const_mono`. -/
+theorem limsupEntropyRate_const_mono {c1 c2 : Real} (h : c1 <= c2) :
+    limsupEntropyRate (fun _ => c1) <= limsupEntropyRate (fun _ => c2) :=
+  ((limsupEntropyRate_const c1).le.trans h).trans
+    (limsupEntropyRate_const c2).ge
+
+/-- *Constant lim-inf bounded by a larger scalar.*  If `c1 <= c2`,
+    the lim-inf information rate of the constant sequence `c1` is
+    at most `c2` (as a bare scalar).  Half-monotonicity form. -/
+theorem liminfInformationRate_const_le_const {c1 c2 : Real} (h : c1 <= c2) :
+    liminfInformationRate (fun _ => c1) <= c2 :=
+  (liminfInformationRate_const c1).le.trans h
+
+/-- *Scalar bounded by a larger constant lim-sup.*  Dual of
+    `liminfInformationRate_const_le_const`. -/
+theorem const_le_limsupEntropyRate_const {c1 c2 : Real} (h : c1 <= c2) :
+    c1 <= limsupEntropyRate (fun _ => c2) :=
+  h.trans (limsupEntropyRate_const c2).ge
+
 /-- *liminf <= limsup, general form.*  Promotes
     `liminfInformationRate_le_limsupEntropyRate_const` from constant
     sequences to any `Real`-valued sequence whose values are bounded

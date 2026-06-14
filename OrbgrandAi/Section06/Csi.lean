@@ -88,6 +88,14 @@ theorem perturbChannel_zero
   funext fun i => funext fun j =>
     (congrArg (h i j * ·) (add_zero (1 : Complex))).trans (mul_one (h i j))
 
+/-- *Alternate form of `perturbChannel_zero`.*  Reads the identity
+    in the opposite direction: the original channel `h` equals its
+    zero-perturbed form.  Pure `.symm` of `perturbChannel_zero`. -/
+theorem perturbChannel_zero_eq_self
+    {n_s : Nat} (h : ChannelMatrix n_s) :
+    h = perturbChannel h 0 :=
+  (perturbChannel_zero h).symm
+
 /-- *Zero channel stays zero under perturbation.*  When the underlying
     channel matrix is zero, the perturbed channel is also zero
     (regardless of the error matrix).  Each entry becomes
@@ -128,6 +136,25 @@ theorem perturbChannel_perturbChannel_zero_left
     (epsilon : Matrix (Fin n_s) (Fin n_s) Complex) :
     perturbChannel (perturbChannel h 0) epsilon = perturbChannel h epsilon :=
   congrArg (fun H => perturbChannel H epsilon) (perturbChannel_zero h)
+
+/-- *Zero-zero composition collapses to identity.*  Composing two
+    zero perturbations leaves the channel unchanged.  Lift the
+    inner perturbation to `h` via `congrArg` + `perturbChannel_zero`,
+    then collapse the outer perturbation by `perturbChannel_zero`. -/
+theorem perturbChannel_perturbChannel_zero_zero
+    {n_s : Nat} (h : ChannelMatrix n_s) :
+    perturbChannel (perturbChannel h 0) 0 = h :=
+  (congrArg (fun H => perturbChannel H 0) (perturbChannel_zero h)).trans
+    (perturbChannel_zero h)
+
+/-- *Pointwise zero-zero composition.*  Entry form of
+    `perturbChannel_perturbChannel_zero_zero`: composing two zero
+    perturbations recovers the original entry `h i j`.  One-line
+    `congrFun` cascade over the matrix-level equality. -/
+theorem perturbChannel_perturbChannel_zero_zero_apply
+    {n_s : Nat} (h : ChannelMatrix n_s) (i j : Fin n_s) :
+    perturbChannel (perturbChannel h 0) 0 i j = h i j :=
+  congrFun (congrFun (perturbChannel_perturbChannel_zero_zero h) i) j
 
 /-- *General entry of `perturbChannel`.*  Direct definitional
     unfolding: `perturbChannel h epsilon i j = h i j * (1 + epsilon i j)`.

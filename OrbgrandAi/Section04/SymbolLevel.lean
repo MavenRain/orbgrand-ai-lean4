@@ -287,6 +287,16 @@ theorem bpsk_exceed_le_one (s s_hat : Bool) :
   | Or.inl h => h.trans_le zero_le_one
   | Or.inr h => le_of_eq h
 
+/-- *BPSK exceedance is non-negative.*  Specialisation of the
+    generic `Constellation.exceed_nonneg` structure field to the
+    concrete `bpsk` instance.  Packages the lower bound at the
+    instance level so downstream callers can cite
+    `bpsk_exceed_nonneg` without reaching through the structure
+    projection, mirroring `bpsk_exceed_le_one` at the upper end. -/
+theorem bpsk_exceed_nonneg (s s_hat : Bool) :
+    0 <= bpsk.exceed s s_hat :=
+  bpsk.exceed_nonneg s s_hat
+
 /-- *BPSK exceedance is symmetric.*  `bpsk.exceed s s_hat = bpsk.exceed s_hat s`. -/
 theorem bpsk_exceed_symm (s s_hat : Bool) :
     bpsk.exceed s s_hat = bpsk.exceed s_hat s :=
@@ -354,6 +364,14 @@ theorem qpsk_exceed_le_one (s s_hat : Fin 4) :
   | Or.inl h => h.trans_le zero_le_one
   | Or.inr h => le_of_eq h
 
+/-- *QPSK exceedance is non-negative.*  Specialisation of the
+    generic `Constellation.exceed_nonneg` structure field to the
+    concrete `qpsk` instance, complementing `qpsk_exceed_le_one`
+    at the lower end. -/
+theorem qpsk_exceed_nonneg (s s_hat : Fin 4) :
+    0 <= qpsk.exceed s s_hat :=
+  qpsk.exceed_nonneg s s_hat
+
 /-- *QPSK exceedance is symmetric.*  `qpsk.exceed s s_hat = qpsk.exceed s_hat s`. -/
 theorem qpsk_exceed_symm (s s_hat : Fin 4) :
     qpsk.exceed s s_hat = qpsk.exceed s_hat s :=
@@ -403,6 +421,14 @@ theorem trivialConstellation_all_eq (s s_hat : Unit) :
 theorem trivialConstellation_le_one (s s_hat : Unit) :
     trivialConstellation.exceed s s_hat <= 1 :=
   (trivialConstellation_exceed s s_hat).trans_le zero_le_one
+
+/-- *Trivial constellation exceedance is non-negative.*  Direct
+    consequence of `trivialConstellation_exceed`: every value is
+    exactly `0`, so `Eq.ge` gives `0 <= 0`.  Completes the `_nonneg`
+    family across the three concrete constellation instances. -/
+theorem trivialConstellation_nonneg (s s_hat : Unit) :
+    0 <= trivialConstellation.exceed s s_hat :=
+  (trivialConstellation_exceed s s_hat).ge
 
 /-! ## Per-symbol candidate list -/
 
