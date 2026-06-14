@@ -523,5 +523,99 @@ theorem bler_and_false
       fun N => Bool.and_false (decode N)).trans
     (bler_const_false sigma)
 
+/-- *Identity by `||`-false on the right.*  `decode N || false = decode N`
+    pointwise, so the OR-decoder agrees with the original.  One-line
+    corollary of `bler_pointwise_eq` via `Bool.or_false`. -/
+theorem bler_or_false
+    {n_s : Nat} (sigma : NoisePower)
+    (decode : RealSymbolVector n_s -> Bool) :
+    bler sigma (fun N => decode N || false) = bler sigma decode :=
+  bler_pointwise_eq sigma _ decode fun N => Bool.or_false (decode N)
+
+/-- *Identity by `&&`-true on the right.*  `decode N && true = decode N`
+    pointwise, so the AND-decoder agrees with the original.  One-line
+    corollary of `bler_pointwise_eq` via `Bool.and_true`. -/
+theorem bler_and_true
+    {n_s : Nat} (sigma : NoisePower)
+    (decode : RealSymbolVector n_s -> Bool) :
+    bler sigma (fun N => decode N && true) = bler sigma decode :=
+  bler_pointwise_eq sigma _ decode fun N => Bool.and_true (decode N)
+
+/-- *Identity by `||`-false on the left.*  `false || decode N = decode N`
+    pointwise.  Left-handed companion to `bler_or_false`. -/
+theorem bler_false_or
+    {n_s : Nat} (sigma : NoisePower)
+    (decode : RealSymbolVector n_s -> Bool) :
+    bler sigma (fun N => false || decode N) = bler sigma decode :=
+  bler_pointwise_eq sigma _ decode fun N => Bool.false_or (decode N)
+
+/-- *Identity by `&&`-true on the left.*  `true && decode N = decode N`
+    pointwise.  Left-handed companion to `bler_and_true`. -/
+theorem bler_true_and
+    {n_s : Nat} (sigma : NoisePower)
+    (decode : RealSymbolVector n_s -> Bool) :
+    bler sigma (fun N => true && decode N) = bler sigma decode :=
+  bler_pointwise_eq sigma _ decode fun N => Bool.true_and (decode N)
+
+/-- *Left annihilation by `||`-true.*  `true || decode N = true`
+    pointwise, so `bler = 1`.  Left-handed companion to `bler_or_true`. -/
+theorem bler_true_or
+    {n_s : Nat} (sigma : NoisePower)
+    (decode : RealSymbolVector n_s -> Bool) :
+    bler sigma (fun N => true || decode N) = 1 :=
+  (bler_pointwise_eq sigma _ (fun _ => true)
+      fun N => Bool.true_or (decode N)).trans
+    (bler_const_true sigma)
+
+/-- *Left annihilation by `&&`-false.*  `false && decode N = false`
+    pointwise, so `bler = 0`.  Left-handed companion to `bler_and_false`. -/
+theorem bler_false_and
+    {n_s : Nat} (sigma : NoisePower)
+    (decode : RealSymbolVector n_s -> Bool) :
+    bler sigma (fun N => false && decode N) = 0 :=
+  (bler_pointwise_eq sigma _ (fun _ => false)
+      fun N => Bool.false_and (decode N)).trans
+    (bler_const_false sigma)
+
+/-- *XOR with self vanishes.*  `xor (decode N) (decode N) = false`
+    pointwise, so the failure set is empty and `bler = 0`.  Degenerate
+    case of `bler_xor_eq_zero_of_pointwise_eq` (decode1 = decode2). -/
+theorem bler_xor_self
+    {n_s : Nat} (sigma : NoisePower)
+    (decode : RealSymbolVector n_s -> Bool) :
+    bler sigma (fun N => xor (decode N) (decode N)) = 0 :=
+  (bler_pointwise_eq sigma _ (fun _ => false)
+      fun N => Bool.xor_self (decode N)).trans
+    (bler_const_false sigma)
+
+/-- *XOR with `false` on the right is identity.*  `xor (decode N) false
+    = decode N` pointwise.  One-line corollary of `bler_pointwise_eq`
+    via `Bool.xor_false`. -/
+theorem bler_xor_false_right
+    {n_s : Nat} (sigma : NoisePower)
+    (decode : RealSymbolVector n_s -> Bool) :
+    bler sigma (fun N => xor (decode N) false) = bler sigma decode :=
+  bler_pointwise_eq sigma _ decode fun N => Bool.xor_false (decode N)
+
+/-- *XOR with `false` on the left is identity.*  `xor false (decode N)
+    = decode N` pointwise.  Left-handed companion to
+    `bler_xor_false_right`. -/
+theorem bler_false_xor
+    {n_s : Nat} (sigma : NoisePower)
+    (decode : RealSymbolVector n_s -> Bool) :
+    bler sigma (fun N => xor false (decode N)) = bler sigma decode :=
+  bler_pointwise_eq sigma _ decode fun N => Bool.false_xor (decode N)
+
+/-- *DeMorgan over `||`.*  `!(decode1 N || decode2 N) = !decode1 N
+    && !decode2 N` pointwise, so `bler` is invariant under the
+    DeMorgan rewrite.  One-line corollary of `bler_pointwise_eq` via
+    `Bool.not_or`. -/
+theorem bler_not_or
+    {n_s : Nat} (sigma : NoisePower)
+    (d1 d2 : RealSymbolVector n_s -> Bool) :
+    bler sigma (fun N => !(d1 N || d2 N))
+      = bler sigma (fun N => !d1 N && !d2 N) :=
+  bler_pointwise_eq sigma _ _ fun N => Bool.not_or (d1 N) (d2 N)
+
 end Section00
 end OrbgrandAi

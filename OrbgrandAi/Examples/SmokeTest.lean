@@ -730,6 +730,20 @@ example (phi1 phi2 z1 z2 : Complex) :
         + phi2 * ar2 phi1 phi2 z1 z2 8 :=
   ar2_ten phi1 phi2 z1 z2
 
+/-- AR(2) recurrence step at index 11. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 11
+      = phi1 * ar2 phi1 phi2 z1 z2 10
+        + phi2 * ar2 phi1 phi2 z1 z2 9 :=
+  ar2_eleven phi1 phi2 z1 z2
+
+/-- AR(2) recurrence step at index 12. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 12
+      = phi1 * ar2 phi1 phi2 z1 z2 11
+        + phi2 * ar2 phi1 phi2 z1 z2 10 :=
+  ar2_twelve phi1 phi2 z1 z2
+
 /-- Section VI.B AR(2) approximation-error statement: the per-pulse
     `normSq <= delta^2` implication shape (`delta in [0, 1)`) is well-formed
     and reducible to `True`, locking the quantifier order and bound form. -/
@@ -1341,6 +1355,67 @@ example {n_s : Nat} (sigma : NoisePower)
     (decode : Section00.RealSymbolVector n_s -> Bool) :
     Section00.bler sigma (fun N => decode N && false) = 0 :=
   Section00.bler_and_false sigma decode
+
+/-- `Section00.bler` OR-false identity (right). -/
+example {n_s : Nat} (sigma : NoisePower)
+    (decode : Section00.RealSymbolVector n_s -> Bool) :
+    Section00.bler sigma (fun N => decode N || false) = Section00.bler sigma decode :=
+  Section00.bler_or_false sigma decode
+
+/-- `Section00.bler` AND-true identity (right). -/
+example {n_s : Nat} (sigma : NoisePower)
+    (decode : Section00.RealSymbolVector n_s -> Bool) :
+    Section00.bler sigma (fun N => decode N && true) = Section00.bler sigma decode :=
+  Section00.bler_and_true sigma decode
+
+/-- `Section00.bler` OR-false identity (left). -/
+example {n_s : Nat} (sigma : NoisePower)
+    (decode : Section00.RealSymbolVector n_s -> Bool) :
+    Section00.bler sigma (fun N => false || decode N) = Section00.bler sigma decode :=
+  Section00.bler_false_or sigma decode
+
+/-- `Section00.bler` AND-true identity (left). -/
+example {n_s : Nat} (sigma : NoisePower)
+    (decode : Section00.RealSymbolVector n_s -> Bool) :
+    Section00.bler sigma (fun N => true && decode N) = Section00.bler sigma decode :=
+  Section00.bler_true_and sigma decode
+
+/-- `Section00.bler` OR-true annihilation (left): `true || decode = true` so `bler = 1`. -/
+example {n_s : Nat} (sigma : NoisePower)
+    (decode : Section00.RealSymbolVector n_s -> Bool) :
+    Section00.bler sigma (fun N => true || decode N) = 1 :=
+  Section00.bler_true_or sigma decode
+
+/-- `Section00.bler` AND-false annihilation (left): `false && decode = false` so `bler = 0`. -/
+example {n_s : Nat} (sigma : NoisePower)
+    (decode : Section00.RealSymbolVector n_s -> Bool) :
+    Section00.bler sigma (fun N => false && decode N) = 0 :=
+  Section00.bler_false_and sigma decode
+
+/-- `Section00.bler` of `xor decode decode` vanishes. -/
+example {n_s : Nat} (sigma : NoisePower)
+    (decode : Section00.RealSymbolVector n_s -> Bool) :
+    Section00.bler sigma (fun N => xor (decode N) (decode N)) = 0 :=
+  Section00.bler_xor_self sigma decode
+
+/-- `Section00.bler` of `xor decode false` is identity (right). -/
+example {n_s : Nat} (sigma : NoisePower)
+    (decode : Section00.RealSymbolVector n_s -> Bool) :
+    Section00.bler sigma (fun N => xor (decode N) false) = Section00.bler sigma decode :=
+  Section00.bler_xor_false_right sigma decode
+
+/-- `Section00.bler` of `xor false decode` is identity (left). -/
+example {n_s : Nat} (sigma : NoisePower)
+    (decode : Section00.RealSymbolVector n_s -> Bool) :
+    Section00.bler sigma (fun N => xor false (decode N)) = Section00.bler sigma decode :=
+  Section00.bler_false_xor sigma decode
+
+/-- `Section00.bler` DeMorgan: `!(d1 || d2)` has the same BLER as `!d1 && !d2`. -/
+example {n_s : Nat} (sigma : NoisePower)
+    (d1 d2 : Section00.RealSymbolVector n_s -> Bool) :
+    Section00.bler sigma (fun N => !(d1 N || d2 N))
+      = Section00.bler sigma (fun N => !d1 N && !d2 N) :=
+  Section00.bler_not_or sigma d1 d2
 
 /-- `regressorMatrix4x2` body unfold: at `(i, j)` returns `z (i.val + j.val)`
     with the `Fin 6` bound witnessed by `i.val + j.val < 4 + 1 < 6`. -/
