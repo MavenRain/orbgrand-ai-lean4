@@ -148,6 +148,22 @@ noncomputable def substitutionPenalty?
   hardDecisionBlock? post |>.map fun tStar =>
     Real.log (post tStar) - Real.log (post t)
 
+/-- *Body unfold.*  `substitutionPenalty? post t` is the
+    `hardDecisionBlock?`-keyed log-ratio penalty.  Definitional. -/
+theorem substitutionPenalty?_eq
+    {numCandidates : Nat} (post : BlockPosterior numCandidates)
+    (t : Fin numCandidates) :
+    substitutionPenalty? post t
+      = (hardDecisionBlock? post).map
+          (fun tStar => Real.log (post tStar) - Real.log (post t)) := rfl
+
+/-- *Empty candidate set yields `none`.*  At `numCandidates = 0`,
+    `hardDecisionBlock? post = none` and `none.map _ = none`, so
+    the penalty is `none`.  Definitional. -/
+theorem substitutionPenalty?_empty
+    (post : BlockPosterior 0) (t : Fin 0) :
+    substitutionPenalty? post t = none := rfl
+
 /-! ## Codebook membership and abandonment -/
 
 /-- The codebook-membership oracle `Phi : Codeword n -> Bool`. -/
@@ -436,6 +452,20 @@ theorem orbgrandAi_empty_codebook_nil
     orbgrandAi (b := b) (numCandidates := numCandidates)
       Y (fun _ => false) budget [] = none :=
   orbgrandAi_empty_codebook Y budget []
+
+/-- *Vacuous codebook on a non-empty pattern list.*  Degenerate
+    corner: the codebook rejects every codeword, so no candidate
+    pattern can ever be accepted, and the decoder returns `none`
+    regardless of budget or pattern head/tail.  Specialises
+    `orbgrandAi_empty_codebook` at a `cons`. -/
+theorem orbgrandAi_empty_codebook_cons
+    {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (budget : AbandonmentBudget)
+    (e : Fin (n_s / b) -> Fin numCandidates)
+    (rest : List (Fin (n_s / b) -> Fin numCandidates)) :
+    orbgrandAi (b := b) (numCandidates := numCandidates)
+      Y (fun _ => false) budget (e :: rest) = none :=
+  orbgrandAi_empty_codebook Y budget (e :: rest)
 
 /-! ## Substitution provenance (soundness of the output) -/
 

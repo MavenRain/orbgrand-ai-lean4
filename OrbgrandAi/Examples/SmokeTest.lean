@@ -1271,6 +1271,74 @@ example (a b : QueryOrder 1) : kendallTau a b <= 1 :=
 example (a b c d : QueryOrder 0) : kendallTau a b = kendallTau c d :=
   kendallTau_empty_eq a b c d
 
+/-- `substitutionPenalty?` body unfold. -/
+example {numCandidates : Nat} (post : BlockPosterior numCandidates)
+    (t : Fin numCandidates) :
+    substitutionPenalty? post t
+      = (hardDecisionBlock? post).map
+          (fun tStar => Real.log (post tStar) - Real.log (post t)) :=
+  substitutionPenalty?_eq post t
+
+/-- `substitutionPenalty?` on empty candidate set is `none`. -/
+example (post : BlockPosterior 0) (t : Fin 0) :
+    substitutionPenalty? post t = none :=
+  substitutionPenalty?_empty post t
+
+/-- `orbgrandAi` with empty codebook on non-empty pattern list. -/
+example {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) (budget : AbandonmentBudget)
+    (e : Fin (n_s / b) -> Fin numCandidates)
+    (rest : List (Fin (n_s / b) -> Fin numCandidates)) :
+    orbgrandAi (b := b) (numCandidates := numCandidates)
+      Y (fun _ => false) budget (e :: rest) = none :=
+  orbgrandAi_empty_codebook_cons Y budget e rest
+
+/-- AR(2) recurrence step at index 27. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 27
+      = phi1 * ar2 phi1 phi2 z1 z2 26
+        + phi2 * ar2 phi1 phi2 z1 z2 25 :=
+  ar2_twenty_seven phi1 phi2 z1 z2
+
+/-- AR(2) recurrence step at index 28. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 28
+      = phi1 * ar2 phi1 phi2 z1 z2 27
+        + phi2 * ar2 phi1 phi2 z1 z2 26 :=
+  ar2_twenty_eight phi1 phi2 z1 z2
+
+/-- `cov1_lag` at lag `-6`. -/
+example (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    cov1_lag sigma rho (-6) = sigma.val * rho.val ^ 6 :=
+  cov1_lag_neg_six sigma rho
+
+/-- `cov1_lag` at lag `7`. -/
+example (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    cov1_lag sigma rho 7 = sigma.val * rho.val ^ 7 :=
+  cov1_lag_seven sigma rho
+
+/-- `cov2_lag` recurrence at lag 12. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta1 beta2 : Real) :
+    cov2_lag sigma rho1 rho2 beta1 beta2 12
+      = beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 11
+        + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 10 :=
+  cov2_lag_twelve sigma rho1 rho2 beta1 beta2
+
+/-- `cov2_lag` recurrence at lag 13. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta1 beta2 : Real) :
+    cov2_lag sigma rho1 rho2 beta1 beta2 13
+      = beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 12
+        + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 11 :=
+  cov2_lag_thirteen sigma rho1 rho2 beta1 beta2
+
+/-- `LinearIsi.bandwidth` widens by five. -/
+example {n_s : Nat} {ch : LinearIsi n_s} {b : Nat}
+    (h : ch.bandwidth b) :
+    ch.bandwidth (b + 5) :=
+  LinearIsi.bandwidth_succ_succ_succ_succ_succ h
+
 /-- `QueryOrder.positionOf` on the empty list is `0`. -/
 example {numPatterns : Nat} (x : Fin numPatterns) :
     QueryOrder.positionOf x ([] : QueryOrder numPatterns) = 0 :=

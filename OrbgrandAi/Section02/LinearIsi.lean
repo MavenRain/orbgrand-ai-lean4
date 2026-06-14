@@ -231,6 +231,14 @@ theorem LinearIsi.bandwidth_succ_succ_succ_succ
     ch.bandwidth (b + 4) :=
   LinearIsi.bandwidth_succ (LinearIsi.bandwidth_succ_succ_succ h)
 
+/-- *Bandwidth widens by five.*  Five-step corollary chaining
+    `bandwidth_succ_succ_succ_succ` and `bandwidth_succ`. -/
+theorem LinearIsi.bandwidth_succ_succ_succ_succ_succ
+    {n_s : Nat} {ch : LinearIsi n_s} {b : Nat}
+    (h : ch.bandwidth b) :
+    ch.bandwidth (b + 5) :=
+  LinearIsi.bandwidth_succ (LinearIsi.bandwidth_succ_succ_succ_succ h)
+
 /-- *Bandwidth widens by an offset and one more.*  A channel with
     bandwidth at most `b` also has bandwidth at most `b + k + 1`.
     Composes `bandwidth_add` with `bandwidth_succ`. -/
