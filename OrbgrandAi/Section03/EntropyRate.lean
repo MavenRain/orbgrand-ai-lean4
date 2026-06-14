@@ -117,6 +117,17 @@ theorem entropyRate1_eq
         + (1 - (1 : Real) / (n_s : Real))
             * Real.log (1 - rho.val ^ 2) := rfl
 
+/-- *Symmetric form of `entropyRate1_eq`.*  The explicit log
+    expression equals `entropyRate1 sigma rho n_s`.  `.symm` of
+    `entropyRate1_eq`. -/
+theorem entropyRate1_eq_symm
+    (sigma : NoisePower) (rho : CorrelationCoefficient) (n_s : Nat) :
+    Real.log (2 * Real.exp 1 * Real.pi * sigma.val)
+      + (1 - (1 : Real) / (n_s : Real))
+          * Real.log (1 - rho.val ^ 2)
+      = entropyRate1 sigma rho n_s :=
+  (entropyRate1_eq sigma rho n_s).symm
+
 /-- The block-`b` entropy rate is asymptotic-`n_s -> infinity` with
     `n_s` replaced by `b`: the correlation contribution is captured
     only within blocks of size `b`, with no cross-block term.
@@ -128,6 +139,17 @@ theorem entropyRate1_block_eq
       = Real.log (2 * Real.exp 1 * Real.pi * sigma.val)
         + (1 - (1 : Real) / (b.toNat : Real))
             * Real.log (1 - rho.val ^ 2) := rfl
+
+/-- *Symmetric form of `entropyRate1_block_eq`.*  The explicit log
+    expression equals `entropyRate1_block sigma rho b`.  `.symm`
+    of `entropyRate1_block_eq`. -/
+theorem entropyRate1_block_eq_symm
+    (sigma : NoisePower) (rho : CorrelationCoefficient) (b : BlockSize) :
+    Real.log (2 * Real.exp 1 * Real.pi * sigma.val)
+      + (1 - (1 : Real) / (b.toNat : Real))
+          * Real.log (1 - rho.val ^ 2)
+      = entropyRate1_block sigma rho b :=
+  (entropyRate1_block_eq sigma rho b).symm
 
 /-- *Asymptotic entropy rate unfolding.*  `entropyRate1_asymp` is the
     log of `2 * e * pi * sigma^2 * (1 - rho^2)`, the limit form. -/
@@ -192,6 +214,21 @@ theorem entropyRate2_eq
                 (- (rho2.val - 1) ^ (n_s - 2)
                     * (1 - 2 * rho1.val ^ 2 + rho2.val) ^ (n_s - 2)
                   / (rho1.val ^ 2 - 1) ^ (n_s - 3)) := rfl
+
+/-- *Symmetric form of `entropyRate2_eq`.*  The explicit log
+    expression equals `entropyRate2 sigma rho1 rho2 n_s`.  `.symm`
+    of `entropyRate2_eq`. -/
+theorem entropyRate2_eq_symm
+    (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient) (n_s : Nat) :
+    (1 / 2 : Real)
+        * Real.log (2 * Real.pi * Real.exp 1 * sigma.val)
+      + (1 / (2 * (n_s : Real)))
+          * Real.log
+              (- (rho2.val - 1) ^ (n_s - 2)
+                  * (1 - 2 * rho1.val ^ 2 + rho2.val) ^ (n_s - 2)
+                / (rho1.val ^ 2 - 1) ^ (n_s - 3))
+      = entropyRate2 sigma rho1 rho2 n_s :=
+  (entropyRate2_eq sigma rho1 rho2 n_s).symm
 
 end Section03
 end OrbgrandAi

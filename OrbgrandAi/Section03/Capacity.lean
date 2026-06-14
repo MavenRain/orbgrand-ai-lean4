@@ -171,6 +171,17 @@ theorem const_le_limsupEntropyRate_const {c1 c2 : Real} (h : c1 <= c2) :
     c1 <= limsupEntropyRate (fun _ => c2) :=
   h.trans (limsupEntropyRate_const c2).ge
 
+/-- *Constant lim-inf bounded by larger constant lim-sup.*  If
+    `c1 <= c2`, the constant lim-inf information rate at `c1` is at
+    most the constant lim-sup entropy rate at `c2`.  Composes
+    `liminfInformationRate_le_limsupEntropyRate_const` with
+    `limsupEntropyRate_const_mono`. -/
+theorem liminfInformationRate_const_le_limsupEntropyRate_const_mono
+    {c1 c2 : Real} (h : c1 <= c2) :
+    liminfInformationRate (fun _ => c1) <= limsupEntropyRate (fun _ => c2) :=
+  (liminfInformationRate_le_limsupEntropyRate_const c1).trans
+    (limsupEntropyRate_const_mono h)
+
 /-- *liminf <= limsup, general form.*  Promotes
     `liminfInformationRate_le_limsupEntropyRate_const` from constant
     sequences to any `Real`-valued sequence whose values are bounded
@@ -204,6 +215,35 @@ theorem limsupEntropyRate_le_limsupEntropyRate_of_le_eventually
     (hv : Filter.IsBoundedUnder (· <= ·) Filter.atTop v) :
     limsupEntropyRate u <= limsupEntropyRate v :=
   Filter.limsup_le_limsup h hu hv
+
+/-- *Eventual upper bound transfers to lim-inf.*  If a log-density-
+    ratio sequence is eventually bounded above by a constant `c`,
+    the lim-inf information rate is at most `c`.  Chains
+    `liminfInformationRate_le_liminfInformationRate_of_le_eventually`
+    against the constant sequence with `liminfInformationRate_const`. -/
+theorem liminfInformationRate_le_const_of_le_eventually
+    {u : Nat -> Real} {c : Real}
+    (h : ∀ᶠ n in Filter.atTop, u n <= c)
+    (hu : Filter.IsBoundedUnder (· >= ·) Filter.atTop u)
+    (hv : Filter.IsCoboundedUnder (· >= ·) Filter.atTop
+            (fun _ : Nat => c)) :
+    liminfInformationRate u <= c :=
+  (liminfInformationRate_le_liminfInformationRate_of_le_eventually
+      h hu hv).trans
+    (liminfInformationRate_const c).le
+
+/-- *Eventual lower bound transfers to lim-sup.*  Dual of
+    `liminfInformationRate_le_const_of_le_eventually` on the lim-sup
+    side: if `c <= u n` eventually, then `c <= limsupEntropyRate u`. -/
+theorem const_le_limsupEntropyRate_of_le_eventually
+    {u : Nat -> Real} {c : Real}
+    (h : ∀ᶠ n in Filter.atTop, c <= u n)
+    (hc : Filter.IsCoboundedUnder (· <= ·) Filter.atTop
+            (fun _ : Nat => c))
+    (hu : Filter.IsBoundedUnder (· <= ·) Filter.atTop u) :
+    c <= limsupEntropyRate u :=
+  (limsupEntropyRate_const c).ge.trans
+    (limsupEntropyRate_le_limsupEntropyRate_of_le_eventually h hc hu)
 
 /-- *Congruence under eventual equality.*  If two log-density-ratio
     sequences agree on all sufficiently large `n_s`, they share the

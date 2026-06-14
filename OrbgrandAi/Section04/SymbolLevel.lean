@@ -407,6 +407,24 @@ theorem qpsk_exceed_eq_one_iff (s s_hat : Fin 4) :
         (((qpsk.exceed_zero_iff s s_hat).mpr heq).symm.trans h),
    qpsk_exceed_diff⟩
 
+/-- *QPSK exceedance is non-zero iff symbols differ.*  Dual of
+    `qpsk_exceed_eq_one_iff` on the zero side; mirrors
+    `bpsk_exceed_ne_zero_iff_ne` for the 4-ary Hamming-style metric. -/
+theorem qpsk_exceed_ne_zero_iff_ne (s s_hat : Fin 4) :
+    qpsk.exceed s s_hat ≠ 0 ↔ s ≠ s_hat :=
+  ⟨fun h_ne h_eq => h_ne ((qpsk.exceed_zero_iff s s_hat).mpr h_eq),
+   fun h_ne h_zero => h_ne ((qpsk.exceed_zero_iff s s_hat).mp h_zero)⟩
+
+/-- *QPSK exceedance is non-zero iff it equals one.*  Binary-valued
+    dichotomy from `qpsk_exceed_zero_or_one`.  Mirrors
+    `bpsk_exceed_ne_zero_iff_eq_one`. -/
+theorem qpsk_exceed_ne_zero_iff_eq_one (s s_hat : Fin 4) :
+    qpsk.exceed s s_hat ≠ 0 ↔ qpsk.exceed s s_hat = 1 :=
+  ⟨fun h_ne =>
+      (qpsk_exceed_zero_or_one s s_hat).elim
+        (fun h_zero => absurd h_zero h_ne) id,
+   fun h_one h_zero => one_ne_zero (h_one.symm.trans h_zero)⟩
+
 /-- *Trivial constellation.*  A 1-symbol constellation over `Unit`.
     All exceedances are zero (degenerate case: only one symbol). -/
 def trivialConstellation : Constellation Unit :=

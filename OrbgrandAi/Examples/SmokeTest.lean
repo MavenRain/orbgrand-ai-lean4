@@ -1514,6 +1514,107 @@ example {n_s : Nat} (ch : LinearIsi n_s) :
     ch.receive 0 0 = 0 :=
   LinearIsi.receive_zero_noise_zero_signal ch
 
+/-- QPSK exceedance non-zero iff symbols differ. -/
+example (s s_hat : Fin 4) : qpsk.exceed s s_hat ≠ 0 ↔ s ≠ s_hat :=
+  qpsk_exceed_ne_zero_iff_ne s s_hat
+
+/-- QPSK exceedance non-zero iff exceedance equals one. -/
+example (s s_hat : Fin 4) :
+    qpsk.exceed s s_hat ≠ 0 ↔ qpsk.exceed s s_hat = 1 :=
+  qpsk_exceed_ne_zero_iff_eq_one s s_hat
+
+/-- Eventually-le-constant transfers to liminf. -/
+example {u : Nat -> Real} {c : Real}
+    (h : ∀ᶠ n in Filter.atTop, u n <= c)
+    (hu : Filter.IsBoundedUnder (· >= ·) Filter.atTop u)
+    (hv : Filter.IsCoboundedUnder (· >= ·) Filter.atTop
+            (fun _ : Nat => c)) :
+    liminfInformationRate u <= c :=
+  liminfInformationRate_le_const_of_le_eventually h hu hv
+
+/-- Eventually-ge-constant transfers to limsup. -/
+example {u : Nat -> Real} {c : Real}
+    (h : ∀ᶠ n in Filter.atTop, c <= u n)
+    (hc : Filter.IsCoboundedUnder (· <= ·) Filter.atTop
+            (fun _ : Nat => c))
+    (hu : Filter.IsBoundedUnder (· <= ·) Filter.atTop u) :
+    c <= limsupEntropyRate u :=
+  const_le_limsupEntropyRate_of_le_eventually h hc hu
+
+/-- Constant liminf bounded by larger constant limsup. -/
+example {c1 c2 : Real} (h : c1 <= c2) :
+    liminfInformationRate (fun _ => c1) <= limsupEntropyRate (fun _ => c2) :=
+  liminfInformationRate_const_le_limsupEntropyRate_const_mono h
+
+/-- `entropyRate1_eq` symmetric form. -/
+example (sigma : NoisePower) (rho : CorrelationCoefficient) (n_s : Nat) :
+    Real.log (2 * Real.exp 1 * Real.pi * sigma.val)
+      + (1 - (1 : Real) / (n_s : Real))
+          * Real.log (1 - rho.val ^ 2)
+      = entropyRate1 sigma rho n_s :=
+  entropyRate1_eq_symm sigma rho n_s
+
+/-- `entropyRate1_block_eq` symmetric form. -/
+example (sigma : NoisePower) (rho : CorrelationCoefficient) (b : BlockSize) :
+    Real.log (2 * Real.exp 1 * Real.pi * sigma.val)
+      + (1 - (1 : Real) / (b.toNat : Real))
+          * Real.log (1 - rho.val ^ 2)
+      = entropyRate1_block sigma rho b :=
+  entropyRate1_block_eq_symm sigma rho b
+
+/-- `entropyRate2_eq` symmetric form. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient) (n_s : Nat) :
+    (1 / 2 : Real)
+        * Real.log (2 * Real.pi * Real.exp 1 * sigma.val)
+      + (1 / (2 * (n_s : Real)))
+          * Real.log
+              (- (rho2.val - 1) ^ (n_s - 2)
+                  * (1 - 2 * rho1.val ^ 2 + rho2.val) ^ (n_s - 2)
+                / (rho1.val ^ 2 - 1) ^ (n_s - 3))
+      = entropyRate2 sigma rho1 rho2 n_s :=
+  entropyRate2_eq_symm sigma rho1 rho2 n_s
+
+/-- Bucket uniqueness symmetric form. -/
+example {n : Nat} (pi : ReliabilityRank n) {w1 w2 : Nat} {e : Fin n -> Bool}
+    (h1 : landslideBucket pi w1 e) (h2 : landslideBucket pi w2 e) :
+    w2 = w1 :=
+  landslideBucket_unique_symm pi h1 h2
+
+/-- All-true pattern in its own bucket. -/
+example {n : Nat} (pi : ReliabilityRank n) :
+    landslideBucket pi (logisticWeight pi (fun _ : Fin n => true))
+      (fun _ : Fin n => true) :=
+  landslideBucket_const_true pi
+
+/-- Bucket characterisation of the all-false pattern. -/
+example {n : Nat} (pi : ReliabilityRank n) (w : Nat) :
+    landslideBucket pi w (fun _ : Fin n => false) <-> w = 0 :=
+  landslideBucket_const_false_iff pi w
+
+/-- Reverse complement bler equation. -/
+example {n_s : Nat} (sigma : NoisePower)
+    (decode : Section00.RealSymbolVector n_s -> Bool)
+    (h_meas :
+      MeasurableSet
+        {N : Section00.RealSymbolVector n_s | decode N = true}) :
+    Section00.bler sigma (fun N => !decode N)
+      = 1 - Section00.bler sigma decode :=
+  Section00.bler_compl_eq_one_sub_bler sigma decode h_meas
+
+/-- Disjunctive decoder dominates left. -/
+example {n_s : Nat} (sigma : NoisePower)
+    (decode1 decode2 : Section00.RealSymbolVector n_s -> Bool) :
+    Section00.bler sigma decode1
+      ≤ Section00.bler sigma (fun N => decode1 N || decode2 N) :=
+  Section00.bler_le_bler_or_left sigma decode1 decode2
+
+/-- Disjunctive decoder dominates right. -/
+example {n_s : Nat} (sigma : NoisePower)
+    (decode1 decode2 : Section00.RealSymbolVector n_s -> Bool) :
+    Section00.bler sigma decode2
+      ≤ Section00.bler sigma (fun N => decode1 N || decode2 N) :=
+  Section00.bler_le_bler_or_right sigma decode1 decode2
+
 /-- `QueryOrder.positionOf` on the empty list is `0`. -/
 example {numPatterns : Nat} (x : Fin numPatterns) :
     QueryOrder.positionOf x ([] : QueryOrder numPatterns) = 0 :=

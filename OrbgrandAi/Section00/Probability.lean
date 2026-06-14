@@ -284,6 +284,17 @@ theorem bler_eq_one_sub_compl
     bler sigma decode = 1 - bler sigma (fun N => !decode N) :=
   eq_sub_of_add_eq (bler_compl_eq sigma decode h_meas)
 
+/-- *Reverse complement equation.*  `bler (fun N => !decode N)
+    = 1 - bler sigma decode`.  Mirror of `bler_eq_one_sub_compl`
+    isolating the complement decoder.  Corollary of `bler_compl_eq`
+    via `eq_sub_of_add_eq'`. -/
+theorem bler_compl_eq_one_sub_bler
+    {n_s : Nat} (sigma : NoisePower)
+    (decode : RealSymbolVector n_s -> Bool)
+    (h_meas : MeasurableSet {N : RealSymbolVector n_s | decode N = true}) :
+    bler sigma (fun N => !decode N) = 1 - bler sigma decode :=
+  eq_sub_of_add_eq' (bler_compl_eq sigma decode h_meas)
+
 /-- *Subadditivity under Boolean `||`.*  The BLER of the disjunctive
     decoder is at most the sum of individual BLERs:
     `bler (fun N => decode1 N || decode2 N) ≤ bler decode1 + bler decode2`.
@@ -324,6 +335,29 @@ theorem bler_or_le
     (le_of_eq
       (ENNReal.toReal_add (MeasureTheory.measure_ne_top _ _)
                           (MeasureTheory.measure_ne_top _ _)))
+
+/-- *Disjunctive decoder dominates left.*  The OR-decoder fails
+    whenever the left component does, so `bler decode1 ≤ bler
+    (decode1 || decode2)`.  Monotonicity via `bler_monotone` with
+    `Bool.or_eq_true_iff.mpr ∘ Or.inl` as the pointwise witness. -/
+theorem bler_le_bler_or_left
+    {n_s : Nat} (sigma : NoisePower)
+    (decode1 decode2 : RealSymbolVector n_s -> Bool) :
+    bler sigma decode1
+      ≤ bler sigma (fun N => decode1 N || decode2 N) :=
+  bler_monotone sigma decode1 _
+    fun _ h => Bool.or_eq_true_iff.mpr (Or.inl h)
+
+/-- *Disjunctive decoder dominates right.*  Right-handed companion
+    to `bler_le_bler_or_left`: every `decode2` failure triggers the
+    disjunctive decoder via `Or.inr`. -/
+theorem bler_le_bler_or_right
+    {n_s : Nat} (sigma : NoisePower)
+    (decode1 decode2 : RealSymbolVector n_s -> Bool) :
+    bler sigma decode2
+      ≤ bler sigma (fun N => decode1 N || decode2 N) :=
+  bler_monotone sigma decode2 _
+    fun _ h => Bool.or_eq_true_iff.mpr (Or.inr h)
 
 /-- *Monotonicity under Boolean `&&` (left).*  The BLER of the conjunctive
     decoder is at most the BLER of the left component:

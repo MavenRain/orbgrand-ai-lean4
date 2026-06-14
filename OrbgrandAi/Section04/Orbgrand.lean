@@ -1184,6 +1184,34 @@ theorem landslideBucket_unique
     w1 = w2 :=
   h1.symm.trans h2
 
+/-- *Bucket uniqueness, symmetric form.*  Mirror of
+    `landslideBucket_unique` with the equality reversed. -/
+theorem landslideBucket_unique_symm
+    {n : Nat} (pi : ReliabilityRank n) {w1 w2 : Nat} {e : Fin n -> Bool}
+    (h1 : landslideBucket pi w1 e) (h2 : landslideBucket pi w2 e) :
+    w2 = w1 :=
+  h2.symm.trans h1
+
+/-- *Constant-true pattern lives in its own logistic-weight bucket.*
+    Mirror of `landslideBucket_const_false_zero`: the all-one error
+    pattern sits in the bucket indexed by its own logistic weight.
+    One-line `rfl`. -/
+theorem landslideBucket_const_true
+    {n : Nat} (pi : ReliabilityRank n) :
+    landslideBucket pi (logisticWeight pi (fun _ : Fin n => true))
+      (fun _ : Fin n => true) :=
+  rfl
+
+/-- *Bucket characterisation of the all-false pattern.*  The
+    constant-false pattern lives in bucket `w` iff `w = 0`.
+    Strengthens `landslideBucket_const_false_zero` to a
+    biconditional. -/
+theorem landslideBucket_const_false_iff
+    {n : Nat} (pi : ReliabilityRank n) (w : Nat) :
+    landslideBucket pi w (fun _ : Fin n => false) <-> w = 0 :=
+  ⟨fun h => h.symm.trans (logisticWeight_const_false pi),
+   fun h => (logisticWeight_const_false pi).trans h.symm⟩
+
 /-- *Same bucket ⇒ equal weight.*  If `e1` and `e2` both inhabit
     bucket `w`, their logistic weights coincide.  Bridges bucket
     membership to weight equality; chains `h1.trans h2.symm`. -/
