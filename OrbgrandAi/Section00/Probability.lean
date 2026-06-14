@@ -617,5 +617,92 @@ theorem bler_not_or
       = bler sigma (fun N => !d1 N && !d2 N) :=
   bler_pointwise_eq sigma _ _ fun N => Bool.not_or (d1 N) (d2 N)
 
+/-- *DeMorgan over `&&`.*  `!(decode1 N && decode2 N) = !decode1 N
+    || !decode2 N` pointwise.  Dual of `bler_not_or`.  One-line
+    corollary of `bler_pointwise_eq` via `Bool.not_and`. -/
+theorem bler_not_and
+    {n_s : Nat} (sigma : NoisePower)
+    (d1 d2 : RealSymbolVector n_s -> Bool) :
+    bler sigma (fun N => !(d1 N && d2 N))
+      = bler sigma (fun N => !d1 N || !d2 N) :=
+  bler_pointwise_eq sigma _ _ fun N => Bool.not_and (d1 N) (d2 N)
+
+/-- *XOR with `true` on the right is negation.*  `xor (decode N) true
+    = !decode N` pointwise, so the XOR-with-true decoder has the
+    same `bler` as the negated decoder.  One-line corollary of
+    `bler_pointwise_eq` via `Bool.xor_true`. -/
+theorem bler_xor_true_right
+    {n_s : Nat} (sigma : NoisePower)
+    (decode : RealSymbolVector n_s -> Bool) :
+    bler sigma (fun N => xor (decode N) true)
+      = bler sigma (fun N => !decode N) :=
+  bler_pointwise_eq sigma _ _ fun N => Bool.xor_true (decode N)
+
+/-- *XOR with `true` on the left is negation.*  `xor true (decode N)
+    = !decode N` pointwise.  Left-handed companion to
+    `bler_xor_true_right`.  One-line corollary of `bler_pointwise_eq`
+    via `Bool.true_xor`. -/
+theorem bler_true_xor
+    {n_s : Nat} (sigma : NoisePower)
+    (decode : RealSymbolVector n_s -> Bool) :
+    bler sigma (fun N => xor true (decode N))
+      = bler sigma (fun N => !decode N) :=
+  bler_pointwise_eq sigma _ _ fun N => Bool.true_xor (decode N)
+
+/-- *XOR-of-NOT-with-self is total failure.*  `xor (!decode N)
+    (decode N) = true` pointwise, so the XOR-decoder is constantly
+    `true` and `bler = 1`.  Chain `bler_pointwise_eq` via
+    `Bool.not_xor_self` with `bler_const_true`. -/
+theorem bler_not_xor_self
+    {n_s : Nat} (sigma : NoisePower)
+    (decode : RealSymbolVector n_s -> Bool) :
+    bler sigma (fun N => xor (!decode N) (decode N)) = 1 :=
+  (bler_pointwise_eq sigma _ (fun _ => true)
+      fun N => Bool.not_xor_self (decode N)).trans
+    (bler_const_true sigma)
+
+/-- *XOR-with-NOT-of-self is total failure.*  `xor (decode N)
+    (!decode N) = true` pointwise.  Right-handed companion to
+    `bler_not_xor_self`.  Chain via `Bool.xor_not_self` and
+    `bler_const_true`. -/
+theorem bler_xor_not_self
+    {n_s : Nat} (sigma : NoisePower)
+    (decode : RealSymbolVector n_s -> Bool) :
+    bler sigma (fun N => xor (decode N) (!decode N)) = 1 :=
+  (bler_pointwise_eq sigma _ (fun _ => true)
+      fun N => Bool.xor_not_self (decode N)).trans
+    (bler_const_true sigma)
+
+/-- *NOT-XOR identity.*  `xor (!d1 N) (d2 N) = !(xor (d1 N) (d2 N))`
+    pointwise.  Pushing a NOT through the left XOR argument is
+    equivalent to negating the whole XOR.  One-line corollary of
+    `bler_pointwise_eq` via `Bool.not_xor`. -/
+theorem bler_not_xor
+    {n_s : Nat} (sigma : NoisePower)
+    (d1 d2 : RealSymbolVector n_s -> Bool) :
+    bler sigma (fun N => xor (!d1 N) (d2 N))
+      = bler sigma (fun N => !(xor (d1 N) (d2 N))) :=
+  bler_pointwise_eq sigma _ _ fun N => Bool.not_xor (d1 N) (d2 N)
+
+/-- *XOR-NOT identity.*  `xor (d1 N) (!d2 N) = !(xor (d1 N) (d2 N))`
+    pointwise.  Right-handed companion to `bler_not_xor`.  One-line
+    corollary of `bler_pointwise_eq` via `Bool.xor_not`. -/
+theorem bler_xor_not
+    {n_s : Nat} (sigma : NoisePower)
+    (d1 d2 : RealSymbolVector n_s -> Bool) :
+    bler sigma (fun N => xor (d1 N) (!d2 N))
+      = bler sigma (fun N => !(xor (d1 N) (d2 N))) :=
+  bler_pointwise_eq sigma _ _ fun N => Bool.xor_not (d1 N) (d2 N)
+
+/-- *Double-NOT under XOR.*  `xor (!d1 N) (!d2 N) = xor (d1 N) (d2 N)`
+    pointwise.  Two NOTs on the inputs cancel under XOR.  One-line
+    corollary of `bler_pointwise_eq` via `Bool.not_xor_not`. -/
+theorem bler_not_xor_not
+    {n_s : Nat} (sigma : NoisePower)
+    (d1 d2 : RealSymbolVector n_s -> Bool) :
+    bler sigma (fun N => xor (!d1 N) (!d2 N))
+      = bler sigma (fun N => xor (d1 N) (d2 N)) :=
+  bler_pointwise_eq sigma _ _ fun N => Bool.not_xor_not (d1 N) (d2 N)
+
 end Section00
 end OrbgrandAi

@@ -744,6 +744,20 @@ example (phi1 phi2 z1 z2 : Complex) :
         + phi2 * ar2 phi1 phi2 z1 z2 10 :=
   ar2_twelve phi1 phi2 z1 z2
 
+/-- AR(2) recurrence step at index 13. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 13
+      = phi1 * ar2 phi1 phi2 z1 z2 12
+        + phi2 * ar2 phi1 phi2 z1 z2 11 :=
+  ar2_thirteen phi1 phi2 z1 z2
+
+/-- AR(2) recurrence step at index 14. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 14
+      = phi1 * ar2 phi1 phi2 z1 z2 13
+        + phi2 * ar2 phi1 phi2 z1 z2 12 :=
+  ar2_fourteen phi1 phi2 z1 z2
+
 /-- Section VI.B AR(2) approximation-error statement: the per-pulse
     `normSq <= delta^2` implication shape (`delta in [0, 1)`) is well-formed
     and reducible to `True`, locking the quantifier order and bound form. -/
@@ -1416,6 +1430,60 @@ example {n_s : Nat} (sigma : NoisePower)
     Section00.bler sigma (fun N => !(d1 N || d2 N))
       = Section00.bler sigma (fun N => !d1 N && !d2 N) :=
   Section00.bler_not_or sigma d1 d2
+
+/-- `Section00.bler` DeMorgan over `&&`: dual of `bler_not_or`. -/
+example {n_s : Nat} (sigma : NoisePower)
+    (d1 d2 : Section00.RealSymbolVector n_s -> Bool) :
+    Section00.bler sigma (fun N => !(d1 N && d2 N))
+      = Section00.bler sigma (fun N => !d1 N || !d2 N) :=
+  Section00.bler_not_and sigma d1 d2
+
+/-- `Section00.bler` XOR-true on the right is negation. -/
+example {n_s : Nat} (sigma : NoisePower)
+    (decode : Section00.RealSymbolVector n_s -> Bool) :
+    Section00.bler sigma (fun N => xor (decode N) true)
+      = Section00.bler sigma (fun N => !decode N) :=
+  Section00.bler_xor_true_right sigma decode
+
+/-- `Section00.bler` XOR-true on the left is negation. -/
+example {n_s : Nat} (sigma : NoisePower)
+    (decode : Section00.RealSymbolVector n_s -> Bool) :
+    Section00.bler sigma (fun N => xor true (decode N))
+      = Section00.bler sigma (fun N => !decode N) :=
+  Section00.bler_true_xor sigma decode
+
+/-- `Section00.bler` XOR-of-NOT-with-self is total failure (`bler = 1`). -/
+example {n_s : Nat} (sigma : NoisePower)
+    (decode : Section00.RealSymbolVector n_s -> Bool) :
+    Section00.bler sigma (fun N => xor (!decode N) (decode N)) = 1 :=
+  Section00.bler_not_xor_self sigma decode
+
+/-- `Section00.bler` XOR-with-NOT-of-self is total failure (`bler = 1`). -/
+example {n_s : Nat} (sigma : NoisePower)
+    (decode : Section00.RealSymbolVector n_s -> Bool) :
+    Section00.bler sigma (fun N => xor (decode N) (!decode N)) = 1 :=
+  Section00.bler_xor_not_self sigma decode
+
+/-- `Section00.bler` NOT-XOR identity: `xor (!d1) d2 = !(xor d1 d2)`. -/
+example {n_s : Nat} (sigma : NoisePower)
+    (d1 d2 : Section00.RealSymbolVector n_s -> Bool) :
+    Section00.bler sigma (fun N => xor (!d1 N) (d2 N))
+      = Section00.bler sigma (fun N => !(xor (d1 N) (d2 N))) :=
+  Section00.bler_not_xor sigma d1 d2
+
+/-- `Section00.bler` XOR-NOT identity: `xor d1 (!d2) = !(xor d1 d2)`. -/
+example {n_s : Nat} (sigma : NoisePower)
+    (d1 d2 : Section00.RealSymbolVector n_s -> Bool) :
+    Section00.bler sigma (fun N => xor (d1 N) (!d2 N))
+      = Section00.bler sigma (fun N => !(xor (d1 N) (d2 N))) :=
+  Section00.bler_xor_not sigma d1 d2
+
+/-- `Section00.bler` double-NOT under XOR cancels: `xor (!d1) (!d2) = xor d1 d2`. -/
+example {n_s : Nat} (sigma : NoisePower)
+    (d1 d2 : Section00.RealSymbolVector n_s -> Bool) :
+    Section00.bler sigma (fun N => xor (!d1 N) (!d2 N))
+      = Section00.bler sigma (fun N => xor (d1 N) (d2 N)) :=
+  Section00.bler_not_xor_not sigma d1 d2
 
 /-- `regressorMatrix4x2` body unfold: at `(i, j)` returns `z (i.val + j.val)`
     with the `Fin 6` bound witnessed by `i.val + j.val < 4 + 1 < 6`. -/
