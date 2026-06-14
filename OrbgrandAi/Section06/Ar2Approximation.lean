@@ -321,6 +321,20 @@ theorem ar2_thirty_three (phi1 phi2 z1 z2 : Complex) :
       = phi1 * ar2 phi1 phi2 z1 z2 32
         + phi2 * ar2 phi1 phi2 z1 z2 31 := rfl
 
+/-- Recurrence step at index 34: `phi_1 * ar2 33 + phi_2 * ar2 32`.
+    Pattern-match arm `(32 + 2)` reduces definitionally to the RHS. -/
+theorem ar2_thirty_four (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 34
+      = phi1 * ar2 phi1 phi2 z1 z2 33
+        + phi2 * ar2 phi1 phi2 z1 z2 32 := rfl
+
+/-- Recurrence step at index 35: `phi_1 * ar2 34 + phi_2 * ar2 33`.
+    Pattern-match arm `(33 + 2)` reduces definitionally to the RHS. -/
+theorem ar2_thirty_five (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 35
+      = phi1 * ar2 phi1 phi2 z1 z2 34
+        + phi2 * ar2 phi1 phi2 z1 z2 33 := rfl
+
 /-- *Trivial coefficients.*  When both AR(2) coefficients are zero,
     every recurrence step (index `n + 2`) vanishes regardless of
     the initial conditions.  The initial conditions at indices 0 and
@@ -450,6 +464,13 @@ theorem ar2_phi1_one_phi2_one_succ (z1 z2 : Complex) (n : Nat) :
 theorem ar2_phi1_one_phi2_one_two (z1 z2 : Complex) :
     ar2 1 1 z1 z2 2 = z2 + z1 :=
   ar2_phi1_one_phi2_one_succ z1 z2 0
+
+/-- *Fibonacci-shape boundary at index 3.*  Specialises
+    `ar2_phi1_one_phi2_one_succ` at `n = 1`: the value at index 3 is
+    `ar2 1 1 z1 z2 2 + z2`, the next rung past `ar2_phi1_one_phi2_one_two`. -/
+theorem ar2_phi1_one_phi2_one_three (z1 z2 : Complex) :
+    ar2 1 1 z1 z2 3 = ar2 1 1 z1 z2 2 + z2 :=
+  ar2_phi1_one_phi2_one_succ z1 z2 1
 
 /-- *Period-2 degenerate case.*  When `phi_1 = 0` and `phi_2 = 1`,
     the recursion `ar2 0 1 z1 z2` is 2-periodic: index `n + 2` equals

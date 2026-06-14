@@ -401,6 +401,27 @@ theorem rfView_bandwidth_add
     (rfView n_s rowTaps sigma).bandwidth (6 + k) :=
   LinearIsi.bandwidth_add k (rfView_bandwidth rowTaps sigma)
 
+/-- *RFView bandwidth widens to `10`.*  One-line corollary chaining
+    `rfView_bandwidth_nine` with `LinearIsi.bandwidth_succ`. -/
+theorem rfView_bandwidth_ten
+    {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (sigma : NoisePower) :
+    (rfView n_s rowTaps sigma).bandwidth 10 :=
+  LinearIsi.bandwidth_succ (rfView_bandwidth_nine rowTaps sigma)
+
+/-- *RFView bandwidth widens to `11`.*  Two-step corollary chaining
+    `rfView_bandwidth_nine` with `LinearIsi.bandwidth_succ_succ`. -/
+theorem rfView_bandwidth_eleven
+    {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (sigma : NoisePower) :
+    (rfView n_s rowTaps sigma).bandwidth 11 :=
+  LinearIsi.bandwidth_succ_succ (rfView_bandwidth_nine rowTaps sigma)
+
+/-- *RFView bandwidth widens to `12`.*  Three-step corollary chaining
+    `rfView_bandwidth_nine` with `LinearIsi.bandwidth_succ_succ_succ`. -/
+theorem rfView_bandwidth_twelve
+    {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (sigma : NoisePower) :
+    (rfView n_s rowTaps sigma).bandwidth 12 :=
+  LinearIsi.bandwidth_succ_succ_succ (rfView_bandwidth_nine rowTaps sigma)
+
 /-- *Matrix-level out-of-band statement.*  Strict bandwidth-6 form
     at the `rfViewMatrix` level (without the `LinearIsi` wrapper):
     every entry with `j + 6 < i` vanishes.  Reuses `rfView_bandwidth`

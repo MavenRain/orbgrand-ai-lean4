@@ -1798,6 +1798,58 @@ example {numCandidates : Nat} (post : BlockPosterior numCandidates)
           (fun tStar => Real.log (post tStar) - Real.log (post t)) :=
   substitutionPenalty?_eq_argmax_map post t
 
+/-- AR(2) recurrence step at index 34. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 34
+      = phi1 * ar2 phi1 phi2 z1 z2 33
+        + phi2 * ar2 phi1 phi2 z1 z2 32 :=
+  ar2_thirty_four phi1 phi2 z1 z2
+
+/-- AR(2) recurrence step at index 35. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 35
+      = phi1 * ar2 phi1 phi2 z1 z2 34
+        + phi2 * ar2 phi1 phi2 z1 z2 33 :=
+  ar2_thirty_five phi1 phi2 z1 z2
+
+/-- AR(2) Fibonacci shape boundary at index 3. -/
+example (z1 z2 : Complex) :
+    ar2 1 1 z1 z2 3 = ar2 1 1 z1 z2 2 + z2 :=
+  ar2_phi1_one_phi2_one_three z1 z2
+
+/-- `cov1_lag` at lag `-9`. -/
+example (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    cov1_lag sigma rho (-9) = sigma.val * rho.val ^ 9 :=
+  cov1_lag_neg_nine sigma rho
+
+/-- `cov1_lag` at lag `10`. -/
+example (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    cov1_lag sigma rho 10 = sigma.val * rho.val ^ 10 :=
+  cov1_lag_ten sigma rho
+
+/-- `cov2_lag` recurrence at lag 16. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta1 beta2 : Real) :
+    cov2_lag sigma rho1 rho2 beta1 beta2 16
+      = beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 15
+        + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 14 :=
+  cov2_lag_sixteen sigma rho1 rho2 beta1 beta2
+
+/-- `rfView` bandwidth widens to 10. -/
+example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (sigma : NoisePower) :
+    (rfView n_s rowTaps sigma).bandwidth 10 :=
+  rfView_bandwidth_ten rowTaps sigma
+
+/-- `rfView` bandwidth widens to 11. -/
+example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (sigma : NoisePower) :
+    (rfView n_s rowTaps sigma).bandwidth 11 :=
+  rfView_bandwidth_eleven rowTaps sigma
+
+/-- `rfView` bandwidth widens to 12. -/
+example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (sigma : NoisePower) :
+    (rfView n_s rowTaps sigma).bandwidth 12 :=
+  rfView_bandwidth_twelve rowTaps sigma
+
 /-- `QueryOrder.positionOf` on the empty list is `0`. -/
 example {numPatterns : Nat} (x : Fin numPatterns) :
     QueryOrder.positionOf x ([] : QueryOrder numPatterns) = 0 :=
