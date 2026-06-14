@@ -271,6 +271,19 @@ theorem delayTapMatrix_at_diag
   delayTapMatrix_at_subdiag paths f_s i j
     (h.trans (Nat.add_zero j.val).symm)
 
+/-- *Diagonal collapse via val-equality.*  When `i.val = j.val`, the
+    off-diagonal entry equals the on-diagonal entry at `i i`.
+    Two-step chain: `delayTapMatrix_at_diag` (collapse to delay-0
+    impulse) and `(delayTapMatrix_diag _ _ _).symm` (re-package as
+    `i i`). -/
+theorem delayTapMatrix_diag_of_val_eq
+    {n_s : Nat} {p : Nat} (paths : Fin p -> DelayTapPath)
+    (f_s : SamplingFreq) (i j : Fin n_s) (h : i.val = j.val) :
+    delayTapMatrix n_s paths f_s i j
+      = delayTapMatrix n_s paths f_s i i :=
+  (delayTapMatrix_at_diag paths f_s i j h).trans
+    (delayTapMatrix_diag paths f_s i).symm
+
 /-- *Second sub-diagonal of `delayTapMatrix`.*  When `i.val = j.val
     + 2`, the entry is the impulse response at delay 2.  One-liner
     via the general `delayTapMatrix_at_subdiag`. -/
@@ -289,6 +302,16 @@ theorem delayTapMatrix_third_subdiag
     (f_s : SamplingFreq) (i j : Fin n_s) (h : i.val = j.val + 3) :
     delayTapMatrix n_s paths f_s i j
       = delayTapImpulseResponse paths f_s { toNat := 3 } :=
+  delayTapMatrix_at_subdiag paths f_s i j h
+
+/-- *Fourth sub-diagonal of `delayTapMatrix`.*  When `i.val = j.val
+    + 4`, the entry is the impulse response at delay 4.  Same
+    pattern via `delayTapMatrix_at_subdiag`. -/
+theorem delayTapMatrix_fourth_subdiag
+    {n_s : Nat} {p : Nat} (paths : Fin p -> DelayTapPath)
+    (f_s : SamplingFreq) (i j : Fin n_s) (h : i.val = j.val + 4) :
+    delayTapMatrix n_s paths f_s i j
+      = delayTapImpulseResponse paths f_s { toNat := 4 } :=
   delayTapMatrix_at_subdiag paths f_s i j h
 
 /-- *Delay-tap matrix entry above diagonal is zero.*  This is the
@@ -319,6 +342,23 @@ theorem delayTapMatrix_zero_attenuations
       dif_pos h
     step1.trans
       (delayTapImpulseResponse_zero_attenuations paths h_zero f_s _)
+  else
+    dif_neg h
+
+/-- *Empty delay-tap matrix is zero.*  With zero paths (`p = 0`),
+    every entry vanishes.  Lower-triangular branch chains through
+    `delayTapImpulseResponse_empty`; upper-triangular branch is
+    `0` via `dif_neg`. -/
+theorem delayTapMatrix_empty
+    {n_s : Nat} (paths : Fin 0 -> DelayTapPath)
+    (f_s : SamplingFreq) (i j : Fin n_s) :
+    delayTapMatrix n_s paths f_s i j = (0 : Complex) :=
+  if h : j.val <= i.val then
+    let step1 : delayTapMatrix n_s paths f_s i j
+              = delayTapImpulseResponse paths f_s
+                  { toNat := i.val - j.val } :=
+      dif_pos h
+    step1.trans (delayTapImpulseResponse_empty paths f_s _)
   else
     dif_neg h
 

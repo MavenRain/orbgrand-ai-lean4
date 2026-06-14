@@ -831,6 +831,108 @@ example (phi1 phi2 z1 z2 : Complex) :
         + phi2 * ar2 phi1 phi2 z1 z2 17 :=
   ar2_nineteen phi1 phi2 z1 z2
 
+/-- `delayTapMatrix` fourth sub-diagonal. -/
+example {n_s : Nat} {p : Nat} (paths : Fin p -> DelayTapPath)
+    (f_s : SamplingFreq) (i j : Fin n_s) (h : i.val = j.val + 4) :
+    delayTapMatrix n_s paths f_s i j
+      = delayTapImpulseResponse paths f_s { toNat := 4 } :=
+  delayTapMatrix_fourth_subdiag paths f_s i j h
+
+/-- `delayTapMatrix` diagonal-collapse from val-equality. -/
+example {n_s : Nat} {p : Nat} (paths : Fin p -> DelayTapPath)
+    (f_s : SamplingFreq) (i j : Fin n_s) (h : i.val = j.val) :
+    delayTapMatrix n_s paths f_s i j = delayTapMatrix n_s paths f_s i i :=
+  delayTapMatrix_diag_of_val_eq paths f_s i j h
+
+/-- `delayTapMatrix` with empty path family is zero. -/
+example {n_s : Nat} (paths : Fin 0 -> DelayTapPath)
+    (f_s : SamplingFreq) (i j : Fin n_s) :
+    delayTapMatrix n_s paths f_s i j = (0 : Complex) :=
+  delayTapMatrix_empty paths f_s i j
+
+/-- `dicode_channel` diagonal entry is `1`. -/
+example {n_s : Nat} (sigma : NoisePower) (rho : CorrelationCoefficient)
+    (i : Fin n_s) :
+    (dicode n_s sigma rho).channel i i = (1 : Complex) :=
+  dicode_channel_diag sigma rho i
+
+/-- `dicode` bandwidth widens to `2`. -/
+example {n_s : Nat} (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    (dicode n_s sigma rho).bandwidth 2 :=
+  dicode_bandwidth_two sigma rho
+
+/-- `rfView` bandwidth widens to `7`. -/
+example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (sigma : NoisePower) :
+    (rfView n_s rowTaps sigma).bandwidth 7 :=
+  rfView_bandwidth_seven rowTaps sigma
+
+/-- `NoisePower.mk?` at `0` round-trips. -/
+example : NoisePower.mk? 0 = Except.ok ⟨0, le_refl 0⟩ :=
+  NoisePower.mk?_zero
+
+/-- `CorrelationCoefficient.mk?` at `0` round-trips. -/
+example : CorrelationCoefficient.mk? 0
+    = Except.ok ⟨0, le_refl 0, zero_le_one⟩ :=
+  CorrelationCoefficient.mk?_zero
+
+/-- `CorrelationCoefficient.mk?` at `1` round-trips. -/
+example : CorrelationCoefficient.mk? 1
+    = Except.ok ⟨1, zero_le_one, le_refl 1⟩ :=
+  CorrelationCoefficient.mk?_one
+
+/-- `cov2DetFormula` at zero-sigma vanishes at any successor size. -/
+example (rho1 rho2 : CorrelationCoefficient) (n : Nat) :
+    cov2DetFormula ⟨0, le_refl 0⟩ rho1 rho2 (n + 1) = 0 :=
+  cov2DetFormula_zero_sigma_of_succ rho1 rho2 n
+
+/-- `cov2DetFormula` at zero-sigma vanishes at `n_s = 4`. -/
+example (rho1 rho2 : CorrelationCoefficient) :
+    cov2DetFormula ⟨0, le_refl 0⟩ rho1 rho2 4 = 0 :=
+  cov2DetFormula_zero_sigma_four rho1 rho2
+
+/-- `entropyRate1_asymp` matches the explicit log expression (`.symm`). -/
+example (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    Real.log (2 * Real.exp 1 * Real.pi * sigma.val
+              * (1 - rho.val ^ 2))
+      = entropyRate1_asymp sigma rho :=
+  log_eq_entropyRate1_asymp sigma rho
+
+/-- `entropyRate1_block` matches `entropyRate1` at `b.toNat` (`.symm`). -/
+example (sigma : NoisePower) (rho : CorrelationCoefficient) (b : BlockSize) :
+    entropyRate1_block sigma rho b = entropyRate1 sigma rho b.toNat :=
+  entropyRate1_block_eq_entropyRate1 sigma rho b
+
+/-- Closed-form chain for `entropyRate1` at block. -/
+example (sigma : NoisePower) (rho : CorrelationCoefficient) (b : BlockSize) :
+    entropyRate1 sigma rho b.toNat
+      = Real.log (2 * Real.exp 1 * Real.pi * sigma.val)
+        + (1 - (1 : Real) / (b.toNat : Real))
+            * Real.log (1 - rho.val ^ 2) :=
+  entropyRate1_at_block_eq_log_form sigma rho b
+
+/-- `cov1_lag` at lag `-1`. -/
+example (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    cov1_lag sigma rho (-1) = sigma.val * rho.val :=
+  cov1_lag_neg_one sigma rho
+
+/-- `cov1_lag` at lag `-2`. -/
+example (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    cov1_lag sigma rho (-2) = sigma.val * rho.val ^ 2 :=
+  cov1_lag_neg_two sigma rho
+
+/-- `cov2_lag` recurrence at lag 7. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta1 beta2 : Real) :
+    cov2_lag sigma rho1 rho2 beta1 beta2 7
+      = beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 6
+        + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 5 :=
+  cov2_lag_seven sigma rho1 rho2 beta1 beta2
+
+/-- All-false pattern is in `landslideBucket` `0`. -/
+example {n : Nat} (pi : ReliabilityRank n) :
+    landslideBucket pi 0 (fun _ : Fin n => false) :=
+  landslideBucket_const_false_zero pi
+
 /-- `QueryOrder.positionOf` on the empty list is `0`. -/
 example {numPatterns : Nat} (x : Fin numPatterns) :
     QueryOrder.positionOf x ([] : QueryOrder numPatterns) = 0 :=

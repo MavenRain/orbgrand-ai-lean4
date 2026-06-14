@@ -137,12 +137,46 @@ theorem entropyRate1_asymp_eq
       = Real.log (2 * Real.exp 1 * Real.pi * sigma.val
                   * (1 - rho.val ^ 2)) := rfl
 
+/-- *Symmetric form of `entropyRate1_asymp_eq`.*  The closed-form
+    log expression equals `entropyRate1_asymp`.  The `.symm` of
+    `entropyRate1_asymp_eq`, useful for rewriting from the
+    explicit log form back into the abbreviation. -/
+theorem log_eq_entropyRate1_asymp
+    (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    Real.log (2 * Real.exp 1 * Real.pi * sigma.val
+              * (1 - rho.val ^ 2))
+      = entropyRate1_asymp sigma rho :=
+  (entropyRate1_asymp_eq sigma rho).symm
+
 /-- *Entropy rate matches block form when n_s = b.toNat.*  The
     `entropyRate1` and `entropyRate1_block` formulas coincide
     definitionally when the block size equals the sequence length. -/
 theorem entropyRate1_eq_block
     (sigma : NoisePower) (rho : CorrelationCoefficient) (b : BlockSize) :
     entropyRate1 sigma rho b.toNat = entropyRate1_block sigma rho b := rfl
+
+/-- *Symmetric form of `entropyRate1_eq_block`.*  The block-`b`
+    entropy rate equals the `entropyRate1` formula evaluated at the
+    sequence length `b.toNat`.  Just the `.symm` of
+    `entropyRate1_eq_block`. -/
+theorem entropyRate1_block_eq_entropyRate1
+    (sigma : NoisePower) (rho : CorrelationCoefficient) (b : BlockSize) :
+    entropyRate1_block sigma rho b = entropyRate1 sigma rho b.toNat :=
+  (entropyRate1_eq_block sigma rho b).symm
+
+/-- *Closed-form chain.*  Two-step composition of
+    `entropyRate1_eq_block` (collapse to the `entropyRate1_block`
+    abbreviation) and `entropyRate1_block_eq` (unfold to the log
+    form), giving the explicit log expression for
+    `entropyRate1 sigma rho b.toNat`. -/
+theorem entropyRate1_at_block_eq_log_form
+    (sigma : NoisePower) (rho : CorrelationCoefficient) (b : BlockSize) :
+    entropyRate1 sigma rho b.toNat
+      = Real.log (2 * Real.exp 1 * Real.pi * sigma.val)
+        + (1 - (1 : Real) / (b.toNat : Real))
+            * Real.log (1 - rho.val ^ 2) :=
+  (entropyRate1_eq_block sigma rho b).trans
+    (entropyRate1_block_eq sigma rho b)
 
 /-- The second-order entropy rate matches the substitution of
     `cov2DetFormula` into the Gaussian entropy formula.

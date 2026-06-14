@@ -103,10 +103,26 @@ theorem cov1_lag_neg (sigma : NoisePower) (rho : CorrelationCoefficient)
     cov1_lag sigma rho (-i) = cov1_lag sigma rho i :=
   congrArg (fun n => sigma.val * (rho.val ^ n)) (Int.natAbs_neg i)
 
+/-- `cov1_lag` at lag `-1` is `sigma * rho`.  Compose the sign
+    symmetry `cov1_lag_neg` at `i = 1` with the closed form
+    `cov1_lag_one`.  Boundary-case companion to `cov1_lag_one`. -/
+theorem cov1_lag_neg_one
+    (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    cov1_lag sigma rho (-1) = sigma.val * rho.val :=
+  (cov1_lag_neg sigma rho 1).trans (cov1_lag_one sigma rho)
+
 /-- `cov1_lag` at lag 2 is `sigma * rho^2`.  Defeq: `(2 : Int).natAbs
     = 2`, so the definition unfolds directly. -/
 theorem cov1_lag_two (sigma : NoisePower) (rho : CorrelationCoefficient) :
     cov1_lag sigma rho 2 = sigma.val * rho.val ^ 2 := rfl
+
+/-- `cov1_lag` at lag `-2` is `sigma * rho^2`.  Compose
+    `cov1_lag_neg` at `i = 2` with `cov1_lag_two`.  Boundary-case
+    companion to `cov1_lag_two`. -/
+theorem cov1_lag_neg_two
+    (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    cov1_lag sigma rho (-2) = sigma.val * rho.val ^ 2 :=
+  (cov1_lag_neg sigma rho 2).trans (cov1_lag_two sigma rho)
 
 /-- `cov1_lag` at lag 3 is `sigma * rho^3`.  Same defeq pattern as
     `cov1_lag_two`. -/
@@ -415,6 +431,15 @@ theorem cov2_lag_six
     cov2_lag sigma rho1 rho2 beta1 beta2 6
       = beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 5
         + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 4 := rfl
+
+/-- *Recurrence step at lag `7`.*  Same `rfl` pattern as
+    `cov2_lag_six`, one step further. -/
+theorem cov2_lag_seven
+    (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta1 beta2 : Real) :
+    cov2_lag sigma rho1 rho2 beta1 beta2 7
+      = beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 6
+        + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 5 := rfl
 
 /-- The AR(2)-style recurrence for `cov2_lag` at lag `n + 3`. -/
 theorem cov2_lag_succ_succ_succ

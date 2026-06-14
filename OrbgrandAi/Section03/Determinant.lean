@@ -70,6 +70,18 @@ noncomputable def cov2DetFormula
         * sigmaSq ^ n_s
       / (r1 ^ 2 - 1) ^ (n_s - 3))
 
+/-- *Definitional unfold.*  `cov2DetFormula` is, by definition, the
+    negation of the rational expression appearing in the paper.  The
+    `let`-bindings (`r1`, `r2`, `sigmaSq`) and the `Neg.neg`
+    constructor reduce away, so this is a definitional equality. -/
+theorem cov2DetFormula_eq_neg_div
+    (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient) (n_s : Nat) :
+    cov2DetFormula sigma rho1 rho2 n_s
+      = - ((rho2.val - 1) ^ (n_s - 2)
+            * (1 - 2 * rho1.val ^ 2 + rho2.val) ^ (n_s - 2)
+            * (sigma.val ^ 2) ^ n_s
+          / (rho1.val ^ 2 - 1) ^ (n_s - 3)) := rfl
+
 /-! ## The second-order Gauss-Markov auto-covariance matrix -/
 
 /-- The `n_s x n_s` auto-covariance matrix of the second-order
@@ -123,6 +135,23 @@ theorem cov2DetFormula_zero_sigma
     (congrArg (· / (rho1.val ^ 2 - 1) ^ (n_s - 3)) core_zero).trans
       (zero_div _)
   (congrArg Neg.neg div_zero).trans neg_zero
+
+/-- *Zero-sigma at any successor size.*  Specialisation of
+    `cov2DetFormula_zero_sigma` at `n_s = n + 1`.  The `Nat.succ_pos`
+    witness discharges the positivity hypothesis. -/
+theorem cov2DetFormula_zero_sigma_of_succ
+    (rho1 rho2 : CorrelationCoefficient) (n : Nat) :
+    cov2DetFormula ⟨0, le_refl 0⟩ rho1 rho2 (n + 1) = 0 :=
+  cov2DetFormula_zero_sigma rho1 rho2 (Nat.succ_pos n)
+
+/-- *Zero-sigma at the paper's minimum supported size.*  The closed
+    form `cov2DetFormula` is stated valid for `n_s >= 4`; at
+    `n_s = 4` with zero noise power it vanishes.  Instantiates
+    `cov2DetFormula_zero_sigma` at `n_s = 4`. -/
+theorem cov2DetFormula_zero_sigma_four
+    (rho1 rho2 : CorrelationCoefficient) :
+    cov2DetFormula ⟨0, le_refl 0⟩ rho1 rho2 4 = 0 :=
+  cov2DetFormula_zero_sigma rho1 rho2 (Nat.succ_pos 3)
 
 /-! ## The determinant theorem (placeholder) -/
 

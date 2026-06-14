@@ -1165,6 +1165,14 @@ theorem landslideBucket_self
     landslideBucket pi (logisticWeight pi e) e :=
   rfl
 
+/-- *Constant-false pattern is in bucket 0.*  The all-zero error
+    pattern has logistic weight `0` (by `logisticWeight_const_false`),
+    so it sits in bucket `0`.  One-line corollary of the definition. -/
+theorem landslideBucket_const_false_zero
+    {n : Nat} (pi : ReliabilityRank n) :
+    landslideBucket pi 0 (fun _ : Fin n => false) :=
+  logisticWeight_const_false pi
+
 /-- *Bucket uniqueness.*  Each pattern belongs to at most one bucket:
     if `e` is in buckets `w1` and `w2`, then `w1 = w2`.  Direct
     consequence of `landslideBucket pi w e` being `logisticWeight pi

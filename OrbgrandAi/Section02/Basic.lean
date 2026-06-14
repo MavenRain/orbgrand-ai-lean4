@@ -282,6 +282,14 @@ theorem mk?_val_eq (v : Real) (h : 0 <= v) :
     (NoisePower.mk? v).map (·.val) = Except.ok v :=
   (mk?_of_nonneg v h).symm ▸ rfl
 
+/-- *Zero is a valid noise power.*  Boundary corollary of
+    `mk?_of_nonneg` at `v = 0`: a noiseless channel sits at the
+    lower endpoint of the `[0, ∞)` range and round-trips through
+    `mk?`. -/
+theorem mk?_zero :
+    NoisePower.mk? 0 = Except.ok ⟨0, le_refl 0⟩ :=
+  mk?_of_nonneg 0 (le_refl 0)
+
 end NoisePower
 
 namespace SignalPower
@@ -357,6 +365,24 @@ theorem mk?_of_gt_one (v : Real) (h0 : 0 <= v) (h1 : ¬ v <= 1) :
 theorem mk?_val_eq (v : Real) (h0 : 0 <= v) (h1 : v <= 1) :
     (CorrelationCoefficient.mk? v).map (·.val) = Except.ok v :=
   (mk?_of_mem v h0 h1).symm ▸ rfl
+
+/-- *Zero is a valid correlation coefficient.*  Boundary corollary
+    of `mk?_of_mem` at `v = 0`: an uncorrelated channel (`rho = 0`)
+    sits at the lower endpoint of `[0, 1]` and round-trips through
+    `mk?`. -/
+theorem mk?_zero :
+    CorrelationCoefficient.mk? 0
+      = Except.ok ⟨0, le_refl 0, zero_le_one⟩ :=
+  mk?_of_mem 0 (le_refl 0) zero_le_one
+
+/-- *One is a valid correlation coefficient.*  Boundary corollary
+    of `mk?_of_mem` at `v = 1`: a fully correlated channel (`rho =
+    1`) sits at the upper endpoint of `[0, 1]` and round-trips
+    through `mk?`. -/
+theorem mk?_one :
+    CorrelationCoefficient.mk? 1
+      = Except.ok ⟨1, zero_le_one, le_refl 1⟩ :=
+  mk?_of_mem 1 zero_le_one (le_refl 1)
 
 end CorrelationCoefficient
 

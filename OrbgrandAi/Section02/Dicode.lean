@@ -132,6 +132,15 @@ theorem dicodeMatrix_diag
     dicodeMatrix n_s rho i i = (1 : Complex) :=
   if_pos rfl
 
+/-- The diagonal entry of the dicode channel-matrix wrapper is `1`.
+    Wrapper-level companion to `dicodeMatrix_diag`. -/
+theorem dicode_channel_diag
+    {n_s : Nat} (sigma : NoisePower) (rho : CorrelationCoefficient)
+    (i : Fin n_s) :
+    (dicode n_s sigma rho).channel i i = (1 : Complex) :=
+  (congrFun (congrFun (dicode_channel n_s sigma rho) i) i).trans
+    (dicodeMatrix_diag rho i)
+
 /-- The first sub-diagonal (`i = j + 1`) entry is `-rho`. -/
 theorem dicodeMatrix_subdiag
     {n_s : Nat} (rho : CorrelationCoefficient)
@@ -184,6 +193,13 @@ theorem dicode_bandwidth
         else if i.val = j.val + 1 then -(rho.val : Complex)
         else (0 : Complex)) = (0 : Complex) from
     (if_neg hne_eq).trans (if_neg hne_succ)
+
+/-- *Dicode bandwidth widens to `2`.*  One-line corollary of
+    `dicode_bandwidth` composed with `LinearIsi.bandwidth_succ`. -/
+theorem dicode_bandwidth_two
+    {n_s : Nat} (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    (dicode n_s sigma rho).bandwidth 2 :=
+  LinearIsi.bandwidth_succ (dicode_bandwidth sigma rho)
 
 /-- The dicode channel is causal: all entries strictly above the
     diagonal vanish.
