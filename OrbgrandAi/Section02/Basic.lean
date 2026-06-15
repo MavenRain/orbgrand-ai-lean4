@@ -233,6 +233,15 @@ theorem mk?_toNat_eq (n : Nat) (h : 0 < n) :
     (CodewordLength.mk? n).map (·.toNat) = Except.ok n :=
   (mk?_of_pos n h).symm ▸ rfl
 
+/-- *Two is a valid codeword length.*  Next-concrete-value corollary
+    of `mk?_of_pos` at `n = 2`: the smallest nontrivial codeword
+    length (two coded bits) round-trips through `mk?`, with
+    positivity witnessed by `Nat.succ_pos 1`.  Parallel of
+    `BlockSize.mk?_two`. -/
+theorem mk?_two :
+    CodewordLength.mk? 2 = Except.ok ⟨2, Nat.succ_pos 1⟩ :=
+  mk?_of_pos 2 (Nat.succ_pos 1)
+
 end CodewordLength
 
 namespace BitsPerSymbol

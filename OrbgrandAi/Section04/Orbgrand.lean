@@ -1466,6 +1466,21 @@ theorem landslideBucket_and_iff
   ⟨fun h => ⟨landslideBucket_unique pi h.1 h.2, h.1⟩,
    fun h => ⟨h.2, (landslideBucket_weight_congr pi e h.1).mp h.2⟩⟩
 
+/-- *Right-anchored variant of `landslideBucket_and_iff`.*  A pattern
+    `e` sits in both buckets `w1` and `w2` iff the bucket indices
+    coincide and the `w2`-membership holds.  Companion to the
+    `w1`-anchored form: lets callers that already have a
+    `landslideBucket pi w2 e` witness in hand close the conjunction
+    without reshuffling.  Forward direction uses `landslideBucket_unique`
+    and projects the second conjunct; the reverse transports the
+    `w2`-membership across `w1 = w2` via `landslideBucket_weight_congr`. -/
+theorem landslideBucket_and_iff_right
+    {n : Nat} (pi : ReliabilityRank n) (w1 w2 : Nat) (e : Fin n -> Bool) :
+    landslideBucket pi w1 e /\ landslideBucket pi w2 e
+      <-> w1 = w2 /\ landslideBucket pi w2 e :=
+  ⟨fun h => ⟨landslideBucket_unique pi h.1 h.2, h.2⟩,
+   fun h => ⟨(landslideBucket_weight_congr pi e h.1).mpr h.2, h.2⟩⟩
+
 /-- *Constant-false sits in bucket zero via the perm characterisation.*
     Re-derivation of `landslideBucket_const_false_zero` through
     `landslideBucket_zero_iff_all_false_at_perm`. -/

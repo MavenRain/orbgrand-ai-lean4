@@ -254,6 +254,18 @@ theorem liminfInformationRate_congr {u v : Nat -> Real}
     liminfInformationRate u = liminfInformationRate v :=
   Filter.liminf_congr h
 
+/-- *Eventually-constant lim-inf information rate.*  If a
+    log-density-ratio sequence is eventually equal to a constant `c`,
+    its lim-inf information rate equals `c`.  Composes
+    `liminfInformationRate_congr` against the constant sequence with
+    `liminfInformationRate_const`.  Dual of
+    `limsupEntropyRate_eq_const_of_eventually_const`. -/
+theorem liminfInformationRate_eq_const_of_eventually_const
+    {u : Nat -> Real} {c : Real}
+    (h : ∀ᶠ n in Filter.atTop, u n = c) :
+    liminfInformationRate u = c :=
+  (liminfInformationRate_congr h).trans (liminfInformationRate_const c)
+
 /-- *Congruence under eventual equality.*  Dual of
     `liminfInformationRate_congr` for the lim-sup entropy rate.
     Eventually-equal log-inverse-density sequences share the same

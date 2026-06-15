@@ -266,6 +266,24 @@ theorem entropyRate2_at_four_eq_log_form
                   / (rho1.val ^ 2 - 1) ^ 1) :=
   entropyRate2_eq sigma rho1 rho2 4
 
+/-- *Boundary case `n_s = 5` of `entropyRate2`.*  Companion of
+    `entropyRate2_at_four_eq_log_form`: pinning the second-order
+    entropy-rate formula at `n_s = 5` reduces the abstract `n_s - 2`
+    and `n_s - 3` exponents to `3` and `2`, giving the next paper
+    boundary case above the minimal sequence length.  Specialisation
+    of `entropyRate2_eq` at `n_s = 5`; reduces by Nat computation. -/
+theorem entropyRate2_at_five_eq_log_form
+    (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient) :
+    entropyRate2 sigma rho1 rho2 5
+      = (1 / 2 : Real)
+          * Real.log (2 * Real.pi * Real.exp 1 * sigma.val)
+        + (1 / (2 * ((5 : Nat) : Real)))
+            * Real.log
+                (- (rho2.val - 1) ^ 3
+                    * (1 - 2 * rho1.val ^ 2 + rho2.val) ^ 3
+                  / (rho1.val ^ 2 - 1) ^ 2) :=
+  entropyRate2_eq sigma rho1 rho2 5
+
 /-- *Symmetric form of `entropyRate2_eq`.*  The explicit log
     expression equals `entropyRate2 sigma rho1 rho2 n_s`.  `.symm`
     of `entropyRate2_eq`. -/

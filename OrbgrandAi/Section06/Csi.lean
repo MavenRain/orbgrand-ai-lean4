@@ -220,6 +220,17 @@ theorem perturbChannel_perturbChannel_zero_channel
   (congrArg (fun H => perturbChannel H ε₂) (perturbChannel_zero_channel ε₁)).trans
     (perturbChannel_zero_channel ε₂)
 
+/-- *Pointwise double-perturbation of the zero channel.*  Entry
+    form of `perturbChannel_perturbChannel_zero_channel`: each entry
+    of the doubly-perturbed zero channel agrees with the corresponding
+    entry of the zero channel.  Pure `congrFun` cascade. -/
+theorem perturbChannel_perturbChannel_zero_channel_apply
+    {n_s : Nat} (ε₁ ε₂ : Matrix (Fin n_s) (Fin n_s) Complex)
+    (i j : Fin n_s) :
+    perturbChannel (perturbChannel 0 ε₁) ε₂ i j
+      = (0 : ChannelMatrix n_s) i j :=
+  congrFun (congrFun (perturbChannel_perturbChannel_zero_channel ε₁ ε₂) i) j
+
 /-- *Diagonal entry under double zero-zero composition.*
     Specialisation of `perturbChannel_perturbChannel_zero_zero_apply`
     at `i = j`. -/

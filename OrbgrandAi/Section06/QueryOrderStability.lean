@@ -515,6 +515,19 @@ theorem kendallTau_triangle_right_symm
     kendallTau a c ≤ kendallTau a b + kendallTau c b :=
   (kendallTau_symm c b) ▸ kendallTau_triangle a b c
 
+/-- *Triangle inequality, left-symmetrized form.*  For any three query
+    orders `a`, `b`, `c`,
+    `kendallTau a c <= kendallTau b a + kendallTau b c`.
+    Direct corollary of `kendallTau_triangle` (with middle witness `b`)
+    composed with `kendallTau_symm` on the first summand to flip
+    `kendallTau a b` into `kendallTau b a`.  Useful when the caller has
+    a bound on `kendallTau b a` rather than `kendallTau a b`.  Companion
+    to `kendallTau_triangle_right_symm`. -/
+theorem kendallTau_triangle_left_symm
+    {numPatterns : Nat} (a b c : QueryOrder numPatterns) :
+    kendallTau a c ≤ kendallTau b a + kendallTau b c :=
+  (kendallTau_symm a b) ▸ kendallTau_triangle a b c
+
 
 /-! ## Query-order stability claim (placeholder) -/
 

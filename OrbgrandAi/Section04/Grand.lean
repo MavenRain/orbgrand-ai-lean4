@@ -744,6 +744,15 @@ theorem Codeword.xor_xor_self_left {n : Nat} (a b : Codeword n) :
     Codeword.xor (Codeword.xor a b) a = b :=
   (Codeword.xor_right_comm a b a).trans (Codeword.xor_self_left_eq a b)
 
+/-- *Pointwise outer-right/inner-left involution.*  `((a xor b) xor a) i = b i`.
+    One-liner via `congrFun` on `xor_xor_self_left`.  Completes the 2x2
+    grid of pointwise self-cancellation forms alongside `xor_xor_self_apply`,
+    `xor_xor_left_apply`, and `xor_xor_right_apply`. -/
+theorem Codeword.xor_xor_self_left_apply
+    {n : Nat} (a b : Codeword n) (i : Fin n) :
+    Codeword.xor (Codeword.xor a b) a i = b i :=
+  congrFun (Codeword.xor_xor_self_left a b) i
+
 /-- *XOR transposition.*  `a xor b = c` iff `a = c xor b`.  The
     fundamental "move XOR to the other side" rule for ZMod 2. -/
 theorem Codeword.xor_eq_iff_eq_xor {n : Nat} (a b c : Codeword n) :
