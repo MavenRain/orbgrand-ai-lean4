@@ -197,6 +197,14 @@ theorem mk?_one :
     BlockSize.mk? 1 = Except.ok ⟨1, Nat.one_pos⟩ :=
   mk?_of_pos 1 Nat.one_pos
 
+/-- *Two is a valid block size.*  Next-concrete-value corollary of
+    `mk?_of_pos` at `n = 2`: the smallest nontrivial neighbourhood
+    (two candidate flips) round-trips through `mk?`, with positivity
+    witnessed by `Nat.succ_pos 1` rather than `Nat.one_pos`. -/
+theorem mk?_two :
+    BlockSize.mk? 2 = Except.ok ⟨2, Nat.succ_pos 1⟩ :=
+  mk?_of_pos 2 (Nat.succ_pos 1)
+
 end BlockSize
 
 namespace CodewordLength

@@ -263,6 +263,16 @@ theorem limsupEntropyRate_congr {u v : Nat -> Real}
     limsupEntropyRate u = limsupEntropyRate v :=
   Filter.limsup_congr h
 
+/-- *Eventually-constant lim-sup entropy rate.*  If a log-inverse-
+    density sequence is eventually equal to a constant `c`, its
+    lim-sup entropy rate equals `c`.  Composes `limsupEntropyRate_congr`
+    against the constant sequence with `limsupEntropyRate_const`. -/
+theorem limsupEntropyRate_eq_const_of_eventually_const
+    {u : Nat -> Real} {c : Real}
+    (h : ∀ᶠ n in Filter.atTop, u n = c) :
+    limsupEntropyRate u = c :=
+  (limsupEntropyRate_congr h).trans (limsupEntropyRate_const c)
+
 /-! ## Hadamard bound on the noise entropy rate -/
 
 /-- *Hadamard inequality* (Section III, page 4, right column).

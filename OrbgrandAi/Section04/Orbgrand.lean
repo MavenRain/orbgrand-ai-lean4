@@ -1453,6 +1453,19 @@ theorem landslideBucket_transport
     landslideBucket pi w e2 :=
   h_eq.symm.trans h1
 
+/-- *Boolean-algebra corollary: conjoined bucket memberships collapse
+    to an index equation.*  A pattern `e` simultaneously inhabits
+    buckets `w1` and `w2` iff the bucket indices coincide and one of
+    the memberships holds.  Forward direction uses
+    `landslideBucket_unique`; the reverse transports the membership
+    along the index equality via `landslideBucket_weight_congr`. -/
+theorem landslideBucket_and_iff
+    {n : Nat} (pi : ReliabilityRank n) (w1 w2 : Nat) (e : Fin n -> Bool) :
+    landslideBucket pi w1 e /\ landslideBucket pi w2 e
+      <-> w1 = w2 /\ landslideBucket pi w1 e :=
+  ⟨fun h => ⟨landslideBucket_unique pi h.1 h.2, h.1⟩,
+   fun h => ⟨h.2, (landslideBucket_weight_congr pi e h.1).mp h.2⟩⟩
+
 /-- *Constant-false sits in bucket zero via the perm characterisation.*
     Re-derivation of `landslideBucket_const_false_zero` through
     `landslideBucket_zero_iff_all_false_at_perm`. -/

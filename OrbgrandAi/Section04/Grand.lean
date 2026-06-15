@@ -732,6 +732,18 @@ theorem Codeword.xor_xor_right_apply
     Codeword.xor (Codeword.xor a b) b i = a i :=
   congrFun (Codeword.xor_xor_right a b) i
 
+/-- *Outer-right matches inner-left involution.*  `(a xor b) xor a = b`:
+    completes the 2x2 grid of two-XOR self-cancellations alongside
+    `xor_xor_self` (`a xor (a xor b) = b`, outer-left/inner-left),
+    `xor_xor_left` (`a xor (b xor a) = b`, outer-left/inner-right), and
+    `xor_xor_right` (`(a xor b) xor b = a`, outer-right/inner-right).
+    Derived by `xor_right_comm` (swap outer-`b` and outer-`a`) followed
+    by `xor_self_left_eq` (the resulting `(a xor a) xor b` prefix collapses
+    to `b`). -/
+theorem Codeword.xor_xor_self_left {n : Nat} (a b : Codeword n) :
+    Codeword.xor (Codeword.xor a b) a = b :=
+  (Codeword.xor_right_comm a b a).trans (Codeword.xor_self_left_eq a b)
+
 /-- *XOR transposition.*  `a xor b = c` iff `a = c xor b`.  The
     fundamental "move XOR to the other side" rule for ZMod 2. -/
 theorem Codeword.xor_eq_iff_eq_xor {n : Nat} (a b c : Codeword n) :

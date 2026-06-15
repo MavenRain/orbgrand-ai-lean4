@@ -503,6 +503,18 @@ theorem kendallTau_eq_zero_trans
   Nat.le_zero.mp
     ((kendallTau_triangle a b c).trans (hab.symm ▸ hbc.symm ▸ Nat.le_refl 0))
 
+/-- *Triangle inequality, right-symmetrized form.*  For any three query
+    orders `a`, `b`, `c`,
+    `kendallTau a c <= kendallTau a b + kendallTau c b`.
+    Direct corollary of `kendallTau_triangle` (with middle witness `b`)
+    composed with `kendallTau_symm` on the second summand to flip
+    `kendallTau b c` into `kendallTau c b`.  Useful when the caller has
+    a bound on `kendallTau c b` rather than `kendallTau b c`. -/
+theorem kendallTau_triangle_right_symm
+    {numPatterns : Nat} (a b c : QueryOrder numPatterns) :
+    kendallTau a c ≤ kendallTau a b + kendallTau c b :=
+  (kendallTau_symm c b) ▸ kendallTau_triangle a b c
+
 
 /-! ## Query-order stability claim (placeholder) -/
 

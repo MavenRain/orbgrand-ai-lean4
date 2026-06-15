@@ -206,6 +206,20 @@ theorem perturbChannel_perturbChannel_zero_zero_apply
     perturbChannel (perturbChannel h 0) 0 i j = h i j :=
   congrFun (congrFun (perturbChannel_perturbChannel_zero_zero h) i) j
 
+/-- *Zero channel survives double perturbation.*  Composing two
+    perturbations on the zero channel still yields the zero channel,
+    regardless of either error matrix.  Symmetric counterpart of
+    `perturbChannel_perturbChannel_zero_zero` (which fixes the two
+    error matrices at zero): here the underlying channel is fixed at
+    zero and the error matrices are arbitrary.  Lift the inner
+    `perturbChannel 0 ε₁ = 0` via `congrArg`, then collapse the
+    outer perturbation by `perturbChannel_zero_channel`. -/
+theorem perturbChannel_perturbChannel_zero_channel
+    {n_s : Nat} (ε₁ ε₂ : Matrix (Fin n_s) (Fin n_s) Complex) :
+    perturbChannel (perturbChannel 0 ε₁) ε₂ = 0 :=
+  (congrArg (fun H => perturbChannel H ε₂) (perturbChannel_zero_channel ε₁)).trans
+    (perturbChannel_zero_channel ε₂)
+
 /-- *Diagonal entry under double zero-zero composition.*
     Specialisation of `perturbChannel_perturbChannel_zero_zero_apply`
     at `i = j`. -/
