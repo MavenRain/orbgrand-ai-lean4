@@ -272,6 +272,29 @@ theorem dicode_bandwidth_eight
     (dicode n_s sigma rho).bandwidth 8 :=
   LinearIsi.bandwidth_succ_succ_succ (dicode_bandwidth_five sigma rho)
 
+/-- *Dicode bandwidth widens to `9`.*  Chain `dicode_bandwidth_eight`
+    with `LinearIsi.bandwidth_succ`. -/
+theorem dicode_bandwidth_nine
+    {n_s : Nat} (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    (dicode n_s sigma rho).bandwidth 9 :=
+  LinearIsi.bandwidth_succ (dicode_bandwidth_eight sigma rho)
+
+/-- *Dicode bandwidth widens to `10`.*  Chain `dicode_bandwidth_eight`
+    with `LinearIsi.bandwidth_succ_succ`. -/
+theorem dicode_bandwidth_ten
+    {n_s : Nat} (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    (dicode n_s sigma rho).bandwidth 10 :=
+  LinearIsi.bandwidth_succ_succ (dicode_bandwidth_eight sigma rho)
+
+/-- *Dicode bandwidth widens from `5` by any additive offset.*
+    Universal `5 + k` form: chain `dicode_bandwidth_five` with
+    `LinearIsi.bandwidth_add`. -/
+theorem dicode_bandwidth_five_add
+    {n_s : Nat} (sigma : NoisePower) (rho : CorrelationCoefficient)
+    (k : Nat) :
+    (dicode n_s sigma rho).bandwidth (5 + k) :=
+  LinearIsi.bandwidth_add k (dicode_bandwidth_five sigma rho)
+
 /-- The dicode channel is causal: all entries strictly above the
     diagonal vanish.
 

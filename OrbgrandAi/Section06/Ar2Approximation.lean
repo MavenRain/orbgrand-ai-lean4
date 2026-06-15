@@ -363,6 +363,20 @@ theorem ar2_thirty_nine (phi1 phi2 z1 z2 : Complex) :
       = phi1 * ar2 phi1 phi2 z1 z2 38
         + phi2 * ar2 phi1 phi2 z1 z2 37 := rfl
 
+/-- Recurrence step at index 40: `phi_1 * ar2 39 + phi_2 * ar2 38`.
+    Pattern-match arm `(38 + 2)` reduces definitionally to the RHS. -/
+theorem ar2_forty (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 40
+      = phi1 * ar2 phi1 phi2 z1 z2 39
+        + phi2 * ar2 phi1 phi2 z1 z2 38 := rfl
+
+/-- Recurrence step at index 41: `phi_1 * ar2 40 + phi_2 * ar2 39`.
+    Pattern-match arm `(39 + 2)` reduces definitionally to the RHS. -/
+theorem ar2_forty_one (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 41
+      = phi1 * ar2 phi1 phi2 z1 z2 40
+        + phi2 * ar2 phi1 phi2 z1 z2 39 := rfl
+
 /-- *Trivial coefficients.*  When both AR(2) coefficients are zero,
     every recurrence step (index `n + 2`) vanishes regardless of
     the initial conditions.  The initial conditions at indices 0 and
@@ -431,6 +445,14 @@ theorem ar2_phi2_zero_three (phi1 z1 z2 : Complex) :
     ar2 phi1 0 z1 z2 3 = phi1 * (phi1 * z2) :=
   (ar2_phi2_zero_succ phi1 z1 z2 1).trans
     (congrArg (phi1 * ·) (ar2_phi2_zero_two phi1 z1 z2))
+
+/-- *Geometric boundary at index 4.*  Specialises
+    `ar2_phi2_zero_succ` at `n = 2`: when `phi_2 = 0`, the value at
+    index 4 collapses to `phi_1 * (phi_1 * (phi_1 * z_2))`. -/
+theorem ar2_phi2_zero_four (phi1 z1 z2 : Complex) :
+    ar2 phi1 0 z1 z2 4 = phi1 * (phi1 * (phi1 * z2)) :=
+  (ar2_phi2_zero_succ phi1 z1 z2 2).trans
+    (congrArg (phi1 * ·) (ar2_phi2_zero_three phi1 z1 z2))
 
 /-- *Lag-skip degenerate case.*  When `phi_1 = 0`, the AR(2)
     recurrence skips the immediate predecessor: index `n + 2` is

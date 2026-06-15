@@ -1152,6 +1152,14 @@ theorem syndrome_zero_zero
     syndrome H 0 0 i = 0 :=
   (syndrome_zero_noise H 0 i).trans (Codeword.zero_is_codeword H i)
 
+/-- *Function-level syndrome at zero/zero.*  Function-extensional
+    form of `syndrome_zero_zero`: the entire syndrome map is the
+    constantly-zero function. -/
+theorem syndrome_zero_zero_funext
+    {n k : Nat} (H : ParityCheck n k) :
+    syndrome H (0 : Codeword n) (0 : Codeword n) = fun _ => 0 :=
+  funext fun i => syndrome_zero_zero H i
+
 /-- *`syndromeZero` of self.*  Any received vector trivially
     satisfies the GRAND acceptance condition against itself as
     noise candidate: `Y xor Y = 0`, and the zero codeword has zero
@@ -1169,6 +1177,13 @@ theorem syndromeZero_zero_zero
     {n k : Nat} (H : ParityCheck n k) :
     syndromeZero H (0 : Codeword n) (0 : Codeword n) :=
   fun i => syndrome_zero_zero H i
+
+/-- *Alternative `syndromeZero` at zero/zero via self-acceptance.*
+    Specialises `syndromeZero_self` to `Y = 0`. -/
+theorem syndromeZero_self_of_zero
+    {n k : Nat} (H : ParityCheck n k) :
+    syndromeZero H (0 : Codeword n) (0 : Codeword n) :=
+  syndromeZero_self H 0
 
 /-- *`syndromeZero` symmetry.*  Swapping the received vector and the
     noise candidate preserves the GRAND acceptance condition.
@@ -1600,6 +1615,12 @@ theorem grandFind_output_syndrome_decomp
               = H.matrix.mulVec (Codeword.xor Y Ng) i :=
       (congrFun (Codeword.mulVec_xor H Y Ng) i).symm
     step4.trans step3⟩
+
+/-- *Self-syndrome agrees with zero/zero syndrome.* -/
+theorem syndrome_self_eq_zero_zero_funext
+    {n k : Nat} (H : ParityCheck n k) (Y : Codeword n) :
+    syndrome H Y Y = syndrome H (0 : Codeword n) (0 : Codeword n) :=
+  (syndrome_self_funext H Y).trans (funext fun i => (syndrome_zero_zero H i)).symm
 
 end Section04
 end OrbgrandAi

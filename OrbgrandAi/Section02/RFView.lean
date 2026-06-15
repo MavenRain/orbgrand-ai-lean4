@@ -443,6 +443,27 @@ theorem rfView_bandwidth_fifteen
     (rfView n_s rowTaps sigma).bandwidth 15 :=
   LinearIsi.bandwidth_succ_succ_succ (rfView_bandwidth_twelve rowTaps sigma)
 
+/-- *RFView bandwidth widens to `16`.*  Chain `rfView_bandwidth_fifteen`
+    with `LinearIsi.bandwidth_succ`. -/
+theorem rfView_bandwidth_sixteen
+    {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (sigma : NoisePower) :
+    (rfView n_s rowTaps sigma).bandwidth 16 :=
+  LinearIsi.bandwidth_succ (rfView_bandwidth_fifteen rowTaps sigma)
+
+/-- *RFView bandwidth widens to `17`.*  Chain `rfView_bandwidth_fifteen`
+    with `LinearIsi.bandwidth_succ_succ`. -/
+theorem rfView_bandwidth_seventeen
+    {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (sigma : NoisePower) :
+    (rfView n_s rowTaps sigma).bandwidth 17 :=
+  LinearIsi.bandwidth_succ_succ (rfView_bandwidth_fifteen rowTaps sigma)
+
+/-- *RFView bandwidth widens to `18`.*  Chain `rfView_bandwidth_fifteen`
+    with `LinearIsi.bandwidth_succ_succ_succ`. -/
+theorem rfView_bandwidth_eighteen
+    {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (sigma : NoisePower) :
+    (rfView n_s rowTaps sigma).bandwidth 18 :=
+  LinearIsi.bandwidth_succ_succ_succ (rfView_bandwidth_fifteen rowTaps sigma)
+
 /-- *Matrix-level out-of-band statement.*  Strict bandwidth-6 form
     at the `rfViewMatrix` level (without the `LinearIsi` wrapper):
     every entry with `j + 6 < i` vanishes.  Reuses `rfView_bandwidth`
