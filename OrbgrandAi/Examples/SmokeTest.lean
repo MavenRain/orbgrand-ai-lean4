@@ -1933,6 +1933,88 @@ example : bpsk.exceed false false = 0 :=
 example (s : Unit) : trivialConstellation.exceed s s = 0 :=
   trivialConstellation_exceed_self s
 
+/-- AR(2) recurrence step at index 38. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 38
+      = phi1 * ar2 phi1 phi2 z1 z2 37
+        + phi2 * ar2 phi1 phi2 z1 z2 36 :=
+  ar2_thirty_eight phi1 phi2 z1 z2
+
+/-- AR(2) recurrence step at index 39. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 39
+      = phi1 * ar2 phi1 phi2 z1 z2 38
+        + phi2 * ar2 phi1 phi2 z1 z2 37 :=
+  ar2_thirty_nine phi1 phi2 z1 z2
+
+/-- AR(2) phi1=0 boundary at index 4. -/
+example (phi2 z1 z2 : Complex) :
+    ar2 0 phi2 z1 z2 4 = phi2 * (phi2 * z1) :=
+  ar2_phi1_zero_four phi2 z1 z2
+
+/-- `cov1_lag` at lag `-11`. -/
+example (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    cov1_lag sigma rho (-11) = sigma.val * rho.val ^ 11 :=
+  cov1_lag_neg_eleven sigma rho
+
+/-- `cov1_lag` at lag `12`. -/
+example (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    cov1_lag sigma rho 12 = sigma.val * rho.val ^ 12 :=
+  cov1_lag_twelve sigma rho
+
+/-- `cov2_lag` recurrence at lag 18. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta1 beta2 : Real) :
+    cov2_lag sigma rho1 rho2 beta1 beta2 18
+      = beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 17
+        + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 16 :=
+  cov2_lag_eighteen sigma rho1 rho2 beta1 beta2
+
+/-- `rfView` bandwidth widens to 13. -/
+example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (sigma : NoisePower) :
+    (rfView n_s rowTaps sigma).bandwidth 13 :=
+  rfView_bandwidth_thirteen rowTaps sigma
+
+/-- `rfView` bandwidth widens to 14. -/
+example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (sigma : NoisePower) :
+    (rfView n_s rowTaps sigma).bandwidth 14 :=
+  rfView_bandwidth_fourteen rowTaps sigma
+
+/-- `rfView` bandwidth widens to 15. -/
+example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (sigma : NoisePower) :
+    (rfView n_s rowTaps sigma).bandwidth 15 :=
+  rfView_bandwidth_fifteen rowTaps sigma
+
+/-- `dicode` bandwidth widens to 6. -/
+example {n_s : Nat} (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    (dicode n_s sigma rho).bandwidth 6 :=
+  dicode_bandwidth_six sigma rho
+
+/-- `dicode` bandwidth widens to 7. -/
+example {n_s : Nat} (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    (dicode n_s sigma rho).bandwidth 7 :=
+  dicode_bandwidth_seven sigma rho
+
+/-- `dicode` bandwidth widens to 8. -/
+example {n_s : Nat} (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    (dicode n_s sigma rho).bandwidth 8 :=
+  dicode_bandwidth_eight sigma rho
+
+/-- `syndrome H Y 0` function-extensional form. -/
+example {n k : Nat} (H : ParityCheck n k) (Y : Codeword n) :
+    syndrome H Y 0 = fun i => H.matrix.mulVec Y i :=
+  syndrome_zero_noise_funext H Y
+
+/-- `syndrome H 0 N_g` function-extensional form. -/
+example {n k : Nat} (H : ParityCheck n k) (N_g : Codeword n) :
+    syndrome H 0 N_g = fun i => H.matrix.mulVec N_g i :=
+  syndrome_zero_received_funext H N_g
+
+/-- `syndrome` symmetry function-extensional form. -/
+example {n k : Nat} (H : ParityCheck n k) (Y N_g : Codeword n) :
+    syndrome H Y N_g = syndrome H N_g Y :=
+  syndrome_comm_funext H Y N_g
+
 /-- `QueryOrder.positionOf` on the empty list is `0`. -/
 example {numPatterns : Nat} (x : Fin numPatterns) :
     QueryOrder.positionOf x ([] : QueryOrder numPatterns) = 0 :=

@@ -1078,12 +1078,27 @@ theorem syndrome_zero_noise
     syndrome H Y 0 i = H.matrix.mulVec Y i :=
   congrArg (fun v => H.matrix.mulVec v i) (Codeword.xor_zero Y)
 
+/-- *Function-level syndrome with zero noise.*  Function-extensional
+    form of `syndrome_zero_noise`: the entire syndrome map agrees
+    with the parity-check image of the received vector. -/
+theorem syndrome_zero_noise_funext
+    {n k : Nat} (H : ParityCheck n k) (Y : Codeword n) :
+    syndrome H Y 0 = fun i => H.matrix.mulVec Y i :=
+  funext fun i => syndrome_zero_noise H Y i
+
 /-- *Syndrome with zero received vector.*  The syndrome from a zero
     receiver is the parity-check image of the noise candidate alone. -/
 theorem syndrome_zero_received
     {n k : Nat} (H : ParityCheck n k) (N_g : Codeword n) (i : Fin (n - k)) :
     syndrome H 0 N_g i = H.matrix.mulVec N_g i :=
   congrArg (fun v => H.matrix.mulVec v i) (Codeword.zero_xor N_g)
+
+/-- *Function-level syndrome with zero received vector.*
+    Function-extensional form of `syndrome_zero_received`. -/
+theorem syndrome_zero_received_funext
+    {n k : Nat} (H : ParityCheck n k) (N_g : Codeword n) :
+    syndrome H 0 N_g = fun i => H.matrix.mulVec N_g i :=
+  funext fun i => syndrome_zero_received H N_g i
 
 /-- *Syndrome symmetry.*  Swapping the received vector and noise
     candidate leaves the syndrome unchanged.  Algebraically this is
@@ -1092,6 +1107,14 @@ theorem syndrome_comm
     {n k : Nat} (H : ParityCheck n k) (Y N_g : Codeword n) (i : Fin (n - k)) :
     syndrome H Y N_g i = syndrome H N_g Y i :=
   congrArg (fun v => H.matrix.mulVec v i) (Codeword.xor_comm Y N_g)
+
+/-- *Function-level syndrome symmetry.*  Function-extensional form
+    of `syndrome_comm`: swapping the two arguments leaves the entire
+    syndrome map unchanged. -/
+theorem syndrome_comm_funext
+    {n k : Nat} (H : ParityCheck n k) (Y N_g : Codeword n) :
+    syndrome H Y N_g = syndrome H N_g Y :=
+  funext fun i => syndrome_comm H Y N_g i
 
 /-- *Zero is a codeword.*  The all-zero codeword always lies in the
     kernel of `H.matrix.mulVec`, since multiplying any matrix by the
