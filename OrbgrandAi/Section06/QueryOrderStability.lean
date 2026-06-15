@@ -503,6 +503,18 @@ theorem kendallTau_eq_zero_trans
   Nat.le_zero.mp
     ((kendallTau_triangle a b c).trans (hab.symm ▸ hbc.symm ▸ Nat.le_refl 0))
 
+/-- *Zero distance is symmetric.*  If `kendallTau a b = 0` then
+    `kendallTau b a = 0`.  Direct transport via `kendallTau_symm`:
+    `kendallTau b a = kendallTau a b = 0`.  Companion to
+    `kendallTau_eq_zero_trans` (transitivity of zero-distance), giving
+    the symmetry leg of the "zero-distance is an equivalence relation"
+    package. -/
+theorem kendallTau_eq_zero_symm
+    {numPatterns : Nat} (a b : QueryOrder numPatterns)
+    (h : kendallTau a b = 0) :
+    kendallTau b a = 0 :=
+  (kendallTau_symm a b).symm.trans h
+
 /-- *Triangle inequality, right-symmetrized form.*  For any three query
     orders `a`, `b`, `c`,
     `kendallTau a c <= kendallTau a b + kendallTau c b`.

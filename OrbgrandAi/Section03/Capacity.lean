@@ -299,6 +299,21 @@ theorem liminfInformationRate_eq_limsupEntropyRate_of_eventually_const
   (liminfInformationRate_eq_const_of_eventually_const h).trans
     (limsupEntropyRate_eq_const_of_eventually_const h).symm
 
+/-- *Cross-sequence collapse at a shared eventual constant.*  If two
+    sequences `u` and `v` are each eventually equal to the *same*
+    constant `c`, the lim-inf information rate of `u` coincides with
+    the lim-sup entropy rate of `v`.  Generalises
+    `liminfInformationRate_eq_limsupEntropyRate_of_eventually_const`
+    from a single shared sequence to a pair of sequences sharing only
+    an eventual constant value. -/
+theorem liminfInformationRate_eq_limsupEntropyRate_of_eventually_const_pair
+    {u v : Nat -> Real} {c : Real}
+    (hu : ∀ᶠ n in Filter.atTop, u n = c)
+    (hv : ∀ᶠ n in Filter.atTop, v n = c) :
+    liminfInformationRate u = limsupEntropyRate v :=
+  (liminfInformationRate_eq_const_of_eventually_const hu).trans
+    (limsupEntropyRate_eq_const_of_eventually_const hv).symm
+
 /-! ## Hadamard bound on the noise entropy rate -/
 
 /-- *Hadamard inequality* (Section III, page 4, right column).

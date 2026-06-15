@@ -459,6 +459,14 @@ theorem qpsk_exceed_three_two : qpsk.exceed 3 2 = 1 :=
     (fun h : (3 : Fin 4) = 2 =>
       Nat.succ_ne_zero 0 (Nat.succ.inj (Nat.succ.inj (congrArg Fin.val h))))
 
+/-- *QPSK exceedance is `0` exactly on agreement.*  QPSK-named
+    specialisation of `Constellation.exceed_eq_zero_iff_eq` at
+    `cs = qpsk`: collapses to the symbol-equality iff for the
+    Hamming-style QPSK metric. -/
+theorem qpsk_exceed_eq_zero_iff_eq (s s_hat : Fin 4) :
+    qpsk.exceed s s_hat = 0 ↔ s = s_hat :=
+  qpsk.exceed_eq_zero_iff_eq s s_hat
+
 /-- *QPSK exceedance is binary-valued.*  Same uniform Hamming-style
     metric as BPSK: every value is either `0` (agreement) or `1`
     (disagreement).  Case split on the symbol-equality decidable. -/

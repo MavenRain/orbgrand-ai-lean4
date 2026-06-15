@@ -1491,6 +1491,17 @@ theorem landslideBucket_disjoint_of_ne
     ¬ (landslideBucket pi w1 e /\ landslideBucket pi w2 e) :=
   fun h => h_ne (landslideBucket_unique pi h.1 h.2)
 
+/-- *Strict-less-than disjointness of `landslideBucket`.*  A
+    specialisation of `landslideBucket_disjoint_of_ne` for the common
+    ordered case: when `w1 < w2`, the two buckets cannot both contain
+    the same pattern `e`.  Built by feeding `Nat.ne_of_lt` into the
+    `_of_ne` variant. -/
+theorem landslideBucket_disjoint_of_lt
+    {n : Nat} (pi : ReliabilityRank n) {w1 w2 : Nat} {e : Fin n -> Bool}
+    (h_lt : w1 < w2) :
+    ¬ (landslideBucket pi w1 e /\ landslideBucket pi w2 e) :=
+  landslideBucket_disjoint_of_ne pi (Nat.ne_of_lt h_lt)
+
 /-- *Constant-false sits in bucket zero via the perm characterisation.*
     Re-derivation of `landslideBucket_const_false_zero` through
     `landslideBucket_zero_iff_all_false_at_perm`. -/

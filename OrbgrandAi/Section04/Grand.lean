@@ -477,6 +477,12 @@ theorem Codeword.neg_eq_self {n : Nat} (a : Codeword n) :
     -a = a :=
   funext fun i => CharTwo.neg_eq (a i)
 
+/-- *Pointwise self-negation in `ZMod 2`.*  `(-a) i = a i`.  One-liner
+    via `congrFun` on `Codeword.neg_eq_self`. -/
+theorem Codeword.neg_eq_self_apply {n : Nat} (a : Codeword n) (i : Fin n) :
+    (-a) i = a i :=
+  congrFun (Codeword.neg_eq_self a) i
+
 /-- `0 xor a = a`.  Pointwise `zero_add`. -/
 theorem Codeword.zero_xor {n : Nat} (a : Codeword n) :
     Codeword.xor 0 a = a :=

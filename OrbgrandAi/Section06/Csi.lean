@@ -119,6 +119,14 @@ theorem perturbChannel_zero_eq_self_apply
     h i j = perturbChannel h 0 i j :=
   congrFun (congrFun (perturbChannel_zero_eq_self h) i) j
 
+/-- *Diagonal reverse-direction zero perturbation.*  Specialisation
+    of `perturbChannel_zero_eq_self_apply` at `i = j`: the original
+    diagonal entry `h i i` equals the zero-perturbed diagonal entry. -/
+theorem perturbChannel_zero_eq_self_apply_diag
+    {n_s : Nat} (h : ChannelMatrix n_s) (i : Fin n_s) :
+    h i i = perturbChannel h 0 i i :=
+  perturbChannel_zero_eq_self_apply h i i
+
 /-- *Zero channel stays zero under perturbation.*  When the underlying
     channel matrix is zero, the perturbed channel is also zero
     (regardless of the error matrix).  Each entry becomes
