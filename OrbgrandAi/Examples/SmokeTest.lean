@@ -2267,6 +2267,50 @@ example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient) (b : BlockSize
       = entropyRate2 sigma rho1 rho2 b.toNat :=
   entropyRate2_at_block_eq_log_form_symm sigma rho1 rho2 b
 
+/-- QPSK diagonal at index 3. -/
+example : qpsk.exceed 3 3 = 0 := qpsk_exceed_three_three
+
+/-- QPSK off-diagonal at `(1, 0)`. -/
+example : qpsk.exceed 1 0 = 1 := qpsk_exceed_one_zero
+
+/-- AR(2) recurrence step at index 45. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 45
+      = phi1 * ar2 phi1 phi2 z1 z2 44
+        + phi2 * ar2 phi1 phi2 z1 z2 43 :=
+  ar2_forty_five phi1 phi2 z1 z2
+
+/-- AR(2) phi1=0 boundary at index 5. -/
+example (phi2 z1 z2 : Complex) :
+    ar2 0 phi2 z1 z2 5 = phi2 * (phi2 * z2) :=
+  ar2_phi1_zero_five phi2 z1 z2
+
+/-- AR(2) phi2=0 boundary at index 5. -/
+example (phi1 z1 z2 : Complex) :
+    ar2 phi1 0 z1 z2 5 = phi1 * (phi1 * (phi1 * (phi1 * z2))) :=
+  ar2_phi2_zero_five phi1 z1 z2
+
+/-- `kendallTau` zero-distance is transitive. -/
+example {numPatterns : Nat} (a b c : QueryOrder numPatterns)
+    (hab : kendallTau a b = 0) (hbc : kendallTau b c = 0) :
+    kendallTau a c = 0 :=
+  kendallTau_eq_zero_trans a b c hab hbc
+
+/-- `Codeword.xor` of two zero codewords is zero. -/
+example {n : Nat} :
+    Codeword.xor (0 : Codeword n) (0 : Codeword n) = 0 :=
+  Codeword.zero_xor_zero
+
+/-- Pointwise paired self-XOR vanishes. -/
+example {n : Nat} (a b : Codeword n) (i : Fin n) :
+    Codeword.xor (Codeword.xor a a) (Codeword.xor b b) i = 0 :=
+  Codeword.xor_self_xor_self_apply a b i
+
+/-- `Codeword.xor a b = 0 ↔ a = b` (reversed form). -/
+example {n : Nat} (a b : Codeword n) :
+    Codeword.xor a b = 0 <-> a = b :=
+  Codeword.xor_eq_zero_iff_eq a b
+
 /-- `QueryOrder.positionOf` on the empty list is `0`. -/
 example {numPatterns : Nat} (x : Fin numPatterns) :
     QueryOrder.positionOf x ([] : QueryOrder numPatterns) = 0 :=

@@ -850,6 +850,19 @@ theorem Codeword.xor_self_xor_self {n : Nat} (a b : Codeword n) :
     Codeword.xor (Codeword.xor a a) (Codeword.xor b b) = 0 :=
   (Codeword.xor_self_left_eq a (Codeword.xor b b)).trans (Codeword.xor_self b)
 
+/-- *Zero XOR zero is zero.*  Specialises `Codeword.zero_xor` at
+    `a = 0`: absorbing-identity boundary case of XOR. -/
+theorem Codeword.zero_xor_zero {n : Nat} :
+    Codeword.xor (0 : Codeword n) (0 : Codeword n) = 0 :=
+  Codeword.zero_xor 0
+
+/-- *Pointwise paired self-XOR vanishes.*  `((a xor a) xor (b xor b)) i = 0`.
+    Pointwise form of `xor_self_xor_self`. -/
+theorem Codeword.xor_self_xor_self_apply
+    {n : Nat} (a b : Codeword n) (i : Fin n) :
+    Codeword.xor (Codeword.xor a a) (Codeword.xor b b) i = 0 :=
+  (congrFun (Codeword.xor_self_xor_self a b) i).trans (Codeword.zero_apply i)
+
 /-- `a = b ↔ a xor b = 0` -- equality via XOR.  The "transmitted
     codeword agrees with the received vector exactly when the noise
     vector is zero". -/
@@ -869,6 +882,12 @@ theorem Codeword.eq_iff_xor_eq_zero {n : Nat} (a b : Codeword n) :
      let h5 : Codeword.xor 0 b = b := Codeword.zero_xor b
      -- a = a xor 0 = a xor (b xor b) = (a xor b) xor b = 0 xor b = b
      ((h4.symm.trans h3.symm).trans h2.symm).trans (h1.trans h5)⟩
+
+/-- *XOR-zero characterises equality (reversed).*  `xor a b = 0 ↔ a = b`:
+    `.symm` of `eq_iff_xor_eq_zero`. -/
+theorem Codeword.xor_eq_zero_iff_eq {n : Nat} (a b : Codeword n) :
+    Codeword.xor a b = 0 <-> a = b :=
+  (Codeword.eq_iff_xor_eq_zero a b).symm
 
 /-- A specific witness of `xor_eq_zero_iff`: from `a xor b = 0`,
     conclude `a = b`. -/

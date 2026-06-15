@@ -492,6 +492,17 @@ theorem kendallTau_empty_le_one (a b : QueryOrder 0) :
     kendallTau a b <= 1 :=
   (kendallTau_empty a b).le.trans (Nat.zero_le 1)
 
+/-- *Zero-distance is transitive.*  If `kendallTau a b = 0` and
+    `kendallTau b c = 0`, then `kendallTau a c = 0`.  Direct
+    consequence of `kendallTau_triangle` plus `Nat.le_zero.mp` on
+    the resulting bound. -/
+theorem kendallTau_eq_zero_trans
+    {numPatterns : Nat} (a b c : QueryOrder numPatterns)
+    (hab : kendallTau a b = 0) (hbc : kendallTau b c = 0) :
+    kendallTau a c = 0 :=
+  Nat.le_zero.mp
+    ((kendallTau_triangle a b c).trans (hab.symm ▸ hbc.symm ▸ Nat.le_refl 0))
+
 
 /-! ## Query-order stability claim (placeholder) -/
 

@@ -392,10 +392,29 @@ theorem qpsk_exceed_one_one : qpsk.exceed 1 1 = 0 :=
 theorem qpsk_exceed_two_two : qpsk.exceed 2 2 = 0 :=
   qpsk_exceed_self 2
 
+/-- *QPSK diagonal at index `3`.*  Concrete instance, completing
+    the diagonal literal-coverage family. -/
+theorem qpsk_exceed_three_three : qpsk.exceed 3 3 = 0 :=
+  qpsk_exceed_self 3
+
 /-- QPSK exceedance is `1` on disagreement. -/
 theorem qpsk_exceed_diff {s s_hat : Fin 4} (h : s ≠ s_hat) :
     qpsk.exceed s s_hat = 1 :=
   if_neg h
+
+/-- *QPSK off-diagonal at `(0, 1)`.*  Concrete instance of
+    `qpsk_exceed_diff` witnessed by the `Fin 4` inequality
+    `(0 : Fin 4) ≠ 1`, derived in term mode by pushing the equality
+    through `Fin.val` to `Nat.zero_ne_one`.  First off-diagonal
+    literal, opening the symmetric pair with `qpsk_exceed_one_zero`. -/
+theorem qpsk_exceed_zero_one : qpsk.exceed 0 1 = 1 :=
+  qpsk_exceed_diff (fun h : (0 : Fin 4) = 1 => Nat.zero_ne_one (congrArg Fin.val h))
+
+/-- *QPSK off-diagonal at `(1, 0)`.*  Symmetric companion to
+    `qpsk_exceed_zero_one`. -/
+theorem qpsk_exceed_one_zero : qpsk.exceed 1 0 = 1 :=
+  qpsk_exceed_diff
+    (fun h : (1 : Fin 4) = 0 => Nat.zero_ne_one (congrArg Fin.val h).symm)
 
 /-- *QPSK exceedance is binary-valued.*  Same uniform Hamming-style
     metric as BPSK: every value is either `0` (agreement) or `1`
