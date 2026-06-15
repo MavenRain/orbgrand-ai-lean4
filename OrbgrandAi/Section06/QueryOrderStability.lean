@@ -523,6 +523,14 @@ theorem kendallTau_eq_zero_iff_symm
     kendallTau a b = 0 ↔ kendallTau b a = 0 :=
   ⟨kendallTau_eq_zero_symm a b, kendallTau_eq_zero_symm b a⟩
 
+/-- *Non-zero distance is symmetric (iff form).*  `kendallTau a b ≠ 0`
+    iff `kendallTau b a ≠ 0`.  Direct negation of
+    `kendallTau_eq_zero_iff_symm` via `Iff.not`. -/
+theorem kendallTau_ne_zero_iff_symm
+    {numPatterns : Nat} (a b : QueryOrder numPatterns) :
+    kendallTau a b ≠ 0 ↔ kendallTau b a ≠ 0 :=
+  (kendallTau_eq_zero_iff_symm a b).not
+
 /-- *Triangle inequality, right-symmetrized form.*  For any three query
     orders `a`, `b`, `c`,
     `kendallTau a c <= kendallTau a b + kendallTau c b`.

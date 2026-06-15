@@ -484,6 +484,16 @@ theorem mk?_two :
     SamplingFreq.mk? 2 = Except.ok ⟨2, zero_lt_two⟩ :=
   mk?_of_pos 2 zero_lt_two
 
+/-- *Three hertz is a valid sampling frequency.*  Next-concrete-value
+    corollary of `mk?_of_pos` at `v = 3`: a third representative
+    strictly-positive rate witnessing that `mk?` accepts the open
+    `(0, ∞)` range, with positivity supplied by `zero_lt_three`.
+    Parallel of `BlockSize.mk?_three` and `CodewordLength.mk?_three`
+    lifted to the real-valued setting. -/
+theorem mk?_three :
+    SamplingFreq.mk? 3 = Except.ok ⟨3, zero_lt_three⟩ :=
+  mk?_of_pos 3 zero_lt_three
+
 end SamplingFreq
 
 end Section02

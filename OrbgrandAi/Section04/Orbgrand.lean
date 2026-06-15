@@ -1512,6 +1512,19 @@ theorem landslideBucket_disjoint_of_gt
     ¬ (landslideBucket pi w1 e /\ landslideBucket pi w2 e) :=
   landslideBucket_disjoint_of_ne pi (Nat.ne_of_gt h_gt)
 
+/-- *Bucket non-membership from a witness and distinct index.*  Given a
+    witness `landslideBucket pi w1 e` and a distinct bucket index
+    `w1 ≠ w2`, the pattern `e` is not in bucket `w2`.  Pointwise
+    companion to `landslideBucket_disjoint_of_ne`: where the
+    conjunction-form negates `∧` of two memberships, this consumes one
+    membership outright to refute the other.  Forward composition of
+    `landslideBucket_unique` with `h_ne`. -/
+theorem landslideBucket_not_of_mem_of_ne
+    {n : Nat} (pi : ReliabilityRank n) {w1 w2 : Nat} {e : Fin n -> Bool}
+    (h1 : landslideBucket pi w1 e) (h_ne : w1 ≠ w2) :
+    ¬ landslideBucket pi w2 e :=
+  fun h2 => h_ne (landslideBucket_unique pi h1 h2)
+
 /-- *Constant-false sits in bucket zero via the perm characterisation.*
     Re-derivation of `landslideBucket_const_false_zero` through
     `landslideBucket_zero_iff_all_false_at_perm`. -/

@@ -329,6 +329,20 @@ theorem liminfInformationRate_le_limsupEntropyRate_of_eventually_const_mono
   ((liminfInformationRate_eq_const_of_eventually_const hu).le.trans h).trans
     (limsupEntropyRate_eq_const_of_eventually_const hv).ge
 
+/-- *Reverse cross-sequence inequality at eventually-constant sequences.*
+    Reverse-direction monotone variant of
+    `liminfInformationRate_le_limsupEntropyRate_of_eventually_const_mono`:
+    when the eventual constants reverse the usual Verdu-Han gap, the
+    cross-sequence inequality flips. -/
+theorem limsupEntropyRate_le_liminfInformationRate_of_eventually_const_mono
+    {u v : Nat -> Real} {c1 c2 : Real}
+    (hu : ∀ᶠ n in Filter.atTop, u n = c1)
+    (hv : ∀ᶠ n in Filter.atTop, v n = c2)
+    (h : c2 <= c1) :
+    limsupEntropyRate v <= liminfInformationRate u :=
+  ((limsupEntropyRate_eq_const_of_eventually_const hv).le.trans h).trans
+    (liminfInformationRate_eq_const_of_eventually_const hu).ge
+
 /-! ## Hadamard bound on the noise entropy rate -/
 
 /-- *Hadamard inequality* (Section III, page 4, right column).

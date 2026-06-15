@@ -330,6 +330,17 @@ theorem perturbChannel_eps_zero_apply
     (congrArg (1 + ·) h_eps).trans (add_zero 1)
   (congrArg (h i j * ·) h_factor).trans (mul_one (h i j))
 
+/-- *Diagonal pointwise identity at zero perturbation.*
+    Specialisation of `perturbChannel_eps_zero_apply` at `i = j`:
+    when the diagonal error `epsilon i i` vanishes, the perturbed
+    diagonal entry equals `h i i`. -/
+theorem perturbChannel_eps_zero_apply_diag
+    {n_s : Nat} (h : ChannelMatrix n_s)
+    (epsilon : Matrix (Fin n_s) (Fin n_s) Complex)
+    {i : Fin n_s} (h_eps : epsilon i i = 0) :
+    perturbChannel h epsilon i i = h i i :=
+  perturbChannel_eps_zero_apply h epsilon h_eps
+
 /-- *Pure cancellation: `epsilon = -1` zeroes the entry.*  When the
     error term at `(i, j)` exactly cancels the unit, the perturbed
     entry vanishes regardless of `h i j`.  Composes `congrArg` on
