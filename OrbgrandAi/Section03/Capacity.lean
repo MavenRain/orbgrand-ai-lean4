@@ -314,6 +314,21 @@ theorem liminfInformationRate_eq_limsupEntropyRate_of_eventually_const_pair
   (liminfInformationRate_eq_const_of_eventually_const hu).trans
     (limsupEntropyRate_eq_const_of_eventually_const hv).symm
 
+/-- *Cross-sequence inequality at eventually-constant sequences.*  If
+    `u` is eventually equal to `c1`, `v` is eventually equal to `c2`,
+    and `c1 ≤ c2`, then the lim-inf information rate of `u` is at most
+    the lim-sup entropy rate of `v`.  Generalises
+    `liminfInformationRate_eq_limsupEntropyRate_of_eventually_const_pair`
+    from equal eventual constants to a monotone pair. -/
+theorem liminfInformationRate_le_limsupEntropyRate_of_eventually_const_mono
+    {u v : Nat -> Real} {c1 c2 : Real}
+    (hu : ∀ᶠ n in Filter.atTop, u n = c1)
+    (hv : ∀ᶠ n in Filter.atTop, v n = c2)
+    (h : c1 <= c2) :
+    liminfInformationRate u <= limsupEntropyRate v :=
+  ((liminfInformationRate_eq_const_of_eventually_const hu).le.trans h).trans
+    (limsupEntropyRate_eq_const_of_eventually_const hv).ge
+
 /-! ## Hadamard bound on the noise entropy rate -/
 
 /-- *Hadamard inequality* (Section III, page 4, right column).

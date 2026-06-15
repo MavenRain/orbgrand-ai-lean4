@@ -369,6 +369,18 @@ theorem perturbChannel_eq_zero_iff
       <-> h i j = 0 ∨ 1 + epsilon i j = 0 :=
   mul_eq_zero
 
+/-- *Diagonal zero characterisation.*  Specialisation of
+    `perturbChannel_eq_zero_iff` at `i = j`: a perturbed diagonal
+    entry vanishes iff either the underlying diagonal entry vanishes
+    or the diagonal multiplicative factor `1 + epsilon i i` is zero. -/
+theorem perturbChannel_eq_zero_iff_diag
+    {n_s : Nat} (h : ChannelMatrix n_s)
+    (epsilon : Matrix (Fin n_s) (Fin n_s) Complex)
+    (i : Fin n_s) :
+    perturbChannel h epsilon i i = 0
+      <-> h i i = 0 ∨ 1 + epsilon i i = 0 :=
+  perturbChannel_eq_zero_iff h epsilon i i
+
 /-- *Pointwise zero preservation.*  If a single entry `h i j` is zero,
     the corresponding perturbed entry is also zero, for any error
     matrix.  Generalises the per-cell logic of

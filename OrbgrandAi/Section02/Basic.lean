@@ -250,6 +250,14 @@ theorem mk?_two :
     CodewordLength.mk? 2 = Except.ok ⟨2, Nat.succ_pos 1⟩ :=
   mk?_of_pos 2 (Nat.succ_pos 1)
 
+/-- *Three is a valid codeword length.*  Next-concrete-value corollary
+    of `mk?_of_pos` at `n = 3`: the smallest odd nontrivial codeword
+    length round-trips through `mk?`, with positivity witnessed by
+    `Nat.succ_pos 2`.  Parallel of `BlockSize.mk?_three`. -/
+theorem mk?_three :
+    CodewordLength.mk? 3 = Except.ok ⟨3, Nat.succ_pos 2⟩ :=
+  mk?_of_pos 3 (Nat.succ_pos 2)
+
 end CodewordLength
 
 namespace BitsPerSymbol

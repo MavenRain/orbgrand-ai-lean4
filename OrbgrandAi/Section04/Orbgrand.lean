@@ -1502,6 +1502,16 @@ theorem landslideBucket_disjoint_of_lt
     ¬ (landslideBucket pi w1 e /\ landslideBucket pi w2 e) :=
   landslideBucket_disjoint_of_ne pi (Nat.ne_of_lt h_lt)
 
+/-- *Strict-greater-than disjointness of `landslideBucket`.*  Companion
+    of `landslideBucket_disjoint_of_lt` in the opposite direction:
+    when `w1 > w2`, the two buckets cannot both contain `e`.  Built
+    by feeding `Nat.ne_of_gt` into the `_of_ne` variant. -/
+theorem landslideBucket_disjoint_of_gt
+    {n : Nat} (pi : ReliabilityRank n) {w1 w2 : Nat} {e : Fin n -> Bool}
+    (h_gt : w1 > w2) :
+    ¬ (landslideBucket pi w1 e /\ landslideBucket pi w2 e) :=
+  landslideBucket_disjoint_of_ne pi (Nat.ne_of_gt h_gt)
+
 /-- *Constant-false sits in bucket zero via the perm characterisation.*
     Re-derivation of `landslideBucket_const_false_zero` through
     `landslideBucket_zero_iff_all_false_at_perm`. -/

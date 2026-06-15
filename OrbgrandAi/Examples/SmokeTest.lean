@@ -2181,6 +2181,13 @@ example {n_s : Nat} {p : Nat} (paths : Fin p -> DelayTapPath)
       = delayTapImpulseResponse paths f_s { toNat := 17 } :=
   delayTapMatrix_seventeenth_subdiag paths f_s i j h
 
+/-- `delayTapMatrix` eighteenth sub-diagonal. -/
+example {n_s : Nat} {p : Nat} (paths : Fin p -> DelayTapPath)
+    (f_s : SamplingFreq) (i j : Fin n_s) (h : i.val = j.val + 18) :
+    delayTapMatrix n_s paths f_s i j
+      = delayTapImpulseResponse paths f_s { toNat := 18 } :=
+  delayTapMatrix_eighteenth_subdiag paths f_s i j h
+
 /-- `dicode` bandwidth widens to 11. -/
 example {n_s : Nat} (sigma : NoisePower) (rho : CorrelationCoefficient) :
     (dicode n_s sigma rho).bandwidth 11 :=
@@ -2200,6 +2207,11 @@ example {n_s : Nat} (sigma : NoisePower) (rho : CorrelationCoefficient) :
 example {n_s : Nat} (sigma : NoisePower) (rho : CorrelationCoefficient) :
     (dicode n_s sigma rho).bandwidth 14 :=
   dicode_bandwidth_fourteen sigma rho
+
+/-- `dicode` bandwidth widens to 15. -/
+example {n_s : Nat} (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    (dicode n_s sigma rho).bandwidth 15 :=
+  dicode_bandwidth_fifteen sigma rho
 
 /-- `rfView` bandwidth widens to 19. -/
 example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (sigma : NoisePower) :
@@ -2221,6 +2233,11 @@ example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (sigma : NoisePower) :
     (rfView n_s rowTaps sigma).bandwidth 22 :=
   rfView_bandwidth_twenty_two rowTaps sigma
 
+/-- `rfView` bandwidth widens to 23. -/
+example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (sigma : NoisePower) :
+    (rfView n_s rowTaps sigma).bandwidth 23 :=
+  rfView_bandwidth_twenty_three rowTaps sigma
+
 /-- `LinearIsi.bandwidth` widens by six. -/
 example {n_s : Nat} {ch : LinearIsi n_s} {b : Nat} (h : ch.bandwidth b) :
     ch.bandwidth (b + 6) :=
@@ -2241,6 +2258,11 @@ example {n_s : Nat} {ch : LinearIsi n_s} {b : Nat} (h : ch.bandwidth b) :
     ch.bandwidth (b + 9) :=
   LinearIsi.bandwidth_succ_succ_succ_succ_succ_succ_succ_succ_succ h
 
+/-- `LinearIsi.bandwidth` widens by ten. -/
+example {n_s : Nat} {ch : LinearIsi n_s} {b : Nat} (h : ch.bandwidth b) :
+    ch.bandwidth (b + 10) :=
+  LinearIsi.bandwidth_succ_succ_succ_succ_succ_succ_succ_succ_succ_succ h
+
 /-- `BlockSize.mk?` round-trips through `2`. -/
 example : BlockSize.mk? 2 = Except.ok ⟨2, Nat.succ_pos 1⟩ :=
   BlockSize.mk?_two
@@ -2256,6 +2278,10 @@ example : SamplingFreq.mk? 2 = Except.ok ⟨2, zero_lt_two⟩ :=
 /-- `BlockSize.mk?` round-trips through `3`. -/
 example : BlockSize.mk? 3 = Except.ok ⟨3, Nat.succ_pos 2⟩ :=
   BlockSize.mk?_three
+
+/-- `CodewordLength.mk?` round-trips through `3`. -/
+example : CodewordLength.mk? 3 = Except.ok ⟨3, Nat.succ_pos 2⟩ :=
+  CodewordLength.mk?_three
 
 /-- `cov1_lag` at lag `-14`. -/
 example (sigma : NoisePower) (rho : CorrelationCoefficient) :
@@ -2276,6 +2302,11 @@ example (sigma : NoisePower) (rho : CorrelationCoefficient) :
 example (sigma : NoisePower) (rho : CorrelationCoefficient) :
     cov1_lag sigma rho 16 = sigma.val * rho.val ^ 16 :=
   cov1_lag_sixteen sigma rho
+
+/-- `cov1_lag` at lag `-16`. -/
+example (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    cov1_lag sigma rho (-16) = sigma.val * rho.val ^ 16 :=
+  cov1_lag_neg_sixteen sigma rho
 
 /-- `entropyRate2` at the boundary block size `n_s = 4`. -/
 example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient) :
@@ -2325,6 +2356,18 @@ example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient) :
                   / (rho1.val ^ 2 - 1) ^ 4) :=
   entropyRate2_at_seven_eq_log_form sigma rho1 rho2
 
+/-- `entropyRate2` at the block size `n_s = 8`. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient) :
+    entropyRate2 sigma rho1 rho2 8
+      = (1 / 2 : Real)
+          * Real.log (2 * Real.pi * Real.exp 1 * sigma.val)
+        + (1 / (2 * ((8 : Nat) : Real)))
+            * Real.log
+                (- (rho2.val - 1) ^ 6
+                    * (1 - 2 * rho1.val ^ 2 + rho2.val) ^ 6
+                  / (rho1.val ^ 2 - 1) ^ 5) :=
+  entropyRate2_at_eight_eq_log_form sigma rho1 rho2
+
 /-- `limsupEntropyRate` collapses on eventually-constant sequences. -/
 example {u : Nat -> Real} {c : Real}
     (h : ∀ᶠ n in Filter.atTop, u n = c) :
@@ -2349,6 +2392,14 @@ example {u v : Nat -> Real} {c : Real}
     (hv : ∀ᶠ n in Filter.atTop, v n = c) :
     liminfInformationRate u = limsupEntropyRate v :=
   liminfInformationRate_eq_limsupEntropyRate_of_eventually_const_pair hu hv
+
+/-- Cross-sequence inequality at a monotone eventual constant pair. -/
+example {u v : Nat -> Real} {c1 c2 : Real}
+    (hu : ∀ᶠ n in Filter.atTop, u n = c1)
+    (hv : ∀ᶠ n in Filter.atTop, v n = c2)
+    (h : c1 <= c2) :
+    liminfInformationRate u <= limsupEntropyRate v :=
+  liminfInformationRate_le_limsupEntropyRate_of_eventually_const_mono hu hv h
 
 /-- QPSK off-diagonal at `(3, 0)`. -/
 example : qpsk.exceed 3 0 = 1 := qpsk_exceed_three_zero
@@ -2385,6 +2436,11 @@ example {n : Nat} (a : Codeword n) (i : Fin n) :
     (-a) i = a i :=
   Codeword.neg_eq_self_apply a i
 
+/-- XOR with negation equals XOR (ZMod 2). -/
+example {n : Nat} (a b : Codeword n) :
+    Codeword.xor a (-b) = Codeword.xor a b :=
+  Codeword.xor_neg_eq_xor a b
+
 /-- `landslideBucket` conjunction collapses to index equation. -/
 example {n : Nat} (pi : ReliabilityRank n) (w1 w2 : Nat)
     (e : Fin n -> Bool) :
@@ -2410,6 +2466,12 @@ example {n : Nat} (pi : ReliabilityRank n) {w1 w2 : Nat}
     {e : Fin n -> Bool} (h_lt : w1 < w2) :
     ¬ (landslideBucket pi w1 e /\ landslideBucket pi w2 e) :=
   landslideBucket_disjoint_of_lt pi h_lt
+
+/-- `landslideBucket` mutual exclusion at strictly-greater indices. -/
+example {n : Nat} (pi : ReliabilityRank n) {w1 w2 : Nat}
+    {e : Fin n -> Bool} (h_gt : w1 > w2) :
+    ¬ (landslideBucket pi w1 e /\ landslideBucket pi w2 e) :=
+  landslideBucket_disjoint_of_gt pi h_gt
 
 /-- Vacuous codebook with empty pattern list at unit budget. -/
 example {n_s b numCandidates : Nat} (Y : Codeword n_s) :
@@ -2440,6 +2502,14 @@ example {n_s b numCandidates : Nat} (Y : Codeword n_s) :
       ([] : List (Fin (n_s / b) -> Fin numCandidates)) = none :=
   orbgrandAi_empty_codebook_nil_mk_three Y
 
+/-- Vacuous codebook returns `none` at budget `4`. -/
+example {n_s b numCandidates : Nat}
+    (Y : Codeword n_s)
+    (patterns : List (Fin (n_s / b) -> Fin numCandidates)) :
+    orbgrandAi (b := b) (numCandidates := numCandidates)
+      Y (fun _ => false) (AbandonmentBudget.mk 4) patterns = none :=
+  orbgrandAi_empty_codebook_mk_four Y patterns
+
 /-- AR(2) recurrence step at index 49. -/
 example (phi1 phi2 z1 z2 : Complex) :
     ar2 phi1 phi2 z1 z2 49
@@ -2468,6 +2538,13 @@ example (phi1 phi2 z1 z2 : Complex) :
         + phi2 * ar2 phi1 phi2 z1 z2 50 :=
   ar2_fifty_two phi1 phi2 z1 z2
 
+/-- AR(2) recurrence step at index 53. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 53
+      = phi1 * ar2 phi1 phi2 z1 z2 52
+        + phi2 * ar2 phi1 phi2 z1 z2 51 :=
+  ar2_fifty_three phi1 phi2 z1 z2
+
 /-- `kendallTau` triangle inequality, right-symmetrized form. -/
 example {numPatterns : Nat} (a b c : QueryOrder numPatterns) :
     kendallTau a c ≤ kendallTau a b + kendallTau c b :=
@@ -2488,6 +2565,11 @@ example {numPatterns : Nat} (a b : QueryOrder numPatterns)
     (h : kendallTau a b = 0) :
     kendallTau b a = 0 :=
   kendallTau_eq_zero_symm a b h
+
+/-- `kendallTau` zero-distance iff (symmetric form). -/
+example {numPatterns : Nat} (a b : QueryOrder numPatterns) :
+    kendallTau a b = 0 ↔ kendallTau b a = 0 :=
+  kendallTau_eq_zero_iff_symm a b
 
 /-- Zero channel survives double perturbation. -/
 example {n_s : Nat} (ε₁ ε₂ : Matrix (Fin n_s) (Fin n_s) Complex) :
@@ -2512,6 +2594,13 @@ example {n_s : Nat} (ε₁ ε₂ : Matrix (Fin n_s) (Fin n_s) Complex)
 example {n_s : Nat} (h : ChannelMatrix n_s) (i : Fin n_s) :
     h i i = perturbChannel h 0 i i :=
   perturbChannel_zero_eq_self_apply_diag h i
+
+/-- Diagonal zero characterisation. -/
+example {n_s : Nat} (h : ChannelMatrix n_s)
+    (epsilon : Matrix (Fin n_s) (Fin n_s) Complex) (i : Fin n_s) :
+    perturbChannel h epsilon i i = 0
+      <-> h i i = 0 ∨ 1 + epsilon i i = 0 :=
+  perturbChannel_eq_zero_iff_diag h epsilon i
 
 /-- AR(2) recurrence step at index 42. -/
 example (phi1 phi2 z1 z2 : Complex) :
