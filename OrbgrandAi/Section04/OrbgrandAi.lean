@@ -538,6 +538,27 @@ theorem orbgrandAi_empty_codebook_mk_one
       Y (fun _ => false) (AbandonmentBudget.mk 1) patterns = none :=
   orbgrandAi_empty_codebook Y (AbandonmentBudget.mk 1) patterns
 
+/-- *Vacuous codebook at budget `2`.*  Specialises
+    `orbgrandAi_empty_codebook` at `AbandonmentBudget.mk 2`. -/
+theorem orbgrandAi_empty_codebook_mk_two
+    {n_s b numCandidates : Nat}
+    (Y : Codeword n_s)
+    (patterns : List (Fin (n_s / b) -> Fin numCandidates)) :
+    orbgrandAi (b := b) (numCandidates := numCandidates)
+      Y (fun _ => false) (AbandonmentBudget.mk 2) patterns = none :=
+  orbgrandAi_empty_codebook Y (AbandonmentBudget.mk 2) patterns
+
+/-- *Vacuous codebook on the empty pattern list at zero budget.*
+    Specialises `orbgrandAi_empty_codebook_zero_budget` at
+    `patterns = []`. -/
+theorem orbgrandAi_empty_codebook_nil_zero_budget
+    {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) :
+    orbgrandAi (b := b) (numCandidates := numCandidates)
+      Y (fun _ => false) (AbandonmentBudget.mk 0)
+      ([] : List (Fin (n_s / b) -> Fin numCandidates)) = none :=
+  orbgrandAi_empty_codebook_zero_budget Y []
+
 /-! ## Substitution provenance (soundness of the output) -/
 
 /-- *Returned codewords come from the substitution operator.*  If the

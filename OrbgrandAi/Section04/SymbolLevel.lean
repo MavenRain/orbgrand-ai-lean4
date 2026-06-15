@@ -416,6 +416,27 @@ theorem qpsk_exceed_one_zero : qpsk.exceed 1 0 = 1 :=
   qpsk_exceed_diff
     (fun h : (1 : Fin 4) = 0 => Nat.zero_ne_one (congrArg Fin.val h).symm)
 
+/-- *QPSK off-diagonal at `(0, 2)`.*  Witnessed by `(0 : Fin 4) ≠ 2`
+    via `Fin.val` and `Nat.succ_ne_zero`. -/
+theorem qpsk_exceed_zero_two : qpsk.exceed 0 2 = 1 :=
+  qpsk_exceed_diff
+    (fun h : (0 : Fin 4) = 2 =>
+      Nat.succ_ne_zero 1 (congrArg Fin.val h).symm)
+
+/-- *QPSK off-diagonal at `(1, 2)`.*  Witnessed by `(1 : Fin 4) ≠ 2`
+    via `Fin.val`, `Nat.succ.inj`, and `Nat.zero_ne_one`. -/
+theorem qpsk_exceed_one_two : qpsk.exceed 1 2 = 1 :=
+  qpsk_exceed_diff
+    (fun h : (1 : Fin 4) = 2 =>
+      Nat.zero_ne_one (Nat.succ.inj (congrArg Fin.val h)))
+
+/-- *QPSK off-diagonal at `(2, 3)`.*  Witnessed by `(2 : Fin 4) ≠ 3`
+    via two `Nat.succ.inj` peels then `Nat.zero_ne_one`. -/
+theorem qpsk_exceed_two_three : qpsk.exceed 2 3 = 1 :=
+  qpsk_exceed_diff
+    (fun h : (2 : Fin 4) = 3 =>
+      Nat.zero_ne_one (Nat.succ.inj (Nat.succ.inj (congrArg Fin.val h))))
+
 /-- *QPSK exceedance is binary-valued.*  Same uniform Hamming-style
     metric as BPSK: every value is either `0` (agreement) or `1`
     (disagreement).  Case split on the symbol-equality decidable. -/

@@ -405,6 +405,27 @@ theorem ar2_forty_five (phi1 phi2 z1 z2 : Complex) :
       = phi1 * ar2 phi1 phi2 z1 z2 44
         + phi2 * ar2 phi1 phi2 z1 z2 43 := rfl
 
+/-- Recurrence step at index 46: `phi_1 * ar2 45 + phi_2 * ar2 44`.
+    Pattern-match arm `(44 + 2)` reduces definitionally to the RHS. -/
+theorem ar2_forty_six (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 46
+      = phi1 * ar2 phi1 phi2 z1 z2 45
+        + phi2 * ar2 phi1 phi2 z1 z2 44 := rfl
+
+/-- Recurrence step at index 47: `phi_1 * ar2 46 + phi_2 * ar2 45`.
+    Pattern-match arm `(45 + 2)` reduces definitionally to the RHS. -/
+theorem ar2_forty_seven (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 47
+      = phi1 * ar2 phi1 phi2 z1 z2 46
+        + phi2 * ar2 phi1 phi2 z1 z2 45 := rfl
+
+/-- Recurrence step at index 48: `phi_1 * ar2 47 + phi_2 * ar2 46`.
+    Pattern-match arm `(46 + 2)` reduces definitionally to the RHS. -/
+theorem ar2_forty_eight (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 48
+      = phi1 * ar2 phi1 phi2 z1 z2 47
+        + phi2 * ar2 phi1 phi2 z1 z2 46 := rfl
+
 /-- *Trivial coefficients.*  When both AR(2) coefficients are zero,
     every recurrence step (index `n + 2`) vanishes regardless of
     the initial conditions.  The initial conditions at indices 0 and

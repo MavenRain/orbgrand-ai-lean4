@@ -2044,6 +2044,16 @@ example (sigma : NoisePower) (rho : CorrelationCoefficient) :
     cov1_lag sigma rho 13 = sigma.val * rho.val ^ 13 :=
   cov1_lag_thirteen sigma rho
 
+/-- `cov1_lag` at lag `-13`. -/
+example (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    cov1_lag sigma rho (-13) = sigma.val * rho.val ^ 13 :=
+  cov1_lag_neg_thirteen sigma rho
+
+/-- `cov1_lag` at lag `14`. -/
+example (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    cov1_lag sigma rho 14 = sigma.val * rho.val ^ 14 :=
+  cov1_lag_fourteen sigma rho
+
 /-- `cov2_lag` recurrence at lag 19. -/
 example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
     (beta1 beta2 : Real) :
@@ -2051,6 +2061,14 @@ example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
       = beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 18
         + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 17 :=
   cov2_lag_nineteen sigma rho1 rho2 beta1 beta2
+
+/-- `cov2_lag` recurrence at lag 20. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta1 beta2 : Real) :
+    cov2_lag sigma rho1 rho2 beta1 beta2 20
+      = beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 19
+        + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 18 :=
+  cov2_lag_twenty sigma rho1 rho2 beta1 beta2
 
 /-- `rfView` bandwidth widens to 16. -/
 example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (sigma : NoisePower) :
@@ -2113,6 +2131,27 @@ example {n_s : Nat} {p : Nat} (paths : Fin p -> DelayTapPath)
     delayTapMatrix n_s paths f_s i j
       = delayTapImpulseResponse paths f_s { toNat := 10 } :=
   delayTapMatrix_tenth_subdiag paths f_s i j h
+
+/-- `delayTapMatrix` eleventh sub-diagonal. -/
+example {n_s : Nat} {p : Nat} (paths : Fin p -> DelayTapPath)
+    (f_s : SamplingFreq) (i j : Fin n_s) (h : i.val = j.val + 11) :
+    delayTapMatrix n_s paths f_s i j
+      = delayTapImpulseResponse paths f_s { toNat := 11 } :=
+  delayTapMatrix_eleventh_subdiag paths f_s i j h
+
+/-- `delayTapMatrix` twelfth sub-diagonal. -/
+example {n_s : Nat} {p : Nat} (paths : Fin p -> DelayTapPath)
+    (f_s : SamplingFreq) (i j : Fin n_s) (h : i.val = j.val + 12) :
+    delayTapMatrix n_s paths f_s i j
+      = delayTapImpulseResponse paths f_s { toNat := 12 } :=
+  delayTapMatrix_twelfth_subdiag paths f_s i j h
+
+/-- `delayTapMatrix` thirteenth sub-diagonal. -/
+example {n_s : Nat} {p : Nat} (paths : Fin p -> DelayTapPath)
+    (f_s : SamplingFreq) (i j : Fin n_s) (h : i.val = j.val + 13) :
+    delayTapMatrix n_s paths f_s i j
+      = delayTapImpulseResponse paths f_s { toNat := 13 } :=
+  delayTapMatrix_thirteenth_subdiag paths f_s i j h
 
 /-- AR(2) recurrence step at index 42. -/
 example (phi1 phi2 z1 z2 : Complex) :
@@ -2182,6 +2221,21 @@ example {n_s b numCandidates : Nat}
     orbgrandAi (b := b) (numCandidates := numCandidates)
       Y (fun _ => false) (AbandonmentBudget.mk 1) patterns = none :=
   orbgrandAi_empty_codebook_mk_one Y patterns
+
+/-- Vacuous codebook returns `none` at budget `2`. -/
+example {n_s b numCandidates : Nat}
+    (Y : Codeword n_s)
+    (patterns : List (Fin (n_s / b) -> Fin numCandidates)) :
+    orbgrandAi (b := b) (numCandidates := numCandidates)
+      Y (fun _ => false) (AbandonmentBudget.mk 2) patterns = none :=
+  orbgrandAi_empty_codebook_mk_two Y patterns
+
+/-- Vacuous codebook with empty pattern list at zero budget. -/
+example {n_s b numCandidates : Nat} (Y : Codeword n_s) :
+    orbgrandAi (b := b) (numCandidates := numCandidates)
+      Y (fun _ => false) (AbandonmentBudget.mk 0)
+      ([] : List (Fin (n_s / b) -> Fin numCandidates)) = none :=
+  orbgrandAi_empty_codebook_nil_zero_budget Y
 
 /-- QPSK diagonal at index 0. -/
 example : qpsk.exceed 0 0 = 0 := qpsk_exceed_zero_zero
@@ -2273,12 +2327,42 @@ example : qpsk.exceed 3 3 = 0 := qpsk_exceed_three_three
 /-- QPSK off-diagonal at `(1, 0)`. -/
 example : qpsk.exceed 1 0 = 1 := qpsk_exceed_one_zero
 
+/-- QPSK off-diagonal at `(0, 2)`. -/
+example : qpsk.exceed 0 2 = 1 := qpsk_exceed_zero_two
+
+/-- QPSK off-diagonal at `(1, 2)`. -/
+example : qpsk.exceed 1 2 = 1 := qpsk_exceed_one_two
+
+/-- QPSK off-diagonal at `(2, 3)`. -/
+example : qpsk.exceed 2 3 = 1 := qpsk_exceed_two_three
+
 /-- AR(2) recurrence step at index 45. -/
 example (phi1 phi2 z1 z2 : Complex) :
     ar2 phi1 phi2 z1 z2 45
       = phi1 * ar2 phi1 phi2 z1 z2 44
         + phi2 * ar2 phi1 phi2 z1 z2 43 :=
   ar2_forty_five phi1 phi2 z1 z2
+
+/-- AR(2) recurrence step at index 46. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 46
+      = phi1 * ar2 phi1 phi2 z1 z2 45
+        + phi2 * ar2 phi1 phi2 z1 z2 44 :=
+  ar2_forty_six phi1 phi2 z1 z2
+
+/-- AR(2) recurrence step at index 47. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 47
+      = phi1 * ar2 phi1 phi2 z1 z2 46
+        + phi2 * ar2 phi1 phi2 z1 z2 45 :=
+  ar2_forty_seven phi1 phi2 z1 z2
+
+/-- AR(2) recurrence step at index 48. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 48
+      = phi1 * ar2 phi1 phi2 z1 z2 47
+        + phi2 * ar2 phi1 phi2 z1 z2 46 :=
+  ar2_forty_eight phi1 phi2 z1 z2
 
 /-- AR(2) phi1=0 boundary at index 5. -/
 example (phi2 z1 z2 : Complex) :
