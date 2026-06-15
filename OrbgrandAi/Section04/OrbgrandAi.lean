@@ -195,6 +195,24 @@ theorem substitutionPenalty?_isNone_iff_hardDecisionBlock?_isNone
       = (hardDecisionBlock? post).isNone :=
   Option.isNone_map
 
+/-- *Forward direction of the definedness bridge.*  If the
+    hard-decision argmax is defined, so is the substitution penalty. -/
+theorem substitutionPenalty?_isSome_of_hardDecisionBlock?_isSome
+    {numCandidates : Nat} (post : BlockPosterior numCandidates)
+    (t : Fin numCandidates)
+    (h : (hardDecisionBlock? post).isSome = true) :
+    (substitutionPenalty? post t).isSome = true :=
+  (substitutionPenalty?_isSome_iff_hardDecisionBlock?_isSome post t).trans h
+
+/-- *Forward direction of the undefinedness bridge.*  If the
+    hard-decision argmax is undefined, so is the substitution penalty. -/
+theorem substitutionPenalty?_isNone_of_hardDecisionBlock?_isNone
+    {numCandidates : Nat} (post : BlockPosterior numCandidates)
+    (t : Fin numCandidates)
+    (h : (hardDecisionBlock? post).isNone = true) :
+    (substitutionPenalty? post t).isNone = true :=
+  (substitutionPenalty?_isNone_iff_hardDecisionBlock?_isNone post t).trans h
+
 /-! ## Codebook membership and abandonment -/
 
 /-- The codebook-membership oracle `Phi : Codeword n -> Bool`. -/
@@ -509,6 +527,16 @@ theorem orbgrandAi_empty_codebook_zero_budget
     orbgrandAi (b := b) (numCandidates := numCandidates)
       Y (fun _ => false) (AbandonmentBudget.mk 0) patterns = none :=
   orbgrandAi_empty_codebook Y (AbandonmentBudget.mk 0) patterns
+
+/-- *Vacuous codebook at unit budget.*  Specialises
+    `orbgrandAi_empty_codebook` at `AbandonmentBudget.mk 1`. -/
+theorem orbgrandAi_empty_codebook_mk_one
+    {n_s b numCandidates : Nat}
+    (Y : Codeword n_s)
+    (patterns : List (Fin (n_s / b) -> Fin numCandidates)) :
+    orbgrandAi (b := b) (numCandidates := numCandidates)
+      Y (fun _ => false) (AbandonmentBudget.mk 1) patterns = none :=
+  orbgrandAi_empty_codebook Y (AbandonmentBudget.mk 1) patterns
 
 /-! ## Substitution provenance (soundness of the output) -/
 

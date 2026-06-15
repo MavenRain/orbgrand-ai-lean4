@@ -2093,6 +2093,96 @@ example {n k : Nat} (H : ParityCheck n k) :
     syndromeZero H (0 : Codeword n) (0 : Codeword n) :=
   syndromeZero_self_of_zero H
 
+/-- `delayTapMatrix` eighth sub-diagonal. -/
+example {n_s : Nat} {p : Nat} (paths : Fin p -> DelayTapPath)
+    (f_s : SamplingFreq) (i j : Fin n_s) (h : i.val = j.val + 8) :
+    delayTapMatrix n_s paths f_s i j
+      = delayTapImpulseResponse paths f_s { toNat := 8 } :=
+  delayTapMatrix_eighth_subdiag paths f_s i j h
+
+/-- `delayTapMatrix` ninth sub-diagonal. -/
+example {n_s : Nat} {p : Nat} (paths : Fin p -> DelayTapPath)
+    (f_s : SamplingFreq) (i j : Fin n_s) (h : i.val = j.val + 9) :
+    delayTapMatrix n_s paths f_s i j
+      = delayTapImpulseResponse paths f_s { toNat := 9 } :=
+  delayTapMatrix_ninth_subdiag paths f_s i j h
+
+/-- `delayTapMatrix` tenth sub-diagonal. -/
+example {n_s : Nat} {p : Nat} (paths : Fin p -> DelayTapPath)
+    (f_s : SamplingFreq) (i j : Fin n_s) (h : i.val = j.val + 10) :
+    delayTapMatrix n_s paths f_s i j
+      = delayTapImpulseResponse paths f_s { toNat := 10 } :=
+  delayTapMatrix_tenth_subdiag paths f_s i j h
+
+/-- AR(2) recurrence step at index 42. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 42
+      = phi1 * ar2 phi1 phi2 z1 z2 41
+        + phi2 * ar2 phi1 phi2 z1 z2 40 :=
+  ar2_forty_two phi1 phi2 z1 z2
+
+/-- AR(2) recurrence step at index 43. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 43
+      = phi1 * ar2 phi1 phi2 z1 z2 42
+        + phi2 * ar2 phi1 phi2 z1 z2 41 :=
+  ar2_forty_three phi1 phi2 z1 z2
+
+/-- AR(2) recurrence step at index 44. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 44
+      = phi1 * ar2 phi1 phi2 z1 z2 43
+        + phi2 * ar2 phi1 phi2 z1 z2 42 :=
+  ar2_forty_four phi1 phi2 z1 z2
+
+/-- BPSK off-diagonal at `(true, false)`. -/
+example : bpsk.exceed true false = 1 :=
+  bpsk_exceed_true_false
+
+/-- BPSK off-diagonal at `(false, true)`. -/
+example : bpsk.exceed false true = 1 :=
+  bpsk_exceed_false_true
+
+/-- Diagonal zero perturbation. -/
+example {n_s : Nat} (h : ChannelMatrix n_s) (i : Fin n_s) :
+    perturbChannel h 0 i i = h i i :=
+  perturbChannel_zero_apply_diag h i
+
+/-- Diagonal zero channel under perturbation. -/
+example {n_s : Nat} (epsilon : Matrix (Fin n_s) (Fin n_s) Complex)
+    (i : Fin n_s) :
+    perturbChannel 0 epsilon i i = (0 : ChannelMatrix n_s) i i :=
+  perturbChannel_zero_channel_apply_diag epsilon i
+
+/-- Diagonal left-identity of composed perturbation. -/
+example {n_s : Nat} (h : ChannelMatrix n_s)
+    (epsilon : Matrix (Fin n_s) (Fin n_s) Complex) (i : Fin n_s) :
+    perturbChannel (perturbChannel h 0) epsilon i i
+      = perturbChannel h epsilon i i :=
+  perturbChannel_perturbChannel_zero_left_apply_diag h epsilon i
+
+/-- Forward direction of `substitutionPenalty?` definedness bridge. -/
+example {numCandidates : Nat} (post : BlockPosterior numCandidates)
+    (t : Fin numCandidates)
+    (h : (hardDecisionBlock? post).isSome = true) :
+    (substitutionPenalty? post t).isSome = true :=
+  substitutionPenalty?_isSome_of_hardDecisionBlock?_isSome post t h
+
+/-- Forward direction of `substitutionPenalty?` undefinedness bridge. -/
+example {numCandidates : Nat} (post : BlockPosterior numCandidates)
+    (t : Fin numCandidates)
+    (h : (hardDecisionBlock? post).isNone = true) :
+    (substitutionPenalty? post t).isNone = true :=
+  substitutionPenalty?_isNone_of_hardDecisionBlock?_isNone post t h
+
+/-- `orbgrandAi` empty codebook at unit budget. -/
+example {n_s b numCandidates : Nat}
+    (Y : Codeword n_s)
+    (patterns : List (Fin (n_s / b) -> Fin numCandidates)) :
+    orbgrandAi (b := b) (numCandidates := numCandidates)
+      Y (fun _ => false) (AbandonmentBudget.mk 1) patterns = none :=
+  orbgrandAi_empty_codebook_mk_one Y patterns
+
 /-- `QueryOrder.positionOf` on the empty list is `0`. -/
 example {numPatterns : Nat} (x : Fin numPatterns) :
     QueryOrder.positionOf x ([] : QueryOrder numPatterns) = 0 :=

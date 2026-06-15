@@ -341,6 +341,33 @@ theorem delayTapMatrix_seventh_subdiag
       = delayTapImpulseResponse paths f_s { toNat := 7 } :=
   delayTapMatrix_at_subdiag paths f_s i j h
 
+/-- *Eighth sub-diagonal of `delayTapMatrix`.*  Same pattern at
+    delay 8. -/
+theorem delayTapMatrix_eighth_subdiag
+    {n_s : Nat} {p : Nat} (paths : Fin p -> DelayTapPath)
+    (f_s : SamplingFreq) (i j : Fin n_s) (h : i.val = j.val + 8) :
+    delayTapMatrix n_s paths f_s i j
+      = delayTapImpulseResponse paths f_s { toNat := 8 } :=
+  delayTapMatrix_at_subdiag paths f_s i j h
+
+/-- *Ninth sub-diagonal of `delayTapMatrix`.*  Same pattern at
+    delay 9. -/
+theorem delayTapMatrix_ninth_subdiag
+    {n_s : Nat} {p : Nat} (paths : Fin p -> DelayTapPath)
+    (f_s : SamplingFreq) (i j : Fin n_s) (h : i.val = j.val + 9) :
+    delayTapMatrix n_s paths f_s i j
+      = delayTapImpulseResponse paths f_s { toNat := 9 } :=
+  delayTapMatrix_at_subdiag paths f_s i j h
+
+/-- *Tenth sub-diagonal of `delayTapMatrix`.*  Same pattern at
+    delay 10. -/
+theorem delayTapMatrix_tenth_subdiag
+    {n_s : Nat} {p : Nat} (paths : Fin p -> DelayTapPath)
+    (f_s : SamplingFreq) (i j : Fin n_s) (h : i.val = j.val + 10) :
+    delayTapMatrix n_s paths f_s i j
+      = delayTapImpulseResponse paths f_s { toNat := 10 } :=
+  delayTapMatrix_at_subdiag paths f_s i j h
+
 /-- *Delay-tap matrix entry above diagonal is zero.*  This is the
     same statement as `delayTap_causal` (which packages the result
     into `LinearIsi.causal`), restated as a direct matrix-entry

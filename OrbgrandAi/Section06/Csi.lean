@@ -104,6 +104,13 @@ theorem perturbChannel_zero_apply
     perturbChannel h 0 i j = h i j :=
   congrFun (congrFun (perturbChannel_zero h) i) j
 
+/-- *Diagonal pointwise zero perturbation.*  Specialisation of
+    `perturbChannel_zero_apply` at `i = j`. -/
+theorem perturbChannel_zero_apply_diag
+    {n_s : Nat} (h : ChannelMatrix n_s) (i : Fin n_s) :
+    perturbChannel h 0 i i = h i i :=
+  perturbChannel_zero_apply h i i
+
 /-- *Pointwise reverse-direction zero perturbation.*  Entry form
     of `perturbChannel_zero_eq_self`: the original entry `h i j`
     equals the zero-perturbed entry.  Pure `congrFun` cascade. -/
@@ -129,6 +136,14 @@ theorem perturbChannel_zero_channel_apply
     (i j : Fin n_s) :
     perturbChannel 0 epsilon i j = (0 : ChannelMatrix n_s) i j :=
   congrFun (congrFun (perturbChannel_zero_channel epsilon) i) j
+
+/-- *Diagonal zero-channel under perturbation.*  Specialisation of
+    `perturbChannel_zero_channel_apply` at `i = j`. -/
+theorem perturbChannel_zero_channel_apply_diag
+    {n_s : Nat} (epsilon : Matrix (Fin n_s) (Fin n_s) Complex)
+    (i : Fin n_s) :
+    perturbChannel 0 epsilon i i = (0 : ChannelMatrix n_s) i i :=
+  perturbChannel_zero_channel_apply epsilon i i
 
 /-- *Composition of two perturbations.*  Applying `perturbChannel`
     twice (first by `ε₁`, then by `ε₂`) at entry `(i, j)` yields
@@ -230,6 +245,16 @@ theorem perturbChannel_perturbChannel_zero_left_apply
     perturbChannel (perturbChannel h 0) epsilon i j
       = perturbChannel h epsilon i j :=
   congrFun (congrFun (perturbChannel_perturbChannel_zero_left h epsilon) i) j
+
+/-- *Diagonal left-identity of composed perturbation.*
+    Specialisation of `perturbChannel_perturbChannel_zero_left_apply`
+    at `i = j`. -/
+theorem perturbChannel_perturbChannel_zero_left_apply_diag
+    {n_s : Nat} (h : ChannelMatrix n_s)
+    (epsilon : Matrix (Fin n_s) (Fin n_s) Complex) (i : Fin n_s) :
+    perturbChannel (perturbChannel h 0) epsilon i i
+      = perturbChannel h epsilon i i :=
+  perturbChannel_perturbChannel_zero_left_apply h epsilon i i
 
 /-- *General entry of `perturbChannel`.*  Direct definitional
     unfolding: `perturbChannel h epsilon i j = h i j * (1 + epsilon i j)`.

@@ -276,6 +276,16 @@ theorem bpsk_exceed_diff {s s_hat : Bool} (h : s ≠ s_hat) :
     bpsk.exceed s s_hat = 1 :=
   if_neg h
 
+/-- *BPSK off-diagonal at `(true, false)`.*  Concrete instance of
+    `bpsk_exceed_diff` witnessed by `Bool.false_ne_true.symm`. -/
+theorem bpsk_exceed_true_false : bpsk.exceed true false = 1 :=
+  bpsk_exceed_diff Bool.false_ne_true.symm
+
+/-- *BPSK off-diagonal at `(false, true)`.*  Concrete instance of
+    `bpsk_exceed_diff` witnessed by `Bool.false_ne_true`. -/
+theorem bpsk_exceed_false_true : bpsk.exceed false true = 1 :=
+  bpsk_exceed_diff Bool.false_ne_true
+
 /-- *BPSK exceedance is binary-valued.*  Every value is either `0`
     (agreement) or `1` (disagreement), reflecting BPSK's uniform
     Hamming-style metric.  Case split on the symbol-equality
