@@ -1850,6 +1850,89 @@ example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (sigma : NoisePower) :
     (rfView n_s rowTaps sigma).bandwidth 12 :=
   rfView_bandwidth_twelve rowTaps sigma
 
+/-- AR(2) recurrence step at index 36. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 36
+      = phi1 * ar2 phi1 phi2 z1 z2 35
+        + phi2 * ar2 phi1 phi2 z1 z2 34 :=
+  ar2_thirty_six phi1 phi2 z1 z2
+
+/-- AR(2) recurrence step at index 37. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 37
+      = phi1 * ar2 phi1 phi2 z1 z2 36
+        + phi2 * ar2 phi1 phi2 z1 z2 35 :=
+  ar2_thirty_seven phi1 phi2 z1 z2
+
+/-- AR(2) Fibonacci shape boundary at index 4. -/
+example (z1 z2 : Complex) :
+    ar2 1 1 z1 z2 4 = ar2 1 1 z1 z2 3 + ar2 1 1 z1 z2 2 :=
+  ar2_phi1_one_phi2_one_four z1 z2
+
+/-- `cov1_lag` at lag `-10`. -/
+example (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    cov1_lag sigma rho (-10) = sigma.val * rho.val ^ 10 :=
+  cov1_lag_neg_ten sigma rho
+
+/-- `cov1_lag` at lag `11`. -/
+example (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    cov1_lag sigma rho 11 = sigma.val * rho.val ^ 11 :=
+  cov1_lag_eleven sigma rho
+
+/-- `cov2_lag` recurrence at lag 17. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta1 beta2 : Real) :
+    cov2_lag sigma rho1 rho2 beta1 beta2 17
+      = beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 16
+        + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 15 :=
+  cov2_lag_seventeen sigma rho1 rho2 beta1 beta2
+
+/-- `dicode` bandwidth widens to 4. -/
+example {n_s : Nat} (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    (dicode n_s sigma rho).bandwidth 4 :=
+  dicode_bandwidth_four sigma rho
+
+/-- `dicode` bandwidth widens to 5. -/
+example {n_s : Nat} (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    (dicode n_s sigma rho).bandwidth 5 :=
+  dicode_bandwidth_five sigma rho
+
+/-- `dicode` bandwidth widens by any additive offset. -/
+example {n_s : Nat} (sigma : NoisePower) (rho : CorrelationCoefficient)
+    (k : Nat) :
+    (dicode n_s sigma rho).bandwidth (1 + k) :=
+  dicode_bandwidth_add sigma rho k
+
+/-- `LinearIsi.bandwidth` widens by two chained additive offsets. -/
+example {n_s : Nat} {ch : LinearIsi n_s} {b : Nat} (k m : Nat)
+    (h : ch.bandwidth b) :
+    ch.bandwidth (b + k + m) :=
+  LinearIsi.bandwidth_add_add k m h
+
+/-- `LinearIsi.bandwidth` widens by one then by an offset. -/
+example {n_s : Nat} {ch : LinearIsi n_s} {b : Nat} (k : Nat)
+    (h : ch.bandwidth b) :
+    ch.bandwidth (b + 1 + k) :=
+  LinearIsi.bandwidth_succ_add k h
+
+/-- `LinearIsi.bandwidth_of_zero` plus successor. -/
+example {n_s : Nat} {ch : LinearIsi n_s} (b : Nat)
+    (h : ch.bandwidth 0) :
+    ch.bandwidth (b + 1) :=
+  LinearIsi.bandwidth_of_zero_succ b h
+
+/-- BPSK diagonal at `true`. -/
+example : bpsk.exceed true true = 0 :=
+  bpsk_exceed_true_true
+
+/-- BPSK diagonal at `false`. -/
+example : bpsk.exceed false false = 0 :=
+  bpsk_exceed_false_false
+
+/-- Trivial-constellation diagonal vanishes. -/
+example (s : Unit) : trivialConstellation.exceed s s = 0 :=
+  trivialConstellation_exceed_self s
+
 /-- `QueryOrder.positionOf` on the empty list is `0`. -/
 example {numPatterns : Nat} (x : Fin numPatterns) :
     QueryOrder.positionOf x ([] : QueryOrder numPatterns) = 0 :=

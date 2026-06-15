@@ -212,6 +212,17 @@ theorem cov1_lag_neg_nine
 theorem cov1_lag_ten (sigma : NoisePower) (rho : CorrelationCoefficient) :
     cov1_lag sigma rho 10 = sigma.val * rho.val ^ 10 := rfl
 
+/-- `cov1_lag` at lag `-10` is `sigma * rho^10`.  Compose
+    `cov1_lag_neg` at `i = 10` with `cov1_lag_ten`. -/
+theorem cov1_lag_neg_ten
+    (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    cov1_lag sigma rho (-10) = sigma.val * rho.val ^ 10 :=
+  (cov1_lag_neg sigma rho 10).trans (cov1_lag_ten sigma rho)
+
+/-- `cov1_lag` at lag 11 is `sigma * rho^11`.  Same defeq pattern. -/
+theorem cov1_lag_eleven (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    cov1_lag sigma rho 11 = sigma.val * rho.val ^ 11 := rfl
+
 /-- *General positive-lag formula.*  For any natural-number lag `n`
     (coerced to `Int`), `cov1_lag sigma rho ↑n = sigma * rho^n`.
     Subsumes `_zero`, `_one`, `_two`, `_three` as the `n = 0, 1, 2, 3`
@@ -599,6 +610,14 @@ theorem cov2_lag_sixteen
     cov2_lag sigma rho1 rho2 beta1 beta2 16
       = beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 15
         + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 14 := rfl
+
+/-- *Recurrence step at lag `17`.*  Same `rfl` pattern. -/
+theorem cov2_lag_seventeen
+    (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient)
+    (beta1 beta2 : Real) :
+    cov2_lag sigma rho1 rho2 beta1 beta2 17
+      = beta1 * cov2_lag sigma rho1 rho2 beta1 beta2 16
+        + beta2 * cov2_lag sigma rho1 rho2 beta1 beta2 15 := rfl
 
 /-- The AR(2)-style recurrence for `cov2_lag` at lag `n + 3`. -/
 theorem cov2_lag_succ_succ_succ

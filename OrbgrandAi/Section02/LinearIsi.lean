@@ -258,6 +258,33 @@ theorem LinearIsi.bandwidth_add_succ
     ch.bandwidth (b + k + 1) :=
   LinearIsi.bandwidth_succ (LinearIsi.bandwidth_add k h)
 
+/-- *Bandwidth widens by two chained additive offsets.*  A channel
+    with bandwidth at most `b` also has bandwidth at most `b + k + m`
+    for any `k` and `m`. -/
+theorem LinearIsi.bandwidth_add_add
+    {n_s : Nat} {ch : LinearIsi n_s} {b : Nat} (k m : Nat)
+    (h : ch.bandwidth b) :
+    ch.bandwidth (b + k + m) :=
+  LinearIsi.bandwidth_add m (LinearIsi.bandwidth_add k h)
+
+/-- *Bandwidth widens by one and then by an offset.*  Composes
+    `bandwidth_succ` with `bandwidth_add`. -/
+theorem LinearIsi.bandwidth_succ_add
+    {n_s : Nat} {ch : LinearIsi n_s} {b : Nat} (k : Nat)
+    (h : ch.bandwidth b) :
+    ch.bandwidth (b + 1 + k) :=
+  LinearIsi.bandwidth_add k (LinearIsi.bandwidth_succ h)
+
+/-- *Bandwidth-zero channels have any successor bandwidth.*  A
+    channel with bandwidth at most `0` (diagonal-only support) also
+    has bandwidth at most `b + 1` for any `b`.  Composes
+    `bandwidth_of_zero` with `bandwidth_succ`. -/
+theorem LinearIsi.bandwidth_of_zero_succ
+    {n_s : Nat} {ch : LinearIsi n_s} (b : Nat)
+    (h : ch.bandwidth 0) :
+    ch.bandwidth (b + 1) :=
+  LinearIsi.bandwidth_succ (LinearIsi.bandwidth_of_zero b h)
+
 /-- *Zero-channel receive ignores the signal.*  With `channel := 0`,
     the channel-vector product `(0 : Matrix).mulVec X` vanishes, so
     `receive X N = N` regardless of `X`. -/

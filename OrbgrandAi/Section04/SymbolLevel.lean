@@ -260,6 +260,16 @@ def bpsk : Constellation Bool :=
 theorem bpsk_exceed_self (s : Bool) : bpsk.exceed s s = 0 :=
   if_pos rfl
 
+/-- *BPSK diagonal at `true`.*  Concrete instance of
+    `bpsk_exceed_self` at `s = true`. -/
+theorem bpsk_exceed_true_true : bpsk.exceed true true = 0 :=
+  bpsk_exceed_self true
+
+/-- *BPSK diagonal at `false`.*  Concrete instance of
+    `bpsk_exceed_self` at `s = false`. -/
+theorem bpsk_exceed_false_false : bpsk.exceed false false = 0 :=
+  bpsk_exceed_self false
+
 /-- BPSK exceedance is `1` on disagreement.  Direct unfolding via
     `if_neg`. -/
 theorem bpsk_exceed_diff {s s_hat : Bool} (h : s ≠ s_hat) :
@@ -439,6 +449,14 @@ def trivialConstellation : Constellation Unit :=
 /-- Trivial constellation exceedance is always zero. -/
 theorem trivialConstellation_exceed (s s_hat : Unit) :
     trivialConstellation.exceed s s_hat = 0 := rfl
+
+/-- *Trivial-constellation diagonal vanishes.*  Specialisation of
+    `trivialConstellation_exceed` to the diagonal case `s = s_hat`,
+    completing the `_exceed_self` family across the three concrete
+    constellation instances. -/
+theorem trivialConstellation_exceed_self (s : Unit) :
+    trivialConstellation.exceed s s = 0 :=
+  trivialConstellation_exceed s s
 
 /-- *Trivial constellation symbols are all equal.*  `Unit` is a
     `Subsingleton`, so any two symbols of the trivial constellation

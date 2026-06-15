@@ -227,6 +227,30 @@ theorem dicode_bandwidth_three
     (dicode n_s sigma rho).bandwidth 3 :=
   LinearIsi.bandwidth_succ_succ (dicode_bandwidth sigma rho)
 
+/-- *Dicode bandwidth widens to `4`.*  One-line corollary of
+    `dicode_bandwidth` composed with `LinearIsi.bandwidth_succ_succ_succ`. -/
+theorem dicode_bandwidth_four
+    {n_s : Nat} (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    (dicode n_s sigma rho).bandwidth 4 :=
+  LinearIsi.bandwidth_succ_succ_succ (dicode_bandwidth sigma rho)
+
+/-- *Dicode bandwidth widens to `5`.*  One-line corollary of
+    `dicode_bandwidth` composed with `LinearIsi.bandwidth_succ_succ_succ_succ`. -/
+theorem dicode_bandwidth_five
+    {n_s : Nat} (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    (dicode n_s sigma rho).bandwidth 5 :=
+  LinearIsi.bandwidth_succ_succ_succ_succ (dicode_bandwidth sigma rho)
+
+/-- *Dicode bandwidth widens by any additive offset `k`.*  Universal
+    `+k` form: the dicode channel has bandwidth at most `1 + k` for
+    every `k`.  Direct corollary of `dicode_bandwidth` composed with
+    `LinearIsi.bandwidth_add`. -/
+theorem dicode_bandwidth_add
+    {n_s : Nat} (sigma : NoisePower) (rho : CorrelationCoefficient)
+    (k : Nat) :
+    (dicode n_s sigma rho).bandwidth (1 + k) :=
+  LinearIsi.bandwidth_add k (dicode_bandwidth sigma rho)
+
 /-- The dicode channel is causal: all entries strictly above the
     diagonal vanish.
 
