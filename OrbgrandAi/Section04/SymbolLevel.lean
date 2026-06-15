@@ -474,6 +474,13 @@ theorem qpsk_exceed_pos_iff_ne (s s_hat : Fin 4) :
     0 < qpsk.exceed s s_hat ↔ s ≠ s_hat :=
   qpsk.exceed_pos_iff_ne s s_hat
 
+/-- *QPSK exceedance is strictly positive iff non-zero.*
+    QPSK-named specialisation of
+    `Constellation.exceed_pos_iff_ne_zero` at `cs = qpsk`. -/
+theorem qpsk_exceed_pos_iff_ne_zero (s s_hat : Fin 4) :
+    0 < qpsk.exceed s s_hat ↔ qpsk.exceed s s_hat ≠ 0 :=
+  qpsk.exceed_pos_iff_ne_zero s s_hat
+
 /-- *QPSK exceedance is binary-valued.*  Same uniform Hamming-style
     metric as BPSK: every value is either `0` (agreement) or `1`
     (disagreement).  Case split on the symbol-equality decidable. -/

@@ -498,6 +498,14 @@ theorem Codeword.xor_neg_eq_xor_apply
     Codeword.xor a (-b) i = Codeword.xor a b i :=
   congrFun (Codeword.xor_neg_eq_xor a b) i
 
+/-- *XOR with negation on the left equals XOR.*  In `ZMod 2`, `-a = a`,
+    so XOR of `-a` with `b` is the same as XOR of `a` with `b`.  Left
+    dual of `Codeword.xor_neg_eq_xor`; composes `Codeword.neg_eq_self`
+    under the `fun z => Codeword.xor z b` slot via `congrArg`. -/
+theorem Codeword.neg_xor_eq_xor {n : Nat} (a b : Codeword n) :
+    Codeword.xor (-a) b = Codeword.xor a b :=
+  congrArg (fun z => Codeword.xor z b) (Codeword.neg_eq_self a)
+
 /-- `0 xor a = a`.  Pointwise `zero_add`. -/
 theorem Codeword.zero_xor {n : Nat} (a : Codeword n) :
     Codeword.xor 0 a = a :=

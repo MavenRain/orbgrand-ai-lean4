@@ -531,6 +531,20 @@ theorem kendallTau_ne_zero_iff_symm
     kendallTau a b ≠ 0 ↔ kendallTau b a ≠ 0 :=
   (kendallTau_eq_zero_iff_symm a b).not
 
+/-- *Zero left-distance squeeze.*  If `kendallTau a b = 0`, then for any
+    third query order `c`, `kendallTau a c <= kendallTau b c`.  Direct
+    consequence of `kendallTau_triangle a b c` rewritten under
+    `kendallTau a b = 0`, where the `0 + kendallTau b c` summand
+    collapses via `Nat.zero_add`. -/
+theorem kendallTau_le_of_eq_zero_left {numPatterns : Nat}
+    (a b c : QueryOrder numPatterns) (hab : kendallTau a b = 0) :
+    kendallTau a c <= kendallTau b c :=
+  let h_tri : kendallTau a c <= kendallTau a b + kendallTau b c :=
+    kendallTau_triangle a b c
+  let h_collapse : kendallTau a b + kendallTau b c = kendallTau b c :=
+    hab ▸ Nat.zero_add _
+  h_tri.trans h_collapse.le
+
 /-- *Triangle inequality, right-symmetrized form.*  For any three query
     orders `a`, `b`, `c`,
     `kendallTau a c <= kendallTau a b + kendallTau c b`.

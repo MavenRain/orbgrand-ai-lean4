@@ -1525,6 +1525,16 @@ theorem landslideBucket_not_of_mem_of_ne
     ¬ landslideBucket pi w2 e :=
   fun h2 => h_ne (landslideBucket_unique pi h1 h2)
 
+/-- *Bucket non-membership from a witness and strictly smaller index.*
+    Specialisation of `landslideBucket_not_of_mem_of_ne` to the
+    ordered case `w1 < w2`.  Built by feeding `Nat.ne_of_lt` into the
+    `_of_mem_of_ne` variant. -/
+theorem landslideBucket_not_of_mem_of_lt
+    {n : Nat} (pi : ReliabilityRank n) {w1 w2 : Nat} {e : Fin n -> Bool}
+    (h1 : landslideBucket pi w1 e) (h_lt : w1 < w2) :
+    ¬ landslideBucket pi w2 e :=
+  landslideBucket_not_of_mem_of_ne pi h1 (Nat.ne_of_lt h_lt)
+
 /-- *Constant-false sits in bucket zero via the perm characterisation.*
     Re-derivation of `landslideBucket_const_false_zero` through
     `landslideBucket_zero_iff_all_false_at_perm`. -/

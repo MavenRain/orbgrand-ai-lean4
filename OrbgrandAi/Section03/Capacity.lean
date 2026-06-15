@@ -343,6 +343,22 @@ theorem limsupEntropyRate_le_liminfInformationRate_of_eventually_const_mono
   ((limsupEntropyRate_eq_const_of_eventually_const hv).le.trans h).trans
     (liminfInformationRate_eq_const_of_eventually_const hu).ge
 
+/-- *Cross-sequence inequality with a one-sided eventual bound on `u`.*
+    If `u n <= c` eventually and `v n = c` eventually, then
+    `liminfInformationRate u <= limsupEntropyRate v`.  Strictly weaker
+    hypothesis on `u` than
+    `liminfInformationRate_eq_limsupEntropyRate_of_eventually_const_pair`. -/
+theorem liminfInformationRate_le_limsupEntropyRate_of_eventually_le_const_eq
+    {u v : Nat -> Real} {c : Real}
+    (hu : ∀ᶠ n in Filter.atTop, u n <= c)
+    (hub : Filter.IsBoundedUnder (· >= ·) Filter.atTop u)
+    (hcb : Filter.IsCoboundedUnder (· >= ·) Filter.atTop
+            (fun _ : Nat => c))
+    (hv : ∀ᶠ n in Filter.atTop, v n = c) :
+    liminfInformationRate u <= limsupEntropyRate v :=
+  (liminfInformationRate_le_const_of_le_eventually hu hub hcb).trans
+    (limsupEntropyRate_eq_const_of_eventually_const hv).ge
+
 /-! ## Hadamard bound on the noise entropy rate -/
 
 /-- *Hadamard inequality* (Section III, page 4, right column).

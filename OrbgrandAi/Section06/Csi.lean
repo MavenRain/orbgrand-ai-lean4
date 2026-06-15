@@ -368,6 +368,17 @@ theorem perturbChannel_factor_zero_apply
     perturbChannel h epsilon i j = 0 :=
   (congrArg (h i j * ·) h_factor).trans (mul_zero (h i j))
 
+/-- *Diagonal factor-zero zeroes the entry.*  Specialisation of
+    `perturbChannel_factor_zero_apply` at `i = j`: when the diagonal
+    multiplicative factor `1 + epsilon i i` vanishes, the perturbed
+    diagonal entry is zero regardless of `h i i`. -/
+theorem perturbChannel_factor_zero_apply_diag
+    {n_s : Nat} (h : ChannelMatrix n_s)
+    (epsilon : Matrix (Fin n_s) (Fin n_s) Complex)
+    {i : Fin n_s} (h_factor : (1 : Complex) + epsilon i i = 0) :
+    perturbChannel h epsilon i i = 0 :=
+  perturbChannel_factor_zero_apply h epsilon h_factor
+
 /-- *Pointwise zero characterisation.*  A perturbed entry vanishes
     iff either the underlying entry vanishes or the multiplicative
     factor `1 + epsilon i j` is zero.  Since `Complex` is an
