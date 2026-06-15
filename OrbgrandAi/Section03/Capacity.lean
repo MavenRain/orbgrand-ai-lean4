@@ -285,6 +285,20 @@ theorem limsupEntropyRate_eq_const_of_eventually_const
     limsupEntropyRate u = c :=
   (limsupEntropyRate_congr h).trans (limsupEntropyRate_const c)
 
+/-- *Liminf-equals-limsup at eventually-constant sequences.*  If a
+    sequence is eventually equal to a constant `c`, the lim-inf
+    information rate and the lim-sup entropy rate (taken on the *same*
+    sequence) coincide.  Composes
+    `liminfInformationRate_eq_const_of_eventually_const` with
+    `limsupEntropyRate_eq_const_of_eventually_const` via `.symm`,
+    collapsing the Verdu-Han gap to zero in this degenerate case. -/
+theorem liminfInformationRate_eq_limsupEntropyRate_of_eventually_const
+    {u : Nat -> Real} {c : Real}
+    (h : ∀ᶠ n in Filter.atTop, u n = c) :
+    liminfInformationRate u = limsupEntropyRate u :=
+  (liminfInformationRate_eq_const_of_eventually_const h).trans
+    (limsupEntropyRate_eq_const_of_eventually_const h).symm
+
 /-! ## Hadamard bound on the noise entropy rate -/
 
 /-- *Hadamard inequality* (Section III, page 4, right column).

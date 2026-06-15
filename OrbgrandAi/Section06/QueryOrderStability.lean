@@ -528,6 +528,19 @@ theorem kendallTau_triangle_left_symm
     kendallTau a c ≤ kendallTau b a + kendallTau b c :=
   (kendallTau_symm a b) ▸ kendallTau_triangle a b c
 
+/-- *Triangle inequality, both-symmetrized form.*  For any three query
+    orders `a`, `b`, `c`,
+    `kendallTau a c <= kendallTau b a + kendallTau c b`.
+    Direct corollary of `kendallTau_triangle` (with middle witness `b`)
+    composed with `kendallTau_symm` on BOTH summands.  Useful when the
+    caller has bounds on `kendallTau b a` and `kendallTau c b` rather
+    than the canonical-direction forms.  Companion to
+    `kendallTau_triangle_left_symm` and `kendallTau_triangle_right_symm`. -/
+theorem kendallTau_triangle_both_symm
+    {numPatterns : Nat} (a b c : QueryOrder numPatterns) :
+    kendallTau a c ≤ kendallTau b a + kendallTau c b :=
+  (kendallTau_symm a b) ▸ (kendallTau_symm c b) ▸ kendallTau_triangle a b c
+
 
 /-! ## Query-order stability claim (placeholder) -/
 

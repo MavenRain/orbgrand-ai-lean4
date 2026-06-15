@@ -866,6 +866,15 @@ theorem Codeword.xor_assoc4 {n : Nat} (a b c d : Codeword n) :
   (Codeword.xor_assoc (Codeword.xor a b) c d).trans
     (Codeword.xor_assoc a b (Codeword.xor c d))
 
+/-- *Pointwise four-argument XOR associativity.*  One-liner via
+    `congrFun` on `xor_assoc4`: at each index, the fully left-associated
+    XOR equals the fully right-associated XOR. -/
+theorem Codeword.xor_assoc4_apply
+    {n : Nat} (a b c d : Codeword n) (i : Fin n) :
+    Codeword.xor (Codeword.xor (Codeword.xor a b) c) d i
+      = Codeword.xor a (Codeword.xor b (Codeword.xor c d)) i :=
+  congrFun (Codeword.xor_assoc4 a b c d) i
+
 /-- *Paired self-XOR vanishes.*  `(a xor a) xor (b xor b) = 0`. -/
 theorem Codeword.xor_self_xor_self {n : Nat} (a b : Codeword n) :
     Codeword.xor (Codeword.xor a a) (Codeword.xor b b) = 0 :=

@@ -451,6 +451,14 @@ theorem qpsk_exceed_three_one : qpsk.exceed 3 1 = 1 :=
     (fun h : (3 : Fin 4) = 1 =>
       Nat.succ_ne_zero 1 (Nat.succ.inj (congrArg Fin.val h)))
 
+/-- *QPSK off-diagonal at `(3, 2)`.*  Symmetric companion to
+    `qpsk_exceed_two_three`; witnessed by `(3 : Fin 4) ≠ 2` via
+    `Fin.val`, two `Nat.succ.inj` peels, then `Nat.succ_ne_zero`. -/
+theorem qpsk_exceed_three_two : qpsk.exceed 3 2 = 1 :=
+  qpsk_exceed_diff
+    (fun h : (3 : Fin 4) = 2 =>
+      Nat.succ_ne_zero 0 (Nat.succ.inj (Nat.succ.inj (congrArg Fin.val h))))
+
 /-- *QPSK exceedance is binary-valued.*  Same uniform Hamming-style
     metric as BPSK: every value is either `0` (agreement) or `1`
     (disagreement).  Case split on the symbol-equality decidable. -/

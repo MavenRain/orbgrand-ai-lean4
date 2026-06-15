@@ -458,6 +458,16 @@ theorem mk?_one :
     SamplingFreq.mk? 1 = Except.ok ⟨1, Real.zero_lt_one⟩ :=
   mk?_of_pos 1 Real.zero_lt_one
 
+/-- *Two hertz is a valid sampling frequency.*  Next-concrete-value
+    corollary of `mk?_of_pos` at `v = 2`: a second representative
+    strictly-positive rate witnessing that `mk?` accepts the open
+    `(0, ∞)` range, with positivity supplied by `zero_lt_two`.
+    Parallel of `BlockSize.mk?_two` and `CodewordLength.mk?_two`
+    lifted to the real-valued setting. -/
+theorem mk?_two :
+    SamplingFreq.mk? 2 = Except.ok ⟨2, zero_lt_two⟩ :=
+  mk?_of_pos 2 zero_lt_two
+
 end SamplingFreq
 
 end Section02

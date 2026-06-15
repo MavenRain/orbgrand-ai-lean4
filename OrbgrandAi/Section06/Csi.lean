@@ -231,6 +231,17 @@ theorem perturbChannel_perturbChannel_zero_channel_apply
       = (0 : ChannelMatrix n_s) i j :=
   congrFun (congrFun (perturbChannel_perturbChannel_zero_channel ε₁ ε₂) i) j
 
+/-- *Diagonal entry under double zero-channel perturbation.*
+    Specialisation of `perturbChannel_perturbChannel_zero_channel_apply`
+    at `i = j`: the doubly-perturbed zero channel agrees with the
+    zero channel on the diagonal. -/
+theorem perturbChannel_perturbChannel_zero_channel_apply_diag
+    {n_s : Nat} (ε₁ ε₂ : Matrix (Fin n_s) (Fin n_s) Complex)
+    (i : Fin n_s) :
+    perturbChannel (perturbChannel 0 ε₁) ε₂ i i
+      = (0 : ChannelMatrix n_s) i i :=
+  perturbChannel_perturbChannel_zero_channel_apply ε₁ ε₂ i i
+
 /-- *Diagonal entry under double zero-zero composition.*
     Specialisation of `perturbChannel_perturbChannel_zero_zero_apply`
     at `i = j`. -/

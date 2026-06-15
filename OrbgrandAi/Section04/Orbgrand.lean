@@ -1481,6 +1481,16 @@ theorem landslideBucket_and_iff_right
   ⟨fun h => ⟨landslideBucket_unique pi h.1 h.2, h.2⟩,
    fun h => ⟨(landslideBucket_weight_congr pi e h.1).mpr h.2, h.2⟩⟩
 
+/-- *Bucket mutual exclusion.*  Distinct bucket indices `w1 ≠ w2`
+    cannot simultaneously host the same pattern `e`.  Contrapositive
+    of `landslideBucket_unique`: if both memberships held, the indices
+    would coincide, contradicting `h_ne`. -/
+theorem landslideBucket_disjoint_of_ne
+    {n : Nat} (pi : ReliabilityRank n) {w1 w2 : Nat} {e : Fin n -> Bool}
+    (h_ne : w1 ≠ w2) :
+    ¬ (landslideBucket pi w1 e /\ landslideBucket pi w2 e) :=
+  fun h => h_ne (landslideBucket_unique pi h.1 h.2)
+
 /-- *Constant-false sits in bucket zero via the perm characterisation.*
     Re-derivation of `landslideBucket_const_false_zero` through
     `landslideBucket_zero_iff_all_false_at_perm`. -/
