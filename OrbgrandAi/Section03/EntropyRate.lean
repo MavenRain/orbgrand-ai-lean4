@@ -224,6 +224,15 @@ theorem entropyRate1_block_at_block_eq_log_form
   (entropyRate1_block_eq_entropyRate1 sigma rho b).trans
     (entropyRate1_at_block_eq_log_form sigma rho b)
 
+/-- *Symmetric form of `entropyRate1_block_at_block_eq_log_form`.* -/
+theorem entropyRate1_block_at_block_eq_log_form_symm
+    (sigma : NoisePower) (rho : CorrelationCoefficient) (b : BlockSize) :
+    Real.log (2 * Real.exp 1 * Real.pi * sigma.val)
+      + (1 - (1 : Real) / (b.toNat : Real))
+          * Real.log (1 - rho.val ^ 2)
+      = entropyRate1_block sigma rho b :=
+  (entropyRate1_block_at_block_eq_log_form sigma rho b).symm
+
 /-- The second-order entropy rate matches the substitution of
     `cov2DetFormula` into the Gaussian entropy formula.
 
@@ -253,6 +262,34 @@ theorem entropyRate2_eq_symm
                 / (rho1.val ^ 2 - 1) ^ (n_s - 3))
       = entropyRate2 sigma rho1 rho2 n_s :=
   (entropyRate2_eq sigma rho1 rho2 n_s).symm
+
+/-- *Closed-form unfolding of `entropyRate2` evaluated at a block
+    size.*  Specialisation of `entropyRate2_eq` to the sequence
+    length `b.toNat`.  Definitional. -/
+theorem entropyRate2_at_block_eq_log_form
+    (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient) (b : BlockSize) :
+    entropyRate2 sigma rho1 rho2 b.toNat
+      = (1 / 2 : Real)
+          * Real.log (2 * Real.pi * Real.exp 1 * sigma.val)
+        + (1 / (2 * (b.toNat : Real)))
+            * Real.log
+                (- (rho2.val - 1) ^ (b.toNat - 2)
+                    * (1 - 2 * rho1.val ^ 2 + rho2.val) ^ (b.toNat - 2)
+                  / (rho1.val ^ 2 - 1) ^ (b.toNat - 3)) :=
+  entropyRate2_eq sigma rho1 rho2 b.toNat
+
+/-- *Symmetric form of `entropyRate2_at_block_eq_log_form`.* -/
+theorem entropyRate2_at_block_eq_log_form_symm
+    (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient) (b : BlockSize) :
+    (1 / 2 : Real)
+        * Real.log (2 * Real.pi * Real.exp 1 * sigma.val)
+      + (1 / (2 * (b.toNat : Real)))
+          * Real.log
+              (- (rho2.val - 1) ^ (b.toNat - 2)
+                  * (1 - 2 * rho1.val ^ 2 + rho2.val) ^ (b.toNat - 2)
+                / (rho1.val ^ 2 - 1) ^ (b.toNat - 3))
+      = entropyRate2 sigma rho1 rho2 b.toNat :=
+  entropyRate2_eq_symm sigma rho1 rho2 b.toNat
 
 end Section03
 end OrbgrandAi

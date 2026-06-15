@@ -1435,5 +1435,31 @@ theorem landslideBucket_zero_iff_all_false_at_perm
     landslideBucket pi 0 e <-> forall i, e (pi.perm i) = false :=
   logisticWeight_zero_iff_all_false_at_perm pi e
 
+/-- *Bucket index congruence.*  Bucket membership respects equality
+    of the bucket index.  Direct rewrite via the hypothesis. -/
+theorem landslideBucket_weight_congr
+    {n : Nat} (pi : ReliabilityRank n) {w1 w2 : Nat} (e : Fin n -> Bool)
+    (h : w1 = w2) :
+    landslideBucket pi w1 e <-> landslideBucket pi w2 e :=
+  h ▸ Iff.rfl
+
+/-- *Bucket membership transports across equal-weight patterns.*
+    If `e1` lives in bucket `w` and `e1, e2` have the same logistic
+    weight, then `e2` lives in bucket `w` too. -/
+theorem landslideBucket_transport
+    {n : Nat} (pi : ReliabilityRank n) {w : Nat} {e1 e2 : Fin n -> Bool}
+    (h1 : landslideBucket pi w e1)
+    (h_eq : logisticWeight pi e1 = logisticWeight pi e2) :
+    landslideBucket pi w e2 :=
+  h_eq.symm.trans h1
+
+/-- *Constant-false sits in bucket zero via the perm characterisation.*
+    Re-derivation of `landslideBucket_const_false_zero` through
+    `landslideBucket_zero_iff_all_false_at_perm`. -/
+theorem landslideBucket_zero_const_false_alt
+    {n : Nat} (pi : ReliabilityRank n) :
+    landslideBucket pi 0 (fun _ : Fin n => false) :=
+  (landslideBucket_zero_iff_all_false_at_perm pi _).mpr (fun _ => rfl)
+
 end Section04
 end OrbgrandAi

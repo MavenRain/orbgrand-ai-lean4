@@ -830,6 +830,26 @@ theorem Codeword.xor_eq_self_iff {n : Nat} (a b : Codeword n) :
   ⟨fun h => Codeword.xor_left_cancel (h.trans (Codeword.xor_zero a).symm),
    fun h => (congrArg (Codeword.xor a) h).trans (Codeword.xor_zero a)⟩
 
+/-- *XOR is identity iff left argument is zero.*  `a xor b = b ↔
+    a = 0`.  Dual of `xor_eq_self_iff`. -/
+theorem Codeword.xor_self_eq_iff_right {n : Nat} (a b : Codeword n) :
+    Codeword.xor a b = b <-> a = 0 :=
+  ⟨fun h => Codeword.xor_right_cancel (h.trans (Codeword.zero_xor b).symm),
+   fun h => (congrArg (fun x => Codeword.xor x b) h).trans (Codeword.zero_xor b)⟩
+
+/-- *Four-argument XOR associativity.*  Fully left-associated XOR
+    equals fully right-associated XOR. -/
+theorem Codeword.xor_assoc4 {n : Nat} (a b c d : Codeword n) :
+    Codeword.xor (Codeword.xor (Codeword.xor a b) c) d
+      = Codeword.xor a (Codeword.xor b (Codeword.xor c d)) :=
+  (Codeword.xor_assoc (Codeword.xor a b) c d).trans
+    (Codeword.xor_assoc a b (Codeword.xor c d))
+
+/-- *Paired self-XOR vanishes.*  `(a xor a) xor (b xor b) = 0`. -/
+theorem Codeword.xor_self_xor_self {n : Nat} (a b : Codeword n) :
+    Codeword.xor (Codeword.xor a a) (Codeword.xor b b) = 0 :=
+  (Codeword.xor_self_left_eq a (Codeword.xor b b)).trans (Codeword.xor_self b)
+
 /-- `a = b ↔ a xor b = 0` -- equality via XOR.  The "transmitted
     codeword agrees with the received vector exactly when the noise
     vector is zero". -/

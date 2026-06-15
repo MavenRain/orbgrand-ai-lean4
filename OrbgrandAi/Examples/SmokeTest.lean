@@ -2183,6 +2183,90 @@ example {n_s b numCandidates : Nat}
       Y (fun _ => false) (AbandonmentBudget.mk 1) patterns = none :=
   orbgrandAi_empty_codebook_mk_one Y patterns
 
+/-- QPSK diagonal at index 0. -/
+example : qpsk.exceed 0 0 = 0 := qpsk_exceed_zero_zero
+
+/-- QPSK diagonal at index 1. -/
+example : qpsk.exceed 1 1 = 0 := qpsk_exceed_one_one
+
+/-- QPSK diagonal at index 2. -/
+example : qpsk.exceed 2 2 = 0 := qpsk_exceed_two_two
+
+/-- `kendallTau` self-additive bound. -/
+example {numPatterns : Nat} (a b : QueryOrder numPatterns) :
+    kendallTau a b <= kendallTau a b + kendallTau b b :=
+  kendallTau_le_self_add a b
+
+/-- `kendallTau` empty domain bounded by 1. -/
+example (a b : QueryOrder 0) : kendallTau a b <= 1 :=
+  kendallTau_empty_le_one a b
+
+/-- `landslideBucket` weight congruence. -/
+example {n : Nat} (pi : ReliabilityRank n) {w1 w2 : Nat} (e : Fin n -> Bool)
+    (h : w1 = w2) :
+    landslideBucket pi w1 e <-> landslideBucket pi w2 e :=
+  landslideBucket_weight_congr pi e h
+
+/-- `landslideBucket` transports across equal-weight patterns. -/
+example {n : Nat} (pi : ReliabilityRank n) {w : Nat} {e1 e2 : Fin n -> Bool}
+    (h1 : landslideBucket pi w e1)
+    (h_eq : logisticWeight pi e1 = logisticWeight pi e2) :
+    landslideBucket pi w e2 :=
+  landslideBucket_transport pi h1 h_eq
+
+/-- Constant-false sits in bucket zero via perm characterisation. -/
+example {n : Nat} (pi : ReliabilityRank n) :
+    landslideBucket pi 0 (fun _ : Fin n => false) :=
+  landslideBucket_zero_const_false_alt pi
+
+/-- `Codeword.xor` identity iff left argument is zero. -/
+example {n : Nat} (a b : Codeword n) :
+    Codeword.xor a b = b <-> a = 0 :=
+  Codeword.xor_self_eq_iff_right a b
+
+/-- `Codeword.xor` four-argument associativity. -/
+example {n : Nat} (a b c d : Codeword n) :
+    Codeword.xor (Codeword.xor (Codeword.xor a b) c) d
+      = Codeword.xor a (Codeword.xor b (Codeword.xor c d)) :=
+  Codeword.xor_assoc4 a b c d
+
+/-- Paired self-XOR vanishes. -/
+example {n : Nat} (a b : Codeword n) :
+    Codeword.xor (Codeword.xor a a) (Codeword.xor b b) = 0 :=
+  Codeword.xor_self_xor_self a b
+
+/-- `entropyRate1_block` closed-form symmetric. -/
+example (sigma : NoisePower) (rho : CorrelationCoefficient) (b : BlockSize) :
+    Real.log (2 * Real.exp 1 * Real.pi * sigma.val)
+      + (1 - (1 : Real) / (b.toNat : Real))
+          * Real.log (1 - rho.val ^ 2)
+      = entropyRate1_block sigma rho b :=
+  entropyRate1_block_at_block_eq_log_form_symm sigma rho b
+
+/-- `entropyRate2` at block size, closed form. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient) (b : BlockSize) :
+    entropyRate2 sigma rho1 rho2 b.toNat
+      = (1 / 2 : Real)
+          * Real.log (2 * Real.pi * Real.exp 1 * sigma.val)
+        + (1 / (2 * (b.toNat : Real)))
+            * Real.log
+                (- (rho2.val - 1) ^ (b.toNat - 2)
+                    * (1 - 2 * rho1.val ^ 2 + rho2.val) ^ (b.toNat - 2)
+                  / (rho1.val ^ 2 - 1) ^ (b.toNat - 3)) :=
+  entropyRate2_at_block_eq_log_form sigma rho1 rho2 b
+
+/-- `entropyRate2` at block size, symmetric closed form. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient) (b : BlockSize) :
+    (1 / 2 : Real)
+        * Real.log (2 * Real.pi * Real.exp 1 * sigma.val)
+      + (1 / (2 * (b.toNat : Real)))
+          * Real.log
+              (- (rho2.val - 1) ^ (b.toNat - 2)
+                  * (1 - 2 * rho1.val ^ 2 + rho2.val) ^ (b.toNat - 2)
+                / (rho1.val ^ 2 - 1) ^ (b.toNat - 3))
+      = entropyRate2 sigma rho1 rho2 b.toNat :=
+  entropyRate2_at_block_eq_log_form_symm sigma rho1 rho2 b
+
 /-- `QueryOrder.positionOf` on the empty list is `0`. -/
 example {numPatterns : Nat} (x : Fin numPatterns) :
     QueryOrder.positionOf x ([] : QueryOrder numPatterns) = 0 :=

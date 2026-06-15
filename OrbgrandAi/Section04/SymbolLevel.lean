@@ -379,6 +379,19 @@ def qpsk : Constellation (Fin 4) :=
 theorem qpsk_exceed_self (s : Fin 4) : qpsk.exceed s s = 0 :=
   if_pos rfl
 
+/-- *QPSK diagonal at index `0`.*  Concrete instance of
+    `qpsk_exceed_self` at the first `Fin 4` symbol. -/
+theorem qpsk_exceed_zero_zero : qpsk.exceed 0 0 = 0 :=
+  qpsk_exceed_self 0
+
+/-- *QPSK diagonal at index `1`.*  Concrete instance. -/
+theorem qpsk_exceed_one_one : qpsk.exceed 1 1 = 0 :=
+  qpsk_exceed_self 1
+
+/-- *QPSK diagonal at index `2`.*  Concrete instance. -/
+theorem qpsk_exceed_two_two : qpsk.exceed 2 2 = 0 :=
+  qpsk_exceed_self 2
+
 /-- QPSK exceedance is `1` on disagreement. -/
 theorem qpsk_exceed_diff {s s_hat : Fin 4} (h : s ≠ s_hat) :
     qpsk.exceed s s_hat = 1 :=

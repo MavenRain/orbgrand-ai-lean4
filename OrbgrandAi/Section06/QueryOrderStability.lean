@@ -246,6 +246,17 @@ theorem kendallTau_eq_zero_iff
   ⟨kendallTau_agreement_of_eq_zero a b,
    kendallTau_eq_zero_of_agreement a b⟩
 
+/-- *Self-distance characterization via the iff.*  Restates
+    `kendallTau_self` as the right-to-left of `kendallTau_eq_zero_iff`
+    applied at `b = a`, where the agreement hypothesis is `rfl` at
+    every pair.  Alternative proof route to the direct construction
+    in `kendallTau_self`; useful as a sanity-check that the iff is
+    consistent with the reflexivity lemma. -/
+theorem kendallTau_self_eq_zero {numPatterns : Nat}
+    (a : QueryOrder numPatterns) :
+    kendallTau a a = 0 :=
+  (kendallTau_eq_zero_iff a a).mpr (fun _ _ _ => rfl)
+
 /-- *Empty domain.*  At `numPatterns = 0` the only `QueryOrder 0` is `[]`,
     so `kendallTau` is `0` on any pair of inputs (vacuously via
     `Fin.elim0` — there are no `i, j : Fin 0` to disagree on). -/
@@ -465,6 +476,21 @@ theorem kendallTau_singleton_le_one (a b : QueryOrder 1) :
 theorem kendallTau_empty_eq (a b c d : QueryOrder 0) :
     kendallTau a b = kendallTau c d :=
   (kendallTau_empty a b).trans (kendallTau_empty c d).symm
+
+/-- *Trivial self-additive bound.*  `kendallTau a b` is bounded
+    above by `kendallTau a b + kendallTau b b`, since the second
+    summand is zero by `kendallTau_self`. -/
+theorem kendallTau_le_self_add {numPatterns : Nat}
+    (a b : QueryOrder numPatterns) :
+    kendallTau a b <= kendallTau a b + kendallTau b b :=
+  (kendallTau_self b).symm ▸ Nat.le_add_right _ _
+
+/-- *Empty domain upper bound by one.*  Companion to
+    `kendallTau_singleton_le_one` covering the other trivial-domain
+    case. -/
+theorem kendallTau_empty_le_one (a b : QueryOrder 0) :
+    kendallTau a b <= 1 :=
+  (kendallTau_empty a b).le.trans (Nat.zero_le 1)
 
 
 /-! ## Query-order stability claim (placeholder) -/
