@@ -181,6 +181,15 @@ theorem perturbChannel_zero_channel_zero_apply_diag
       = (0 : ChannelMatrix n_s) i i :=
   perturbChannel_zero_channel_zero_apply i i
 
+/-- *Matrix-level zero-channel under zero perturbation.*  Specialisation
+    of `perturbChannel_zero_channel` at `epsilon = 0`: when both the
+    channel and the perturbation are zero matrices, the perturbed
+    channel is the zero matrix. -/
+theorem perturbChannel_zero_channel_zero
+    {n_s : Nat} :
+    perturbChannel (0 : ChannelMatrix n_s) 0 = 0 :=
+  perturbChannel_zero_channel 0
+
 /-- *Composition of two perturbations.*  Applying `perturbChannel`
     twice (first by `ε₁`, then by `ε₂`) at entry `(i, j)` yields
     `h i j * ((1 + ε₁ i j) * (1 + ε₂ i j))`.  Direct `mul_assoc`

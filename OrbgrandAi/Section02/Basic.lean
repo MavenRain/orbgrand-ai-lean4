@@ -237,6 +237,14 @@ theorem mk?_six :
     BlockSize.mk? 6 = Except.ok ⟨6, Nat.succ_pos 5⟩ :=
   mk?_of_pos 6 (Nat.succ_pos 5)
 
+/-- *Seven is a valid block size.*  Next-concrete-value corollary
+    of `mk?_of_pos` at `n = 7`: the next odd nontrivial neighbourhood
+    beyond `5` round-trips through `mk?`, with positivity witnessed
+    by `Nat.succ_pos 6`. -/
+theorem mk?_seven :
+    BlockSize.mk? 7 = Except.ok ⟨7, Nat.succ_pos 6⟩ :=
+  mk?_of_pos 7 (Nat.succ_pos 6)
+
 end BlockSize
 
 namespace CodewordLength

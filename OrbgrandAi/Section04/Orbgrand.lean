@@ -1611,6 +1611,16 @@ theorem landslideBucket_disjoint_succ_succ_self
   landslideBucket_disjoint_of_lt pi
     (Nat.lt_add_of_pos_right (Nat.succ_pos 1))
 
+/-- *Two-step conjunction-form disjointness, swapped order.*  No
+    pattern `e` can simultaneously witness `landslideBucket pi (w + 2) e`
+    and `landslideBucket pi w e`.  Mirror of
+    `landslideBucket_disjoint_succ_succ_self`. -/
+theorem landslideBucket_disjoint_pred_pred_self
+    {n : Nat} (pi : ReliabilityRank n) {w : Nat} {e : Fin n -> Bool} :
+    ¬ (landslideBucket pi (w + 2) e /\ landslideBucket pi w e) :=
+  landslideBucket_disjoint_of_gt pi
+    (Nat.lt_add_of_pos_right (Nat.succ_pos 1))
+
 /-- *Constant-false sits in bucket zero via the perm characterisation.*
     Re-derivation of `landslideBucket_const_false_zero` through
     `landslideBucket_zero_iff_all_false_at_perm`. -/
