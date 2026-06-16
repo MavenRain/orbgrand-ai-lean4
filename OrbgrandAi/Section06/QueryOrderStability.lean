@@ -679,6 +679,16 @@ theorem kendallTau_lt_iff_lt_of_eq_zero_symm {numPatterns : Nat}
     kendallTau c a < n ↔ kendallTau c b < n :=
   iff_of_eq (congrArg (· < n) (kendallTau_eq_of_eq_zero_symm a b c hab))
 
+/-- *Zero left-distance gives an iff for weak upper bounds (symm-anchored).*
+    If `kendallTau a b = 0`, then for any third query order `c` and any
+    bound `n`, `kendallTau c a <= n` iff `kendallTau c b <= n`.
+    Weak-inequality companion to `kendallTau_lt_iff_lt_of_eq_zero_symm`. -/
+theorem kendallTau_le_iff_le_of_eq_zero_symm {numPatterns : Nat}
+    (a b c : QueryOrder numPatterns) {n : Nat}
+    (hab : kendallTau a b = 0) :
+    kendallTau c a <= n ↔ kendallTau c b <= n :=
+  iff_of_eq (congrArg (· <= n) (kendallTau_eq_of_eq_zero_symm a b c hab))
+
 /-- *Triangle inequality, right-symmetrized form.*  For any three query
     orders `a`, `b`, `c`,
     `kendallTau a c <= kendallTau a b + kendallTau c b`.

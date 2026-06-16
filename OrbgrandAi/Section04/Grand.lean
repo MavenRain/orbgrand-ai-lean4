@@ -483,6 +483,12 @@ theorem Codeword.neg_eq_self_apply {n : Nat} (a : Codeword n) (i : Fin n) :
     (-a) i = a i :=
   congrFun (Codeword.neg_eq_self a) i
 
+/-- *Negation of zero is zero.*  Specialises `Codeword.neg_eq_self`
+    at `0`: in `ZMod 2`, `-a = a` pointwise, so `-(0 : Codeword n) = 0`. -/
+theorem Codeword.neg_zero {n : Nat} :
+    -(0 : Codeword n) = 0 :=
+  Codeword.neg_eq_self 0
+
 /-- *XOR with negation equals XOR.*  In `ZMod 2`, `-b = b`, so XOR
     with `-b` is the same as XOR with `b`.  Composes
     `Codeword.neg_eq_self` under `Codeword.xor a` via `congrArg`. -/

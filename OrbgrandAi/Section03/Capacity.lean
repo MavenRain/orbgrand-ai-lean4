@@ -494,6 +494,18 @@ theorem liminfInformationRate_lt_limsupEntropyRate_of_eventually_const_mono
   ((liminfInformationRate_eq_const_of_eventually_const hu).trans_lt h).trans_le
     (limsupEntropyRate_eq_const_of_eventually_const hv).ge
 
+/-- *Cross-sequence lim-inf collapse at a shared eventual constant.*
+    If two log-density-ratio sequences `u` and `v` are each eventually
+    equal to the *same* constant `c`, their lim-inf information rates
+    coincide. -/
+theorem liminfInformationRate_eq_liminfInformationRate_of_eventually_const_pair
+    {u v : Nat -> Real} {c : Real}
+    (hu : ∀ᶠ n in Filter.atTop, u n = c)
+    (hv : ∀ᶠ n in Filter.atTop, v n = c) :
+    liminfInformationRate u = liminfInformationRate v :=
+  (liminfInformationRate_eq_const_of_eventually_const hu).trans
+    (liminfInformationRate_eq_const_of_eventually_const hv).symm
+
 /-! ## Hadamard bound on the noise entropy rate -/
 
 /-- *Hadamard inequality* (Section III, page 4, right column).

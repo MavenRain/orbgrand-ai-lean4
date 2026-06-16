@@ -542,6 +542,21 @@ theorem entropyRate2_at_twenty_two_eq_log_form
                   / (rho1.val ^ 2 - 1) ^ 19) :=
   entropyRate2_eq sigma rho1 rho2 22
 
+/-- *Boundary case `n_s = 23` of `entropyRate2`.*  Companion of the
+    `n_s = 4`-`22` variants.  Specialisation of `entropyRate2_eq` at
+    `n_s = 23`; reduces by Nat computation. -/
+theorem entropyRate2_at_twenty_three_eq_log_form
+    (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient) :
+    entropyRate2 sigma rho1 rho2 23
+      = (1 / 2 : Real)
+          * Real.log (2 * Real.pi * Real.exp 1 * sigma.val)
+        + (1 / (2 * ((23 : Nat) : Real)))
+            * Real.log
+                (- (rho2.val - 1) ^ 21
+                    * (1 - 2 * rho1.val ^ 2 + rho2.val) ^ 21
+                  / (rho1.val ^ 2 - 1) ^ 20) :=
+  entropyRate2_eq sigma rho1 rho2 23
+
 /-- *Symmetric form of `entropyRate2_eq`.*  The explicit log
     expression equals `entropyRate2 sigma rho1 rho2 n_s`.  `.symm`
     of `entropyRate2_eq`. -/

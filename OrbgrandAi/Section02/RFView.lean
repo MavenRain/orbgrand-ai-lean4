@@ -597,6 +597,13 @@ theorem rfView_bandwidth_thirty_seven
     (rfView n_s rowTaps sigma).bandwidth 37 :=
   LinearIsi.bandwidth_succ (rfView_bandwidth_thirty_six rowTaps sigma)
 
+/-- *RFView bandwidth widens to `38`.*  Chain `rfView_bandwidth_thirty_seven`
+    with `LinearIsi.bandwidth_succ`. -/
+theorem rfView_bandwidth_thirty_eight
+    {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (sigma : NoisePower) :
+    (rfView n_s rowTaps sigma).bandwidth 38 :=
+  LinearIsi.bandwidth_succ (rfView_bandwidth_thirty_seven rowTaps sigma)
+
 /-- *Matrix-level out-of-band statement.*  Strict bandwidth-6 form
     at the `rfViewMatrix` level (without the `LinearIsi` wrapper):
     every entry with `j + 6 < i` vanishes.  Reuses `rfView_bandwidth`
