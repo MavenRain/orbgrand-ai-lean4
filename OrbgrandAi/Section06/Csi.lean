@@ -356,6 +356,16 @@ theorem perturbChannel_neg_one_attenuation_eq_zero
     (congrArg (1 + ·) h_eps).trans (add_neg_cancel 1)
   (congrArg (h i j * ·) h_factor).trans (mul_zero _)
 
+/-- *Diagonal pure cancellation: `epsilon i i = -1` zeroes the diagonal
+    entry.*  Specialisation of `perturbChannel_neg_one_attenuation_eq_zero`
+    at `i = j`. -/
+theorem perturbChannel_neg_one_attenuation_eq_zero_apply_diag
+    {n_s : Nat} (h : ChannelMatrix n_s)
+    (epsilon : Matrix (Fin n_s) (Fin n_s) Complex)
+    {i : Fin n_s} (h_eps : epsilon i i = -1) :
+    perturbChannel h epsilon i i = 0 :=
+  perturbChannel_neg_one_attenuation_eq_zero h epsilon h_eps
+
 /-- *Factor-zero zeroes the entry.*  When the multiplicative factor
     `1 + epsilon i j` vanishes, the perturbed entry is zero
     regardless of `h i j`.  Generalisation of

@@ -545,6 +545,18 @@ theorem kendallTau_le_of_eq_zero_left {numPatterns : Nat}
     hab ▸ Nat.zero_add _
   h_tri.trans h_collapse.le
 
+/-- *Zero right-distance squeeze.*  If `kendallTau b c = 0`, then for any
+    other query order `a`, `kendallTau a c <= kendallTau a b`.
+    Right-anchored companion to `kendallTau_le_of_eq_zero_left`. -/
+theorem kendallTau_le_of_eq_zero_right {numPatterns : Nat}
+    (a b c : QueryOrder numPatterns) (hbc : kendallTau b c = 0) :
+    kendallTau a c <= kendallTau a b :=
+  let h_tri : kendallTau a c <= kendallTau a b + kendallTau b c :=
+    kendallTau_triangle a b c
+  let h_collapse : kendallTau a b + kendallTau b c = kendallTau a b :=
+    hbc ▸ Nat.add_zero _
+  h_tri.trans h_collapse.le
+
 /-- *Triangle inequality, right-symmetrized form.*  For any three query
     orders `a`, `b`, `c`,
     `kendallTau a c <= kendallTau a b + kendallTau c b`.

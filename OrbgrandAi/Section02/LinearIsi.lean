@@ -313,6 +313,16 @@ theorem LinearIsi.bandwidth_succ_succ_succ_succ_succ_succ_succ_succ_succ_succ_su
   LinearIsi.bandwidth_succ
     (LinearIsi.bandwidth_succ_succ_succ_succ_succ_succ_succ_succ_succ_succ_succ h)
 
+/-- *Bandwidth widens by thirteen.*  Thirteen-step corollary chaining
+    `bandwidth_succ_succ_succ_succ_succ_succ_succ_succ_succ_succ_succ_succ`
+    and `bandwidth_succ`. -/
+theorem LinearIsi.bandwidth_succ_succ_succ_succ_succ_succ_succ_succ_succ_succ_succ_succ_succ
+    {n_s : Nat} {ch : LinearIsi n_s} {b : Nat}
+    (h : ch.bandwidth b) :
+    ch.bandwidth (b + 13) :=
+  LinearIsi.bandwidth_succ
+    (LinearIsi.bandwidth_succ_succ_succ_succ_succ_succ_succ_succ_succ_succ_succ_succ h)
+
 /-- *Bandwidth widens by an offset and one more.*  A channel with
     bandwidth at most `b` also has bandwidth at most `b + k + 1`.
     Composes `bandwidth_add` with `bandwidth_succ`. -/
