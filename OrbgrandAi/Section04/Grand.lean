@@ -585,6 +585,13 @@ theorem Codeword.xor_neg_eq_neg_xor {n : Nat} (a b : Codeword n) :
     Codeword.xor a (-b) = Codeword.xor (-a) b :=
   (Codeword.xor_neg_eq_xor a b).trans (Codeword.neg_xor_eq_xor a b).symm
 
+/-- *Double-negation self-XOR vanishes.*  `Codeword.xor (-a) (-a) = 0`:
+    in `ZMod 2`, negating both arguments collapses to plain `xor a a`,
+    which is zero. -/
+theorem Codeword.neg_xor_neg_self {n : Nat} (a : Codeword n) :
+    Codeword.xor (-a) (-a) = 0 :=
+  (Codeword.neg_xor_neg_eq_xor a a).trans (Codeword.xor_self a)
+
 /-- *Pointwise negation swap across XOR.*  `(Codeword.xor a (-b)) i
     = (Codeword.xor (-a) b) i`.  One-liner via `congrFun` on
     `Codeword.xor_neg_eq_neg_xor`. -/

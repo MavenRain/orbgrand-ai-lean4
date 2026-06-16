@@ -461,6 +461,15 @@ theorem const_lt_liminfInformationRate_of_eventually_const
     c1 < liminfInformationRate u :=
   h.trans_le (liminfInformationRate_eq_const_of_eventually_const hu).ge
 
+/-- *Strict scalar lower bound from eventually-constant lim-sup.*  Strict
+    companion to `const_le_limsupEntropyRate_of_eventually_const`. -/
+theorem const_lt_limsupEntropyRate_of_eventually_const
+    {u : Nat -> Real} {c1 c2 : Real}
+    (h : c1 < c2)
+    (hu : ∀ᶠ n in Filter.atTop, u n = c2) :
+    c1 < limsupEntropyRate u :=
+  h.trans_le (limsupEntropyRate_eq_const_of_eventually_const hu).ge
+
 /-! ## Hadamard bound on the noise entropy rate -/
 
 /-- *Hadamard inequality* (Section III, page 4, right column).

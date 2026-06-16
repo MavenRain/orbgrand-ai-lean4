@@ -190,6 +190,14 @@ theorem perturbChannel_zero_channel_zero
     perturbChannel (0 : ChannelMatrix n_s) 0 = 0 :=
   perturbChannel_zero_channel 0
 
+/-- *Matrix-level reverse form of `perturbChannel_zero_channel_zero`.*
+    The zero matrix equals the doubly-zero-perturbed channel.  Pure
+    `.symm`. -/
+theorem perturbChannel_zero_channel_zero_eq_self
+    {n_s : Nat} :
+    (0 : ChannelMatrix n_s) = perturbChannel (0 : ChannelMatrix n_s) 0 :=
+  perturbChannel_zero_channel_zero.symm
+
 /-- *Composition of two perturbations.*  Applying `perturbChannel`
     twice (first by `ε₁`, then by `ε₂`) at entry `(i, j)` yields
     `h i j * ((1 + ε₁ i j) * (1 + ε₂ i j))`.  Direct `mul_assoc`

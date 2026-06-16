@@ -398,6 +398,13 @@ theorem dicode_bandwidth_twenty_six
     (dicode n_s sigma rho).bandwidth 26 :=
   LinearIsi.bandwidth_succ (dicode_bandwidth_twenty_five sigma rho)
 
+/-- *Dicode bandwidth widens to `27`.*  Chain `dicode_bandwidth_twenty_six`
+    with `LinearIsi.bandwidth_succ`. -/
+theorem dicode_bandwidth_twenty_seven
+    {n_s : Nat} (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    (dicode n_s sigma rho).bandwidth 27 :=
+  LinearIsi.bandwidth_succ (dicode_bandwidth_twenty_six sigma rho)
+
 /-- *Dicode bandwidth widens from `5` by any additive offset.*
     Universal `5 + k` form: chain `dicode_bandwidth_five` with
     `LinearIsi.bandwidth_add`. -/
