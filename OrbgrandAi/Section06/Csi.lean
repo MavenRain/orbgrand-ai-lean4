@@ -258,6 +258,14 @@ theorem perturbChannel_perturbChannel_zero_zero_apply_diag
     perturbChannel (perturbChannel h 0) 0 i i = h i i :=
   perturbChannel_perturbChannel_zero_zero_apply h i i
 
+/-- *Diagonal reverse-direction zero-zero composition.*  Reverse of
+    `perturbChannel_perturbChannel_zero_zero_apply_diag`: the original
+    diagonal entry equals the doubly-zero-perturbed diagonal entry. -/
+theorem perturbChannel_perturbChannel_zero_zero_eq_self_apply_diag
+    {n_s : Nat} (h : ChannelMatrix n_s) (i : Fin n_s) :
+    h i i = perturbChannel (perturbChannel h 0) 0 i i :=
+  (perturbChannel_perturbChannel_zero_zero_apply_diag h i).symm
+
 /-- *Pointwise right-identity of composed perturbation.*  Entry
     form of `perturbChannel_perturbChannel_zero_right`: composing a
     perturbation with the zero perturbation on the right leaves the

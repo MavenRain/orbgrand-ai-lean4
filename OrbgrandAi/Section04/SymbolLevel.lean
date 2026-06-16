@@ -525,6 +525,13 @@ theorem qpsk_exceed_two_zero : qpsk.exceed 2 0 = 1 :=
 theorem qpsk_exceed_two_one : qpsk.exceed 2 1 = 1 :=
   (qpsk_exceed_symm 2 1).trans qpsk_exceed_one_two
 
+/-- *QPSK off-diagonal at `(1, 3)`.*  Witnessed by `(1 : Fin 4) ≠ 3`
+    via `Fin.val`, one `Nat.succ.inj` peel, then `Nat.succ_ne_zero`. -/
+theorem qpsk_exceed_one_three : qpsk.exceed 1 3 = 1 :=
+  qpsk_exceed_diff
+    (fun h : (1 : Fin 4) = 3 =>
+      Nat.succ_ne_zero 1 (Nat.succ.inj (congrArg Fin.val h)).symm)
+
 /-- *QPSK exceedance is `1` exactly on disagreement.*  Dual of
     `bpsk_exceed_eq_one_iff` for the 4-ary Hamming-style metric. -/
 theorem qpsk_exceed_eq_one_iff (s s_hat : Fin 4) :

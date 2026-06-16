@@ -1552,6 +1552,15 @@ theorem landslideBucket_not_of_mem_succ_self
     ¬ landslideBucket pi (w + 1) e :=
   landslideBucket_not_of_mem_of_lt pi h1 (Nat.lt_succ_self w)
 
+/-- *Bucket non-membership at the immediate predecessor index.*  A
+    witness `landslideBucket pi (w + 1) e` cannot also sit in bucket
+    `w`.  Mirror of `landslideBucket_not_of_mem_succ_self`. -/
+theorem landslideBucket_not_of_mem_pred_self
+    {n : Nat} (pi : ReliabilityRank n) {w : Nat} {e : Fin n -> Bool}
+    (h1 : landslideBucket pi (w + 1) e) :
+    ¬ landslideBucket pi w e :=
+  landslideBucket_not_of_mem_of_gt pi h1 (Nat.lt_succ_self w)
+
 /-- *Constant-false sits in bucket zero via the perm characterisation.*
     Re-derivation of `landslideBucket_const_false_zero` through
     `landslideBucket_zero_iff_all_false_at_perm`. -/
