@@ -250,6 +250,16 @@ theorem perturbChannel_perturbChannel_zero_zero
   (congrArg (fun H => perturbChannel H 0) (perturbChannel_zero h)).trans
     (perturbChannel_zero h)
 
+/-- *Triple zero-perturbation collapses to identity.*  Composing three
+    zero perturbations on `h` leaves the channel unchanged.  Extends
+    the binary form `perturbChannel_perturbChannel_zero_zero` to a
+    third layer. -/
+theorem perturbChannel_perturbChannel_perturbChannel_zero_zero_zero
+    {n_s : Nat} (h : ChannelMatrix n_s) :
+    perturbChannel (perturbChannel (perturbChannel h 0) 0) 0 = h :=
+  (perturbChannel_zero (perturbChannel (perturbChannel h 0) 0)).trans
+    (perturbChannel_perturbChannel_zero_zero h)
+
 /-- *Reverse-direction matrix-level zero-zero composition.*  Reads
     the identity `perturbChannel (perturbChannel h 0) 0 = h` in the
     canonical "expand `h` into its doubly-zero-perturbed form"

@@ -583,6 +583,14 @@ theorem mk?_six :
     SamplingFreq.mk? 6 = Except.ok ⟨6, Nat.ofNat_pos⟩ :=
   mk?_of_pos 6 Nat.ofNat_pos
 
+/-- *Seven hertz is a valid sampling frequency.*  Next-concrete-value
+    corollary of `mk?_of_pos` at `v = 7`, with positivity supplied by
+    `Nat.ofNat_pos`.  Parallel of `BlockSize.mk?_seven` and
+    `CodewordLength.mk?_seven` lifted to the real-valued setting. -/
+theorem mk?_seven :
+    SamplingFreq.mk? 7 = Except.ok ⟨7, Nat.ofNat_pos⟩ :=
+  mk?_of_pos 7 Nat.ofNat_pos
+
 end SamplingFreq
 
 end Section02
