@@ -578,6 +578,13 @@ theorem Codeword.neg_xor_self_apply {n : Nat} (a : Codeword n) (i : Fin n) :
     Codeword.xor (-a) a i = 0 :=
   (congrFun (Codeword.neg_xor_self a) i).trans (Codeword.zero_apply i)
 
+/-- *Negation swap across XOR.*  `Codeword.xor a (-b) = Codeword.xor (-a) b`:
+    in `ZMod 2`, negation can hop between the two XOR arguments without
+    changing the result. -/
+theorem Codeword.xor_neg_eq_neg_xor {n : Nat} (a b : Codeword n) :
+    Codeword.xor a (-b) = Codeword.xor (-a) b :=
+  (Codeword.xor_neg_eq_xor a b).trans (Codeword.neg_xor_eq_xor a b).symm
+
 /-- `a xor b = b xor a`.  Pointwise `add_comm`. -/
 theorem Codeword.xor_comm {n : Nat} (a b : Codeword n) :
     Codeword.xor a b = Codeword.xor b a :=

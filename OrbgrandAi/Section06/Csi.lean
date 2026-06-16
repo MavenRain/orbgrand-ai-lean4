@@ -172,6 +172,15 @@ theorem perturbChannel_zero_channel_zero_apply
       = (0 : ChannelMatrix n_s) i j :=
   perturbChannel_zero_channel_apply 0 i j
 
+/-- *Diagonal specialisation of `perturbChannel_zero_channel_zero_apply`.*
+    When both the channel and the perturbation are zero, the diagonal
+    entry `(i, i)` agrees with the zero-matrix diagonal entry. -/
+theorem perturbChannel_zero_channel_zero_apply_diag
+    {n_s : Nat} (i : Fin n_s) :
+    perturbChannel (0 : ChannelMatrix n_s) 0 i i
+      = (0 : ChannelMatrix n_s) i i :=
+  perturbChannel_zero_channel_zero_apply i i
+
 /-- *Composition of two perturbations.*  Applying `perturbChannel`
     twice (first by `ε₁`, then by `ε₂`) at entry `(i, j)` yields
     `h i j * ((1 + ε₁ i j) * (1 + ε₂ i j))`.  Direct `mul_assoc`

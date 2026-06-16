@@ -629,6 +629,16 @@ theorem kendallTau_lt_of_lt_of_eq_zero_right {numPatterns : Nat}
     kendallTau a c < n :=
   (kendallTau_eq_of_eq_zero_right a b c hbc).symm ▸ hab
 
+/-- *Zero left-distance gives an iff for strict upper bounds.*  If
+    `kendallTau a b = 0`, then for any third query order `c` and any
+    bound `n`, `kendallTau a c < n` iff `kendallTau b c < n`.
+    Iff-shape strengthening of `kendallTau_lt_of_lt_of_eq_zero_left`. -/
+theorem kendallTau_lt_iff_lt_of_eq_zero_left {numPatterns : Nat}
+    (a b c : QueryOrder numPatterns) {n : Nat}
+    (hab : kendallTau a b = 0) :
+    kendallTau a c < n ↔ kendallTau b c < n :=
+  iff_of_eq (congrArg (· < n) (kendallTau_eq_of_eq_zero_left a b c hab))
+
 /-- *Triangle inequality, right-symmetrized form.*  For any three query
     orders `a`, `b`, `c`,
     `kendallTau a c <= kendallTau a b + kendallTau c b`.
