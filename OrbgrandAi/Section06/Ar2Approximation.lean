@@ -517,6 +517,13 @@ theorem ar2_sixty_one (phi1 phi2 z1 z2 : Complex) :
       = phi1 * ar2 phi1 phi2 z1 z2 60
         + phi2 * ar2 phi1 phi2 z1 z2 59 := rfl
 
+/-- Recurrence step at index 62: `phi_1 * ar2 61 + phi_2 * ar2 60`.
+    Pattern-match arm `(60 + 2)` reduces definitionally to the RHS. -/
+theorem ar2_sixty_two (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 62
+      = phi1 * ar2 phi1 phi2 z1 z2 61
+        + phi2 * ar2 phi1 phi2 z1 z2 60 := rfl
+
 /-- *Trivial coefficients.*  When both AR(2) coefficients are zero,
     every recurrence step (index `n + 2`) vanishes regardless of
     the initial conditions.  The initial conditions at indices 0 and

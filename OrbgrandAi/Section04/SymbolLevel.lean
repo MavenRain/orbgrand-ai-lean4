@@ -548,6 +548,11 @@ theorem qpsk_exceed_three_two_pos : 0 < qpsk.exceed 3 2 :=
 theorem qpsk_exceed_two_zero_pos : 0 < qpsk.exceed 2 0 :=
   lt_of_lt_of_eq zero_lt_one qpsk_exceed_two_zero.symm
 
+/-- *QPSK off-diagonal at `(2, 1)` is strictly positive.*  Concrete
+    `pos`-corollary of `qpsk_exceed_two_one`. -/
+theorem qpsk_exceed_two_one_pos : 0 < qpsk.exceed 2 1 :=
+  lt_of_lt_of_eq zero_lt_one qpsk_exceed_two_one.symm
+
 /-- *QPSK exceedance is `1` exactly on disagreement.*  Dual of
     `bpsk_exceed_eq_one_iff` for the 4-ary Hamming-style metric. -/
 theorem qpsk_exceed_eq_one_iff (s s_hat : Fin 4) :

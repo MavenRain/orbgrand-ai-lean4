@@ -619,6 +619,16 @@ theorem kendallTau_lt_of_lt_of_eq_zero_left {numPatterns : Nat}
     kendallTau b c < n :=
   (kendallTau_eq_of_eq_zero_left a b c hab) ▸ hac
 
+/-- *Zero right-distance propagates strict upper bounds.*  If
+    `kendallTau b c = 0` and `kendallTau a b < n`, then
+    `kendallTau a c < n`.  Right-anchored companion to
+    `kendallTau_lt_of_lt_of_eq_zero_left`. -/
+theorem kendallTau_lt_of_lt_of_eq_zero_right {numPatterns : Nat}
+    (a b c : QueryOrder numPatterns) {n : Nat}
+    (hbc : kendallTau b c = 0) (hab : kendallTau a b < n) :
+    kendallTau a c < n :=
+  (kendallTau_eq_of_eq_zero_right a b c hbc).symm ▸ hab
+
 /-- *Triangle inequality, right-symmetrized form.*  For any three query
     orders `a`, `b`, `c`,
     `kendallTau a c <= kendallTau a b + kendallTau c b`.

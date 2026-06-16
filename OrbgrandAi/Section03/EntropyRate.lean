@@ -452,6 +452,21 @@ theorem entropyRate2_at_sixteen_eq_log_form
                   / (rho1.val ^ 2 - 1) ^ 13) :=
   entropyRate2_eq sigma rho1 rho2 16
 
+/-- *Boundary case `n_s = 17` of `entropyRate2`.*  Companion of the
+    `n_s = 4`-`16` variants.  Specialisation of `entropyRate2_eq` at
+    `n_s = 17`; reduces by Nat computation. -/
+theorem entropyRate2_at_seventeen_eq_log_form
+    (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient) :
+    entropyRate2 sigma rho1 rho2 17
+      = (1 / 2 : Real)
+          * Real.log (2 * Real.pi * Real.exp 1 * sigma.val)
+        + (1 / (2 * ((17 : Nat) : Real)))
+            * Real.log
+                (- (rho2.val - 1) ^ 15
+                    * (1 - 2 * rho1.val ^ 2 + rho2.val) ^ 15
+                  / (rho1.val ^ 2 - 1) ^ 14) :=
+  entropyRate2_eq sigma rho1 rho2 17
+
 /-- *Symmetric form of `entropyRate2_eq`.*  The explicit log
     expression equals `entropyRate2 sigma rho1 rho2 n_s`.  `.symm`
     of `entropyRate2_eq`. -/

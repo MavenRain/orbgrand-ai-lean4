@@ -572,6 +572,12 @@ theorem Codeword.xor_neg_self_apply {n : Nat} (a : Codeword n) (i : Fin n) :
     Codeword.xor a (-a) i = 0 :=
   (congrFun (Codeword.xor_neg_self a) i).trans (Codeword.zero_apply i)
 
+/-- *Pointwise left-negation XOR with self vanishes.*  `(Codeword.xor (-a) a) i = 0`.
+    Direct `congrFun` of `neg_xor_self` followed by `zero_apply`. -/
+theorem Codeword.neg_xor_self_apply {n : Nat} (a : Codeword n) (i : Fin n) :
+    Codeword.xor (-a) a i = 0 :=
+  (congrFun (Codeword.neg_xor_self a) i).trans (Codeword.zero_apply i)
+
 /-- `a xor b = b xor a`.  Pointwise `add_comm`. -/
 theorem Codeword.xor_comm {n : Nat} (a b : Codeword n) :
     Codeword.xor a b = Codeword.xor b a :=

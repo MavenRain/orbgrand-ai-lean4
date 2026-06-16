@@ -162,6 +162,16 @@ theorem perturbChannel_zero_channel_eq_self_apply_diag
     (0 : ChannelMatrix n_s) i i = perturbChannel 0 epsilon i i :=
   (perturbChannel_zero_channel_apply_diag epsilon i).symm
 
+/-- *Pointwise zero-channel under zero perturbation.*  Joint
+    specialisation of `perturbChannel_zero_channel_apply` at
+    `epsilon = 0`: when both the channel and the perturbation are
+    zero, every entry is the zero-matrix entry. -/
+theorem perturbChannel_zero_channel_zero_apply
+    {n_s : Nat} (i j : Fin n_s) :
+    perturbChannel (0 : ChannelMatrix n_s) 0 i j
+      = (0 : ChannelMatrix n_s) i j :=
+  perturbChannel_zero_channel_apply 0 i j
+
 /-- *Composition of two perturbations.*  Applying `perturbChannel`
     twice (first by `ε₁`, then by `ε₂`) at entry `(i, j)` yields
     `h i j * ((1 + ε₁ i j) * (1 + ε₂ i j))`.  Direct `mul_assoc`
