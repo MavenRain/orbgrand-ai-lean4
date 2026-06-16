@@ -411,6 +411,18 @@ theorem limsupEntropyRate_le_const_of_le_eventually
       h hu hv).trans
     (limsupEntropyRate_const c).le
 
+/-- *Scalar lower bound from eventually-constant lim-sup.*  If a
+    log-inverse-density sequence is eventually equal to a constant `c2`
+    and `c1 <= c2`, then `c1` is at most its lim-sup entropy rate.
+    Lim-sup companion to
+    `const_le_liminfInformationRate_of_eventually_const`. -/
+theorem const_le_limsupEntropyRate_of_eventually_const
+    {u : Nat -> Real} {c1 c2 : Real}
+    (h : c1 <= c2)
+    (hu : ∀ᶠ n in Filter.atTop, u n = c2) :
+    c1 <= limsupEntropyRate u :=
+  h.trans (limsupEntropyRate_eq_const_of_eventually_const hu).ge
+
 /-! ## Hadamard bound on the noise entropy rate -/
 
 /-- *Hadamard inequality* (Section III, page 4, right column).

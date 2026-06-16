@@ -494,6 +494,15 @@ theorem delayTapMatrix_twenty_fourth_subdiag
       = delayTapImpulseResponse paths f_s { toNat := 24 } :=
   delayTapMatrix_at_subdiag paths f_s i j h
 
+/-- *Twenty-fifth sub-diagonal of `delayTapMatrix`.*  Same pattern at
+    delay 25. -/
+theorem delayTapMatrix_twenty_fifth_subdiag
+    {n_s : Nat} {p : Nat} (paths : Fin p -> DelayTapPath)
+    (f_s : SamplingFreq) (i j : Fin n_s) (h : i.val = j.val + 25) :
+    delayTapMatrix n_s paths f_s i j
+      = delayTapImpulseResponse paths f_s { toNat := 25 } :=
+  delayTapMatrix_at_subdiag paths f_s i j h
+
 /-- *Delay-tap matrix entry above diagonal is zero.*  This is the
     same statement as `delayTap_causal` (which packages the result
     into `LinearIsi.causal`), restated as a direct matrix-entry

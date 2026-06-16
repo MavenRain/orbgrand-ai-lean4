@@ -1570,6 +1570,16 @@ theorem landslideBucket_disjoint_succ_self
     ¬ (landslideBucket pi w e /\ landslideBucket pi (w + 1) e) :=
   landslideBucket_disjoint_of_lt pi (Nat.lt_succ_self w)
 
+/-- *Conjunction-form disjointness at the immediate predecessor index.*
+    No pattern `e` can simultaneously witness `landslideBucket pi (w + 1) e`
+    and `landslideBucket pi w e`.  Mirror of
+    `landslideBucket_disjoint_succ_self` via
+    `landslideBucket_disjoint_of_gt`. -/
+theorem landslideBucket_disjoint_pred_self
+    {n : Nat} (pi : ReliabilityRank n) {w : Nat} {e : Fin n -> Bool} :
+    ¬ (landslideBucket pi (w + 1) e /\ landslideBucket pi w e) :=
+  landslideBucket_disjoint_of_gt pi (Nat.lt_succ_self w)
+
 /-- *Constant-false sits in bucket zero via the perm characterisation.*
     Re-derivation of `landslideBucket_const_false_zero` through
     `landslideBucket_zero_iff_all_false_at_perm`. -/

@@ -559,6 +559,13 @@ theorem Codeword.xor_neg_self {n : Nat} (a : Codeword n) :
     Codeword.xor a (-a) = 0 :=
   (Codeword.xor_neg_eq_xor a a).trans (Codeword.xor_self a)
 
+/-- *Left-negation XOR with self vanishes.*  `Codeword.xor (-a) a = 0`.
+    Left dual of `Codeword.xor_neg_self`; chains `Codeword.neg_xor_eq_xor`
+    with `Codeword.xor_self`. -/
+theorem Codeword.neg_xor_self {n : Nat} (a : Codeword n) :
+    Codeword.xor (-a) a = 0 :=
+  (Codeword.neg_xor_eq_xor a a).trans (Codeword.xor_self a)
+
 /-- `a xor b = b xor a`.  Pointwise `add_comm`. -/
 theorem Codeword.xor_comm {n : Nat} (a b : Codeword n) :
     Codeword.xor a b = Codeword.xor b a :=

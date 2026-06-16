@@ -223,6 +223,15 @@ theorem perturbChannel_perturbChannel_zero_zero_apply
     perturbChannel (perturbChannel h 0) 0 i j = h i j :=
   congrFun (congrFun (perturbChannel_perturbChannel_zero_zero h) i) j
 
+/-- *Pointwise reverse-direction zero-zero composition.*  Entry form
+    of the reverse-direction zero-zero composition equality: the
+    original entry `h i j` equals the doubly-zero-perturbed entry.
+    Pure `.symm` of `perturbChannel_perturbChannel_zero_zero_apply`. -/
+theorem perturbChannel_perturbChannel_zero_zero_eq_self_apply
+    {n_s : Nat} (h : ChannelMatrix n_s) (i j : Fin n_s) :
+    h i j = perturbChannel (perturbChannel h 0) 0 i j :=
+  (perturbChannel_perturbChannel_zero_zero_apply h i j).symm
+
 /-- *Zero channel survives double perturbation.*  Composing two
     perturbations on the zero channel still yields the zero channel,
     regardless of either error matrix.  Symmetric counterpart of

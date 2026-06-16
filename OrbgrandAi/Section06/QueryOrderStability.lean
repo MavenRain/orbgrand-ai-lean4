@@ -598,6 +598,17 @@ theorem kendallTau_eq_of_eq_zero_symm {numPatterns : Nat}
     ((kendallTau_eq_of_eq_zero_left a b c hab).trans
       (kendallTau_symm b c))
 
+/-- *Zero right-distance forces equality of right-anchored distances.*  If
+    `kendallTau b c = 0`, then for any other query order `a`,
+    `kendallTau c a = kendallTau b a`.  Right-anchored companion to
+    `kendallTau_eq_of_eq_zero_symm`. -/
+theorem kendallTau_eq_of_eq_zero_symm_right {numPatterns : Nat}
+    (a b c : QueryOrder numPatterns) (hbc : kendallTau b c = 0) :
+    kendallTau c a = kendallTau b a :=
+  (kendallTau_symm c a).trans
+    ((kendallTau_eq_of_eq_zero_right a b c hbc).trans
+      (kendallTau_symm a b))
+
 /-- *Triangle inequality, right-symmetrized form.*  For any three query
     orders `a`, `b`, `c`,
     `kendallTau a c <= kendallTau a b + kendallTau c b`.
