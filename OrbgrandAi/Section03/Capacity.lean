@@ -482,6 +482,18 @@ theorem limsupEntropyRate_lt_liminfInformationRate_of_eventually_const_mono
   ((limsupEntropyRate_eq_const_of_eventually_const hv).trans_lt h).trans_le
     (liminfInformationRate_eq_const_of_eventually_const hu).ge
 
+/-- *Strict cross-sequence inequality at eventually-constant sequences.*
+    Strict-inequality companion to
+    `liminfInformationRate_le_limsupEntropyRate_of_eventually_const_mono`. -/
+theorem liminfInformationRate_lt_limsupEntropyRate_of_eventually_const_mono
+    {u v : Nat -> Real} {c1 c2 : Real}
+    (hu : ∀ᶠ n in Filter.atTop, u n = c1)
+    (hv : ∀ᶠ n in Filter.atTop, v n = c2)
+    (h : c1 < c2) :
+    liminfInformationRate u < limsupEntropyRate v :=
+  ((liminfInformationRate_eq_const_of_eventually_const hu).trans_lt h).trans_le
+    (limsupEntropyRate_eq_const_of_eventually_const hv).ge
+
 /-! ## Hadamard bound on the noise entropy rate -/
 
 /-- *Hadamard inequality* (Section III, page 4, right column).

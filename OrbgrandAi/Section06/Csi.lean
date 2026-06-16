@@ -260,6 +260,14 @@ theorem perturbChannel_perturbChannel_perturbChannel_zero_zero_zero
   (perturbChannel_zero (perturbChannel (perturbChannel h 0) 0)).trans
     (perturbChannel_perturbChannel_zero_zero h)
 
+/-- *Pointwise triple zero-perturbation collapse.*  Entry form of
+    `perturbChannel_perturbChannel_perturbChannel_zero_zero_zero`. -/
+theorem perturbChannel_perturbChannel_perturbChannel_zero_zero_zero_apply
+    {n_s : Nat} (h : ChannelMatrix n_s) (i j : Fin n_s) :
+    perturbChannel (perturbChannel (perturbChannel h 0) 0) 0 i j = h i j :=
+  congrFun
+    (congrFun (perturbChannel_perturbChannel_perturbChannel_zero_zero_zero h) i) j
+
 /-- *Reverse-direction matrix-level zero-zero composition.*  Reads
     the identity `perturbChannel (perturbChannel h 0) 0 = h` in the
     canonical "expand `h` into its doubly-zero-perturbed form"
