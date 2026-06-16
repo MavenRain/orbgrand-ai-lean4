@@ -214,6 +214,16 @@ theorem perturbChannel_perturbChannel_zero_zero
   (congrArg (fun H => perturbChannel H 0) (perturbChannel_zero h)).trans
     (perturbChannel_zero h)
 
+/-- *Reverse-direction matrix-level zero-zero composition.*  Reads
+    the identity `perturbChannel (perturbChannel h 0) 0 = h` in the
+    canonical "expand `h` into its doubly-zero-perturbed form"
+    direction.  Pure `.symm` of
+    `perturbChannel_perturbChannel_zero_zero`. -/
+theorem perturbChannel_perturbChannel_zero_zero_eq_self
+    {n_s : Nat} (h : ChannelMatrix n_s) :
+    h = perturbChannel (perturbChannel h 0) 0 :=
+  (perturbChannel_perturbChannel_zero_zero h).symm
+
 /-- *Pointwise zero-zero composition.*  Entry form of
     `perturbChannel_perturbChannel_zero_zero`: composing two zero
     perturbations recovers the original entry `h i j`.  One-line

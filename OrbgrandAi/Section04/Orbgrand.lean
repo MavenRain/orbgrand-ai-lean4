@@ -1580,6 +1580,17 @@ theorem landslideBucket_disjoint_pred_self
     ¬ (landslideBucket pi (w + 1) e /\ landslideBucket pi w e) :=
   landslideBucket_disjoint_of_gt pi (Nat.lt_succ_self w)
 
+/-- *Bucket non-membership two indices past the witness.*  A
+    witness `landslideBucket pi w e` cannot also sit in bucket
+    `w + 2`.  Strengthens `landslideBucket_not_of_mem_succ_self`
+    by skipping over the immediate successor. -/
+theorem landslideBucket_not_of_mem_succ_succ_self
+    {n : Nat} (pi : ReliabilityRank n) {w : Nat} {e : Fin n -> Bool}
+    (h1 : landslideBucket pi w e) :
+    ¬ landslideBucket pi (w + 2) e :=
+  landslideBucket_not_of_mem_of_lt pi h1
+    (Nat.lt_add_of_pos_right (Nat.succ_pos 1))
+
 /-- *Constant-false sits in bucket zero via the perm characterisation.*
     Re-derivation of `landslideBucket_const_false_zero` through
     `landslideBucket_zero_iff_all_false_at_perm`. -/

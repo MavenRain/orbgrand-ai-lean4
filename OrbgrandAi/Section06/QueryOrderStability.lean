@@ -609,6 +609,16 @@ theorem kendallTau_eq_of_eq_zero_symm_right {numPatterns : Nat}
     ((kendallTau_eq_of_eq_zero_right a b c hbc).trans
       (kendallTau_symm a b))
 
+/-- *Zero left-distance propagates strict upper bounds.*  If
+    `kendallTau a b = 0` and `kendallTau a c < n`, then
+    `kendallTau b c < n`.  Strict-inequality companion to
+    `kendallTau_le_of_eq_zero_left`. -/
+theorem kendallTau_lt_of_lt_of_eq_zero_left {numPatterns : Nat}
+    (a b c : QueryOrder numPatterns) {n : Nat}
+    (hab : kendallTau a b = 0) (hac : kendallTau a c < n) :
+    kendallTau b c < n :=
+  (kendallTau_eq_of_eq_zero_left a b c hab) ▸ hac
+
 /-- *Triangle inequality, right-symmetrized form.*  For any three query
     orders `a`, `b`, `c`,
     `kendallTau a c <= kendallTau a b + kendallTau c b`.
