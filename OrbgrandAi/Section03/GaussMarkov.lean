@@ -316,6 +316,13 @@ theorem cov1_lag_nineteen
     (sigma : NoisePower) (rho : CorrelationCoefficient) :
     cov1_lag sigma rho 19 = sigma.val * rho.val ^ 19 := rfl
 
+/-- `cov1_lag` at lag `-19` is `sigma * rho^19`.  Compose
+    `cov1_lag_neg` at `i = 19` with `cov1_lag_nineteen`. -/
+theorem cov1_lag_neg_nineteen
+    (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    cov1_lag sigma rho (-19) = sigma.val * rho.val ^ 19 :=
+  (cov1_lag_neg sigma rho 19).trans (cov1_lag_nineteen sigma rho)
+
 /-- *General positive-lag formula.*  For any natural-number lag `n`
     (coerced to `Int`), `cov1_lag sigma rho ↑n = sigma * rho^n`.
     Subsumes `_zero`, `_one`, `_two`, `_three` as the `n = 0, 1, 2, 3`

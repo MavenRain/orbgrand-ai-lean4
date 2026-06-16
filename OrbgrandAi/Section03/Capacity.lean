@@ -396,6 +396,21 @@ theorem limsupEntropyRate_le_const_of_eventually_const
     limsupEntropyRate u <= c1 :=
   (limsupEntropyRate_eq_const_of_eventually_const hu).le.trans h
 
+/-- *Eventual upper bound transfers to lim-sup.*  If a log-inverse-
+    density sequence is eventually bounded above by a constant `c`,
+    the lim-sup entropy rate is at most `c`.  Dual of
+    `liminfInformationRate_le_const_of_le_eventually`. -/
+theorem limsupEntropyRate_le_const_of_le_eventually
+    {u : Nat -> Real} {c : Real}
+    (h : ∀ᶠ n in Filter.atTop, u n <= c)
+    (hu : Filter.IsCoboundedUnder (· <= ·) Filter.atTop u)
+    (hv : Filter.IsBoundedUnder (· <= ·) Filter.atTop
+            (fun _ : Nat => c)) :
+    limsupEntropyRate u <= c :=
+  (limsupEntropyRate_le_limsupEntropyRate_of_le_eventually
+      h hu hv).trans
+    (limsupEntropyRate_const c).le
+
 /-! ## Hadamard bound on the noise entropy rate -/
 
 /-- *Hadamard inequality* (Section III, page 4, right column).

@@ -153,6 +153,15 @@ theorem perturbChannel_zero_channel_apply_diag
     perturbChannel 0 epsilon i i = (0 : ChannelMatrix n_s) i i :=
   perturbChannel_zero_channel_apply epsilon i i
 
+/-- *Diagonal reverse-direction zero-channel under perturbation.*
+    Reverse of `perturbChannel_zero_channel_apply_diag`: the zero-channel
+    diagonal entry equals the perturbed-zero-channel diagonal entry. -/
+theorem perturbChannel_zero_channel_eq_self_apply_diag
+    {n_s : Nat} (epsilon : Matrix (Fin n_s) (Fin n_s) Complex)
+    (i : Fin n_s) :
+    (0 : ChannelMatrix n_s) i i = perturbChannel 0 epsilon i i :=
+  (perturbChannel_zero_channel_apply_diag epsilon i).symm
+
 /-- *Composition of two perturbations.*  Applying `perturbChannel`
     twice (first by `ε₁`, then by `ε₂`) at entry `(i, j)` yields
     `h i j * ((1 + ε₁ i j) * (1 + ε₂ i j))`.  Direct `mul_assoc`

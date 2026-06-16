@@ -552,6 +552,13 @@ theorem Codeword.xor_self_apply {n : Nat} (a : Codeword n) (i : Fin n) :
     Codeword.xor a a i = 0 :=
   (congrFun (Codeword.xor_self a) i).trans (Codeword.zero_apply i)
 
+/-- *XOR with own negation vanishes.*  `Codeword.xor a (-a) = 0`: in
+    `ZMod 2`, `-a = a`, so XOR of any codeword with its own negation
+    collapses to self-XOR and hence to zero. -/
+theorem Codeword.xor_neg_self {n : Nat} (a : Codeword n) :
+    Codeword.xor a (-a) = 0 :=
+  (Codeword.xor_neg_eq_xor a a).trans (Codeword.xor_self a)
+
 /-- `a xor b = b xor a`.  Pointwise `add_comm`. -/
 theorem Codeword.xor_comm {n : Nat} (a b : Codeword n) :
     Codeword.xor a b = Codeword.xor b a :=
