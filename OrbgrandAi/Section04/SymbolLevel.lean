@@ -520,6 +520,11 @@ theorem qpsk_exceed_symm (s s_hat : Fin 4) :
 theorem qpsk_exceed_two_zero : qpsk.exceed 2 0 = 1 :=
   (qpsk_exceed_symm 2 0).trans qpsk_exceed_zero_two
 
+/-- *QPSK off-diagonal at `(2, 1)`.*  Symmetric companion to
+    `qpsk_exceed_one_two`, derived via `qpsk_exceed_symm`. -/
+theorem qpsk_exceed_two_one : qpsk.exceed 2 1 = 1 :=
+  (qpsk_exceed_symm 2 1).trans qpsk_exceed_one_two
+
 /-- *QPSK exceedance is `1` exactly on disagreement.*  Dual of
     `bpsk_exceed_eq_one_iff` for the 4-ary Hamming-style metric. -/
 theorem qpsk_exceed_eq_one_iff (s s_hat : Fin 4) :

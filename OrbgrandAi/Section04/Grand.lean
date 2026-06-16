@@ -515,6 +515,14 @@ theorem Codeword.neg_xor_eq_xor_apply
     Codeword.xor (-a) b i = Codeword.xor a b i :=
   congrFun (Codeword.neg_xor_eq_xor a b) i
 
+/-- *Double-negation XOR equals XOR.*  In `ZMod 2`, `-a = a` pointwise,
+    so XOR of two negated codewords collapses to XOR of the originals.
+    Chains `Codeword.neg_xor_eq_xor` (eliminating the left negation)
+    with `Codeword.xor_neg_eq_xor` (eliminating the right negation). -/
+theorem Codeword.neg_xor_neg_eq_xor {n : Nat} (a b : Codeword n) :
+    Codeword.xor (-a) (-b) = Codeword.xor a b :=
+  (Codeword.neg_xor_eq_xor a (-b)).trans (Codeword.xor_neg_eq_xor a b)
+
 /-- `0 xor a = a`.  Pointwise `zero_add`. -/
 theorem Codeword.zero_xor {n : Nat} (a : Codeword n) :
     Codeword.xor 0 a = a :=

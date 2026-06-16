@@ -557,6 +557,21 @@ theorem kendallTau_le_of_eq_zero_right {numPatterns : Nat}
     hbc ▸ Nat.add_zero _
   h_tri.trans h_collapse.le
 
+/-- *Zero left-distance forces equality of right-distances.*  If
+    `kendallTau a b = 0`, then for any third query order `c`,
+    `kendallTau a c = kendallTau b c`.  Strengthens
+    `kendallTau_le_of_eq_zero_left` from `<=` to `=` via
+    `Nat.le_antisymm` applied to both directions. -/
+theorem kendallTau_eq_of_eq_zero_left {numPatterns : Nat}
+    (a b c : QueryOrder numPatterns) (hab : kendallTau a b = 0) :
+    kendallTau a c = kendallTau b c :=
+  let hba : kendallTau b a = 0 := kendallTau_eq_zero_symm a b hab
+  let h_le : kendallTau a c <= kendallTau b c :=
+    kendallTau_le_of_eq_zero_left a b c hab
+  let h_ge : kendallTau b c <= kendallTau a c :=
+    kendallTau_le_of_eq_zero_left b a c hba
+  Nat.le_antisymm h_le h_ge
+
 /-- *Triangle inequality, right-symmetrized form.*  For any three query
     orders `a`, `b`, `c`,
     `kendallTau a c <= kendallTau a b + kendallTau c b`.

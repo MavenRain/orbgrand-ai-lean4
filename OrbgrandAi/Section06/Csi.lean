@@ -425,6 +425,17 @@ theorem perturbChannel_zero_entry
     perturbChannel h epsilon i j = 0 :=
   (congrArg (· * (1 + epsilon i j)) hzero).trans (zero_mul _)
 
+/-- *Diagonal pointwise zero preservation.*  Specialisation of
+    `perturbChannel_zero_entry` at `i = j`: if a single diagonal entry
+    `h i i` is zero, the corresponding perturbed diagonal entry is
+    also zero, for any error matrix. -/
+theorem perturbChannel_zero_entry_diag
+    {n_s : Nat} (h : ChannelMatrix n_s)
+    (epsilon : Matrix (Fin n_s) (Fin n_s) Complex)
+    {i : Fin n_s} (hzero : h i i = 0) :
+    perturbChannel h epsilon i i = 0 :=
+  perturbChannel_zero_entry h epsilon hzero
+
 /-- *Causality preservation.*  Multiplicative-additive perturbation
     preserves the causality predicate: if `h i j = 0` for `i < j`, then
     `(perturbChannel h epsilon) i j = 0` for the same indices.  The

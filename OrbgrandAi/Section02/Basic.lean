@@ -510,6 +510,14 @@ theorem mk?_three :
     SamplingFreq.mk? 3 = Except.ok ⟨3, zero_lt_three⟩ :=
   mk?_of_pos 3 zero_lt_three
 
+/-- *Four hertz is a valid sampling frequency.*  Next-concrete-value
+    corollary of `mk?_of_pos` at `v = 4`, with positivity supplied by
+    `zero_lt_four`.  Parallel of `BlockSize.mk?_four` and
+    `CodewordLength.mk?_four` lifted to the real-valued setting. -/
+theorem mk?_four :
+    SamplingFreq.mk? 4 = Except.ok ⟨4, zero_lt_four⟩ :=
+  mk?_of_pos 4 zero_lt_four
+
 end SamplingFreq
 
 end Section02
