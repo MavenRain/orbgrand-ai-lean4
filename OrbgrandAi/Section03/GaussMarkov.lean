@@ -859,5 +859,12 @@ theorem cov2_lag_zero_sigma
           (add_zero 0)
       step1.trans (step2.trans step3)
 
+/-- `cov1_lag` at lag `-24` is `sigma * rho^24`.  Compose
+    `cov1_lag_neg` at `i = 24` with `cov1_lag_twenty_four`. -/
+theorem cov1_lag_neg_twenty_four
+    (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    cov1_lag sigma rho (-24) = sigma.val * rho.val ^ 24 :=
+  (cov1_lag_neg sigma rho 24).trans (cov1_lag_twenty_four sigma rho)
+
 end Section03
 end OrbgrandAi

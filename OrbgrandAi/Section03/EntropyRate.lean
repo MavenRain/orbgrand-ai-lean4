@@ -600,5 +600,20 @@ theorem entropyRate2_at_block_eq_log_form_symm
       = entropyRate2 sigma rho1 rho2 b.toNat :=
   entropyRate2_eq_symm sigma rho1 rho2 b.toNat
 
+/-- *Boundary case `n_s = 24` of `entropyRate2`.*  Companion of the
+    `n_s = 4`-`23` variants.  Specialisation of `entropyRate2_eq` at
+    `n_s = 24`; reduces by Nat computation. -/
+theorem entropyRate2_at_twenty_four_eq_log_form
+    (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient) :
+    entropyRate2 sigma rho1 rho2 24
+      = (1 / 2 : Real)
+          * Real.log (2 * Real.pi * Real.exp 1 * sigma.val)
+        + (1 / (2 * ((24 : Nat) : Real)))
+            * Real.log
+                (- (rho2.val - 1) ^ 22
+                    * (1 - 2 * rho1.val ^ 2 + rho2.val) ^ 22
+                  / (rho1.val ^ 2 - 1) ^ 21) :=
+  entropyRate2_eq sigma rho1 rho2 24
+
 end Section03
 end OrbgrandAi

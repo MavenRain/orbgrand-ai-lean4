@@ -1249,5 +1249,15 @@ theorem orbgrandAi_cons_accept
       = some (substitute Y e) :=
   orbgrandAiLoop_cons_accept Y Phi m e rest hnc hp
 
+/-- *Vacuous codebook at budget `12`.*  Specialises
+    `orbgrandAi_empty_codebook` at `AbandonmentBudget.mk 12`. -/
+theorem orbgrandAi_empty_codebook_mk_twelve
+    {n_s b numCandidates : Nat}
+    (Y : Codeword n_s)
+    (patterns : List (Fin (n_s / b) -> Fin numCandidates)) :
+    orbgrandAi (b := b) (numCandidates := numCandidates)
+      Y (fun _ => false) (AbandonmentBudget.mk 12) patterns = none :=
+  orbgrandAi_empty_codebook Y (AbandonmentBudget.mk 12) patterns
+
 end Section04
 end OrbgrandAi

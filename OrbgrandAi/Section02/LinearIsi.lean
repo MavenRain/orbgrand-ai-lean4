@@ -753,5 +753,16 @@ theorem LinearIsi.receive_noise_add_zero_signal
     congrArg (fun X => ch.receive X (N1 + N2)) (add_zero 0)
   h.symm.trans step
 
+/-- *Doubling of `receive` in the noise at zero signal.*  Instantiates
+    `receive_noise_add_zero_signal` at `N1 = N2 = N`, giving
+    `receive 0 (N + N) = receive 0 N + receive 0 N`.  The pure
+    noise-superposition law specialised to a repeated noise term,
+    mirroring how `receive_one_zero_signal_zero_noise` is a direct
+    instantiation of `receive_one_zero_signal`. -/
+theorem LinearIsi.receive_noise_add_self_zero_signal
+    {n_s : Nat} (ch : LinearIsi n_s) (N : SymbolVector n_s) :
+    ch.receive 0 (N + N) = ch.receive 0 N + ch.receive 0 N :=
+  LinearIsi.receive_noise_add_zero_signal ch N N
+
 end Section02
 end OrbgrandAi

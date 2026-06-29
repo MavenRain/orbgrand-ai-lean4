@@ -1670,5 +1670,16 @@ theorem landslideBucket_zero_const_false_alt
     landslideBucket pi 0 (fun _ : Fin n => false) :=
   (landslideBucket_zero_iff_all_false_at_perm pi _).mpr (fun _ => rfl)
 
+/-- *Bucket non-membership four indices past the witness.*  A
+    witness `landslideBucket pi w e` cannot also sit in bucket
+    `w + 4`.  Strengthens `landslideBucket_not_of_mem_succ_succ_succ_self`
+    by skipping one more successor. -/
+theorem landslideBucket_not_of_mem_succ_succ_succ_succ_self
+    {n : Nat} (pi : ReliabilityRank n) {w : Nat} {e : Fin n -> Bool}
+    (h1 : landslideBucket pi w e) :
+    ¬ landslideBucket pi (w + 4) e :=
+  landslideBucket_not_of_mem_of_lt pi h1
+    (Nat.lt_add_of_pos_right (Nat.succ_pos 3))
+
 end Section04
 end OrbgrandAi

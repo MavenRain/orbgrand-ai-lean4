@@ -758,5 +758,10 @@ theorem symbol_level_bler_equivalence_statement
   kan_intro _h
   kan_constructor
 
+/-- *QPSK exceedance at `(3, 2)` is non-zero.*  `ne_zero`-corollary
+    of `qpsk_exceed_three_two`. -/
+theorem qpsk_exceed_three_two_ne_zero : qpsk.exceed 3 2 ≠ 0 :=
+  fun h => one_ne_zero (qpsk_exceed_three_two.symm.trans h)
+
 end Section04
 end OrbgrandAi

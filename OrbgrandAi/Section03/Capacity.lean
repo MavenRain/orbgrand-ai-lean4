@@ -598,5 +598,18 @@ theorem capacity_upper_bound_statement
   kan_intro _h
   kan_constructor
 
+/-- *Cross-sequence lim-sup collapse at a shared eventual constant.*
+    If two log-inverse-density sequences `u` and `v` are each eventually
+    equal to the *same* constant `c`, their lim-sup entropy rates
+    coincide.  Dual of
+    `liminfInformationRate_eq_liminfInformationRate_of_eventually_const_pair`. -/
+theorem limsupEntropyRate_eq_limsupEntropyRate_of_eventually_const_pair
+    {u v : Nat -> Real} {c : Real}
+    (hu : ∀ᶠ n in Filter.atTop, u n = c)
+    (hv : ∀ᶠ n in Filter.atTop, v n = c) :
+    limsupEntropyRate u = limsupEntropyRate v :=
+  (limsupEntropyRate_eq_const_of_eventually_const hu).trans
+    (limsupEntropyRate_eq_const_of_eventually_const hv).symm
+
 end Section03
 end OrbgrandAi

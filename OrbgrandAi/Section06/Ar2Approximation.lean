@@ -893,5 +893,12 @@ theorem ar2_approximation_error_statement
   kan_intro _h
   kan_constructor
 
+/-- Recurrence step at index 69: `phi_1 * ar2 68 + phi_2 * ar2 67`.
+    Pattern-match arm `(67 + 2)` reduces definitionally to the RHS. -/
+theorem ar2_sixty_nine (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 69
+      = phi1 * ar2 phi1 phi2 z1 z2 68
+        + phi2 * ar2 phi1 phi2 z1 z2 67 := rfl
+
 end Section06
 end OrbgrandAi

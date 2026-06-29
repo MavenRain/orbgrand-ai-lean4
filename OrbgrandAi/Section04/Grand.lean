@@ -1805,5 +1805,15 @@ theorem syndrome_self_eq_zero_zero_funext
     syndrome H Y Y = syndrome H (0 : Codeword n) (0 : Codeword n) :=
   (syndrome_self_funext H Y).trans (funext fun i => (syndrome_zero_zero H i)).symm
 
+/-- *`+` form of pairwise XOR equality rearrangement.*  `a + b = c + d ↔
+    a + c = b + d` (using `Codeword.xor = +` via `xor_eq_add`).  Casts
+    `xor_eq_xor_iff_xor_eq_xor` into the `+` view by definitional
+    equality, mirroring how `add_eq_zero_iff` recasts the XOR-zero
+    characterisation.  Convenient for downstream code expressing the
+    rearrangement in `+` form. -/
+theorem Codeword.add_eq_add_iff_add_eq_add {n : Nat} (a b c d : Codeword n) :
+    a + b = c + d <-> a + c = b + d :=
+  Codeword.xor_eq_xor_iff_xor_eq_xor a b c d
+
 end Section04
 end OrbgrandAi

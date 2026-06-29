@@ -767,5 +767,16 @@ theorem query_order_stability_statement
   kan_intro _h
   kan_constructor
 
+/-- *Zero right-distance gives an iff for weak upper bounds (symm-right-anchored).*
+    If `kendallTau b c = 0`, then for any other query order `a` and any
+    bound `n`, `kendallTau c a <= n` iff `kendallTau b a <= n`.
+    Right-anchored weak-inequality companion to
+    `kendallTau_le_iff_le_of_eq_zero_symm`. -/
+theorem kendallTau_le_iff_le_of_eq_zero_symm_right {numPatterns : Nat}
+    (a b c : QueryOrder numPatterns) {n : Nat}
+    (hbc : kendallTau b c = 0) :
+    kendallTau c a <= n ↔ kendallTau b a <= n :=
+  iff_of_eq (congrArg (· <= n) (kendallTau_eq_of_eq_zero_symm_right a b c hbc))
+
 end Section06
 end OrbgrandAi

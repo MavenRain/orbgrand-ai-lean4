@@ -789,5 +789,12 @@ theorem rfView_structural
       /\ (rfView n_s rowTaps sigma).bandwidth 6 :=
   ⟨rfView_causal rowTaps sigma, rfView_bandwidth rowTaps sigma⟩
 
+/-- *RFView bandwidth widens to `39`.*  Chain `rfView_bandwidth_thirty_eight`
+    with `LinearIsi.bandwidth_succ`. -/
+theorem rfView_bandwidth_thirty_nine
+    {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (sigma : NoisePower) :
+    (rfView n_s rowTaps sigma).bandwidth 39 :=
+  LinearIsi.bandwidth_succ (rfView_bandwidth_thirty_eight rowTaps sigma)
+
 end Section02
 end OrbgrandAi
