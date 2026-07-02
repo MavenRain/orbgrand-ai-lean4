@@ -1259,5 +1259,15 @@ theorem orbgrandAi_empty_codebook_mk_twelve
       Y (fun _ => false) (AbandonmentBudget.mk 12) patterns = none :=
   orbgrandAi_empty_codebook Y (AbandonmentBudget.mk 12) patterns
 
+/-- *Vacuous codebook on the empty pattern list at budget `12`.*
+    Specialises `orbgrandAi_empty_codebook_mk_twelve` at `patterns = []`. -/
+theorem orbgrandAi_empty_codebook_nil_mk_twelve
+    {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) :
+    orbgrandAi (b := b) (numCandidates := numCandidates)
+      Y (fun _ => false) (AbandonmentBudget.mk 12)
+      ([] : List (Fin (n_s / b) -> Fin numCandidates)) = none :=
+  orbgrandAi_empty_codebook_mk_twelve Y []
+
 end Section04
 end OrbgrandAi

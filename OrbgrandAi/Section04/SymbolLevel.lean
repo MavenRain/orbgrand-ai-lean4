@@ -763,5 +763,10 @@ theorem symbol_level_bler_equivalence_statement
 theorem qpsk_exceed_three_two_ne_zero : qpsk.exceed 3 2 ≠ 0 :=
   fun h => one_ne_zero (qpsk_exceed_three_two.symm.trans h)
 
+/-- *QPSK exceedance at `(2, 0)` is non-zero.*  `ne_zero`-corollary
+    of `qpsk_exceed_two_zero`. -/
+theorem qpsk_exceed_two_zero_ne_zero : qpsk.exceed 2 0 ≠ 0 :=
+  fun h => one_ne_zero (qpsk_exceed_two_zero.symm.trans h)
+
 end Section04
 end OrbgrandAi

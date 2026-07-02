@@ -764,5 +764,15 @@ theorem LinearIsi.receive_noise_add_self_zero_signal
     ch.receive 0 (N + N) = ch.receive 0 N + ch.receive 0 N :=
   LinearIsi.receive_noise_add_zero_signal ch N N
 
+/-- *Doubling of `receive` in the signal at zero noise.*  Instantiates
+    `receive_signal_add_zero_noise` at `X1 = X2 = X`, giving
+    `receive (X + X) 0 = receive X 0 + receive X 0`.  The pure
+    channel-superposition law specialised to a repeated signal term,
+    the signal-side dual of `receive_noise_add_self_zero_signal`. -/
+theorem LinearIsi.receive_signal_add_self_zero_noise
+    {n_s : Nat} (ch : LinearIsi n_s) (X : SymbolVector n_s) :
+    ch.receive (X + X) 0 = ch.receive X 0 + ch.receive X 0 :=
+  LinearIsi.receive_signal_add_zero_noise ch X X
+
 end Section02
 end OrbgrandAi

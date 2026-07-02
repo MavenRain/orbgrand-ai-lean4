@@ -612,6 +612,13 @@ theorem Codeword.xor_neg_eq_neg_xor_apply
     Codeword.xor a (-b) i = Codeword.xor (-a) b i :=
   congrFun (Codeword.xor_neg_eq_neg_xor a b) i
 
+/-- *Pointwise negation of zero.*  `(-(0 : Codeword n)) i = (0 : Codeword n) i`.
+    One-liner via `congrFun` on `Codeword.neg_zero`, mirroring how
+    `Codeword.neg_eq_self_apply` unfolds `Codeword.neg_eq_self`. -/
+theorem Codeword.neg_zero_apply {n : Nat} (i : Fin n) :
+    (-(0 : Codeword n)) i = (0 : Codeword n) i :=
+  congrFun (Codeword.neg_zero) i
+
 /-- `a xor b = b xor a`.  Pointwise `add_comm`. -/
 theorem Codeword.xor_comm {n : Nat} (a b : Codeword n) :
     Codeword.xor a b = Codeword.xor b a :=

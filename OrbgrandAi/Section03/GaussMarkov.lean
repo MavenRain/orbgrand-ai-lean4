@@ -376,6 +376,11 @@ theorem cov1_lag_twenty_four
     (sigma : NoisePower) (rho : CorrelationCoefficient) :
     cov1_lag sigma rho 24 = sigma.val * rho.val ^ 24 := rfl
 
+/-- `cov1_lag` at lag 25 is `sigma * rho^25`.  Same defeq pattern. -/
+theorem cov1_lag_twenty_five
+    (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    cov1_lag sigma rho 25 = sigma.val * rho.val ^ 25 := rfl
+
 /-- *General positive-lag formula.*  For any natural-number lag `n`
     (coerced to `Int`), `cov1_lag sigma rho ↑n = sigma * rho^n`.
     Subsumes `_zero`, `_one`, `_two`, `_three` as the `n = 0, 1, 2, 3`

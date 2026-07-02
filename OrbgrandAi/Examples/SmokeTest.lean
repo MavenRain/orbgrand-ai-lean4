@@ -8150,4 +8150,103 @@ example {n_s : Nat} (h : ChannelMatrix n_s) :
     perturbChannel (perturbChannel (perturbChannel (perturbChannel h 0) 0) 0) 0 = h :=
   perturbChannel_perturbChannel_perturbChannel_perturbChannel_zero_zero_zero_zero h
 
+/-! ## Round 47 additions -/
+
+/-- Nine is a valid block size. -/
+example : BlockSize.mk? 9 = Except.ok ⟨9, Nat.succ_pos 8⟩ :=
+  BlockSize.mk?_nine
+
+/-- Thirty-fifth sub-diagonal of `delayTapMatrix`. -/
+example {n_s p : Nat} (paths : Fin p -> DelayTapPath)
+    (f_s : SamplingFreq) (i j : Fin n_s) (h : i.val = j.val + 35) :
+    delayTapMatrix n_s paths f_s i j
+      = delayTapImpulseResponse paths f_s { toNat := 35 } :=
+  delayTapMatrix_thirty_fifth_subdiag paths f_s i j h
+
+/-- Dicode bandwidth widens to 32. -/
+example {n_s : Nat} (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    (dicode n_s sigma rho).bandwidth 32 :=
+  dicode_bandwidth_thirty_two sigma rho
+
+/-- Doubling of `receive` in the signal at zero noise. -/
+example {n_s : Nat} (ch : LinearIsi n_s) (X : SymbolVector n_s) :
+    ch.receive (X + X) 0 = ch.receive X 0 + ch.receive X 0 :=
+  LinearIsi.receive_signal_add_self_zero_noise ch X
+
+/-- RFView bandwidth widens to 40. -/
+example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (sigma : NoisePower) :
+    (rfView n_s rowTaps sigma).bandwidth 40 :=
+  rfView_bandwidth_forty rowTaps sigma
+
+/-- Reverse cross-sequence collapse at a shared eventual constant. -/
+example {u v : Nat -> Real} {c : Real}
+    (hu : ∀ᶠ n in Filter.atTop, u n = c)
+    (hv : ∀ᶠ n in Filter.atTop, v n = c) :
+    limsupEntropyRate u = liminfInformationRate v :=
+  limsupEntropyRate_eq_liminfInformationRate_of_eventually_const_pair hu hv
+
+/-- Zero-sigma determinant vanishes at `n_s = 6`. -/
+example (rho1 rho2 : CorrelationCoefficient) :
+    cov2DetFormula ⟨0, le_refl 0⟩ rho1 rho2 6 = 0 :=
+  cov2DetFormula_zero_sigma_six rho1 rho2
+
+/-- Boundary case `n_s = 25` of `entropyRate2`. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient) :
+    entropyRate2 sigma rho1 rho2 25
+      = (1 / 2 : Real)
+          * Real.log (2 * Real.pi * Real.exp 1 * sigma.val)
+        + (1 / (2 * ((25 : Nat) : Real)))
+            * Real.log
+                (- (rho2.val - 1) ^ 23
+                    * (1 - 2 * rho1.val ^ 2 + rho2.val) ^ 23
+                  / (rho1.val ^ 2 - 1) ^ 22) :=
+  entropyRate2_at_twenty_five_eq_log_form sigma rho1 rho2
+
+/-- `cov1_lag` at lag 25. -/
+example (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    cov1_lag sigma rho 25 = sigma.val * rho.val ^ 25 :=
+  cov1_lag_twenty_five sigma rho
+
+/-- Pointwise negation of zero. -/
+example {n : Nat} (i : Fin n) :
+    (-(0 : Codeword n)) i = (0 : Codeword n) i :=
+  Codeword.neg_zero_apply i
+
+/-- Bucket non-membership four indices before the witness. -/
+example {n : Nat} (pi : ReliabilityRank n) {w : Nat} {e : Fin n -> Bool}
+    (h1 : landslideBucket pi (w + 4) e) :
+    ¬ landslideBucket pi w e :=
+  landslideBucket_not_of_mem_pred_pred_pred_pred_self pi h1
+
+/-- Vacuous codebook on the empty pattern list at budget 12. -/
+example {n_s b numCandidates : Nat}
+    (Y : Codeword n_s) :
+    orbgrandAi (b := b) (numCandidates := numCandidates)
+      Y (fun _ => false) (AbandonmentBudget.mk 12)
+      ([] : List (Fin (n_s / b) -> Fin numCandidates)) = none :=
+  orbgrandAi_empty_codebook_nil_mk_twelve Y
+
+/-- QPSK exceedance at `(2, 0)` is non-zero. -/
+example : qpsk.exceed 2 0 ≠ 0 :=
+  qpsk_exceed_two_zero_ne_zero
+
+/-- Recurrence step at index 70. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 70
+      = phi1 * ar2 phi1 phi2 z1 z2 69
+        + phi2 * ar2 phi1 phi2 z1 z2 68 :=
+  ar2_seventy phi1 phi2 z1 z2
+
+/-- Quintuple zero-perturbation collapses to identity. -/
+example {n_s : Nat} (h : ChannelMatrix n_s) :
+    perturbChannel (perturbChannel (perturbChannel (perturbChannel (perturbChannel h 0) 0) 0) 0) 0 = h :=
+  perturbChannel_perturbChannel_perturbChannel_perturbChannel_perturbChannel_zero_zero_zero_zero_zero h
+
+/-- Zero right-distance gives an iff for strict upper bounds. -/
+example {numPatterns : Nat}
+    (a b c : QueryOrder numPatterns) {n : Nat}
+    (hbc : kendallTau b c = 0) :
+    kendallTau c a < n ↔ kendallTau b a < n :=
+  kendallTau_lt_iff_lt_of_eq_zero_symm_right a b c hbc
+
 end OrbgrandAi.Examples.SmokeTest

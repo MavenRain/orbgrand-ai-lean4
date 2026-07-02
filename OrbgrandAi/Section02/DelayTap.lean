@@ -632,5 +632,14 @@ theorem delayTapMatrix_thirty_fourth_subdiag
       = delayTapImpulseResponse paths f_s { toNat := 34 } :=
   delayTapMatrix_at_subdiag paths f_s i j h
 
+/-- *Thirty-fifth sub-diagonal of `delayTapMatrix`.*  Same pattern at
+    delay 35. -/
+theorem delayTapMatrix_thirty_fifth_subdiag
+    {n_s : Nat} {p : Nat} (paths : Fin p -> DelayTapPath)
+    (f_s : SamplingFreq) (i j : Fin n_s) (h : i.val = j.val + 35) :
+    delayTapMatrix n_s paths f_s i j
+      = delayTapImpulseResponse paths f_s { toNat := 35 } :=
+  delayTapMatrix_at_subdiag paths f_s i j h
+
 end Section02
 end OrbgrandAi

@@ -611,5 +611,20 @@ theorem limsupEntropyRate_eq_limsupEntropyRate_of_eventually_const_pair
   (limsupEntropyRate_eq_const_of_eventually_const hu).trans
     (limsupEntropyRate_eq_const_of_eventually_const hv).symm
 
+/-- *Reverse cross-sequence collapse at a shared eventual constant.*
+    If two sequences `u` and `v` are each eventually equal to the *same*
+    constant `c`, the lim-sup entropy rate of `u` coincides with the
+    lim-inf information rate of `v`.  Mirror image of
+    `liminfInformationRate_eq_limsupEntropyRate_of_eventually_const_pair`,
+    swapping the roles of the lim-sup and lim-inf functionals to
+    complete the eq-pair square. -/
+theorem limsupEntropyRate_eq_liminfInformationRate_of_eventually_const_pair
+    {u v : Nat -> Real} {c : Real}
+    (hu : ∀ᶠ n in Filter.atTop, u n = c)
+    (hv : ∀ᶠ n in Filter.atTop, v n = c) :
+    limsupEntropyRate u = liminfInformationRate v :=
+  (limsupEntropyRate_eq_const_of_eventually_const hu).trans
+    (liminfInformationRate_eq_const_of_eventually_const hv).symm
+
 end Section03
 end OrbgrandAi
