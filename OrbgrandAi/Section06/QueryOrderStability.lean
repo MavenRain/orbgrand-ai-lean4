@@ -789,5 +789,15 @@ theorem kendallTau_lt_iff_lt_of_eq_zero_symm_right {numPatterns : Nat}
     kendallTau c a < n ↔ kendallTau b a < n :=
   iff_of_eq (congrArg (· < n) (kendallTau_eq_of_eq_zero_symm_right a b c hbc))
 
+/-- *Zero right-distance gives an iff for exact values (symm-right-anchored).*
+    If `kendallTau b c = 0`, then for any other query order `a` and any
+    value `n`, `kendallTau c a = n` iff `kendallTau b a = n`.
+    Equality companion to `kendallTau_lt_iff_lt_of_eq_zero_symm_right`. -/
+theorem kendallTau_eq_iff_eq_of_eq_zero_symm_right {numPatterns : Nat}
+    (a b c : QueryOrder numPatterns) {n : Nat}
+    (hbc : kendallTau b c = 0) :
+    kendallTau c a = n ↔ kendallTau b a = n :=
+  iff_of_eq (congrArg (· = n) (kendallTau_eq_of_eq_zero_symm_right a b c hbc))
+
 end Section06
 end OrbgrandAi

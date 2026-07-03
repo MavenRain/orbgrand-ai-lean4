@@ -871,5 +871,12 @@ theorem cov1_lag_neg_twenty_four
     cov1_lag sigma rho (-24) = sigma.val * rho.val ^ 24 :=
   (cov1_lag_neg sigma rho 24).trans (cov1_lag_twenty_four sigma rho)
 
+/-- `cov1_lag` at lag `-25` is `sigma * rho^25`.  Compose
+    `cov1_lag_neg` at `i = 25` with `cov1_lag_twenty_five`. -/
+theorem cov1_lag_neg_twenty_five
+    (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    cov1_lag sigma rho (-25) = sigma.val * rho.val ^ 25 :=
+  (cov1_lag_neg sigma rho 25).trans (cov1_lag_twenty_five sigma rho)
+
 end Section03
 end OrbgrandAi

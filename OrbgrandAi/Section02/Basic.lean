@@ -346,6 +346,14 @@ theorem mk?_eight :
     CodewordLength.mk? 8 = Except.ok ⟨8, Nat.succ_pos 7⟩ :=
   mk?_of_pos 8 (Nat.succ_pos 7)
 
+/-- *Nine is a valid codeword length.*  Next-concrete-value corollary
+    of `mk?_of_pos` at `n = 9`: the next odd nontrivial codeword
+    length beyond `7` round-trips through `mk?`, with positivity
+    witnessed by `Nat.succ_pos 8`.  Parallel of `BlockSize.mk?_nine`. -/
+theorem mk?_nine :
+    CodewordLength.mk? 9 = Except.ok ⟨9, Nat.succ_pos 8⟩ :=
+  mk?_of_pos 9 (Nat.succ_pos 8)
+
 end CodewordLength
 
 namespace BitsPerSymbol

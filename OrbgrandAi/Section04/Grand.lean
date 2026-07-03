@@ -1822,5 +1822,14 @@ theorem Codeword.add_eq_add_iff_add_eq_add {n : Nat} (a b c d : Codeword n) :
     a + b = c + d <-> a + c = b + d :=
   Codeword.xor_eq_xor_iff_xor_eq_xor a b c d
 
+/-- *Double negation is the identity.*  In `ZMod 2`, `-a = a` pointwise,
+    so negating twice returns the original codeword: `-(-a) = a`.  Chains
+    `Codeword.neg_eq_self` at `-a` (eliminating the outer negation) with
+    `Codeword.neg_eq_self` at `a` (eliminating the inner one), mirroring
+    how `Codeword.neg_zero` specialises the same identity. -/
+theorem Codeword.neg_neg {n : Nat} (a : Codeword n) :
+    -(-a) = a :=
+  (Codeword.neg_eq_self (-a)).trans (Codeword.neg_eq_self a)
+
 end Section04
 end OrbgrandAi

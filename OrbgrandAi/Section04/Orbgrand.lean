@@ -1691,5 +1691,15 @@ theorem landslideBucket_not_of_mem_pred_pred_pred_pred_self
   landslideBucket_not_of_mem_of_gt pi h1
     (Nat.lt_add_of_pos_right (Nat.succ_pos 3))
 
+/-- *Four-step conjunction-form disjointness.*  No pattern `e` can
+    simultaneously witness `landslideBucket pi w e` and
+    `landslideBucket pi (w + 4) e`.  Conjunction-form companion to
+    `landslideBucket_not_of_mem_succ_succ_succ_succ_self`. -/
+theorem landslideBucket_disjoint_succ_succ_succ_succ_self
+    {n : Nat} (pi : ReliabilityRank n) {w : Nat} {e : Fin n -> Bool} :
+    ¬ (landslideBucket pi w e /\ landslideBucket pi (w + 4) e) :=
+  landslideBucket_disjoint_of_lt pi
+    (Nat.lt_add_of_pos_right (Nat.succ_pos 3))
+
 end Section04
 end OrbgrandAi

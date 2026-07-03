@@ -8249,4 +8249,103 @@ example {numPatterns : Nat}
     kendallTau c a < n ↔ kendallTau b a < n :=
   kendallTau_lt_iff_lt_of_eq_zero_symm_right a b c hbc
 
+/-! ## Round 48 additions -/
+
+/-- Nine is a valid codeword length. -/
+example : CodewordLength.mk? 9 = Except.ok ⟨9, Nat.succ_pos 8⟩ :=
+  CodewordLength.mk?_nine
+
+/-- Thirty-sixth sub-diagonal of `delayTapMatrix`. -/
+example {n_s p : Nat} (paths : Fin p -> DelayTapPath)
+    (f_s : SamplingFreq) (i j : Fin n_s) (h : i.val = j.val + 36) :
+    delayTapMatrix n_s paths f_s i j
+      = delayTapImpulseResponse paths f_s { toNat := 36 } :=
+  delayTapMatrix_thirty_sixth_subdiag paths f_s i j h
+
+/-- Dicode bandwidth widens to 33. -/
+example {n_s : Nat} (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    (dicode n_s sigma rho).bandwidth 33 :=
+  dicode_bandwidth_thirty_three sigma rho
+
+/-- Simultaneous doubling of `receive` in both arguments. -/
+example {n_s : Nat} (ch : LinearIsi n_s) (X N : SymbolVector n_s) :
+    ch.receive (X + X) (N + N) = ch.receive X N + ch.receive X N :=
+  LinearIsi.receive_add_self ch X N
+
+/-- RFView bandwidth widens to 41. -/
+example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (sigma : NoisePower) :
+    (rfView n_s rowTaps sigma).bandwidth 41 :=
+  rfView_bandwidth_forty_one rowTaps sigma
+
+/-- Same-functional lim-inf inequality at eventually-constant sequences. -/
+example {u v : Nat -> Real} {c1 c2 : Real}
+    (hu : ∀ᶠ n in Filter.atTop, u n = c1)
+    (hv : ∀ᶠ n in Filter.atTop, v n = c2)
+    (h : c1 <= c2) :
+    liminfInformationRate u <= liminfInformationRate v :=
+  liminfInformationRate_le_liminfInformationRate_of_eventually_const_mono hu hv h
+
+/-- Zero-sigma determinant vanishes at `n_s = 7`. -/
+example (rho1 rho2 : CorrelationCoefficient) :
+    cov2DetFormula ⟨0, le_refl 0⟩ rho1 rho2 7 = 0 :=
+  cov2DetFormula_zero_sigma_seven rho1 rho2
+
+/-- Boundary case `n_s = 26` of `entropyRate2`. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient) :
+    entropyRate2 sigma rho1 rho2 26
+      = (1 / 2 : Real)
+          * Real.log (2 * Real.pi * Real.exp 1 * sigma.val)
+        + (1 / (2 * ((26 : Nat) : Real)))
+            * Real.log
+                (- (rho2.val - 1) ^ 24
+                    * (1 - 2 * rho1.val ^ 2 + rho2.val) ^ 24
+                  / (rho1.val ^ 2 - 1) ^ 23) :=
+  entropyRate2_at_twenty_six_eq_log_form sigma rho1 rho2
+
+/-- `cov1_lag` at lag -25. -/
+example (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    cov1_lag sigma rho (-25) = sigma.val * rho.val ^ 25 :=
+  cov1_lag_neg_twenty_five sigma rho
+
+/-- QPSK exceedance at `(2, 1)` is non-zero. -/
+example : qpsk.exceed 2 1 ≠ 0 :=
+  qpsk_exceed_two_one_ne_zero
+
+/-- Double negation is the identity. -/
+example {n : Nat} (a : Codeword n) :
+    -(-a) = a :=
+  Codeword.neg_neg a
+
+/-- Four-step conjunction-form disjointness. -/
+example {n : Nat} (pi : ReliabilityRank n) {w : Nat} {e : Fin n -> Bool} :
+    ¬ (landslideBucket pi w e /\ landslideBucket pi (w + 4) e) :=
+  landslideBucket_disjoint_succ_succ_succ_succ_self pi
+
+/-- Vacuous codebook at budget 13. -/
+example {n_s b numCandidates : Nat}
+    (Y : Codeword n_s)
+    (patterns : List (Fin (n_s / b) -> Fin numCandidates)) :
+    orbgrandAi (b := b) (numCandidates := numCandidates)
+      Y (fun _ => false) (AbandonmentBudget.mk 13) patterns = none :=
+  orbgrandAi_empty_codebook_mk_thirteen Y patterns
+
+/-- Recurrence step at index 71. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 71
+      = phi1 * ar2 phi1 phi2 z1 z2 70
+        + phi2 * ar2 phi1 phi2 z1 z2 69 :=
+  ar2_seventy_one phi1 phi2 z1 z2
+
+/-- Zero right-distance gives an iff for exact values. -/
+example {numPatterns : Nat}
+    (a b c : QueryOrder numPatterns) {n : Nat}
+    (hbc : kendallTau b c = 0) :
+    kendallTau c a = n ↔ kendallTau b a = n :=
+  kendallTau_eq_iff_eq_of_eq_zero_symm_right a b c hbc
+
+/-- Sextuple zero-perturbation collapses to identity. -/
+example {n_s : Nat} (h : ChannelMatrix n_s) :
+    perturbChannel (perturbChannel (perturbChannel (perturbChannel (perturbChannel (perturbChannel h 0) 0) 0) 0) 0) 0 = h :=
+  perturbChannel_perturbChannel_perturbChannel_perturbChannel_perturbChannel_perturbChannel_zero_zero_zero_zero_zero_zero h
+
 end OrbgrandAi.Examples.SmokeTest

@@ -768,5 +768,10 @@ theorem qpsk_exceed_three_two_ne_zero : qpsk.exceed 3 2 ≠ 0 :=
 theorem qpsk_exceed_two_zero_ne_zero : qpsk.exceed 2 0 ≠ 0 :=
   fun h => one_ne_zero (qpsk_exceed_two_zero.symm.trans h)
 
+/-- *QPSK exceedance at `(2, 1)` is non-zero.*  `ne_zero`-corollary
+    of `qpsk_exceed_two_one`. -/
+theorem qpsk_exceed_two_one_ne_zero : qpsk.exceed 2 1 ≠ 0 :=
+  fun h => one_ne_zero (qpsk_exceed_two_one.symm.trans h)
+
 end Section04
 end OrbgrandAi

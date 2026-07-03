@@ -774,5 +774,16 @@ theorem LinearIsi.receive_signal_add_self_zero_noise
     ch.receive (X + X) 0 = ch.receive X 0 + ch.receive X 0 :=
   LinearIsi.receive_signal_add_zero_noise ch X X
 
+/-- *Simultaneous doubling of `receive` in both arguments.*  Instantiates
+    `receive_add` at `X1 = X2 = X` and `N1 = N2 = N`, giving
+    `receive (X + X) (N + N) = receive X N + receive X N`.  The full
+    receiver-linearity law specialised to a repeated signal-noise pair,
+    the joint generalisation of `receive_signal_add_self_zero_noise` and
+    `receive_noise_add_self_zero_signal`. -/
+theorem LinearIsi.receive_add_self
+    {n_s : Nat} (ch : LinearIsi n_s) (X N : SymbolVector n_s) :
+    ch.receive (X + X) (N + N) = ch.receive X N + ch.receive X N :=
+  LinearIsi.receive_add ch X X N N
+
 end Section02
 end OrbgrandAi
