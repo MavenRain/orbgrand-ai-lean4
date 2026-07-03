@@ -810,5 +810,12 @@ theorem rfView_bandwidth_forty_one
     (rfView n_s rowTaps sigma).bandwidth 41 :=
   LinearIsi.bandwidth_succ (rfView_bandwidth_forty rowTaps sigma)
 
+/-- *RFView bandwidth widens to `42`.*  Chain `rfView_bandwidth_forty_one`
+    with `LinearIsi.bandwidth_succ`. -/
+theorem rfView_bandwidth_forty_two
+    {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (sigma : NoisePower) :
+    (rfView n_s rowTaps sigma).bandwidth 42 :=
+  LinearIsi.bandwidth_succ (rfView_bandwidth_forty_one rowTaps sigma)
+
 end Section02
 end OrbgrandAi

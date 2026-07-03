@@ -785,5 +785,16 @@ theorem LinearIsi.receive_add_self
     ch.receive (X + X) (N + N) = ch.receive X N + ch.receive X N :=
   LinearIsi.receive_add ch X X N N
 
+/-- *Doubling of `receive` in the signal with a split noise.*  Instantiates
+    `receive_add` at `X1 = X2 = X` while keeping the two noise summands
+    distinct, giving
+    `receive (X + X) (N1 + N2) = receive X N1 + receive X N2`.  A hybrid of
+    `receive_add_self` and `receive_add`, doubling only the signal argument
+    while the noise remains a general sum. -/
+theorem LinearIsi.receive_signal_self_noise_add
+    {n_s : Nat} (ch : LinearIsi n_s) (X N1 N2 : SymbolVector n_s) :
+    ch.receive (X + X) (N1 + N2) = ch.receive X N1 + ch.receive X N2 :=
+  LinearIsi.receive_add ch X X N1 N2
+
 end Section02
 end OrbgrandAi

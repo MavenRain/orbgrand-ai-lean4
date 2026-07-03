@@ -641,5 +641,20 @@ theorem liminfInformationRate_le_liminfInformationRate_of_eventually_const_mono
   ((liminfInformationRate_eq_const_of_eventually_const hu).le.trans h).trans
     (liminfInformationRate_eq_const_of_eventually_const hv).ge
 
+/-- *Same-functional lim-sup inequality at eventually-constant sequences.*
+    If `u` is eventually equal to `c1`, `v` is eventually equal to `c2`,
+    and `c1 <= c2`, then the lim-sup entropy rate of `u` is at most
+    the lim-sup entropy rate of `v`.  Same-functional companion to
+    `liminfInformationRate_le_limsupEntropyRate_of_eventually_const_mono`,
+    replacing the lim-inf functional on `u` by the lim-sup functional. -/
+theorem limsupEntropyRate_le_limsupEntropyRate_of_eventually_const_mono
+    {u v : Nat -> Real} {c1 c2 : Real}
+    (hu : ∀ᶠ n in Filter.atTop, u n = c1)
+    (hv : ∀ᶠ n in Filter.atTop, v n = c2)
+    (h : c1 <= c2) :
+    limsupEntropyRate u <= limsupEntropyRate v :=
+  ((limsupEntropyRate_eq_const_of_eventually_const hu).le.trans h).trans
+    (limsupEntropyRate_eq_const_of_eventually_const hv).ge
+
 end Section03
 end OrbgrandAi

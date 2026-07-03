@@ -1831,5 +1831,13 @@ theorem Codeword.neg_neg {n : Nat} (a : Codeword n) :
     -(-a) = a :=
   (Codeword.neg_eq_self (-a)).trans (Codeword.neg_eq_self a)
 
+/-- *Pointwise double negation.*  `(-(-a)) i = a i`.  One-liner via
+    `congrFun` on `Codeword.neg_neg`, mirroring how
+    `Codeword.neg_zero_apply` unfolds `Codeword.neg_zero` and
+    `Codeword.neg_eq_self_apply` unfolds `Codeword.neg_eq_self`. -/
+theorem Codeword.neg_neg_apply {n : Nat} (a : Codeword n) (i : Fin n) :
+    (-(-a)) i = a i :=
+  congrFun (Codeword.neg_neg a) i
+
 end Section04
 end OrbgrandAi

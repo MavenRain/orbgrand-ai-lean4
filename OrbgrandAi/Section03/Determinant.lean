@@ -216,5 +216,14 @@ theorem cov2DetFormula_zero_sigma_seven
     cov2DetFormula ⟨0, le_refl 0⟩ rho1 rho2 7 = 0 :=
   cov2DetFormula_zero_sigma rho1 rho2 (Nat.succ_pos 6)
 
+/-- *Zero-sigma four above the paper's minimum supported size.*  The closed
+    form `cov2DetFormula` is stated valid for `n_s >= 4`; at
+    `n_s = 8` with zero noise power it vanishes.  Instantiates
+    `cov2DetFormula_zero_sigma` at `n_s = 8`. -/
+theorem cov2DetFormula_zero_sigma_eight
+    (rho1 rho2 : CorrelationCoefficient) :
+    cov2DetFormula ⟨0, le_refl 0⟩ rho1 rho2 8 = 0 :=
+  cov2DetFormula_zero_sigma rho1 rho2 (Nat.succ_pos 7)
+
 end Section03
 end OrbgrandAi

@@ -631,5 +631,15 @@ theorem perturbChannel_perturbChannel_perturbChannel_perturbChannel_perturbChann
   (perturbChannel_zero (perturbChannel (perturbChannel (perturbChannel (perturbChannel (perturbChannel h 0) 0) 0) 0) 0)).trans
     (perturbChannel_perturbChannel_perturbChannel_perturbChannel_perturbChannel_zero_zero_zero_zero_zero h)
 
+/-- *Septuple zero-perturbation collapses to identity.*  Composing seven
+    zero perturbations on `h` leaves the channel unchanged.  Extends the
+    sextuple form `perturbChannel_perturbChannel_perturbChannel_perturbChannel_perturbChannel_perturbChannel_zero_zero_zero_zero_zero_zero`
+    to a seventh layer. -/
+theorem perturbChannel_perturbChannel_perturbChannel_perturbChannel_perturbChannel_perturbChannel_perturbChannel_zero_zero_zero_zero_zero_zero_zero
+    {n_s : Nat} (h : ChannelMatrix n_s) :
+    perturbChannel (perturbChannel (perturbChannel (perturbChannel (perturbChannel (perturbChannel (perturbChannel h 0) 0) 0) 0) 0) 0) 0 = h :=
+  (perturbChannel_zero (perturbChannel (perturbChannel (perturbChannel (perturbChannel (perturbChannel (perturbChannel h 0) 0) 0) 0) 0) 0)).trans
+    (perturbChannel_perturbChannel_perturbChannel_perturbChannel_perturbChannel_perturbChannel_zero_zero_zero_zero_zero_zero h)
+
 end Section06
 end OrbgrandAi
