@@ -1839,5 +1839,14 @@ theorem Codeword.neg_neg_apply {n : Nat} (a : Codeword n) (i : Fin n) :
     (-(-a)) i = a i :=
   congrFun (Codeword.neg_neg a) i
 
+/-- *Triple negation collapses to a single negation.*  In `ZMod 2` each
+    negation is the identity, so `-(-(-a)) = -a`.  Chains
+    `Codeword.neg_eq_self` at `-(-a)` (eliminating the outer negation) with
+    `Codeword.neg_eq_self` at `-a` (eliminating the middle one), mirroring
+    how `Codeword.neg_neg` collapses a double negation. -/
+theorem Codeword.neg_neg_neg {n : Nat} (a : Codeword n) :
+    -(-(-a)) = -a :=
+  (Codeword.neg_eq_self (-(-a))).trans (Codeword.neg_eq_self (-a))
+
 end Section04
 end OrbgrandAi

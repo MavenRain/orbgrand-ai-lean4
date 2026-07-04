@@ -656,5 +656,11 @@ theorem limsupEntropyRate_le_limsupEntropyRate_of_eventually_const_mono
   ((limsupEntropyRate_eq_const_of_eventually_const hu).le.trans h).trans
     (limsupEntropyRate_eq_const_of_eventually_const hv).ge
 
+/-- *Two-valued log-inverse-density.*  Concrete instance of
+    `limsupEntropyRate_const` at `c = 2`. -/
+theorem limsupEntropyRate_two :
+    limsupEntropyRate (fun _ : Nat => (2 : Real)) = 2 :=
+  limsupEntropyRate_const 2
+
 end Section03
 end OrbgrandAi

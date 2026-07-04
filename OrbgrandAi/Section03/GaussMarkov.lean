@@ -883,5 +883,12 @@ theorem cov1_lag_twenty_six
     (sigma : NoisePower) (rho : CorrelationCoefficient) :
     cov1_lag sigma rho 26 = sigma.val * rho.val ^ 26 := rfl
 
+/-- `cov1_lag` at lag `-26` is `sigma * rho^26`.  Compose
+    `cov1_lag_neg` at `i = 26` with `cov1_lag_twenty_six`. -/
+theorem cov1_lag_neg_twenty_six
+    (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    cov1_lag sigma rho (-26) = sigma.val * rho.val ^ 26 :=
+  (cov1_lag_neg sigma rho 26).trans (cov1_lag_twenty_six sigma rho)
+
 end Section03
 end OrbgrandAi

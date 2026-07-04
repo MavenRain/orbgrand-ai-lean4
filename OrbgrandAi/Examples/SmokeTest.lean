@@ -8447,4 +8447,99 @@ example {n_s : Nat} (h : ChannelMatrix n_s) :
     perturbChannel (perturbChannel (perturbChannel (perturbChannel (perturbChannel (perturbChannel (perturbChannel h 0) 0) 0) 0) 0) 0) 0 = h :=
   perturbChannel_perturbChannel_perturbChannel_perturbChannel_perturbChannel_perturbChannel_perturbChannel_zero_zero_zero_zero_zero_zero_zero h
 
+/-! ## Round 50 additions -/
+
+/-- Ten is a valid block size. -/
+example : BlockSize.mk? 10 = Except.ok ⟨10, Nat.succ_pos 9⟩ :=
+  BlockSize.mk?_ten
+
+/-- Thirty-eighth sub-diagonal of `delayTapMatrix`. -/
+example {n_s p : Nat} (paths : Fin p -> DelayTapPath)
+    (f_s : SamplingFreq) (i j : Fin n_s) (h : i.val = j.val + 38) :
+    delayTapMatrix n_s paths f_s i j
+      = delayTapImpulseResponse paths f_s { toNat := 38 } :=
+  delayTapMatrix_thirty_eighth_subdiag paths f_s i j h
+
+/-- Dicode bandwidth widens to 35. -/
+example {n_s : Nat} (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    (dicode n_s sigma rho).bandwidth 35 :=
+  dicode_bandwidth_thirty_five sigma rho
+
+/-- Doubling of `receive` in the noise with a split signal. -/
+example {n_s : Nat} (ch : LinearIsi n_s) (X1 X2 N : SymbolVector n_s) :
+    ch.receive (X1 + X2) (N + N) = ch.receive X1 N + ch.receive X2 N :=
+  LinearIsi.receive_signal_add_noise_self ch X1 X2 N
+
+/-- RFView bandwidth widens to 43. -/
+example {n_s : Nat} (rowTaps : Fin n_s -> RFViewTaps) (sigma : NoisePower) :
+    (rfView n_s rowTaps sigma).bandwidth 43 :=
+  rfView_bandwidth_forty_three rowTaps sigma
+
+/-- Two-valued log-inverse-density. -/
+example : limsupEntropyRate (fun _ : Nat => (2 : Real)) = 2 :=
+  limsupEntropyRate_two
+
+/-- Zero-sigma determinant vanishes at `n_s = 9`. -/
+example (rho1 rho2 : CorrelationCoefficient) :
+    cov2DetFormula ⟨0, le_refl 0⟩ rho1 rho2 9 = 0 :=
+  cov2DetFormula_zero_sigma_nine rho1 rho2
+
+/-- Boundary case `n_s = 28` of `entropyRate2`. -/
+example (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient) :
+    entropyRate2 sigma rho1 rho2 28
+      = (1 / 2 : Real)
+          * Real.log (2 * Real.pi * Real.exp 1 * sigma.val)
+        + (1 / (2 * ((28 : Nat) : Real)))
+            * Real.log
+                (- (rho2.val - 1) ^ 26
+                    * (1 - 2 * rho1.val ^ 2 + rho2.val) ^ 26
+                  / (rho1.val ^ 2 - 1) ^ 25) :=
+  entropyRate2_at_twenty_eight_eq_log_form sigma rho1 rho2
+
+/-- `cov1_lag` at lag -26 is `sigma * rho^26`. -/
+example (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    cov1_lag sigma rho (-26) = sigma.val * rho.val ^ 26 :=
+  cov1_lag_neg_twenty_six sigma rho
+
+/-- QPSK exceedance at `(1, 2)` is non-zero. -/
+example : qpsk.exceed 1 2 ≠ 0 :=
+  qpsk_exceed_one_two_ne_zero
+
+/-- Triple negation collapses to a single negation. -/
+example {n : Nat} (a : Codeword n) : -(-(-a)) = -a :=
+  Codeword.neg_neg_neg a
+
+/-- Bucket non-membership five indices past the witness. -/
+example {n : Nat} (pi : ReliabilityRank n) {w : Nat} {e : Fin n -> Bool}
+    (h1 : landslideBucket pi w e) :
+    ¬ landslideBucket pi (w + 5) e :=
+  landslideBucket_not_of_mem_succ_succ_succ_succ_succ_self pi h1
+
+/-- Vacuous codebook at budget 14. -/
+example {n_s b numCandidates : Nat}
+    (Y : Codeword n_s)
+    (patterns : List (Fin (n_s / b) -> Fin numCandidates)) :
+    orbgrandAi (b := b) (numCandidates := numCandidates)
+      Y (fun _ => false) (AbandonmentBudget.mk 14) patterns = none :=
+  orbgrandAi_empty_codebook_mk_fourteen Y patterns
+
+/-- Recurrence step at index 73. -/
+example (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 73
+      = phi1 * ar2 phi1 phi2 z1 z2 72
+        + phi2 * ar2 phi1 phi2 z1 z2 71 :=
+  ar2_seventy_three phi1 phi2 z1 z2
+
+/-- Zero left-distance gives an iff for exact values (left-anchored). -/
+example {numPatterns : Nat}
+    (a b c : QueryOrder numPatterns) {n : Nat}
+    (hab : kendallTau a b = 0) :
+    kendallTau a c = n ↔ kendallTau b c = n :=
+  kendallTau_eq_iff_eq_of_eq_zero_left a b c hab
+
+/-- Octuple zero-perturbation collapses to identity. -/
+example {n_s : Nat} (h : ChannelMatrix n_s) :
+    perturbChannel (perturbChannel (perturbChannel (perturbChannel (perturbChannel (perturbChannel (perturbChannel (perturbChannel h 0) 0) 0) 0) 0) 0) 0) 0 = h :=
+  perturbChannel_perturbChannel_perturbChannel_perturbChannel_perturbChannel_perturbChannel_perturbChannel_perturbChannel_zero_zero_zero_zero_zero_zero_zero_zero h
+
 end OrbgrandAi.Examples.SmokeTest

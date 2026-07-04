@@ -1711,5 +1711,16 @@ theorem landslideBucket_disjoint_pred_pred_pred_pred_self
   landslideBucket_disjoint_of_gt pi
     (Nat.lt_add_of_pos_right (Nat.succ_pos 3))
 
+/-- *Bucket non-membership five indices past the witness.*  A
+    witness `landslideBucket pi w e` cannot also sit in bucket
+    `w + 5`.  Strengthens `landslideBucket_not_of_mem_succ_succ_succ_succ_self`
+    by skipping one more successor. -/
+theorem landslideBucket_not_of_mem_succ_succ_succ_succ_succ_self
+    {n : Nat} (pi : ReliabilityRank n) {w : Nat} {e : Fin n -> Bool}
+    (h1 : landslideBucket pi w e) :
+    ¬ landslideBucket pi (w + 5) e :=
+  landslideBucket_not_of_mem_of_lt pi h1
+    (Nat.lt_add_of_pos_right (Nat.succ_pos 4))
+
 end Section04
 end OrbgrandAi
