@@ -662,5 +662,11 @@ theorem limsupEntropyRate_two :
     limsupEntropyRate (fun _ : Nat => (2 : Real)) = 2 :=
   limsupEntropyRate_const 2
 
+/-- *Three-valued log-inverse-density.*  Concrete instance of
+    `limsupEntropyRate_const` at `c = 3`. -/
+theorem limsupEntropyRate_three :
+    limsupEntropyRate (fun _ : Nat => (3 : Real)) = 3 :=
+  limsupEntropyRate_const 3
+
 end Section03
 end OrbgrandAi
