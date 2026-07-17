@@ -1856,5 +1856,15 @@ theorem Codeword.neg_neg_neg_apply {n : Nat} (a : Codeword n) (i : Fin n) :
     (-(-(-a))) i = (-a) i :=
   congrFun (Codeword.neg_neg_neg a) i
 
+
+/-- *Quadruple negation is the identity.*  In `ZMod 2` each negation is
+    the identity, so `-(-(-(-a))) = a`.  Chains `Codeword.neg_neg` at `-(-a)`
+    (eliminating the outer double negation) with `Codeword.neg_neg` at `a`
+    (eliminating the inner one), mirroring how `Codeword.neg_neg_neg`
+    collapses a triple negation. -/
+theorem Codeword.neg_neg_neg_neg {n : Nat} (a : Codeword n) :
+    -(-(-(-a))) = a :=
+  (Codeword.neg_neg (-(-a))).trans (Codeword.neg_neg a)
+
 end Section04
 end OrbgrandAi

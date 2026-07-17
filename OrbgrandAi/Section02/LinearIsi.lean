@@ -818,5 +818,17 @@ theorem LinearIsi.receive_signal_swap_noise_self
     ch.receive (X2 + X1) (N + N) = ch.receive X2 N + ch.receive X1 N :=
   LinearIsi.receive_add ch X2 X1 N N
 
+
+/-- *Swapped-noise doubling of `receive` in the signal.*  Instantiates
+    `receive_add` at `X1 = X2 = X` with the two noise summands supplied in
+    swapped order, giving
+    `receive (X + X) (N2 + N1) = receive X N2 + receive X N1`.  The
+    summand-commuted companion of `receive_signal_self_noise_add`, doubling
+    only the signal argument while the noise remains a general sum. -/
+theorem LinearIsi.receive_noise_swap_signal_self
+    {n_s : Nat} (ch : LinearIsi n_s) (X N1 N2 : SymbolVector n_s) :
+    ch.receive (X + X) (N2 + N1) = ch.receive X N2 + ch.receive X N1 :=
+  LinearIsi.receive_add ch X X N2 N1
+
 end Section02
 end OrbgrandAi
