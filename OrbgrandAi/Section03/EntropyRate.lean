@@ -706,5 +706,20 @@ theorem entropyRate2_at_thirty_eq_log_form
                   / (rho1.val ^ 2 - 1) ^ 27) :=
   entropyRate2_eq sigma rho1 rho2 30
 
+/-- *Boundary case `n_s = 31` of `entropyRate2`.*  Companion of the
+    `n_s = 4`-`30` variants.  Specialisation of `entropyRate2_eq` at
+    `n_s = 31`; reduces by Nat computation. -/
+theorem entropyRate2_at_thirty_one_eq_log_form
+    (sigma : NoisePower) (rho1 rho2 : CorrelationCoefficient) :
+    entropyRate2 sigma rho1 rho2 31
+      = (1 / 2 : Real)
+          * Real.log (2 * Real.pi * Real.exp 1 * sigma.val)
+        + (1 / (2 * ((31 : Nat) : Real)))
+            * Real.log
+                (- (rho2.val - 1) ^ 29
+                    * (1 - 2 * rho1.val ^ 2 + rho2.val) ^ 29
+                  / (rho1.val ^ 2 - 1) ^ 28) :=
+  entropyRate2_eq sigma rho1 rho2 31
+
 end Section03
 end OrbgrandAi

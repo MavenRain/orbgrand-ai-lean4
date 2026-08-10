@@ -1743,5 +1743,15 @@ theorem landslideBucket_disjoint_succ_succ_succ_succ_succ_self
   landslideBucket_disjoint_of_lt pi
     (Nat.lt_add_of_pos_right (Nat.succ_pos 4))
 
+/-- *Five-step conjunction-form disjointness, swapped order.*  No
+    pattern `e` can simultaneously witness `landslideBucket pi (w + 5) e`
+    and `landslideBucket pi w e`.  Mirror of
+    `landslideBucket_disjoint_succ_succ_succ_succ_succ_self`. -/
+theorem landslideBucket_disjoint_pred_pred_pred_pred_pred_self
+    {n : Nat} (pi : ReliabilityRank n) {w : Nat} {e : Fin n -> Bool} :
+    ¬ (landslideBucket pi (w + 5) e /\ landslideBucket pi w e) :=
+  landslideBucket_disjoint_of_gt pi
+    (Nat.lt_add_of_pos_right (Nat.succ_pos 4))
+
 end Section04
 end OrbgrandAi

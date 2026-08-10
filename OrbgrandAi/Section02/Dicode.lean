@@ -794,5 +794,12 @@ theorem dicode_bandwidth_thirty_seven
     (dicode n_s sigma rho).bandwidth 37 :=
   LinearIsi.bandwidth_succ (dicode_bandwidth_thirty_six sigma rho)
 
+/-- *Dicode bandwidth widens to `38`.*  Chain `dicode_bandwidth_thirty_seven`
+    with `LinearIsi.bandwidth_succ`. -/
+theorem dicode_bandwidth_thirty_eight
+    {n_s : Nat} (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    (dicode n_s sigma rho).bandwidth 38 :=
+  LinearIsi.bandwidth_succ (dicode_bandwidth_thirty_seven sigma rho)
+
 end Section02
 end OrbgrandAi

@@ -903,5 +903,10 @@ theorem cov1_lag_neg_twenty_seven
     cov1_lag sigma rho (-27) = sigma.val * rho.val ^ 27 :=
   (cov1_lag_neg sigma rho 27).trans (cov1_lag_twenty_seven sigma rho)
 
+/-- `cov1_lag` at lag 28 is `sigma * rho^28`.  Same defeq pattern. -/
+theorem cov1_lag_twenty_eight
+    (sigma : NoisePower) (rho : CorrelationCoefficient) :
+    cov1_lag sigma rho 28 = sigma.val * rho.val ^ 28 := rfl
+
 end Section03
 end OrbgrandAi

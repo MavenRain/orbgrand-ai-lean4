@@ -664,6 +664,14 @@ theorem mk?_ten :
     SamplingFreq.mk? 10 = Except.ok ⟨10, Nat.ofNat_pos⟩ :=
   mk?_of_pos 10 Nat.ofNat_pos
 
+/-- *Eleven hertz is a valid sampling frequency.*  Next-concrete-value
+    corollary of `mk?_of_pos` at `v = 11`, with positivity supplied by
+    `Nat.ofNat_pos`.  Parallel of `BlockSize.mk?_eleven` and
+    `CodewordLength.mk?_eleven` lifted to the real-valued setting. -/
+theorem mk?_eleven :
+    SamplingFreq.mk? 11 = Except.ok ⟨11, Nat.ofNat_pos⟩ :=
+  mk?_of_pos 11 Nat.ofNat_pos
+
 end SamplingFreq
 
 end Section02

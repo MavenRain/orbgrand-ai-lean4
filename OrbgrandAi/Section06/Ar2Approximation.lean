@@ -943,5 +943,12 @@ theorem ar2_seventy_five (phi1 phi2 z1 z2 : Complex) :
       = phi1 * ar2 phi1 phi2 z1 z2 74
         + phi2 * ar2 phi1 phi2 z1 z2 73 := rfl
 
+/-- Recurrence step at index 76: `phi_1 * ar2 75 + phi_2 * ar2 74`.
+    Pattern-match arm `(74 + 2)` reduces definitionally to the RHS. -/
+theorem ar2_seventy_six (phi1 phi2 z1 z2 : Complex) :
+    ar2 phi1 phi2 z1 z2 76
+      = phi1 * ar2 phi1 phi2 z1 z2 75
+        + phi2 * ar2 phi1 phi2 z1 z2 74 := rfl
+
 end Section06
 end OrbgrandAi

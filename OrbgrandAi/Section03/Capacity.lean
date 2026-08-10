@@ -675,5 +675,11 @@ theorem limsupEntropyRate_four :
     limsupEntropyRate (fun _ : Nat => (4 : Real)) = 4 :=
   limsupEntropyRate_const 4
 
+/-- *Five-valued log-inverse-density.*  Concrete instance of
+    `limsupEntropyRate_const` at `c = 5`. -/
+theorem limsupEntropyRate_five :
+    limsupEntropyRate (fun _ : Nat => (5 : Real)) = 5 :=
+  limsupEntropyRate_const 5
+
 end Section03
 end OrbgrandAi

@@ -841,5 +841,15 @@ theorem kendallTau_eq_iff_eq_of_eq_zero_symm_left {numPatterns : Nat}
     kendallTau b a = n ↔ kendallTau c a = n :=
   iff_of_eq (congrArg (· = n) (kendallTau_eq_of_eq_zero_symm_right a b c hbc).symm)
 
+/-- *Zero right-distance gives an iff for weak upper bounds (symm-left-anchored).*
+    If `kendallTau b c = 0`, then for any other query order `a` and any
+    bound `n`, `kendallTau b a <= n` iff `kendallTau c a <= n`.  Left-flipped
+    weak-inequality companion to `kendallTau_le_iff_le_of_eq_zero_symm_right`. -/
+theorem kendallTau_le_iff_le_of_eq_zero_symm_left {numPatterns : Nat}
+    (a b c : QueryOrder numPatterns) {n : Nat}
+    (hbc : kendallTau b c = 0) :
+    kendallTau b a <= n ↔ kendallTau c a <= n :=
+  iff_of_eq (congrArg (· <= n) (kendallTau_eq_of_eq_zero_symm_right a b c hbc).symm)
+
 end Section06
 end OrbgrandAi
